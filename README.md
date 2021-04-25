@@ -23,10 +23,19 @@ Fighter (experimental) | Weapons will ONLY fire at fighters | Weapons still acqu
 
 ## Roadmap
 
-This is still a very early alpha version. The code is still very messy, and it has barely been tested yet!
-First off I need to clean up a little and add version checker support and automatic releases.
+This is still an early alpha version. It has not yet been tested sufficiently. If you encounter any bugs/crashes,
+please let me know.
+
+The next feature I want to add is for the Missile/Fighter modes to actually acquire missiles/fighters as preferential targets.
 
 After that, I would like to add a feature where you can merge other weapon groups into your active weapon group.
+
+## Known Issues
+
+- Depending on the machine/OS(?), keyboard inputs will not be accepted while holding SHIFT-Key.
+- Depending on the machine/OS(?), non-existant weapon groups will still toggle their mode (with no effect)
+
+If you happen to have any clues to fixing these issues, please let me know.
 
 ## Acknowledgements
 
