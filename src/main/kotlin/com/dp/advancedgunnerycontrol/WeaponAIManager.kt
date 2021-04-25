@@ -9,12 +9,17 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
     var weaponGroupModes = HashMap<Int, FireMode>()
     var weaponAIs = HashMap<WeaponAPI, PdAiPlugin>()
 
-    fun cycleWeaponGroupMode(groupNumber: Int): Boolean {
-        val currentMode = weaponGroupModes[groupNumber] ?: FireMode.DEFAULT
-        weaponGroupModes[groupNumber] = cycleFireMode(currentMode)
+    /**
+     * @return true if successful, false otherwise (e.g. index out of bounds)
+     */
+    fun cycleWeaponGroupMode(index: Int): Boolean {
         val ship = engine.playerShip ?: return false
-        val weaponGroup = ship.weaponGroupsCopy[groupNumber] ?: return false
-        weaponGroupModes[groupNumber]?.let { adjustWeaponAIs(weaponGroup, it) }
+        if (ship.weaponGroupsCopy.size <= index) return false
+        val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
+
+        val currentMode = weaponGroupModes[index] ?: FireMode.DEFAULT
+        weaponGroupModes[index] = cycleFireMode(currentMode)
+        weaponGroupModes[index]?.let { adjustWeaponAIs(weaponGroup, it) }
         return true
     }
 
@@ -40,11 +45,11 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
 
     fun getFireModeDescription(groupNumber: Int): String {
         return when (weaponGroupModes[groupNumber]) {
-            FireMode.DEFAULT -> "${groupNumber+1}: Default"
-            FireMode.PD -> "${groupNumber+1}: PD Mode"
-            FireMode.MISSILE -> "${groupNumber+1}: Missiles only (experimental)"
-            FireMode.FIGHTER -> "${groupNumber+1}: Fighters only (experimental)"
-            else -> "Unknown"
+            FireMode.DEFAULT -> "${groupNumber+1}: |X---| Default"
+            FireMode.PD -> "${groupNumber+1}: |-X--| PD Mode"
+            FireMode.MISSILE -> "${groupNumber+1}: |--X-| Missiles only (experimental)"
+            FireMode.FIGHTER -> "${groupNumber+1}: |---X| Fighters only (experimental)"
+            else -> "${groupNumber+1}: Invalid Weapon Group"
         }
     }
 
