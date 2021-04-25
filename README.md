@@ -1,4 +1,6 @@
-# Advanced Weapon Control - Starsector Mod
+# Advanced Weapon Control - Starsector Mod 
+
+![Cover Image](imgs/agc.png "Cover Image")
 
 This is a basic utility mod, that allows you to set (auto-fire) weapon groups to different modes.
 In PD-Only mode, weapons will ONLY fire at missiles and fighters, not at enemy ships.
