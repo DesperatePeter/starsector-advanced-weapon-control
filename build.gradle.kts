@@ -1,24 +1,21 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-//////////////////////
-// VARIABLES TO CHANGE
-
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
-    val starsectorDirectory = "C:/Program Files (x86)/Fractal Softworks/Starsector"
-    val modVersion = "1.0.0"
-    val jarFileName = "My_Mod.jar"
+    val starsectorDirectory = "/home/jannes/software/starsector"
+    val modVersion = "0.0.1"
+    val jarFileName = "AdvancedGunneryControl.jar"
 
-    val modId = "yourName_uniqueid"
-    val modName = "My Mod"
-    val author = "Your Name"
-    val description = "Mod description."
-    val gameVersion = "0.95a-RC12"
+    val modId = "advanced_gunnery_control_dbeaa06e"
+    val modName = "AdvancedGunneryControl"
+    val author = "DesperatePeter"
+    const val description = "A Starsector mod that adds more autofire modes for weapon groups."
+    val gameVersion = "0.95a-RC14"
     val jars = arrayOf("jars/$jarFileName")
-    val modPlugin = "com.example.template.LifecyclePlugin"
-    val isUtilityMod = false
-    val masterVersionFile = "https://raw.githubusercontent.com/githubname/githubrepo/master/$modId.version"
-    val modThreadId = "00000"
+    val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
+    val isUtilityMod = true
+    val masterVersionFile = "https://raw.githubusercontent.com/DesperatePeter/starsector-advanced-weapon-control/master/$modId.version"
+    val modThreadId = "62744"
 
     val modFolderName = modName.replace(" ", "-")
 
@@ -28,7 +25,7 @@ object Variables {
 //////////////////////
 
 // Note: On Linux, use "${Variables.starsectorDirectory}" as core directory
-val starsectorCoreDirectory = "${Variables.starsectorDirectory}/starsector-core"
+val starsectorCoreDirectory = "${Variables.starsectorDirectory}"
 val starsectorModDirectory = "${Variables.starsectorDirectory}/mods"
 val modInModsFolder = File("$starsectorModDirectory/${Variables.modName}")
 val modFiles = modInModsFolder.listFiles()
@@ -54,7 +51,7 @@ dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersionInLazyLib")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersionInLazyLib")
 
-    compileOnly(fileTree("$starsectorModDirectory/LazyLib/jars") { include("*.jar") })
+    implementation(fileTree("$starsectorModDirectory/LazyLib/jars") { include("*.jar") })
     //compileOnly(fileTree("$starsectorModDirectory/Console Commands/jars") { include("*.jar") })
 
     // Starsector jars and dependencies
