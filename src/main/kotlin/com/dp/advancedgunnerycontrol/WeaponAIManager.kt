@@ -7,7 +7,7 @@ import com.fs.starfarer.api.combat.WeaponGroupAPI
 
 class WeaponAIManager(private val engine: CombatEngineAPI) {
     var weaponGroupModes = HashMap<Int, FireMode>()
-    var weaponAIs = HashMap<WeaponAPI, PdAiPlugin>()
+    var weaponAIs = HashMap<WeaponAPI, AdvancedAIPlugin>()
 
     /**
      * @return true if successful, false otherwise (e.g. index out of bounds)
@@ -38,7 +38,7 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
         for(i in 0 until weaponAIList.size){
             var weaponAI = weaponAIList[i]
             val weapon = weaponAI.weapon
-            if (null == weaponAIs[weapon]) weaponAIs[weapon] = PdAiPlugin(weapon, weaponAI)
+            if (null == weaponAIs[weapon]) weaponAIs[weapon] = AdvancedAIPlugin(weapon, weaponAI)
             weaponAIs[weapon]?.let { weaponAI = it }
         }
     }
