@@ -147,6 +147,5 @@ gradle-app.setting
 
 # End of https://www.gitignore.io/api/gradle
 
-# Let's NOT commit Starsector's jar files...
-starfarer-api-1.0.jar
-starfarer-api-1.0-sources.jar
+.idea
+.run

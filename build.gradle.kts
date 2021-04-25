@@ -27,8 +27,7 @@ object Variables {
 // Note: On Linux, use "${Variables.starsectorDirectory}" as core directory
 val starsectorCoreDirectory = "${Variables.starsectorDirectory}"
 val starsectorModDirectory = "${Variables.starsectorDirectory}/mods"
-val modInModsFolder = File("$starsectorModDirectory/${Variables.modName}")
-val modFiles = modInModsFolder.listFiles()
+val modInModsFolder = File("$starsectorModDirectory/${Variables.modFolderName}")
 
 plugins {
     kotlin("jvm") version "1.3.60"
