@@ -1,6 +1,8 @@
 package com.dp.advancedgunnerycontrol
 
-import com.fs.starfarer.api.combat.*
+import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
+import com.fs.starfarer.api.combat.CombatEngineAPI
+import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
@@ -8,17 +10,20 @@ import java.awt.Color
 
 class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private val textDisplayTimeInFrames = 100
-    private lateinit var engine: CombatEngineAPI
 
+    private lateinit var engine: CombatEngineAPI
+    private lateinit var weaponAIManager: WeaponAIManager
     private lateinit var font: LazyFont
+
     private var drawable: LazyFont.DrawableString? = null
     private var textFrameTimer: Int = 0
-    private lateinit var weaponAIManager: WeaponAIManager
+    private var isInitialized = false
+
 
     private val keyManager = KeyStatusManager()
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         super.advance(amount, events)
-        if (null == engine) return
+        if (!isInitialized) return
 
         if (!keyManager.parseInputEvents(events)) return
 
@@ -47,10 +52,11 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     override fun init(engine: CombatEngineAPI?) {
         super.init(engine)
-        font = LazyFont.loadFont("graphics/fonts/insignia15LTaa.fnt")
         if (null != engine) {
+            font = LazyFont.loadFont("graphics/fonts/insignia15LTaa.fnt")
             this.engine = engine
             weaponAIManager = WeaponAIManager(engine)
+            isInitialized = true
         }
     }
 
