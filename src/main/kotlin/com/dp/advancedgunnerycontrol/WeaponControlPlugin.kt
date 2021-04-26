@@ -1,4 +1,7 @@
 package com.dp.advancedgunnerycontrol
+import com.dp.advancedgunnerycontrol.enums.ControlEventType
+import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
+
 
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
@@ -9,7 +12,7 @@ import java.awt.Color
 
 
 class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
-    private val textDisplayTimeInFrames = 100
+    private val textDisplayTimeInFrames = 150
 
     private lateinit var engine: CombatEngineAPI
     private lateinit var weaponAIManager: WeaponAIManager
@@ -18,12 +21,15 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var drawable: LazyFont.DrawableString? = null
     private var textFrameTimer: Int = 0
     private var isInitialized = false
+    private var shipID = ""
 
 
     private val keyManager = KeyStatusManager()
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         super.advance(amount, events)
         if (!isInitialized) return
+
+        detectShipChange()
 
         if (!keyManager.parseInputEvents(events)) return
 
@@ -34,10 +40,19 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
+    private fun detectShipChange(){
+        engine.playerShip?.let {
+            if (shipID != it.id){
+                shipID = it.id
+                weaponAIManager.reset()
+            }
+        }
+    }
+
     private fun cycleWeaponGroupMode() {
         val index = keyManager.mkeyStatus.mpressedWeaponGroup - 1
         weaponAIManager.cycleWeaponGroupMode(index)
-        printMessage("Weapon Group " + weaponAIManager.getFireModeDescription(index))
+        printMessage(weaponAIManager.getFireModeDescription(index))
     }
 
     private fun printMessage(message: String) {

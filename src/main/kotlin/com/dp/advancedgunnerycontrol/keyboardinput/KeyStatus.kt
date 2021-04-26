@@ -1,4 +1,5 @@
-package com.dp.advancedgunnerycontrol
+package com.dp.advancedgunnerycontrol.keyboardinput
+import com.dp.advancedgunnerycontrol.enums.ControlEventType
 
 class KeyStatus() {
     var mcontrolEvent: ControlEventType = ControlEventType.NONE

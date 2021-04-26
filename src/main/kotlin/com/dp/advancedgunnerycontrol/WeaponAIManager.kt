@@ -1,13 +1,20 @@
 package com.dp.advancedgunnerycontrol
 
+import com.dp.advancedgunnerycontrol.enums.FireMode
+import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.combat.WeaponGroupAPI
 
 class WeaponAIManager(private val engine: CombatEngineAPI) {
-    var weaponGroupModes = HashMap<Int, FireMode>()
-    var weaponAIs = HashMap<WeaponAPI, PdAiPlugin>()
+    var weaponGroupModes = HashMap<Int, WeaponModeSelector>()
+    var weaponAIs = HashMap<WeaponAPI, AdjustableAIPlugin>()
+
+    fun reset(){
+        weaponGroupModes = HashMap()
+        weaponAIs = HashMap()
+    }
 
     /**
      * @return true if successful, false otherwise (e.g. index out of bounds)
@@ -16,10 +23,9 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
         val ship = engine.playerShip ?: return false
         if (ship.weaponGroupsCopy.size <= index) return false
         val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
-
-        val currentMode = weaponGroupModes[index] ?: FireMode.DEFAULT
-        weaponGroupModes[index] = cycleFireMode(currentMode)
-        weaponGroupModes[index]?.let { adjustWeaponAIs(weaponGroup, it) }
+        if(!weaponGroupModes.containsKey(index)){weaponGroupModes[index] = WeaponModeSelector()}
+        weaponGroupModes[index]?.cycleMode() ?: return false
+        weaponGroupModes[index]?.let { adjustWeaponAIs(weaponGroup, it.currentMode) }
         return true
     }
 
@@ -38,27 +44,13 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
         for(i in 0 until weaponAIList.size){
             var weaponAI = weaponAIList[i]
             val weapon = weaponAI.weapon
-            if (null == weaponAIs[weapon]) weaponAIs[weapon] = PdAiPlugin(weapon, weaponAI)
+            if (null == weaponAIs[weapon]) weaponAIs[weapon] = AdjustableAIPlugin(weaponAI)
             weaponAIs[weapon]?.let { weaponAI = it }
         }
     }
 
     fun getFireModeDescription(groupNumber: Int): String {
-        return when (weaponGroupModes[groupNumber]) {
-            FireMode.DEFAULT -> "${groupNumber+1}: |X---| Default"
-            FireMode.PD -> "${groupNumber+1}: |-X--| PD Mode"
-            FireMode.MISSILE -> "${groupNumber+1}: |--X-| Missiles only (experimental)"
-            FireMode.FIGHTER -> "${groupNumber+1}: |---X| Fighters only (experimental)"
-            else -> "${groupNumber+1}: Invalid Weapon Group"
-        }
+        return weaponGroupModes[groupNumber]?.currentModeAsString(groupNumber) ?: "Group ${groupNumber+1}: Unavailable =/"
     }
 
-    private fun cycleFireMode(fireMode: FireMode): FireMode {
-        return when (fireMode) {
-            FireMode.DEFAULT -> FireMode.PD
-            FireMode.PD -> FireMode.MISSILE
-            FireMode.MISSILE -> FireMode.FIGHTER
-            FireMode.FIGHTER -> FireMode.DEFAULT
-        }
-    }
 }
