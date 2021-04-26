@@ -32,12 +32,21 @@ The next feature I want to add is for the Missile/Fighter modes to actually acqu
 
 After that, I would like to add a feature where you can merge other weapon groups into your active weapon group.
 
+### Requested Features
+
+- Add IgnoreFighters mode DONE
+- Add ability to 
+
 ## Known Issues
 
 - Depending on the machine/OS(?), keyboard inputs will not be accepted while holding SHIFT-Key.
 - Depending on the machine/OS(?), non-existant weapon groups will still toggle their mode (with no effect)
 
 If you happen to have any clues to fixing these issues, please let me know.
+
+## Changelog
+- 0.1.0: Initial release
+- 0.2.0: Added IgnoreFighters mode, added settings
 
 ## Acknowledgements
 

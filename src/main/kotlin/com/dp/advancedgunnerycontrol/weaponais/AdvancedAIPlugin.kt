@@ -1,5 +1,6 @@
-package com.dp.advancedgunnerycontrol
+package com.dp.advancedgunnerycontrol.weaponais
 
+import com.dp.advancedgunnerycontrol.FireMode
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.MissileAPI
 import com.fs.starfarer.api.combat.ShipAPI

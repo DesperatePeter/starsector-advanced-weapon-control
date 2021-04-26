@@ -11,6 +11,7 @@ import java.io.IOException
 public class WeaponControlBasePlugin : BaseModPlugin() {
     var settings: JSONObject? = null
 
+    // TODO: Migrate to separate class?
     companion object Settings {
         var cycleOrder = buildCycleOrder(Values.DEFAULT_CYCLE_ORDER)
             private set
@@ -49,7 +50,7 @@ public class WeaponControlBasePlugin : BaseModPlugin() {
 
     private fun applySettings() {
         try {
-            settings?.let { enableCustomAI = (it.get(Values.SETTINGS_ENABLE_DEFAULT_AI_KEY) == true) }
+            settings?.let { enableCustomAI = (it.get(Values.SETTINGS_ENABLE_CUSTOM_AI_KEY) == true) }
         }catch (e: JSONException){
             Global.getLogger(this.javaClass).warn(
                 """Key 'enableCustomAI' in ${Values.SETTINGS_FILE_NAME} invalid or not present.

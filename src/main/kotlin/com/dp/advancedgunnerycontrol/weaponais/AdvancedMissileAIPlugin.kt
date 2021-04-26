@@ -1,4 +1,4 @@
-package com.dp.advancedgunnerycontrol
+package com.dp.advancedgunnerycontrol.weaponais
 
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.combat.MissileAPI

@@ -1,12 +1,13 @@
 package com.dp.advancedgunnerycontrol
 
+import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.combat.WeaponGroupAPI
 
 class WeaponAIManager(private val engine: CombatEngineAPI) {
-    var weaponGroupModes = HashMap<Int, FireMode>()
+    var weaponGroupModes = HashMap<Int, WeaponModeSelector>()
     var weaponAIs = HashMap<WeaponAPI, AdvancedAIPlugin>()
 
     /**
@@ -16,10 +17,9 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
         val ship = engine.playerShip ?: return false
         if (ship.weaponGroupsCopy.size <= index) return false
         val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
-
-        val currentMode = weaponGroupModes[index] ?: FireMode.DEFAULT
-        weaponGroupModes[index] = cycleFireMode(currentMode)
-        weaponGroupModes[index]?.let { adjustWeaponAIs(weaponGroup, it) }
+        if(!weaponGroupModes.containsKey(index)){weaponGroupModes[index] = WeaponModeSelector()}
+        weaponGroupModes[index]?.cycleMode() ?: return false
+        weaponGroupModes[index]?.let { adjustWeaponAIs(weaponGroup, it.currentMode) }
         return true
     }
 
@@ -44,22 +44,7 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
     }
 
     fun getFireModeDescription(groupNumber: Int): String {
-        return when (weaponGroupModes[groupNumber]) {
-            FireMode.DEFAULT -> "${groupNumber+1}: |X---| Default"
-            FireMode.PD -> "${groupNumber+1}: |-X--| PD Mode"
-            FireMode.MISSILE -> "${groupNumber+1}: |--X-| Missiles only (experimental)"
-            FireMode.FIGHTER -> "${groupNumber+1}: |---X| Fighters only (experimental)"
-            else -> "${groupNumber+1}: Invalid Weapon Group"
-        }
+        return weaponGroupModes[groupNumber]?.currentModeAsString(groupNumber) ?: "Unknown Weapon Group =/"
     }
 
-    private fun cycleFireMode(fireMode: FireMode): FireMode {
-        return when (fireMode) {
-            FireMode.DEFAULT -> FireMode.PD
-            FireMode.PD -> FireMode.MISSILE
-            FireMode.MISSILE -> FireMode.FIGHTER
-            FireMode.FIGHTER -> FireMode.NO_FIGHTERS
-            FireMode.NO_FIGHTERS -> FireMode.DEFAULT
-        }
-    }
 }

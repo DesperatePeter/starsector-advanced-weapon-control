@@ -1,4 +1,4 @@
-package com.dp.advancedgunnerycontrol
+package com.dp.advancedgunnerycontrol.weaponais
 
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
@@ -11,6 +11,7 @@ import org.lwjgl.util.vector.Vector2f
 class AdvancedFighterAIPlugin(private var weapon: WeaponAPI) : AutofireAIPlugin {
     private var target: ShipAPI? = null
     private var forceOff = false
+
     override fun advance(p0: Float) {
         var potentialTargets = CombatUtils.getShipsWithinRange(weapon.location, weapon.range)
         potentialTargets = potentialTargets?.filter { it.isFighter && isWithinArc(it) }
