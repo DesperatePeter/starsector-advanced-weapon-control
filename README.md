@@ -24,6 +24,9 @@ and which fire modes you want to have access to and in which order you want to c
 
 Simply open the file ***Settings.editme*** (located in the folder of this mod) in a text editor of your choice and modify the lines marked with <---- EDIT HERE ----
 
+Please be careful to adhere to the syntax and allowed values. If your settings file contains errors, the mod will use
+the default settings instead! Make sure to check the log (Starsector/starsector.log) if your settings don't apply!
+
 ### Weapon Mode Cycle Order ###
 
 There are a lot of available firing modes in this mod. Especially if you want to switch weapon modes in the heat of battle,
