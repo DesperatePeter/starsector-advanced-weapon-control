@@ -1,26 +1,22 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
-import com.fs.starfarer.api.combat.AutofireAIPlugin
-import com.fs.starfarer.api.combat.MissileAPI
-import com.fs.starfarer.api.combat.ShipAPI
-import com.fs.starfarer.api.combat.WeaponAPI
+import com.fs.starfarer.api.combat.*
 import org.lwjgl.util.vector.Vector2f
 
-class NoFighterAIPlugin(private var baseAI : AutofireAIPlugin) : AutofireAIPlugin {
-    override fun advance(p0: Float) = baseAI.advance(p0)
-
-    override fun shouldFire(): Boolean {
-        if (null != targetShip && targetShip!!.isFighter) return false
-        return baseAI.shouldFire()
+class NoFighterAIPlugin(baseAI : AutofireAIPlugin) : SpecificAIPluginBase(baseAI, false) {
+    override fun computeTargetPriority(entity: CombatEntityAPI): Float {
+        return 0f
     }
 
-    override fun forceOff() = baseAI.forceOff()
+    override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {
+        return emptyList()
+    }
 
-    override fun getTarget(): Vector2f? = baseAI.target
+    override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {
+        ship?.let { return !it.isFighter } ?: return true
+    }
 
-    override fun getTargetShip(): ShipAPI? = baseAI.targetShip
-
-    override fun getWeapon(): WeaponAPI = baseAI.weapon
-
-    override fun getTargetMissile(): MissileAPI? = baseAI.targetMissile
+    override fun isValid() : Boolean{
+        return isAimable(weapon)
+    }
 }

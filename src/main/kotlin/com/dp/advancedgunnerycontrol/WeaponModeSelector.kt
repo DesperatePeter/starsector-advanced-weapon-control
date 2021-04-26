@@ -5,7 +5,7 @@ package com.dp.advancedgunnerycontrol
  */
 class WeaponModeSelector {
     private var currentIterator = WeaponControlBasePlugin.cycleOrder.iterator()
-    var currentMode = WeaponControlBasePlugin.cycleOrder.first()
+    var currentMode = currentIterator.next()
         private set
     var currentIndex = 0 // This is only used for the visual representation
 
@@ -14,8 +14,8 @@ class WeaponModeSelector {
             currentMode = currentIterator.next()
             currentIndex++
         }else{ // loop back to start
-            currentMode = WeaponControlBasePlugin.cycleOrder.first()
             currentIterator = WeaponControlBasePlugin.cycleOrder.iterator()
+            currentMode = currentIterator.next()
             currentIndex = 0
         }
     }
@@ -28,6 +28,6 @@ class WeaponModeSelector {
         var positionIndicator : String= " [" + "_".repeat(currentIndex) + "X" +
                 "_".repeat(WeaponControlBasePlugin.cycleOrder.size - 1 - currentIndex) + "] "
 
-        return "Group $weaponGroupIndex: " + positionIndicator + Values.FIRE_MODE_DESCRIPTIONS[currentMode]
+        return "Group ${weaponGroupIndex+1}: " + positionIndicator + Values.FIRE_MODE_DESCRIPTIONS[currentMode]
     }
 }

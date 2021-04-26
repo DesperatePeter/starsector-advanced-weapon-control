@@ -1,5 +1,6 @@
-package com.dp.advancedgunnerycontrol
+package com.dp.advancedgunnerycontrol.keyboardinput
 
+import com.dp.advancedgunnerycontrol.enums.ControlEventType
 import com.fs.starfarer.api.input.InputEventAPI
 
 class KeyStatusManager {

@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol
 
+import com.dp.advancedgunnerycontrol.enums.FireMode
 import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
@@ -8,7 +9,12 @@ import com.fs.starfarer.api.combat.WeaponGroupAPI
 
 class WeaponAIManager(private val engine: CombatEngineAPI) {
     var weaponGroupModes = HashMap<Int, WeaponModeSelector>()
-    var weaponAIs = HashMap<WeaponAPI, AdvancedAIPlugin>()
+    var weaponAIs = HashMap<WeaponAPI, AdjustableAIPlugin>()
+
+    fun reset(){
+        weaponGroupModes = HashMap()
+        weaponAIs = HashMap()
+    }
 
     /**
      * @return true if successful, false otherwise (e.g. index out of bounds)
@@ -38,13 +44,13 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
         for(i in 0 until weaponAIList.size){
             var weaponAI = weaponAIList[i]
             val weapon = weaponAI.weapon
-            if (null == weaponAIs[weapon]) weaponAIs[weapon] = AdvancedAIPlugin(weapon, weaponAI)
+            if (null == weaponAIs[weapon]) weaponAIs[weapon] = AdjustableAIPlugin(weaponAI)
             weaponAIs[weapon]?.let { weaponAI = it }
         }
     }
 
     fun getFireModeDescription(groupNumber: Int): String {
-        return weaponGroupModes[groupNumber]?.currentModeAsString(groupNumber) ?: "Unknown Weapon Group =/"
+        return weaponGroupModes[groupNumber]?.currentModeAsString(groupNumber) ?: "Group ${groupNumber+1}: Unavailable =/"
     }
 
 }

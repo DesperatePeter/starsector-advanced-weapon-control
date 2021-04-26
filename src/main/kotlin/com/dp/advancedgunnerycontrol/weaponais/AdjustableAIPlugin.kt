@@ -1,19 +1,16 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
-import com.dp.advancedgunnerycontrol.FireMode
+import com.dp.advancedgunnerycontrol.enums.FireMode
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.MissileAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import com.fs.starfarer.launcher.ModManager
 
 import org.lwjgl.util.vector.Vector2f
 
 
 
-class AdvancedAIPlugin constructor(
-    private var assignedWeapon: WeaponAPI, private var baseAI: AutofireAIPlugin =
-        ModManager.getInstance().pickWeaponAIPlugin(assignedWeapon))
+class AdjustableAIPlugin constructor(private var baseAI: AutofireAIPlugin)
     : AutofireAIPlugin {
     var fireMode = FireMode.DEFAULT
         set(value) {
@@ -25,11 +22,12 @@ class AdvancedAIPlugin constructor(
                 FireMode.FIGHTER -> fighterAI
                 FireMode.NO_FIGHTERS -> noFighterAI
             }
+            if(isInvalid(activeAI)) activeAI = baseAI
         }
 
-    private val fighterAI = AdvancedFighterAIPlugin(assignedWeapon)
+    private val fighterAI = AdvancedFighterAIPlugin(baseAI)
     private val pdAI = PDAIPlugin(baseAI)
-    private val missileAI = AdvancedMissileAIPlugin(assignedWeapon)
+    private val missileAI = AdvancedMissileAIPlugin(baseAI)
     private val noFighterAI = NoFighterAIPlugin(baseAI)
     private var activeAI = baseAI
 
@@ -43,8 +41,7 @@ class AdvancedAIPlugin constructor(
 
     override fun getTargetShip(): ShipAPI? = activeAI.targetShip
 
-    override fun getWeapon(): WeaponAPI? {
-        return assignedWeapon
-    }
+    override fun getWeapon(): WeaponAPI? = activeAI.weapon
+
     override fun getTargetMissile(): MissileAPI? = activeAI.targetMissile
 }

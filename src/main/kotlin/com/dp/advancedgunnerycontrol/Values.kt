@@ -1,5 +1,7 @@
 package com.dp.advancedgunnerycontrol
 
+import com.dp.advancedgunnerycontrol.enums.FireMode
+
 class Values {
     companion object{
         const val SETTINGS_FILE_NAME = "Settings.editme"

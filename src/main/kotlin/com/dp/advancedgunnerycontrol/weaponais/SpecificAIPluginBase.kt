@@ -16,6 +16,7 @@ abstract class SpecificAIPluginBase (private val baseAI : AutofireAIPlugin, priv
     override fun advance(p0: Float) {
         isBaseAIValid = false
         targetEntity = null
+        forceOff = false
         baseAI.advance(p0)
         if (isBaseAITargetValid(baseAI.targetShip, baseAI.targetMissile)){
             isBaseAIValid = true
@@ -25,9 +26,31 @@ abstract class SpecificAIPluginBase (private val baseAI : AutofireAIPlugin, priv
         }
     }
 
+    /**
+     * @return a value dependent on distance and velocity of target. Lower is better
+     * If this turns out to eat too much performance, picking a pseudo-random target might be better
+     */
+    protected abstract fun computeTargetPriority(entity: CombatEntityAPI): Float
+
+    /**
+     * @return all enemy entities within weapon range and arc
+     */
+    protected abstract fun getRelevantEntitiesWithinRange() : List<CombatEntityAPI>
+
+    /**
+     * @return true if the target selected by the baseAI matches what the weapon should target
+     */
+    protected abstract fun isBaseAITargetValid(ship : ShipAPI?, missile : MissileAPI?) : Boolean
+
+    /**
+     * perform checks to see if this AI is compatible with the weapon
+     * if this returns false, the base AI will be used instead
+     */
+    abstract fun isValid() : Boolean
+
     private fun advanceWithCustomAI(){
-        var potentialTargets = getRelevantEntitiesWithinRange()
-        var it : Iterator<CombatEntityAPI> = potentialTargets.iterator()
+        val potentialTargets = getRelevantEntitiesWithinRange()
+        val it : Iterator<CombatEntityAPI> = potentialTargets.iterator()
         var bestTarget : CombatEntityAPI? = null
         var priority = Float.MAX_VALUE // lowest possible priority
         it.forEach {
@@ -116,21 +139,7 @@ abstract class SpecificAIPluginBase (private val baseAI : AutofireAIPlugin, priv
         return weapon.distanceFromArc(entity) <= 0.01f && ((weapon.location - entity).length() <= weapon.range)
     }
 
-    /**
-     * @return a value dependent on distance and velocity of target. Lower is better
-     * If this turns out to eat too much performance, picking a pseudo-random target might be better
-     */
-    protected abstract fun computeTargetPriority(entity: CombatEntityAPI): Float
 
-    /**
-     * @return all enemy entities within weapon range and arc
-     */
-    protected abstract fun getRelevantEntitiesWithinRange() : List<CombatEntityAPI>
-
-    /**
-     * @return true if the target selected by the baseAI matches what the weapon should target
-     */
-    protected abstract fun isBaseAITargetValid(ship : ShipAPI?, missile : MissileAPI?) : Boolean
 }
 
 private infix fun Vector2f.times(d: Float): Vector2f {
