@@ -7,7 +7,7 @@ import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
 
-
+// TODO: Common base class for fighter/missile plugin?
 class AdvancedFighterAIPlugin(private var weapon: WeaponAPI) : AutofireAIPlugin {
     private var target: ShipAPI? = null
     private var forceOff = false

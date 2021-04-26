@@ -58,7 +58,8 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
             FireMode.DEFAULT -> FireMode.PD
             FireMode.PD -> FireMode.MISSILE
             FireMode.MISSILE -> FireMode.FIGHTER
-            FireMode.FIGHTER -> FireMode.DEFAULT
+            FireMode.FIGHTER -> FireMode.NO_FIGHTERS
+            FireMode.NO_FIGHTERS -> FireMode.DEFAULT
         }
     }
 }

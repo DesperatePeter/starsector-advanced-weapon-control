@@ -1,0 +1,16 @@
+# EDIT ME!
+# By editing this file, you can modify the behaviour of this mod!
+# NOTE: If the mod fails to parse these settings, it will fall back to default settings
+#       Check starsector.log (in the Starsector folder) for details (ctrl+f for advancedgunnerycontrol)
+{
+  # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
+  # Delete modes you want to skip. Note: "Default" will always be the first mode.
+  # Allowed items: "PD", "Fighters", "Missiles", "NoFighters"
+  # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
+  "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters" ], # <-- EDIT HERE
+  # If you set this to true, if weapons in weapon groups in Fighters/Missiles mode would normally target something else,
+  # they will try to acquire a fitting target using custom targeting AI.
+  # If you set this to false, they will use exclusively vanilla AI (basegame AI) simply not fire in that situation.
+  # Note: The custom AI is still a bit wonky, so setting this to false is the safe option
+  "enableCustomAI" : true # <-- EDIT HERE
+}

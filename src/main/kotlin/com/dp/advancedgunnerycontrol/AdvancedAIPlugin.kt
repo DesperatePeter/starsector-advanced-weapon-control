@@ -22,12 +22,14 @@ class AdvancedAIPlugin constructor(
                 FireMode.PD -> pdAI
                 FireMode.MISSILE -> missileAI
                 FireMode.FIGHTER -> fighterAI
+                FireMode.NO_FIGHTERS -> noFighterAI
             }
         }
 
     private val fighterAI = AdvancedFighterAIPlugin(assignedWeapon)
     private val pdAI = PDAIPlugin(baseAI)
     private val missileAI = AdvancedMissileAIPlugin(assignedWeapon)
+    private val noFighterAI = NoFighterAIPlugin(baseAI)
     private var activeAI = baseAI
 
     override fun advance(p0: Float) = activeAI.advance(p0)

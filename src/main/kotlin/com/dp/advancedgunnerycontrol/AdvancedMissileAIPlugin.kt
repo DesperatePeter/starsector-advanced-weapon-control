@@ -6,7 +6,6 @@ import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
-import java.util.ArrayList
 
 class AdvancedMissileAIPlugin (private var weapon: WeaponAPI) : AutofireAIPlugin {
     private var selectedTarget : MissileAPI? = null
@@ -64,7 +63,12 @@ class AdvancedMissileAIPlugin (private var weapon: WeaponAPI) : AutofireAIPlugin
      *         lower value means higher priority. Will prioritize missiles that are close, have low hp and deal high dmg
      */
     private fun computeTargetPriority(missile: MissileAPI) : Float{
-        val distance = (weapon.location - missile.location).length()
-        return distance / (missile.damage.damage + missile.empAmount*0.25f) * missile.hitpoints
+        var preliminaryPriority = (weapon.location - missile.location).length() // distance
+        if(missile.isArmed) preliminaryPriority*=0.1f // prioritize armed missiles
+        return if (missile.isGuided){ // prioritize unguided missiles
+            preliminaryPriority / (missile.damage.damage + missile.empAmount*0.25f) * missile.hitpoints
+        }else{
+            preliminaryPriority / (missile.damage.damage + missile.empAmount*0.25f) * missile.hitpoints * 0.5f
+        }
     }
 }
