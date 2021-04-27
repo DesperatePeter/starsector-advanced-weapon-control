@@ -8,6 +8,11 @@ This is especially useful for e.g. Bust PD Lasers, to not waste charges to deal 
 
 Note: If you don't have a markdown renderer handy, you can read the online version at <https://github.com/DesperatePeter/starsector-advanced-weapon-control/blob/master/README.md>
 
+## Installation ##
+
+Simply download the release from <https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases> and unzip it in your mods folder. If you install a new version, please make sure to
+delete the old folder before doing so.
+
 ## Controls ##
 
 Press #, where # is the Weapon Group Number on the NUMPAD, to cycle between firing modes for that group. **Make sure to enable Num-Lock!**
@@ -16,6 +21,18 @@ Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
 If you bind the numpad numbers as secondary weapon group keys, this mod won't work at all.
 If this becomes an issue for you, please let me know, and I will try to implement a solution.
+
+## Fire Modes ##
+
+Mode | Description | Notes | Affected by Custom AI | Suitable Weapon Example
+:---: | :--- | :--- | :---: | :---
+Default | Behaves exactly like normal | - | No | All weapons
+PD | Weapons will ONLY fire at missiles and fighters. | Will only work for PD-weapons | No | Flak
+Missiles | Weapons will ONLY fire at missiles/mines | Will only work for PD-weapons | Yes | Burst PD
+Fighters | Weapons will ONLY fire at fighters | - | Yes | Devastator Cannon
+NoFighters | Weapon will NOT fire at fighters | Will otherwise work normally | No | Hellbore Cannon
+
+Note: If a weapon is not eligible for a certain mode, it will use its vanilla AI as a fallback mode
 
 ## Settings ##
 
@@ -64,17 +81,26 @@ You should **enable** the custom AI, if:
 - You hate it when your weapons don't fire even if there is a reasonable target
 - You want to help me improve my custom AI by sending me written reports/video snippets of glitchy weapon behaviour
 
-## Fire Modes ##
+## How does the mod work? ##
 
-Mode | Description | Notes | Affected by Custom AI | Suitable Weapon Example
-:---: | :--- | :--- | :---: | :---
-Default | Behaves exactly like normal | - | No | All weapons
-PD | Weapons will ONLY fire at missiles and fighters. | Will only work for PD-weapons | No | Flak
-Missiles | Weapons will ONLY fire at missiles/mines | Will only work for PD-weapons | Yes | Burst PD
-Fighters | Weapons will ONLY fire at fighters | - | Yes | Devastator Cannon
-NoFighters | Weapon will NOT fire at fighters | Will otherwise work normally | No | Hellbore Cannon 
+In Starsector, each Weapon has a so-called AutofireAIPlugin. When that weapon is on autofire, this plugin will make the
+decision where the weapon should aim and whether it should fire or not.
 
-Note: If a weapon is not eligible for a certain mode, it will use its vanilla AI as a fallback mode
+When you first toggle the autofire mode of a weapon, this mod will extract the original AutofireAIPlugin (AKA the base/vanilla AI)
+from the weapon and store it in a new Plugin called the AdjustableAIPlugin. Additionally, it will create a new Plugin for
+every available autofire mode and also store it in the AdjustableAIPlugin. Then, whenever you toggle the autofire mode,
+the AdjustableAIPlugin will check whether the plugin corresponding to the selected mode is compatible with the weapon.
+If it is compatible, it will set the active Plugin to that plugin. Otherwise, it will simply set the default AutofireAIPlugin as active.
+
+Each Plugin corresponding to an autofire mode also contains a reference to the base Plugin. Each time the plugin has to make
+a decision, it first asks the base plugin what it would like to do. If that behaviour is in line with the selected mode,
+the plugin will simply let the base AI do its thing. Otherwise, depending on whether customAI is enabled or not, it will
+tell the weapon to not fire, or try to come up with its own firing solution.
+
+### Compatibility with other mods ###
+
+This mod should be compatible with other mods that provide custom AIs for their weapons, as long as they don't try to
+manipulate the weapon AI mid-combat. This mod will simply use the custom AI of that weapon as the base AI for that weapon.
 
 ## Roadmap ##
 
