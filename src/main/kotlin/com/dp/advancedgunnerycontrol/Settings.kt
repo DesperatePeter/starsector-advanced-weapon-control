@@ -21,6 +21,8 @@ class AdvancedGunneryControlSettings {
             private set
         var customAITriggerHappiness = Values.DEFAULT_CUSTOM_AI_TRIGGER_HAPPINESS
             private set
+        var isFallbackToDefault = false
+            private set
 
         fun buildCycleOrder(additionalItems: List<String>): List<FireMode> {
             return (listOf(FireMode.DEFAULT) + additionalItems.mapNotNull {
@@ -38,10 +40,12 @@ class AdvancedGunneryControlSettings {
             try {
                 Global.getSettings().loadJSON(Values.SETTINGS_FILE_NAME).also { settings = it }
             } catch (e: IOException) {
+                isFallbackToDefault = true
                 Global.getLogger(this.javaClass).warn(
                     "Unable to load settings file settings.editme! Falling back to default settings", e
                 )
             } catch (e: JSONException) {
+                isFallbackToDefault = true
                 Global.getLogger(this.javaClass).warn(
                     "Invalid settings file, please double-check! Falling back to default settings", e
                 )
@@ -53,6 +57,7 @@ class AdvancedGunneryControlSettings {
             try {
                 settings?.apply { enableCustomAI = (get(Values.SETTINGS_ENABLE_CUSTOM_AI_KEY) == true) }
             } catch (e: JSONException) {
+                isFallbackToDefault = true
                 Global.getLogger(this.javaClass).warn(
                     """Key 'enableCustomAI' in ${Values.SETTINGS_FILE_NAME} invalid or not present.
                     | Entry should be: "enableCustomAI" : true/false """.trimMargin(), e
@@ -70,6 +75,7 @@ class AdvancedGunneryControlSettings {
                     cycleOrder = buildCycleOrder(modesToAdd)
                 }
             } catch (e: JSONException) {
+                isFallbackToDefault = true
                 Global.getLogger(this.javaClass).warn(
                     """Key "cycleOrder" in ${Values.SETTINGS_FILE_NAME} not present or content invalid.
                     | Entry should be: "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters"] (or similar)
@@ -88,6 +94,7 @@ class AdvancedGunneryControlSettings {
                 }
                 forceCustomAI = forceCustomAI && enableCustomAI
             } catch (e: JSONException) {
+                isFallbackToDefault = true
                 Global.getLogger(this.javaClass).warn(
                     """Error when reading misc values from settings. Please double check keys and values!
                     |Falling back to default values.

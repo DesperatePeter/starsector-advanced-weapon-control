@@ -29,5 +29,5 @@
   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
   ,"forceCustomAI" : true # <---- EDIT HERE (maybe) ----
   # Any positive or negative float possible, reasonable values: between 0.5 ~ 3.0 or so
-  ,"customAITriggerHappiness" : 1.0 # <---- EDIT HERE (maybe) ----
+  ,"customAITriggerHappiness" : 2.0 # <---- EDIT HERE (maybe) ----
 }

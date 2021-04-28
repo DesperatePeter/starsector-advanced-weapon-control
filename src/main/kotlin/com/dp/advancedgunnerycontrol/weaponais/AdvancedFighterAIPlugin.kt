@@ -9,15 +9,17 @@ import kotlin.math.pow
 
 
 class AdvancedFighterAIPlugin(baseAI : AutofireAIPlugin) : SpecificAIPluginBase(baseAI){
+    val distToAngularDistEvalutionFactor = 1f/1000f
     override fun computeTargetPriority(entity: CombatEntityAPI): Float {
-        return angularDistanceFromWeapon(computePointToAimAt(1, entity))
+        val tgtPt = computePointToAimAt(entity)
+        return angularDistanceFromWeapon(tgtPt) + distToAngularDistEvalutionFactor*linearDistanceFromWeapon(tgtPt)
         // TODO more sophisticated logic?
         //if ((weapon.type == WeaponAPI.WeaponType.BALLISTIC) && entity.shield?.isOn == true) times(0.5f)
     }
 
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {
-        var potentialTargets = CombatUtils.getShipsWithinRange(weapon.location, weapon.range)
-        return potentialTargets.filterNotNull().filter { it.isFighter && isHostile(it) && isWithinArc(it)}
+        var potentialTargets = CombatUtils.getShipsWithinRange(weapon.location, weapon.range + 200f)
+        return potentialTargets.filterNotNull().filter { it.isFighter && isHostile(it) && isWithinArc(it) && willBeInFiringRange(it)}
     }
 
     override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {

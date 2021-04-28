@@ -11,7 +11,7 @@ import org.lwjgl.util.vector.Vector2f
 
 class AdvancedMissileAIPlugin (baseAI : AutofireAIPlugin) : SpecificAIPluginBase(baseAI){
     override fun computeTargetPriority(entity: CombatEntityAPI): Float {
-        return angularDistanceFromWeapon(computePointToAimAt(1, entity))
+        return angularDistanceFromWeapon(computePointToAimAt(entity))
         // TODO: More sophisticated logic
 //        var preliminaryPriority = (weapon.location - entity.location).length() // distance
 //        if((entity as MissileAPI).isArmed) preliminaryPriority*=0.1f // prioritize armed missiles
@@ -23,8 +23,8 @@ class AdvancedMissileAIPlugin (baseAI : AutofireAIPlugin) : SpecificAIPluginBase
     }
 
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {
-        val targets = CombatUtils.getMissilesWithinRange(weapon.location, weapon.range)
-        return targets.filterNotNull().filter { isWithinArc(it) && isHostile(it) }
+        val targets = CombatUtils.getMissilesWithinRange(weapon.location, weapon.range + 200f)
+        return targets.filterNotNull().filter { isWithinArc(it) && isHostile(it) && willBeInFiringRange(it)}
     }
 
     override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {

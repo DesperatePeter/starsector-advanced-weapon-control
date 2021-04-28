@@ -18,6 +18,7 @@ abstract class SpecificAIPluginBase(
     private var forceOff = false
     private val weapon = baseAI.weapon
     private var isBaseAIValid = false
+    private var weaponShouldFire = false
     override fun advance(p0: Float) {
         reset()
         baseAI.advance(p0)
@@ -57,6 +58,7 @@ abstract class SpecificAIPluginBase(
         targetEntity = null
         forceOff = false
         targetPoint = null
+        weaponShouldFire = false
     }
 
     private fun advanceWithCustomAI() {
@@ -72,7 +74,8 @@ abstract class SpecificAIPluginBase(
             }
         }
         targetEntity = bestTarget
-        determinePointToAimAt()
+        targetPoint = determinePointToAimAt()
+        weaponShouldFire = computeIfShouldFire()
     }
 
     override fun forceOff() {
@@ -98,11 +101,11 @@ abstract class SpecificAIPluginBase(
      * - acceleration refers to max possible acceleration, not current acceleration
      * conclusion: Don't use acceleration, take angular velocity with a grain of salt
      */
-    protected fun computePointToAimAt(recursionLevel: Int, tgt: CombatEntityAPI): Vector2f {
+    protected fun computePointToAimAt(tgt: CombatEntityAPI): Vector2f {
         val angularVelocityCorrectionFactor = 0.25f // only use 25% of predicted angular velocity impact
         var tgtPoint = tgt.location
 
-        for (i in 0 until recursionLevel) {
+        for (i in 0 until Settings.customAIRecursionLevel) {
             val travelT = linearDistanceFromWeapon(tgtPoint) / weapon.projectileSpeed
             val rotationalVelocityModifier =
                 (rotateVector(tgt.velocity, tgt.angularVelocity * degToRad) - tgt.velocity) times_
@@ -113,25 +116,23 @@ abstract class SpecificAIPluginBase(
         return tgtPoint
     }
 
-    private fun determinePointToAimAt() {
+    private fun determinePointToAimAt() : Vector2f?{
         if (isBaseAIValid) {
-            targetPoint = baseAI.target
-            return
+            return baseAI.target
+
         }
         if (!customAIActive) {
-            targetPoint = null
-            return
+            return null
+
         }
         if (!isAimable(weapon)) { // no need to compute for non-aimable weapons
-            targetPoint = weapon.location
-            return
+            return weapon.location
+
         }
         if (weapon.isBeam || weapon.isBurstBeam) {
-            targetPoint = targetEntity?.location
-            return
+            return targetEntity?.location
         }
-        targetPoint =
-            targetEntity?.let { computePointToAimAt(Settings.customAIRecursionLevel, it) }
+        return targetEntity?.let { computePointToAimAt(it) }
     }
 
     private fun rotateVector(vec: Vector2f, omega: Float): Vector2f {
@@ -164,22 +165,31 @@ abstract class SpecificAIPluginBase(
         return (weapon.location - entity).length()
     }
 
-    override fun shouldFire(): Boolean {
+    protected fun willBeInFiringRange(entity: CombatEntityAPI) : Boolean{
+        return isInRange(computePointToAimAt(entity))
+    }
+
+    private fun computeIfShouldFire() : Boolean{
         if (isBaseAIValid) {
             return baseAI.shouldFire()
         }
-        val aimingToleranceFactor = 1.25f // if aim is up to 25% off, the weapon should still fire
-        val aimingToleranceFlat = 100f
         // only fire if target will still be in range
         // TODO: Refactor
         targetEntity?.let { tgt ->
             targetPoint?.let { point ->
+                val accel = (tgt as? ShipAPI)?.acceleration ?: (tgt as? MissileAPI)?.acceleration ?: 0f
+                val tolerance = tgt.collisionRadius * aimingToleranceFactor +
+                        aimingToleranceFlat + accel * aimingToleranceAccelFactor
+                val lateralTargetOffset = angularDistanceFromWeapon(point) * linearDistanceFromWeapon(point)
                 return isInRange(point)
-                        && (angularDistanceFromWeapon(point) * linearDistanceFromWeapon(point)
-                        <= tgt.collisionRadius * aimingToleranceFactor + aimingToleranceFlat)
+                        && ( lateralTargetOffset <= tolerance )
             }
 
         } ?: return false
+    }
+
+    override fun shouldFire(): Boolean {
+        return weaponShouldFire
     }
 
     private fun isInRange(entity: Vector2f): Boolean {
@@ -188,6 +198,9 @@ abstract class SpecificAIPluginBase(
 
     companion object {
         // Math.toRadians only works on doubles, which is annoying as f***
-        private const val degToRad: Float = PI.toFloat() / 180f
+        protected const val degToRad: Float = PI.toFloat() / 180f
+        protected val aimingToleranceFactor = 1.25f * Settings.customAITriggerHappiness// if aim is up to 25% off, the weapon should still fire
+        protected val aimingToleranceFlat = 50f * Settings.customAITriggerHappiness
+        protected val aimingToleranceAccelFactor = 0.5f * Settings.customAITriggerHappiness
     }
 }

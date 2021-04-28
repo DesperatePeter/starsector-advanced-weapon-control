@@ -53,6 +53,7 @@ Note: If a weapon is not eligible for a certain mode, it will use its vanilla AI
 
 Currently, the settings allow you to configure two aspects of the mod: Whether to use custom AI or vanilla AI only
 and which fire modes you want to have access to and in which order you want to cycle through them.
+There are some more settings available, but you can ignore those unless you are feeling adventurous.
 
 Simply open the file ***Settings.editme*** (located in the folder of this mod) in a text editor of your choice and modify the lines marked with <---- EDIT HERE ----
 

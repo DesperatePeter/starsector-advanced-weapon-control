@@ -1,6 +1,5 @@
 package com.dp.advancedgunnerycontrol
 
-
 import com.dp.advancedgunnerycontrol.enums.FireMode
 import com.fs.starfarer.api.BaseModPlugin
 import com.fs.starfarer.api.Global

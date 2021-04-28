@@ -10,6 +10,7 @@ class Values {
         const val SETTINGS_AI_RECURSION_LEVEL = "customAIRecursionLevel"
         const val SETTINGS_FORCE_CUSTOM_AI = "forceCustomAI"
         const val SETTINGS_CUSTOM_AI_TRIGGER_HAPPINESS = "customAITriggerHappiness"
+        const val THIS_MOD_NAME = "AdvancedGunneryControl"
         val DEFAULT_CYCLE_ORDER = listOf("PD", "Fighters", "Missiles", "NoFighters")
         const val DEFAULT_ENABLE_CUSTOM_AI = true
         const val DEFAULT_AI_RECURSION_LEVEL = 2

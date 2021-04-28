@@ -2,11 +2,13 @@ package com.dp.advancedgunnerycontrol
 import com.dp.advancedgunnerycontrol.enums.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.WeaponAIManager // to suppress false positive
+import com.fs.starfarer.api.Global
 
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
 import com.fs.starfarer.api.combat.ViewportAPI
 import com.fs.starfarer.api.input.InputEventAPI
+import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
 
@@ -16,7 +18,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private lateinit var engine: CombatEngineAPI
     private lateinit var weaponAIManager: WeaponAIManager
-    private lateinit var font: LazyFont
+    private var font: LazyFont? = null
 
     private var drawable: LazyFont.DrawableString? = null
     private val keyManager = KeyStatusManager()
@@ -58,19 +60,27 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun printMessage(message: String) {
-        drawable = font.createText(message, color = Color.GREEN)
+        drawable = font?.createText(message, color = Color.GREEN)
         textFrameTimer = textDisplayTimeInFrames
     }
 
 
     private fun combineWeaponGroup() {
-        printMessage("Functionality not yet implemented (combineWeaponGroups")
+        printMessage("Functionality not yet implemented (combineWeaponGroups)")
     }
 
     override fun init(engine: CombatEngineAPI?) {
         super.init(engine)
         if (null != engine) {
-            font = LazyFont.loadFont("graphics/fonts/insignia15LTaa.fnt")
+            try {
+                font = LazyFont.loadFont("graphics/fonts/insignia15LTaa.fnt")
+            } catch (e: FontException){
+                Global.getLogger(this.javaClass).error("Failed to load font, won't de displaying messages", e)
+            }
+            if(Settings.isFallbackToDefault){
+                printMessage("Failed to load Settings for ${Values.THIS_MOD_NAME}, check starsector.log for details")
+            }
+
             this.engine = engine
             weaponAIManager = WeaponAIManager(engine)
             isInitialized = true
