@@ -1,20 +1,19 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
 import com.dp.advancedgunnerycontrol.Settings
-import com.dp.advancedgunnerycontrol.WeaponControlBasePlugin
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
-import org.lazywizard.lazylib.ext.minus
+import org.lwjgl.util.vector.Vector2f
 import kotlin.math.pow
 
 
 class AdvancedFighterAIPlugin(baseAI : AutofireAIPlugin) : SpecificAIPluginBase(baseAI){
-    val distToAngularDistEvalutionFactor = 1f/1000f
-    override fun computeTargetPriority(entity: CombatEntityAPI): Float {
-        val tgtPt = computePointToAimAt(entity)
-        return angularDistanceFromWeapon(tgtPt) + distToAngularDistEvalutionFactor*linearDistanceFromWeapon(tgtPt)
-        // TODO more sophisticated logic?
-        //if ((weapon.type == WeaponAPI.WeaponType.BALLISTIC) && entity.shield?.isOn == true) times(0.5f)
+    override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
+        return computePriorityGeometrically(entity, predictedLocation).let {
+            if ((weapon.type == WeaponAPI.WeaponType.BALLISTIC) && entity.shield?.isOn == true) it*0.5f else it
+        }.let {
+            it*1f/(entity.velocity.length().pow(0.5f)) // prioritize slow fighters
+        }
     }
 
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {

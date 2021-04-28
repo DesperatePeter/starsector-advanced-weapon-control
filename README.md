@@ -120,11 +120,15 @@ manipulate the weapon AI mid-combat. This mod will simply use the custom AI of t
 
 ## Roadmap ##
 
-This is still an early alpha version. It has not yet been tested sufficiently. If you encounter any bugs/crashes,
+This is still an early version. It has not yet been tested sufficiently. If you encounter any bugs/crashes,
 please let me know.
 
 After some more testing, bug-fixing and implementing requested features,
 I would like to add a feature where you can merge other weapon groups into your active weapon group.
+Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
+
+After that I want to implement some more fringe fire modes, that will be disabled by default. I was thinking about an
+anti-small-craft (fighters and frigates) mode and a mining (target only asteroids for mining blaster roleplay) mode.
 
 ### Requested Features ###
 
@@ -142,6 +146,7 @@ If you happen to have any clues to fixing these issues, please let me know.
 
 - 0.1.0: Initial release
 - 0.2.0: Added IgnoreFighters mode, added custom AI, added settings
+- 0.2.1: Significant improvements to custom AI, including settings for custom AI
 
 ## Acknowledgements ##
 

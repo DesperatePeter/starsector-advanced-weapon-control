@@ -4,7 +4,7 @@ import com.fs.starfarer.api.combat.*
 import org.lwjgl.util.vector.Vector2f
 
 class PDAIPlugin(baseAI : AutofireAIPlugin) : SpecificAIPluginBase(baseAI, false) {
-    override fun computeTargetPriority(entity: CombatEntityAPI): Float {
+    override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return 0f
     }
 

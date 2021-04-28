@@ -14,7 +14,8 @@
   # If you set this to true, if weapons in weapon groups in Fighters/Missiles mode would normally target something else,
   # they will try to acquire a fitting target using custom targeting AI.
   # If you set this to false, they will use exclusively vanilla AI (base AI) simply not fire in that situation.
-  # Note: The custom AI has not yet been tested extensively, so setting this to false is the safe option
+  # Update: I made quite a lot of improvements to the customAI, so I feel like it's safe to use now.
+  # Beware though that enabling it will have a negative effect on game performance.
   # Allowed values: true/false
   ,"enableCustomAI" : true # <---- EDIT HERE ----
 
@@ -27,7 +28,7 @@
   # Enabling this will always use the customAI (for applicable modes, refer to mode table)
   # It's mostly here for testing, but feel free to give it a try if you want.
   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
-  ,"forceCustomAI" : true # <---- EDIT HERE (maybe) ----
-  # Any positive or negative float possible, reasonable values: between 0.5 ~ 3.0 or so
+  ,"forceCustomAI" : false # <---- EDIT HERE (maybe) ----
+  # Any positive or negative float possible, reasonable values: between 0.5 ~ 5.0 or so
   ,"customAITriggerHappiness" : 2.0 # <---- EDIT HERE (maybe) ----
 }

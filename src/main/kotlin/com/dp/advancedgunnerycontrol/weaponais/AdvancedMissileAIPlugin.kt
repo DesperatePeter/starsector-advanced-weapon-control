@@ -1,25 +1,22 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
 import com.dp.advancedgunnerycontrol.Settings
-import com.dp.advancedgunnerycontrol.WeaponControlBasePlugin
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.combat.MissileAPI
 import org.lazywizard.lazylib.combat.CombatUtils
-import org.lazywizard.lazylib.ext.minus
-import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
 
 class AdvancedMissileAIPlugin (baseAI : AutofireAIPlugin) : SpecificAIPluginBase(baseAI){
-    override fun computeTargetPriority(entity: CombatEntityAPI): Float {
-        return angularDistanceFromWeapon(computePointToAimAt(entity))
-        // TODO: More sophisticated logic
-//        var preliminaryPriority = (weapon.location - entity.location).length() // distance
-//        if((entity as MissileAPI).isArmed) preliminaryPriority*=0.1f // prioritize armed missiles
-//        return if (entity.isGuided){ // prioritize unguided missiles
-//            preliminaryPriority / (entity.damage.damage + entity.empAmount*0.25f) * entity.hitpoints
-//        }else{
-//            preliminaryPriority / (entity.damage.damage + entity.empAmount*0.25f) * entity.hitpoints * 0.5f
-//        }
+    override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
+        val missile = (entity as? MissileAPI) ?: return Float.MAX_VALUE
+        return computePriorityGeometrically(entity, predictedLocation)
+    /*.let {
+            if (!missile.isGuided) it*0.5f else it // prioritize unguided missiles
+        }.let {
+            it*1f/(entity.velocity.length().pow(0.5f)) // prioritize slow missiles
+        }.let {
+            it*missile.hitpoints/missile.damageAmount
+        }*/
     }
 
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {

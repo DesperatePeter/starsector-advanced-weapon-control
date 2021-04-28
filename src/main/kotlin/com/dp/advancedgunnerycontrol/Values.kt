@@ -30,5 +30,6 @@ class Values {
             FireMode.MISSILE to "Missiles only",
             FireMode.NO_FIGHTERS to "Ignore Fighters"
         )
+        const val distToAngularDistEvalutionFactor = 1f/1000f
     }
 }
