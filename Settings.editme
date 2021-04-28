@@ -7,7 +7,7 @@
   # Delete modes you want to skip. Note: "Default" will always be the first mode.
   # Allowed items: "PD", "Fighters", "Missiles", "NoFighters", "Default"
   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
-  "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters" ], # <---- EDIT HERE ----
+  "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters" ] # <---- EDIT HERE ----
 
 
   #                                 #### CUSTOM AI ####
@@ -16,5 +16,15 @@
   # If you set this to false, they will use exclusively vanilla AI (base AI) simply not fire in that situation.
   # Note: The custom AI has not yet been tested extensively, so setting this to false is the safe option
   # Allowed values: true/false
-  "enableCustomAI" : true # <---- EDIT HERE ----
+  ,"enableCustomAI" : true # <---- EDIT HERE ----
+
+  #                                 #### MISC  ####
+  # Define the number of calculation steps the AI should do per time frame
+  # higher values -> better AI but worse performance (0 means just aim at current target position)
+  # performance cost increases linearly, quality gain approx. logarithmically (recommended: 1-2)
+  ,"customAIRecursionLevel" : 1 # <---- EDIT HERE ----
+  # Enabling this will always use the customAI (for applicable modes, refer to mode table)
+  # It's mostly here for testing, but feel free to give it a try if you want.
+  # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
+  ,"forceCustomAI" : true # <---- EDIT HERE (maybe) ----
 }

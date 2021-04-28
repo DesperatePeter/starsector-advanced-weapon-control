@@ -7,8 +7,12 @@ class Values {
         const val SETTINGS_FILE_NAME = "Settings.editme"
         const val SETTINGS_CYCLE_ORDER_KEY = "cycleOrder"
         const val SETTINGS_ENABLE_CUSTOM_AI_KEY = "enableCustomAI"
+        const val SETTINGS_AI_RECURSION_LEVEL = "customAIRecursionLevel"
+        const val SETTINGS_FORCE_CUSTOM_AI = "forceCustomAI"
         val DEFAULT_CYCLE_ORDER = listOf("PD", "Fighters", "Missiles", "NoFighters")
         const val DEFAULT_ENABLE_CUSTOM_AI = true
+        const val DEFAULT_AI_RECURSION_LEVEL = 2
+        const val DEFAULT_FORCE_CUSTOM_AI = false
         val FIRE_MODE_TRANSLATIONS = mapOf(
             "Default" to FireMode.DEFAULT,
             "PD" to FireMode.PD,

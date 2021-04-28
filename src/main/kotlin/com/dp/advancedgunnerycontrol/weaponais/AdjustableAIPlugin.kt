@@ -12,24 +12,26 @@ import org.lwjgl.util.vector.Vector2f
 
 class AdjustableAIPlugin constructor(private var baseAI: AutofireAIPlugin)
     : AutofireAIPlugin {
-    var fireMode = FireMode.DEFAULT
-        set(value) {
-            field = value
-            activeAI = when(value){
-                FireMode.DEFAULT -> baseAI
-                FireMode.PD -> pdAI
-                FireMode.MISSILE -> missileAI
-                FireMode.FIGHTER -> fighterAI
-                FireMode.NO_FIGHTERS -> noFighterAI
-            }
-            if(isInvalid(activeAI)) activeAI = baseAI
-        }
+    private var fireMode = FireMode.DEFAULT
 
     private val fighterAI = AdvancedFighterAIPlugin(baseAI)
     private val pdAI = PDAIPlugin(baseAI)
     private val missileAI = AdvancedMissileAIPlugin(baseAI)
     private val noFighterAI = NoFighterAIPlugin(baseAI)
     private var activeAI = baseAI
+
+    fun switchFireMode(mode : FireMode) : Boolean{
+        fireMode = mode
+        activeAI = when(fireMode){
+            FireMode.DEFAULT -> baseAI
+            FireMode.PD -> pdAI
+            FireMode.MISSILE -> missileAI
+            FireMode.FIGHTER -> fighterAI
+            FireMode.NO_FIGHTERS -> noFighterAI
+        }
+        if(isInvalid(activeAI)) { activeAI = baseAI; return false}
+        return true
+    }
 
     override fun advance(p0: Float) = activeAI.advance(p0)
 

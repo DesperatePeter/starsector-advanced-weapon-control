@@ -5,6 +5,7 @@
 This is a basic utility mod, that allows you to set your (auto-fire) weapon groups to different modes.
 For example, in PD-Only mode, weapons will ONLY fire at missiles and fighters, not at enemy ships.
 This is especially useful for e.g. Bust PD Lasers, to not waste charges to deal soft-flux to enemy shields.
+Check out the list of available modes below!
 
 Note: If you don't have a markdown renderer handy, you can read the online version at <https://github.com/DesperatePeter/starsector-advanced-weapon-control/blob/master/README.md>
 
@@ -16,6 +17,13 @@ delete the old folder before doing so.
 ## Controls ##
 
 Press #, where # is the Weapon Group Number on the NUMPAD, to cycle between firing modes for that group. **Make sure to enable Num-Lock!**
+
+Whenever you cycle modes, you will see a message like this:
+
+```Group 2: [_X__] PD 2/3```
+
+In order, this let's you know that a) group 2 is in b) the second out of 4 modes, 
+c) the current mode is PD and d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default)
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
@@ -119,7 +127,6 @@ I would like to add a feature where you can merge other weapon groups into your 
 ## Known Issues ##
 
 - Depending on the machine/OS(?), keyboard inputs will not be accepted while holding SHIFT-Key.
-- Depending on the machine/OS(?), non-existent weapon groups will still toggle their mode (with no effect)
 
 If you happen to have any clues to fixing these issues, please let me know.
 

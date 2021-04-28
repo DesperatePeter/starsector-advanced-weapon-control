@@ -25,19 +25,26 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
         val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
         if(!weaponGroupModes.containsKey(index)){weaponGroupModes[index] = WeaponModeSelector()}
         weaponGroupModes[index]?.cycleMode() ?: return false
-        weaponGroupModes[index]?.let { adjustWeaponAIs(weaponGroup, it.currentMode) }
+        weaponGroupModes[index]?.let {
+            it.fractionOfWeaponsInMode  = adjustWeaponAIs(weaponGroup, it.currentMode)
+        }
         return true
     }
 
-    private fun adjustWeaponAIs(weaponGroup: WeaponGroupAPI, fireMode: FireMode) {
+    private fun adjustWeaponAIs(weaponGroup: WeaponGroupAPI, fireMode: FireMode) : Fraction {
         initializeAIsIfNecessary(weaponGroup.aiPlugins)
+        var affectedWeapons = Fraction(0, weaponGroup.aiPlugins.size)
         weaponGroup.weaponsCopy.iterator().forEach { weapon ->
-            weaponAIs[weapon]?.fireMode = fireMode
+            if(weaponAIs[weapon]?.switchFireMode(fireMode) == true) affectedWeapons.numerator+=1
         }
+        // TODO: Cleanup (Code's a bit messy)
+        // This for-loop shouldn't be necessary from my understanding of how Kotlin works (every object is a reference)
+        // But for some reason, the mod doesn't work properly without this loop, so...yeah...
         for(i in 0 until weaponGroup.aiPlugins.size){
             val weapon = weaponGroup.aiPlugins[i].weapon
             weaponAIs[weapon]?.let { weaponGroup.aiPlugins[i] = it }
         }
+        return affectedWeapons // TODO
     }
 
     private fun initializeAIsIfNecessary(weaponAIList: MutableList<AutofireAIPlugin>) {

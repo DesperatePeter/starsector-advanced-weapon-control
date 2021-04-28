@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol
 import com.dp.advancedgunnerycontrol.enums.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
-
+import com.dp.advancedgunnerycontrol.WeaponAIManager // to suppress false positive
 
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI
@@ -19,12 +19,14 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private lateinit var font: LazyFont
 
     private var drawable: LazyFont.DrawableString? = null
+    private val keyManager = KeyStatusManager()
+
     private var textFrameTimer: Int = 0
     private var isInitialized = false
     private var shipID = ""
 
 
-    private val keyManager = KeyStatusManager()
+
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         super.advance(amount, events)
         if (!isInitialized) return
@@ -77,11 +79,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     override fun renderInUICoords(viewport: ViewportAPI?) {
         super.renderInUICoords(viewport)
-        if (null != drawable) {
-            drawable?.draw(600f, 600f)
+        drawable?.apply {
+            draw(600f, 600f)
             textFrameTimer--
         }
-
         if (textFrameTimer <= 0) {
             drawable = null
         }

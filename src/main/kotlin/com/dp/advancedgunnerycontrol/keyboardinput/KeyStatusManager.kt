@@ -30,9 +30,10 @@ class KeyStatusManager {
      */
     fun parseInputEvents(events: MutableList<InputEventAPI>?): Boolean {
         mkeyStatus.reset()
+        var wasRelevant = false
         events?.iterator()?.forEach {
-            if (parseInputEvent(it)) return true
+            wasRelevant = wasRelevant || parseInputEvent(it)
         }
-        return false
+        return wasRelevant
     }
 }
