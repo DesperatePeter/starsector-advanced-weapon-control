@@ -6,7 +6,7 @@ import com.dp.advancedgunnerycontrol.weaponais.Fraction
  * Essentially a cyclic list iterator for the cycleOrder
  */
 class WeaponModeSelector {
-    private var currentIterator = WeaponControlBasePlugin.cycleOrder.iterator()
+    private var currentIterator = Settings.cycleOrder.iterator()
     var currentMode = currentIterator.next()
         private set
     var currentIndex = 0 // This is only used for the visual representation
@@ -17,7 +17,7 @@ class WeaponModeSelector {
             currentMode = currentIterator.next()
             currentIndex++
         }else{ // loop back to start
-            currentIterator = WeaponControlBasePlugin.cycleOrder.iterator()
+            currentIterator = Settings.cycleOrder.iterator()
             currentMode = currentIterator.next()
             currentIndex = 0
         }
@@ -29,7 +29,7 @@ class WeaponModeSelector {
     fun currentModeAsString(weaponGroupIndex : Int) : String{
         // something like [__X_]
         var positionIndicator : String= " [" + "_".repeat(currentIndex) + "X" +
-                "_".repeat(WeaponControlBasePlugin.cycleOrder.size - 1 - currentIndex) + "] "
+                "_".repeat(Settings.cycleOrder.size - 1 - currentIndex) + "] "
 
         return "Group ${weaponGroupIndex+1}: " + positionIndicator + Values.FIRE_MODE_DESCRIPTIONS[currentMode] +
                 " ${fractionOfWeaponsInMode.asString()}"

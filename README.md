@@ -9,6 +9,13 @@ Check out the list of available modes below!
 
 Note: If you don't have a markdown renderer handy, you can read the online version at <https://github.com/DesperatePeter/starsector-advanced-weapon-control/blob/master/README.md>
 
+## TL;DR Instructions##
+
+- Unzip the archive in your Starsector/mods folder
+- Enable the NUMPAD-Numlock
+- Play the game and press NUMPAD-Keys during combat
+- (optional) edit Starsector/mods/AdvancedGunneryControl/Settings.editme and remove modes you don't like etc.
+
 ## Installation ##
 
 Simply download the release from <https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases> and unzip it in your mods folder. If you install a new version, please make sure to

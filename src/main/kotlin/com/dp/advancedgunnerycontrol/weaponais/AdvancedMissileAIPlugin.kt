@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
+import com.dp.advancedgunnerycontrol.Settings
 import com.dp.advancedgunnerycontrol.WeaponControlBasePlugin
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.combat.MissileAPI
@@ -27,7 +28,7 @@ class AdvancedMissileAIPlugin (baseAI : AutofireAIPlugin) : SpecificAIPluginBase
     }
 
     override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {
-        if(WeaponControlBasePlugin.forceCustomAI) return false
+        if(Settings.forceCustomAI) return false
         return (null != missile)
     }
 

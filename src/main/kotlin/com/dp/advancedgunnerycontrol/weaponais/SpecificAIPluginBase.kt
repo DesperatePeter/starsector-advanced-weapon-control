@@ -1,6 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
-import com.dp.advancedgunnerycontrol.WeaponControlBasePlugin
+import com.dp.advancedgunnerycontrol.Settings
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
@@ -11,7 +11,7 @@ import kotlin.math.sin
 
 abstract class SpecificAIPluginBase(
     private val baseAI: AutofireAIPlugin,
-    private val customAIActive: Boolean = WeaponControlBasePlugin.enableCustomAI
+    private val customAIActive: Boolean = Settings.enableCustomAI
 ) : AutofireAIPlugin {
     private var targetEntity: CombatEntityAPI? = null
     private var targetPoint: Vector2f? = null
@@ -131,7 +131,7 @@ abstract class SpecificAIPluginBase(
             return
         }
         targetPoint =
-            targetEntity?.let { computePointToAimAt(WeaponControlBasePlugin.customAIRecursionLevel, it) }
+            targetEntity?.let { computePointToAimAt(Settings.customAIRecursionLevel, it) }
     }
 
     private fun rotateVector(vec: Vector2f, omega: Float): Vector2f {
