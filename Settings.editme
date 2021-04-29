@@ -19,16 +19,41 @@
   # Allowed values: true/false
   ,"enableCustomAI" : true # <---- EDIT HERE ----
 
-  #                                 #### MISC  ####
-  # NOTE: All the stuff under misc is mainly here to facilitate testing
-  # Define the number of calculation steps the AI should do per time frame
-  # higher values -> slightly better AI but worse performance (0 means just aim at current target position)
-  # performance cost increases linearly, quality gain approx. logarithmically (recommended: 1-2)
+
+  #                                 #### CUSTOM AI CONFIGURATION  ####
+  # NOTE: All the stuff here is mainly here to facilitate testing. But feel free to play around with the settings here!
+  # Define the number of calculation steps the AI should perform per time frame to compute firing solutions.
+  # higher values -> slightly better AI but worse performance (0 means just aim at current target position).
+  # performance cost increases linearly, firing solution accuracy approx. logarithmically (recommended: 1-2)
+  # I.e. doubling this value doubles the time required to compute firing solutions but only increases their
+  # accuracy a little bit.
+  # I believe that 1 is the value used in Vanilla
   ,"customAIRecursionLevel" : 1 # <---- EDIT HERE (maybe)----
+
   # Enabling this will always use the customAI (for applicable modes, refer to mode table)
   # It's mostly here for testing, but feel free to give it a try if you want.
   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
   ,"forceCustomAI" : false # <---- EDIT HERE (maybe) ----
+
   # Any positive or negative float possible, reasonable values: between 0.5 ~ 5.0 or so
   ,"customAITriggerHappiness" : 2.0 # <---- EDIT HERE (maybe) ----
+
+  # Set this to true if you want the custom AI to perform better :P
+  ,"customAIAlwaysUsesBestTargetLeading" : false # <---- EDIT HERE (maybe) ----
+
+  #                                 #### FRIENDLY FIRE AI CONFIGURATION ####
+  # "magic number" to choose how complex the friendly fire calculation should be
+  # The number entered here roughly corresponds to the big O notation (i.e. runtime of friendly fire algorithm ~ n^i,
+  # where n is the number of entities (ships/missiles) in range of the ship and i is the number chosen here)
+  # Valid numbers are:
+  #     - 0 : No friendly fire computation, weapon won't care about hitting allies
+  #     - 1 : Weapon won't consider friendly fire for target selection, only for deciding whether to fire or not
+  #     - 2 : Weapon will only select targets that don't risk friendly fire (POTENTIALLY HIGH PERFORMANCE COST)
+  ,"customAIFriendlyFireAlgorithmComplexity" : 1 # <---- EDIT HERE (maybe) ----
+
+  # Essentially the same as triggerHappiness, but with the opposite effect.
+  # Setting this to 5.0+ means "don't you dare fire if there is even a remote chance you'll hit an ally!"
+  ,"customAIFriendlyFireCaution" : 1.0 # <---- EDIT HERE (maybe) ----
+
+
 }

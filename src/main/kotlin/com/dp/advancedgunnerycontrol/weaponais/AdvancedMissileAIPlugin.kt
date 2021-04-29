@@ -9,19 +9,19 @@ import org.lwjgl.util.vector.Vector2f
 class AdvancedMissileAIPlugin (baseAI : AutofireAIPlugin) : SpecificAIPluginBase(baseAI){
     override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         val missile = (entity as? MissileAPI) ?: return Float.MAX_VALUE
-        return computePriorityGeometrically(entity, predictedLocation)
-    /*.let {
-            if (!missile.isGuided) it*0.5f else it // prioritize unguided missiles
-        }.let {
-            it*1f/(entity.velocity.length().pow(0.5f)) // prioritize slow missiles
-        }.let {
-            it*missile.hitpoints/missile.damageAmount
-        }*/
+        return computePriorityGeometrically(entity, predictedLocation).let {
+            it*missile.hitpoints/(missile.damageAmount + 50.0f) // prioritize high dmg low hp missiles
+        }.let { // don't prioritize flares if weapon ignores flares
+            if (weapon.hasAIHint(WeaponAPI.AIHints.IGNORES_FLARES) && missile.isFlare){
+                Float.MAX_VALUE
+            }else{
+                it
+            }
+        }
     }
 
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {
-        val targets = CombatUtils.getMissilesWithinRange(weapon.location, weapon.range + 200f)
-        return targets.filterNotNull().filter { isWithinArc(it) && isHostile(it) && willBeInFiringRange(it)}
+        return CombatUtils.getMissilesWithinRange(weapon.location, weapon.range + 200f).filterNotNull()
     }
 
     override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {

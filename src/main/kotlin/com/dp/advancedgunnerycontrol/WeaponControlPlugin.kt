@@ -27,8 +27,6 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var isInitialized = false
     private var shipID = ""
 
-
-
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         super.advance(amount, events)
         if (!isInitialized) return

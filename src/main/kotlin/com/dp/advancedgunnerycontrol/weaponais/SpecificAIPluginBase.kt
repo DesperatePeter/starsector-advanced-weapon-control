@@ -3,24 +3,23 @@ package com.dp.advancedgunnerycontrol.weaponais
 import com.dp.advancedgunnerycontrol.Settings
 import com.dp.advancedgunnerycontrol.Values
 import com.fs.starfarer.api.combat.*
+import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
 abstract class SpecificAIPluginBase(
     private val baseAI: AutofireAIPlugin,
     private val customAIActive: Boolean = Settings.enableCustomAI
 ) : AutofireAIPlugin {
-    // Note: pairing targetEntity and Point could improve performance?
     private var targetEntity: CombatEntityAPI? = null
     private var lastTargetEntity: CombatEntityAPI? = null
     private var targetPoint: Vector2f? = null
     private var forceOff = false
     private val weapon = baseAI.weapon
     private var weaponShouldFire = false
+    private var currentTgtLeadAcc = 1.0f
 
     /**
      * @return a value dependent on distance and velocity of target. Lower is better
@@ -31,7 +30,8 @@ abstract class SpecificAIPluginBase(
 
     /**
      * @return all enemy entities within weapon range and arc
-     * hint: use CombatUtils.getXYZWithinRange(...).filterNotNull()
+     * hint: use something like:
+     * CombatUtils.getXYZWithinRange(...).filterNotNull()
      */
     protected abstract fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI>
 
@@ -46,7 +46,11 @@ abstract class SpecificAIPluginBase(
      */
     abstract fun isValid(): Boolean
 
+    /**
+     * gets called at start of every advancement frame
+     */
     private fun reset() {
+        determineTargetLeadingAccuracy(targetEntity, lastTargetEntity)
         lastTargetEntity = targetEntity
         targetEntity = null
         forceOff = false
@@ -73,8 +77,15 @@ abstract class SpecificAIPluginBase(
     }
 
     private fun advanceWithCustomAI() {
-        val potentialTargets = addPredictedLocationToTargets(getRelevantEntitiesWithinRange()).filter {
-            isInRange(it.second) }
+        val potentialAllies = addPredictedLocationToTargets(
+            CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter {
+            it.isAlly && isWithinArc(it)
+        }).filter { isInRange(it.second) }
+        val potentialTargets = addPredictedLocationToTargets(
+            getRelevantEntitiesWithinRange().filter { isWithinArc(it) && isHostile(it)}
+        ).filter { isInRange(it.second) }
+        // TODO friendly fire
+
         val it = potentialTargets.iterator()
         var bestTarget = Pair<CombatEntityAPI?, Vector2f?>(null, null)
         var priority = Float.MAX_VALUE // lowest possible priority
@@ -88,6 +99,18 @@ abstract class SpecificAIPluginBase(
         targetEntity = bestTarget.first
         targetPoint = bestTarget.second
         weaponShouldFire = computeIfShouldFire(potentialTargets)
+    }
+
+    private fun determineTargetLeadingAccuracy(currentTarget: CombatEntityAPI?, lastTarget: CombatEntityAPI?){
+        if(Settings.customAIPerfectTargetLeading){
+            currentTgtLeadAcc = 1.0f
+            return
+        }
+        currentTgtLeadAcc = if(currentTarget == lastTarget){
+            min(currentTgtLeadAcc + 0.1f, 1.0f)
+        }else{
+            weapon.ship?.mutableStats?.autofireAimAccuracy?.modifiedValue ?: 1.0f
+        }
     }
 
     private fun addPredictedLocationToTargets(potentialTargets : List<CombatEntityAPI>) : List<Pair<CombatEntityAPI, Vector2f>>{
@@ -120,7 +143,6 @@ abstract class SpecificAIPluginBase(
      * conclusion: Don't use acceleration, take angular velocity with a grain of salt
      */
     protected fun computePointToAimAt(tgt: CombatEntityAPI): Vector2f {
-        // val angularVelocityCorrectionFactor = 0.25f // only use 25% of predicted angular velocity impact
         var tgtPoint = tgt.location
         // no need to compute stuff for beam or non-aimable weapons
         if (weapon.isBeam || weapon.isBurstBeam || !isAimable(weapon)) {
@@ -128,10 +150,8 @@ abstract class SpecificAIPluginBase(
         }
 
         for (i in 0 until Settings.customAIRecursionLevel) {
-            val travelT = linearDistanceFromWeapon(tgtPoint) / weapon.projectileSpeed
-//            val rotationalVelocityModifier = // I believe not using this is easier and better
-//                (rotateVector(tgt.velocity, tgt.angularVelocity * degToRad) - tgt.velocity) times_
-//                        travelT * 0.5f * angularVelocityCorrectionFactor
+            val travelT = linearDistanceFromWeapon(tgtPoint) / (weapon.projectileSpeed*(1.5f - 0.5f*currentTgtLeadAcc))
+
             val velocityOffset = (tgt.velocity /*+ rotationalVelocityModifier*/) times_ travelT
             tgtPoint = tgt.location + velocityOffset
         }
@@ -164,12 +184,18 @@ abstract class SpecificAIPluginBase(
         return (weaponDirection - entityDirection).length()
     }
 
-    protected fun linearDistanceFromWeapon(entity: Vector2f): Float {
-        return (weapon.location - entity).length()
+    protected fun isFriendlyFire(tgt: Pair<CombatEntityAPI, Vector2f>, friendlies: List<Pair<CombatEntityAPI, Vector2f>>) : Boolean{
+        return friendliesInDangerZone(tgt.second, friendlies).isNotEmpty()
     }
 
-    protected fun willBeInFiringRange(entity: CombatEntityAPI) : Boolean{
-        return isInRange(computePointToAimAt(entity))
+    protected fun friendliesInDangerZone(aimPoint : Vector2f, friendlies: List<Pair<CombatEntityAPI, Vector2f>>) : List<Pair<CombatEntityAPI, Vector2f>>{
+        return friendlies.filter {
+            abs(angularDistanceFromWeapon(aimPoint) - angularDistanceFromWeapon(it.second)) <= it.first.collisionRadius * Settings.customAIFriendlyFireCaution
+        }
+    }
+
+    protected fun linearDistanceFromWeapon(entity: Vector2f): Float {
+        return (weapon.location - entity).length()
     }
 
     private fun computeIfShouldFire(potentialTargets: List<Pair<CombatEntityAPI, Vector2f>>): Boolean{

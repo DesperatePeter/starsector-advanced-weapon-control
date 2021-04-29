@@ -19,7 +19,11 @@ class AdvancedGunneryControlSettings {
             private set
         var forceCustomAI = Values.DEFAULT_FORCE_CUSTOM_AI
             private set
-        var customAITriggerHappiness = Values.DEFAULT_CUSTOM_AI_TRIGGER_HAPPINESS
+        var customAITriggerHappiness = Values.DEFAULT_AI_TRIGGER_HAPPINESS
+            private set
+        var customAIPerfectTargetLeading = Values.DEFAULT_AI_PERFECT_TARGET_LEADING
+            private set
+        var customAIFriendlyFireCaution = Values.DEFAULT_AI_FRIENDLY_FIRE_CAUTION
             private set
         var isFallbackToDefault = false
             private set
@@ -88,9 +92,11 @@ class AdvancedGunneryControlSettings {
             // misc
             try {
                 settings?.apply {
-                    customAIRecursionLevel = getInt(Values.SETTINGS_AI_RECURSION_LEVEL)
-                    forceCustomAI = get(Values.SETTINGS_FORCE_CUSTOM_AI) == true
-                    customAITriggerHappiness = getFloat(Values.SETTINGS_CUSTOM_AI_TRIGGER_HAPPINESS)
+                    customAIRecursionLevel = getInt(Values.SETTINGS_AI_RECURSION_LEVEL_KEY)
+                    forceCustomAI = get(Values.SETTINGS_FORCE_CUSTOM_AI_KEY) == true
+                    customAITriggerHappiness = getFloat(Values.SETTINGS_CUSTOM_AI_TRIGGER_HAPPINESS_KEY)
+                    customAIPerfectTargetLeading = get(Values.SETTINGS_USE_PERFECT_TARGET_LEADING_KEY) == true
+                    customAIFriendlyFireCaution = getFloat(Values.SETTINGS_AI_FRIENDLY_FIRE_CAUTION_KEY)
                 }
                 forceCustomAI = forceCustomAI && enableCustomAI
             } catch (e: JSONException) {
