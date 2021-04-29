@@ -48,12 +48,10 @@
   # Valid numbers are:
   #     - 0 : No friendly fire computation, weapon won't care about hitting allies
   #     - 1 : Weapon won't consider friendly fire for target selection, only for deciding whether to fire or not
-  #     - 2 : Weapon will only select targets that don't risk friendly fire (POTENTIALLY HIGH PERFORMANCE COST)
+  #     - 2 : Weapon will only select targets that don't risk friendly fire (potentially high performance cost)
   ,"customAIFriendlyFireAlgorithmComplexity" : 1 # <---- EDIT HERE (maybe) ----
 
   # Essentially the same as triggerHappiness, but with the opposite effect.
   # Setting this to 5.0+ means "don't you dare fire if there is even a remote chance you'll hit an ally!"
   ,"customAIFriendlyFireCaution" : 1.0 # <---- EDIT HERE (maybe) ----
-
-
 }

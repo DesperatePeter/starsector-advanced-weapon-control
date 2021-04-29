@@ -1,0 +1,10 @@
+{
+  "AdvancedGunneryControl": {
+    "weaponBlacklist": [
+      # a list of weapon ids (as per WeaponAPI.getId()) that have a delicate custom AI
+      # Note: AdvancedGunneryControl preserves a weapons base AI and only uses its custom AI if the base AI
+      #       does something that doesn't fit the selected fire mode. So most weapons should be fine.
+      "phasecl" # proximity charge launchers are a good example of a weapon that doesn't play nice with conventional AI
+    ]
+  }
+}

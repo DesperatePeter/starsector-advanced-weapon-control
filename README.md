@@ -27,10 +27,11 @@ Press #, where # is the Weapon Group Number on the NUMPAD, to cycle between firi
 
 Whenever you cycle modes, you will see a message like this:
 
-```Group 2: [_X__] PD 2/3```
+```Group 2: [_X__] Missiles (custom AI) 2/3```
 
 In order, this let's you know that a) group 2 is in b) the second out of 4 modes, 
-c) the current mode is PD and d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default)
+c) the current mode is Missiles, c) it's using custom AI when vanilla AI wants to target something else
+and d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default)
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
@@ -77,7 +78,7 @@ If you find the number of options overwhelming, try the following setting:
 ### Enable Custom AI ###
 
 Whether you enable the custom AI or not, all weapon fire modes will first attempt to use the vanilla AI 
-(i.e. the AI that the weapon has without this mod) to select a target and firing solution.
+(i.e. the AI that the weapon has without this mod) to select a target and firing solution, unless you use the forceCustomAI setting.
 Only when the target selected by the vanilla AI does not match the type specified by the weapon mode, will there be a difference.
 
 If the custom AI is **disabled**, the weapon simply won't fire at all.
@@ -89,13 +90,19 @@ You should **disable** the custom AI, if:
 
 - You have performance issues (as enabling it might have to calculate two firing solutions)
 - You want an experience that is as close to vanilla Starsector as possible
-- You absolutely hate it when your weapons occasionally fire at weird stuff (as my algorithm is still relatively unrefined)
+- You absolutely hate it when your weapons occasionally fire at weird stuff (as my algorithm is still undergoing development, though mostly complete)
 
 You should **enable** the custom AI, if:
 
 - You want to set weapons to prioritize targets they normally wouldn't (e.g. phase lances as anti-fighter weapons)
-- You hate it when your weapons don't fire even if there is a reasonable target
+- You dislike it when your weapons don't fire even if there is a reasonable target
+- You want to be able to customize the AI behaviour (in Settings.editme)
+- You want to get the "full experience"
+- You want to use Fighter/Missile-only modes
 - You want to help me improve my custom AI by sending me written reports/video snippets of glitchy weapon behaviour
+
+Note: Weapon groups will display "(base AI)" when custom AI is off/not applicable, "(custom AI)" when using the
+custom AI as a fallback and "(override AI)" when using only the custom AI.
 
 ## How does the mod work? ##
 
@@ -118,6 +125,21 @@ tell the weapon to not fire, or try to come up with its own firing solution.
 This mod should be compatible with other mods that provide custom AIs for their weapons, as long as they don't try to
 manipulate the weapon AI mid-combat. This mod will simply use the custom AI of that weapon as the base AI for that weapon.
 
+If you are a mod-author and want to explicitly tell my mod to not tweak the AI of your weapon(s), include the weapon id
+into your mod's modSettings.json:
+
+```
+{
+  "AdvancedGunneryControl": {
+    "weaponBlacklist": [
+      "weapon_id_1", "weapon_id_2"
+    ]
+  }
+}
+```
+
+This mod doesn't affect anything outside the current combat. So it's unlikely to cause problems on the campaign level.
+
 ## Roadmap ##
 
 This is still an early version. It has not yet been tested sufficiently. If you encounter any bugs/crashes,
@@ -134,7 +156,7 @@ anti-small-craft (fighters and frigates) mode and a mining (target only asteroid
 
 - Add IgnoreFighters mode **DONE**
 - Add ability to issue fire modes to AI-controlled allied ships
-- Add weapon-blacklist for other mods such that their weapons stay unaffected by fire modes from this mod 
+- Add weapon-blacklist for other mods such that their weapons stay unaffected by fire modes from this mod **DONE**
 
 ## Known Issues ##
 
@@ -147,6 +169,7 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.1.0: Initial release
 - 0.2.0: Added IgnoreFighters mode, added custom AI, added settings
 - 0.2.1: Significant improvements to custom AI, including settings for custom AI
+- 0.3.0: further improvements to custom AI (friendly fire), added weapon blacklist
 
 ## Acknowledgements ##
 

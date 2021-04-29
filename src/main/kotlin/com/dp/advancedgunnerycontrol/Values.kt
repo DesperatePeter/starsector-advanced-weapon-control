@@ -13,6 +13,7 @@ class Values {
         const val SETTINGS_USE_PERFECT_TARGET_LEADING_KEY = "customAIAlwaysUsesBestTargetLeading"
         const val SETTINGS_AI_FRIENDLY_FIRE_CAUTION_KEY = "customAIFriendlyFireCaution"
         const val SETTINGS_AI_FRIENDLY_FIRE_COMPLEXITY_KEY = "customAIFriendlyFireAlgorithmComplexity"
+        const val WEAPON_BLACKLIST_KEY = "weaponBlacklist"
         const val THIS_MOD_NAME = "AdvancedGunneryControl"
         val DEFAULT_CYCLE_ORDER = listOf("PD", "Fighters", "Missiles", "NoFighters")
         const val DEFAULT_ENABLE_CUSTOM_AI = true

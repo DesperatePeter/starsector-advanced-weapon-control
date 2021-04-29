@@ -77,14 +77,15 @@ abstract class SpecificAIPluginBase(
     }
 
     private fun advanceWithCustomAI() {
-        val potentialAllies = addPredictedLocationToTargets(
-            CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter {
-            it.isAlly && isWithinArc(it)
-        }).filter { isInRange(it.second) }
-        val potentialTargets = addPredictedLocationToTargets(
+
+        var potentialTargets = addPredictedLocationToTargets(
             getRelevantEntitiesWithinRange().filter { isWithinArc(it) && isHostile(it)}
         ).filter { isInRange(it.second) }
-        // TODO friendly fire
+
+        // this is a deceptively expensive call
+        if (Settings.customAIFriendlyFireComplexity >= 2){
+            potentialTargets = potentialTargets.filter { !isFriendlyFire(it.second, getFriendlies()) }
+        }
 
         val it = potentialTargets.iterator()
         var bestTarget = Pair<CombatEntityAPI?, Vector2f?>(null, null)
@@ -99,6 +100,13 @@ abstract class SpecificAIPluginBase(
         targetEntity = bestTarget.first
         targetPoint = bestTarget.second
         weaponShouldFire = computeIfShouldFire(potentialTargets)
+    }
+
+    private fun getFriendlies(): List<Pair<CombatEntityAPI, Vector2f>> {
+        return addPredictedLocationToTargets(
+            CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter {
+                it.isAlly && isWithinArc(it) && !it.isFighter
+            }).filter { isInRange(it.second) }
     }
 
     private fun determineTargetLeadingAccuracy(currentTarget: CombatEntityAPI?, lastTarget: CombatEntityAPI?){
@@ -184,8 +192,8 @@ abstract class SpecificAIPluginBase(
         return (weaponDirection - entityDirection).length()
     }
 
-    protected fun isFriendlyFire(tgt: Pair<CombatEntityAPI, Vector2f>, friendlies: List<Pair<CombatEntityAPI, Vector2f>>) : Boolean{
-        return friendliesInDangerZone(tgt.second, friendlies).isNotEmpty()
+    protected fun isFriendlyFire(aimPoint: Vector2f, friendlies: List<Pair<CombatEntityAPI, Vector2f>>) : Boolean{
+        return friendliesInDangerZone(aimPoint, friendlies).isNotEmpty()
     }
 
     protected fun friendliesInDangerZone(aimPoint : Vector2f, friendlies: List<Pair<CombatEntityAPI, Vector2f>>) : List<Pair<CombatEntityAPI, Vector2f>>{
@@ -204,6 +212,9 @@ abstract class SpecificAIPluginBase(
             val tolerance = it.first.collisionRadius * aimingToleranceFactor + aimingToleranceFlat
             val lateralTargetOffset = angularDistanceFromWeapon(it.second) * linearDistanceFromWeapon(it.second)
             if (lateralTargetOffset <= tolerance) return true
+        }
+        if(Settings.customAIFriendlyFireComplexity >=1){
+            if (isFriendlyFire(vectorFromAngleDeg(weapon.currAngle), getFriendlies())) return false
         }
         return false
     }
@@ -225,8 +236,6 @@ abstract class SpecificAIPluginBase(
     }
 
     companion object {
-        // Math.toRadians only works on doubles, which is annoying as f***
-        protected const val degToRad: Float = PI.toFloat() / 180f
         protected val aimingToleranceFactor = 1.25f * Settings.customAITriggerHappiness// if aim is up to 25% off, the weapon should still fire
         protected val aimingToleranceFlat = 50f * Settings.customAITriggerHappiness
         // protected val aimingToleranceAccelFactor = 0.5f * Settings.customAITriggerHappiness

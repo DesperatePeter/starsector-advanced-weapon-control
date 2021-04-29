@@ -2,10 +2,14 @@ package com.dp.advancedgunnerycontrol
 
 import com.dp.advancedgunnerycontrol.enums.FireMode
 import com.fs.starfarer.api.Global
+import data.scripts.util.MagicSettings
 import org.json.JSONException
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.getFloat
 import java.io.IOException
+import kotlin.math.max
+import kotlin.math.min
+
 typealias Settings = AdvancedGunneryControlSettings
 
 class AdvancedGunneryControlSettings {
@@ -24,6 +28,10 @@ class AdvancedGunneryControlSettings {
         var customAIPerfectTargetLeading = Values.DEFAULT_AI_PERFECT_TARGET_LEADING
             private set
         var customAIFriendlyFireCaution = Values.DEFAULT_AI_FRIENDLY_FIRE_CAUTION
+            private set
+        var customAIFriendlyFireComplexity = Values.DEFAULT_AI_FRIENDLY_FIRE_COMPLEXITY
+            private set
+        var weaponBlacklist = listOf<String>()
             private set
         var isFallbackToDefault = false
             private set
@@ -54,6 +62,7 @@ class AdvancedGunneryControlSettings {
                     "Invalid settings file, please double-check! Falling back to default settings", e
                 )
             }
+            weaponBlacklist = MagicSettings.getList(Values.THIS_MOD_NAME, Values.WEAPON_BLACKLIST_KEY)
         }
 
         private fun applySettings() {
@@ -97,8 +106,11 @@ class AdvancedGunneryControlSettings {
                     customAITriggerHappiness = getFloat(Values.SETTINGS_CUSTOM_AI_TRIGGER_HAPPINESS_KEY)
                     customAIPerfectTargetLeading = get(Values.SETTINGS_USE_PERFECT_TARGET_LEADING_KEY) == true
                     customAIFriendlyFireCaution = getFloat(Values.SETTINGS_AI_FRIENDLY_FIRE_CAUTION_KEY)
+                    customAIFriendlyFireComplexity = getInt(Values.SETTINGS_AI_FRIENDLY_FIRE_COMPLEXITY_KEY)
                 }
                 forceCustomAI = forceCustomAI && enableCustomAI
+                customAIFriendlyFireComplexity = max(0, min(2, customAIFriendlyFireComplexity))
+
             } catch (e: JSONException) {
                 isFallbackToDefault = true
                 Global.getLogger(this.javaClass).warn(

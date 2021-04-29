@@ -15,17 +15,23 @@ public class WeaponControlBasePlugin : BaseModPlugin() {
         Global.getLogger(this.javaClass).info(
             "Using custom AI: ${Settings.enableCustomAI}, force: ${Settings.forceCustomAI}, recursion lvl :${Settings.customAIRecursionLevel}"
         )
+        Global.getLogger(this.javaClass).info(
+            "Custom AI trigger happiness: ${Settings.customAITriggerHappiness}," +
+                    " friendly fire caution: ${Settings.customAIFriendlyFireCaution}," +
+                    " friendly fire complexity: ${Settings.customAIFriendlyFireComplexity}"
+        )
+        Global.getLogger(this.javaClass).info("Weapon blacklist: ${Settings.weaponBlacklist}")
     }
 
     private fun modifyFighterAndMissileModeDescriptionsToIncludeAIType() {
         val postfix = if ( Settings.enableCustomAI ) {
             if ( Settings.forceCustomAI ) {
-                "(override AI)"
+                " (override AI)"
             } else {
-                "(custom AI)"
+                " (custom AI)"
             }
         } else {
-            "(base AI)"
+            " (base AI)"
         }
         Values.FIRE_MODE_DESCRIPTIONS[FireMode.FIGHTER] += postfix
         Values.FIRE_MODE_DESCRIPTIONS[FireMode.MISSILE] += postfix
