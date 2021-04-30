@@ -10,7 +10,7 @@ import org.lwjgl.util.vector.Vector2f
 
 
 
-class AdjustableAIPlugin constructor(private var baseAI: AutofireAIPlugin)
+class AdjustableAIPlugin constructor(val baseAI: AutofireAIPlugin)
     : AutofireAIPlugin {
     private var fireMode = FireMode.DEFAULT
 

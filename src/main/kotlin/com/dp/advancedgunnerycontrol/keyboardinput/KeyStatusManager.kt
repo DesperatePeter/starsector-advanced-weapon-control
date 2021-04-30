@@ -13,6 +13,11 @@ class KeyStatusManager {
     private fun parseInputEvent(event: InputEventAPI): Boolean {
         if (event.isConsumed || !event.isKeyDownEvent) return false
 
+        if(event.eventChar == 'j'){
+            mkeyStatus.mcontrolEvent = ControlEventType.INFO
+            return true
+        }
+
         if (event.eventChar !in weaponGroupKeys) return false
         // Note: char.toInt gets the ascii value rather than the contained number
         mkeyStatus.mpressedWeaponGroup = event.eventChar.toString().toInt()

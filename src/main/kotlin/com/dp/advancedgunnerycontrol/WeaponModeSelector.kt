@@ -31,7 +31,7 @@ class WeaponModeSelector {
         var positionIndicator : String= " [" + "_".repeat(currentIndex) + "X" +
                 "_".repeat(Settings.cycleOrder.size - 1 - currentIndex) + "] "
 
-        return "Group ${weaponGroupIndex+1}: " + positionIndicator + Values.FIRE_MODE_DESCRIPTIONS[currentMode] +
+        return positionIndicator + Values.FIRE_MODE_DESCRIPTIONS[currentMode] +
                 " ${fractionOfWeaponsInMode.asString()}"
     }
 }

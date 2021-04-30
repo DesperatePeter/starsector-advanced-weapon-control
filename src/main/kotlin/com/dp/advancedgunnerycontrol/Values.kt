@@ -23,6 +23,7 @@ class Values {
         const val DEFAULT_AI_PERFECT_TARGET_LEADING = false
         const val DEFAULT_AI_FRIENDLY_FIRE_CAUTION = 1.0f
         const val DEFAULT_AI_FRIENDLY_FIRE_COMPLEXITY = 1
+        const val WEAPON_AI_MANAGER_KEY = "WeaponAIManagerAGC"
         val FIRE_MODE_TRANSLATIONS = mapOf(
             "Default" to FireMode.DEFAULT,
             "PD" to FireMode.PD,

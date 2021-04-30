@@ -1,5 +1,5 @@
 package com.dp.advancedgunnerycontrol.enums
 
 enum class ControlEventType {
-    CYCLE, COMBINE, NONE
+    CYCLE, COMBINE, INFO, NONE
 }
