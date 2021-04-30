@@ -39,6 +39,8 @@ class AdvancedGunneryControlSettings {
             private set
         var uiForceFullInfo = Values.DEFAULT_FORCE_FULL_INFO
             private set
+        var infoHotkey = Values.DEFAULT_INFO_HOTKEY
+            private set
 
         var weaponBlacklist = listOf<String>()
             private set
@@ -114,6 +116,7 @@ class AdvancedGunneryControlSettings {
                 uiPositionX = getInt(Values.SETTINGS_UI_X)
                 uiPositionY = getInt(Values.SETTINGS_UI_Y)
                 uiForceFullInfo = getBoolean(Values.SETTINGS_FORCE_FULL_INFO) == true
+                infoHotkey = getString(Values.SETTINGS_INFO_HOTKEY_KEY)[0]
             }
 
         } catch (e: JSONException) {

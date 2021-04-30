@@ -21,12 +21,14 @@
 
   #                                 #### UI SETTINGS ####
   # Number of frames messages will be displayed before fading. -1 for infinite
-  , "messageDisplayDuration" : -1 # <---- EDIT HERE ----
+  , "messageDisplayDuration" : 150 # <---- EDIT HERE ----
   # X/Y Position in Pixels (from bottom left) where messages will be displayed (refpoint: top left corner of message)
   , "messagePositionX" : 900 # <---- EDIT HERE ----
   , "messagePositionY" : 150 # <---- EDIT HERE ----
-  # When on, all weapon groups will be displayed
-  , "alwaysShowFullInfo" : true # <---- EDIT HERE ----
+  # When on, all weapon groups will be displayed (same as infoHotkey) rather than just the cycled one.
+  , "alwaysShowFullInfo" : false # <---- EDIT HERE ----
+  # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings
+  , "infoHotkey" : "j" # <---- EDIT HERE ----
 
   #                                 #### CUSTOM AI CONFIGURATION  ####
   # NOTE: All the stuff here is mainly here to facilitate testing. But feel free to play around with the settings here!

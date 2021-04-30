@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.keyboardinput
 
+import com.dp.advancedgunnerycontrol.Settings
 import com.dp.advancedgunnerycontrol.enums.ControlEventType
 import com.fs.starfarer.api.input.InputEventAPI
 
@@ -13,7 +14,7 @@ class KeyStatusManager {
     private fun parseInputEvent(event: InputEventAPI): Boolean {
         if (event.isConsumed || !event.isKeyDownEvent) return false
 
-        if(event.eventChar == 'j'){
+        if(event.eventChar == Settings.infoHotkey){
             mkeyStatus.mcontrolEvent = ControlEventType.INFO
             return true
         }
