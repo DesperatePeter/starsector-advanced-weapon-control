@@ -13,8 +13,14 @@ class Values {
         const val SETTINGS_USE_PERFECT_TARGET_LEADING_KEY = "customAIAlwaysUsesBestTargetLeading"
         const val SETTINGS_AI_FRIENDLY_FIRE_CAUTION_KEY = "customAIFriendlyFireCaution"
         const val SETTINGS_AI_FRIENDLY_FIRE_COMPLEXITY_KEY = "customAIFriendlyFireAlgorithmComplexity"
+        const val SETTINGS_UI_DISPLAY_FRAMES = "messageDisplayDuration"
+        const val SETTINGS_UI_X = "messagePositionX"
+        const val SETTINGS_UI_Y = "messagePositionY"
+        const val SETTINGS_FORCE_FULL_INFO = "alwaysShowFullInfo"
+
         const val WEAPON_BLACKLIST_KEY = "weaponBlacklist"
         const val THIS_MOD_NAME = "AdvancedGunneryControl"
+
         val DEFAULT_CYCLE_ORDER = listOf("PD", "Fighters", "Missiles", "NoFighters")
         const val DEFAULT_ENABLE_CUSTOM_AI = true
         const val DEFAULT_AI_RECURSION_LEVEL = 1
@@ -23,7 +29,12 @@ class Values {
         const val DEFAULT_AI_PERFECT_TARGET_LEADING = false
         const val DEFAULT_AI_FRIENDLY_FIRE_CAUTION = 1.0f
         const val DEFAULT_AI_FRIENDLY_FIRE_COMPLEXITY = 1
+        const val DEFAULT_UI_DISPLAY_FRAMES = 150
+        const val DEFAULT_UI_X = 350
+        const val DEFAULT_UI_Y = 100
+        const val DEFAULT_FORCE_FULL_INFO = false
         const val WEAPON_AI_MANAGER_KEY = "WeaponAIManagerAGC"
+
         val FIRE_MODE_TRANSLATIONS = mapOf(
             "Default" to FireMode.DEFAULT,
             "PD" to FireMode.PD,

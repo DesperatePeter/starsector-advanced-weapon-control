@@ -7,7 +7,10 @@ For example, in PD-Only mode, weapons will ONLY fire at missiles and fighters, n
 This is especially useful for e.g. Bust PD Lasers, to not waste charges to deal soft-flux to enemy shields.
 Check out the list of available modes below!
 
-Note: If you don't have a markdown renderer handy, you can read the online version at <https://github.com/DesperatePeter/starsector-advanced-weapon-control/blob/master/README.md>
+Note: If you don't have a markdown renderer handy, you can read the online version at 
+<https://github.com/DesperatePeter/starsector-advanced-weapon-control/blob/master/README.md>
+
+Also visit the forums post: <https://fractalsoftworks.com/forum/index.php?topic=21280.0>
 
 ## TL;DR Instructions##
 
@@ -37,6 +40,20 @@ Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
 If you bind the numpad numbers as secondary weapon group keys, this mod won't work at all.
 If this becomes an issue for you, please let me know, and I will try to implement a solution.
+
+### Setting fire modes for allied ships (experimental) ###
+
+Note: You will have to unbind the NUMPAD2, NUMPAD4 and NUMPAD6 keys under the section Fleet Command in the 
+Starsector Settings Menu to use this feature properly.
+
+While in combat, target an allied ship (hover over it with your mouse cursor and press the R-Key).
+Open the Command UI (TAB-Key) and press the J-Key. This will display information about the target's weapon groups.
+The first time you do this, it will also unlock the option to modify that ship's fire modes.
+
+While you are in the Command UI and have that ship targeted, you can modify that ship's weapon groups in the same way you
+can normally modify your own.
+
+I opted to limit this feature to the Command UI only, as I want to prevent this from happening accidentally.
 
 ## Fire Modes ##
 
@@ -170,6 +187,8 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.2.0: Added IgnoreFighters mode, added custom AI, added settings
 - 0.2.1: Significant improvements to custom AI, including settings for custom AI
 - 0.3.0: further improvements to custom AI (friendly fire), added weapon blacklist
+- 0.3.1: minor polish and bugfixes
+- 0.4.0: Experimental support for setting allied ship's fire modes, UI Settings
 
 ## Acknowledgements ##
 
@@ -192,4 +211,5 @@ of this mod. If you came here from the Starsecor mod forum, you know why I'm ask
 As you might know, writing the code is the easy part. Making sure that it works properly is where the challenge lies.
 I'm grateful for any help with testing this mod. If you're willing to test unstable versions, while I'm working on the mode,
 I usually push to the current feature-branch somewhat regularly. So feel free to check out/download the latest commit 
-(just copy & paste the entire repository into your mods folder) and give me life feedback (you can DM me on Discord @Jannes#9184)
+(just copy & paste the entire repository into a folder called AdvancedGunneryControl in your mods folder)
+and give me life feedback (you can DM me on Discord @Jannes#9184)

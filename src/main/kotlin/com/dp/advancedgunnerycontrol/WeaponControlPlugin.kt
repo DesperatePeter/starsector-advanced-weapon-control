@@ -17,8 +17,6 @@ import java.awt.Color
 
 
 class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
-    private val textDisplayTimeInFrames = 150
-
     private lateinit var engine: CombatEngineAPI
     private lateinit var currentWeaponAIManager: WeaponAIManager
     private var font: LazyFont? = null
@@ -30,6 +28,17 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var textFrameTimer: Int = 0
     private var isInitialized = false
     private var shipID = ""
+
+    companion object{
+        fun determineSelectedShip(engine: CombatEngineAPI) : ShipAPI? {
+
+            return if (engine.combatUI.isShowingCommandUI && engine.playerShip?.shipTarget?.owner == 0) {
+                (engine.playerShip?.shipTarget) ?: engine.playerShip
+            } else {
+                engine.playerShip
+            }
+        }
+    }
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         super.advance(amount, events)
@@ -54,7 +63,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             shipID = ship.fleetMemberId
             currentWeaponAIManager.reset()
             currentShip?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, currentWeaponAIManager)
-            currentWeaponAIManager = getWeaponAIManagerFromShip(ship) ?: WeaponAIManager(engine)
+            currentWeaponAIManager = getWeaponAIManagerFromShip(ship) ?: WeaponAIManager(engine, ship)
             currentWeaponAIManager.reset()
             currentShip = ship
             currentShip?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, currentWeaponAIManager)
@@ -69,28 +78,24 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun cycleWeaponGroupMode() {
-        val aiManager = getWeaponAIManagerFromShip(determineSelectedShip()) ?: return
+        val aiManager = getWeaponAIManagerFromShip(determineSelectedShip(engine)) ?: return
         val index = keyManager.mkeyStatus.mpressedWeaponGroup - 1
         aiManager.cycleWeaponGroupMode(index)
-        printMessage(aiManager.getFireModeDescription(index))
+        if(Settings.uiForceFullInfo){
+            printShipInfo()
+        }else{
+            printMessage(aiManager.getFireModeDescription(index))
+        }
+
     }
 
     private fun initializeWeaponAiManagerForShip(ship: ShipAPI?){
         if (ship?.customData?.containsKey(Values.WEAPON_AI_MANAGER_KEY) == true) return
-        ship?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, WeaponAIManager(engine))
-    }
-
-    private fun determineSelectedShip() : ShipAPI? {
-
-        return if (engine.combatUI.isShowingCommandUI && engine.playerShip?.shipTarget?.owner == 0) {
-            (engine.playerShip?.shipTarget) ?: engine.playerShip
-        } else {
-            engine.playerShip
-        }
+        ship?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, WeaponAIManager(engine, ship))
     }
 
     private fun printShipInfo() {
-        determineSelectedShip()?.let {
+        determineSelectedShip(engine)?.let {
             initializeWeaponAiManagerForShip(it)
             val wpAiManager = getWeaponAIManagerFromShip(it)
             val shipInfo = it.variant.fullDesignationWithHullNameForShip
@@ -108,7 +113,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun printMessage(message: String) {
         drawable = font?.createText(message, color = Color.GREEN)
-        textFrameTimer = textDisplayTimeInFrames
+        textFrameTimer = Settings.uiDisplayFrames
     }
 
     private fun combineWeaponGroup() {
@@ -128,7 +133,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             }
 
             this.engine = engine
-            currentWeaponAIManager = WeaponAIManager(engine)
+            currentWeaponAIManager = WeaponAIManager(engine, null)
             // TODO: weapon AI manager only on ships
             isInitialized = true
         }
@@ -137,10 +142,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     override fun renderInUICoords(viewport: ViewportAPI?) {
         super.renderInUICoords(viewport)
         drawable?.apply {
-            draw(600f, 600f)
+            draw(Settings.uiPositionX.toFloat(), Settings.uiPositionY.toFloat())
             textFrameTimer--
         }
-        if (textFrameTimer <= 0) {
+        if ((textFrameTimer <= 0) && (Settings.uiDisplayFrames >= 0)) {
             drawable = null
         }
     }

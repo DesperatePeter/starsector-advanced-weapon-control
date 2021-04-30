@@ -19,9 +19,18 @@
   # Allowed values: true/false
   ,"enableCustomAI" : true # <---- EDIT HERE ----
 
+  #                                 #### UI SETTINGS ####
+  # Number of frames messages will be displayed before fading. -1 for infinite
+  , "messageDisplayDuration" : -1 # <---- EDIT HERE ----
+  # X/Y Position in Pixels (from bottom left) where messages will be displayed (refpoint: top left corner of message)
+  , "messagePositionX" : 900 # <---- EDIT HERE ----
+  , "messagePositionY" : 150 # <---- EDIT HERE ----
+  # When on, all weapon groups will be displayed
+  , "alwaysShowFullInfo" : true # <---- EDIT HERE ----
 
   #                                 #### CUSTOM AI CONFIGURATION  ####
   # NOTE: All the stuff here is mainly here to facilitate testing. But feel free to play around with the settings here!
+
   # Define the number of calculation steps the AI should perform per time frame to compute firing solutions.
   # higher values -> slightly better AI but worse performance (0 means just aim at current target position).
   # performance cost increases linearly, firing solution accuracy approx. logarithmically (recommended: 1-2)

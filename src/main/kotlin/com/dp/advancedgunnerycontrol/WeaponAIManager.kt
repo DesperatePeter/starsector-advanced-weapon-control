@@ -2,12 +2,9 @@ package com.dp.advancedgunnerycontrol
 
 import com.dp.advancedgunnerycontrol.enums.FireMode
 import com.dp.advancedgunnerycontrol.weaponais.*
-import com.fs.starfarer.api.combat.AutofireAIPlugin
-import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.WeaponAPI
-import com.fs.starfarer.api.combat.WeaponGroupAPI
+import com.fs.starfarer.api.combat.*
 
-class WeaponAIManager(private val engine: CombatEngineAPI) {
+class WeaponAIManager(private val engine: CombatEngineAPI, private var ship : ShipAPI?) {
     var weaponGroupModes = HashMap<Int, WeaponModeSelector>()
     var weaponAIs = HashMap<WeaponAPI, AdjustableAIPlugin>()
 
@@ -24,15 +21,20 @@ class WeaponAIManager(private val engine: CombatEngineAPI) {
      * @return true if successful, false otherwise (e.g. index out of bounds)
      */
     fun cycleWeaponGroupMode(index: Int): Boolean {
-        val ship = engine.playerShip ?: return false
-        if (ship.weaponGroupsCopy.size <= index) return false
-        val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
-        if(!weaponGroupModes.containsKey(index)){weaponGroupModes[index] = WeaponModeSelector()}
-        weaponGroupModes[index]?.cycleMode() ?: return false
-        weaponGroupModes[index]?.let {
-            it.fractionOfWeaponsInMode  = adjustWeaponAIs(weaponGroup, it.currentMode)
+        if(null == ship){
+            ship = WeaponControlPlugin.determineSelectedShip(engine)
         }
-        return true
+        ship?.let { ship ->
+            if (ship.weaponGroupsCopy.size <= index) return false
+            val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
+            if(!weaponGroupModes.containsKey(index)){weaponGroupModes[index] = WeaponModeSelector()}
+            weaponGroupModes[index]?.cycleMode() ?: return false
+            weaponGroupModes[index]?.let {
+                it.fractionOfWeaponsInMode  = adjustWeaponAIs(weaponGroup, it.currentMode)
+            }
+            return true
+        }
+        return false
     }
 
     private fun adjustWeaponAIs(weaponGroup: WeaponGroupAPI, fireMode: FireMode) : Fraction {
