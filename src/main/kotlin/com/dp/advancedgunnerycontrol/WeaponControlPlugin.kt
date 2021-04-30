@@ -81,7 +81,8 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun determineSelectedShip() : ShipAPI? {
-        return if (engine.combatUI.isShowingCommandUI && engine.playerShip?.shipTarget?.isAlly == true) {
+
+        return if (engine.combatUI.isShowingCommandUI && engine.playerShip?.shipTarget?.owner == 0) {
             (engine.playerShip?.shipTarget) ?: engine.playerShip
         } else {
             engine.playerShip
