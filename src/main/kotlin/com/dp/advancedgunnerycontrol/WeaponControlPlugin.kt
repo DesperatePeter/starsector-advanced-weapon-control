@@ -18,7 +18,7 @@ import java.awt.Color
 
 class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private lateinit var engine: CombatEngineAPI
-    private lateinit var currentWeaponAIManager: WeaponAIManager
+    // private lateinit var currentWeaponAIManager: WeaponAIManager
     private var font: LazyFont? = null
 
     private var drawable: LazyFont.DrawableString? = null
@@ -57,17 +57,17 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun detectAndProcessShipChange() {
-        engine.playerShip?.let { ship ->
-            if (shipID == ship.fleetMemberId) return
-
-            shipID = ship.fleetMemberId
-            currentWeaponAIManager.reset()
-            currentShip?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, currentWeaponAIManager)
-            currentWeaponAIManager = getWeaponAIManagerFromShip(ship) ?: WeaponAIManager(engine, ship)
-            currentWeaponAIManager.reset()
-            currentShip = ship
-            currentShip?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, currentWeaponAIManager)
-        }
+//        engine.playerShip?.let { ship ->
+//            if (shipID == ship.fleetMemberId) return
+//
+//            shipID = ship.fleetMemberId
+//            currentWeaponAIManager.reset()
+//            currentShip?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, currentWeaponAIManager)
+//            currentWeaponAIManager = getWeaponAIManagerFromShip(ship) ?: WeaponAIManager(engine, ship)
+//            currentWeaponAIManager.reset()
+//            currentShip = ship
+//            currentShip?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, currentWeaponAIManager)
+//        }
     }
 
     private fun getWeaponAIManagerFromShip(ship: ShipAPI?): WeaponAIManager? {
@@ -91,16 +91,20 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun initializeWeaponAiManagerForShip(ship: ShipAPI?){
         if (ship?.customData?.containsKey(Values.WEAPON_AI_MANAGER_KEY) == true) return
-        ship?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, WeaponAIManager(engine, ship))
+        val aiManager = WeaponAIManager(engine, ship)
+        Settings.shipModeStorage.modesByShip[ship?.variant?.fullDesignationWithHullNameForShip]?.let {
+            aiManager.refresh(it)
+        }
+        ship?.setCustomData(Values.WEAPON_AI_MANAGER_KEY, aiManager)
     }
 
     private fun printShipInfo() {
-        determineSelectedShip(engine)?.let {
-            initializeWeaponAiManagerForShip(it)
-            val wpAiManager = getWeaponAIManagerFromShip(it)
-            val shipInfo = it.variant.fullDesignationWithHullNameForShip
+        determineSelectedShip(engine)?.let { ship ->
+            initializeWeaponAiManagerForShip(ship)
+            val wpAiManager = getWeaponAIManagerFromShip(ship)
+            val shipInfo = ship.variant.fullDesignationWithHullNameForShip
             var i = 1 // current weapon group display number
-            val weaponGroupInfo = it.weaponGroupsCopy.map { weaponGroup ->
+            val weaponGroupInfo = ship.weaponGroupsCopy.map { weaponGroup ->
                 "Group ${i}: " + weaponGroup.weaponsCopy.map { weapon -> weapon.displayName }.toSet() +
                         (wpAiManager?.getFireModeSuffix(i++ - 1) ?: " --") +
                         "\n"
@@ -108,6 +112,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             val weaponGroupDisplayText =
                 weaponGroupInfo.toString().trimMargin("[").trimMargin("]").trimMargin(",").trimIndent()
             printMessage("$shipInfo:\n $weaponGroupDisplayText")
+            wpAiManager?.let {
+                Settings.shipModeStorage.modesByShip[ship.variant.fullDesignationWithHullNameForShip] = it.weaponGroupModes
+            }
         }
     }
 
@@ -133,7 +140,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             }
 
             this.engine = engine
-            currentWeaponAIManager = WeaponAIManager(engine, null)
+            // currentWeaponAIManager = WeaponAIManager(engine, null)
             // TODO: weapon AI manager only on ships
             isInitialized = true
         }

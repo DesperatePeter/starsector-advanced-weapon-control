@@ -6,7 +6,8 @@ import com.fs.starfarer.api.combat.*
 
 class WeaponAIManager(private val engine: CombatEngineAPI, private var ship : ShipAPI?) {
     var weaponGroupModes = HashMap<Int, WeaponModeSelector>()
-    var weaponAIs = HashMap<WeaponAPI, AdjustableAIPlugin>()
+        private set
+    private var weaponAIs = HashMap<WeaponAPI, AdjustableAIPlugin>()
 
     fun reset(){
         // Todo: truly revert to old plugin?
@@ -17,21 +18,35 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship : Sh
         weaponAIs = HashMap()
     }
 
+    fun refresh(modesByGroup: HashMap<Int, WeaponModeSelector>){
+        reset()
+        weaponGroupModes = modesByGroup
+        weaponGroupModes.forEach { (index, modeSelector) ->
+            applyWeaponGroupMode(index, modeSelector)
+        }
+    }
+
     /**
      * @return true if successful, false otherwise (e.g. index out of bounds)
+     * @param index: weapon group index (0..6)
      */
     fun cycleWeaponGroupMode(index: Int): Boolean {
+        if(!weaponGroupModes.containsKey(index)){weaponGroupModes[index] = WeaponModeSelector()}
+        weaponGroupModes[index]?.cycleMode() ?: return false
+        weaponGroupModes[index]?.let {
+            return applyWeaponGroupMode(index, it)
+        }
+        return false
+    }
+
+    private fun applyWeaponGroupMode(index: Int, modeSelector: WeaponModeSelector): Boolean{
         if(null == ship){
             ship = WeaponControlPlugin.determineSelectedShip(engine)
         }
         ship?.let { ship ->
             if (ship.weaponGroupsCopy.size <= index) return false
             val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
-            if(!weaponGroupModes.containsKey(index)){weaponGroupModes[index] = WeaponModeSelector()}
-            weaponGroupModes[index]?.cycleMode() ?: return false
-            weaponGroupModes[index]?.let {
-                it.fractionOfWeaponsInMode  = adjustWeaponAIs(weaponGroup, it.currentMode)
-            }
+            modeSelector.fractionOfWeaponsInMode  = adjustWeaponAIs(weaponGroup, modeSelector.currentMode)
             return true
         }
         return false

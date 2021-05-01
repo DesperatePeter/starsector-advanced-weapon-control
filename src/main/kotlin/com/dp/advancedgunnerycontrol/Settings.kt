@@ -46,6 +46,7 @@ class AdvancedGunneryControlSettings {
             private set
         var isFallbackToDefault = false
             private set
+        val shipModeStorage = FireModeStorage()
 
         fun buildCycleOrder(additionalItems: List<String>): List<FireMode> {
             return (listOf(FireMode.DEFAULT) + additionalItems.mapNotNull {
