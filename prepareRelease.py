@@ -8,6 +8,7 @@ import os
 import sys
 import subprocess
 
+
 def printIfOk(ok):
     if ok:
         print("OK!")
@@ -15,16 +16,18 @@ def printIfOk(ok):
         print("Issues found!")
     print("")
 
+
 def getAllSrcFiles(baseFolder):
     fileList = []
-    for root, _, files in os.walk( baseFolder):
+    for root, _, files in os.walk(baseFolder):
         for file in files:
             # print(root + "/" + file)
             fileList.append(root + "/" + file)
     return fileList
 
+
 def checkVersionTag(versionTag):
-    version = re.search("\d+\.\d+\.\d+", versionTag)[0] #.replace(".")
+    version = re.search("\d+\.\d+\.\d+", versionTag)[0]  # .replace(".")
     print("Expecting version tag " + version + " in build.gradle.kts")
     with open("build.gradle.kts") as f:
         txt = f.read().replace("\"", "")
@@ -36,6 +39,7 @@ def checkVersionTag(versionTag):
         print("Version found!")
         return True
 
+
 def findTodos(folder):
     isOk = True
     srcFiles = getAllSrcFiles(folder)
@@ -44,12 +48,13 @@ def findTodos(folder):
             txt = f.readlines()
             i = 0
             for line in txt:
-                i = i+1
+                i = i + 1
                 todos = re.search("TODO.*", line)
                 if todos:
                     isOk = False
-                    print ("TODO in " + file + ":" + str(i) + ": " + todos[0])
+                    print("TODO in " + file + ":" + str(i) + ": " + todos[0])
     return isOk
+
 
 if "__main__" == __name__:
     if len(sys.argv) < 2:
@@ -70,9 +75,9 @@ if "__main__" == __name__:
     versionOk = checkVersionTag(versionTag)
     printIfOk(versionOk)
 
-    if(not (todosOk and versionOk)):
+    if not (todosOk and versionOk):
         print("WARNING! Found issues? Proceed anyways?")
-        if(not 'y' == input("Type 'y' to proceed, anything else to abort\n")):
+        if not 'y' == input("Type 'y' to proceed, anything else to abort\n"):
             print("Aborting...")
             exit()
         print("Proceeding anyways")

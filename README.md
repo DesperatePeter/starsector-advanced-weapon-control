@@ -16,7 +16,7 @@ Also visit the forums post: <https://fractalsoftworks.com/forum/index.php?topic=
 
 - Unzip the archive in your Starsector/mods folder
 - Enable the NUMPAD-Numlock on your keyboard
-- Play the game and press NUMPAD-Keys during combat
+- Play the game and press NUMPAD-Keys during combat to cycle fire modes
 - (optional) edit Starsector/mods/AdvancedGunneryControl/Settings.editme and remove modes you don't like etc.
 
 ## Installation ##
@@ -33,7 +33,7 @@ Whenever you cycle modes, you will see a message like this:
 ```Group 2: [_X__] Missiles (custom AI) 2/3```
 
 In order, this let's you know that a) group 2 is in b) the second out of 4 modes, 
-c) the current mode is Missiles, c) it's using custom AI when vanilla AI wants to target something else
+c) the current mode is Missiles, c) it's using custom AI when base AI wants to target something else
 and d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default).
 
 Press the J-Key (re-bindable in Settings.editme, saveLoadInfoHotkey) to see complete info about current firing modes.
@@ -52,14 +52,11 @@ Starsector Settings Menu to use this feature properly.
 
 While in combat, target an allied ship (hover over it with your mouse cursor and press the R-Key).
 Open the Command UI (TAB-Key) and press the J-Key. This will display information about the target's weapon groups.
-The first time you do this, it will also unlock the option to modify that ship's fire modes.
 
 While you are in the Command UI and have that ship targeted, you can modify that ship's weapon groups in the same way you
 can normally modify your own.
 
 I opted to limit this feature to the Command UI only, as I want to prevent this from happening accidentally.
-
-Note: Switching ships will reset the firing modes.
 
 ## Fire Modes ##
 
@@ -71,11 +68,11 @@ Missiles | Weapons will ONLY fire at missiles/mines | Will only work for PD-weap
 Fighters | Weapons will ONLY fire at fighters | - | Yes | Devastator Cannon
 NoFighters | Weapon will NOT fire at fighters | Will otherwise work normally | No | Hellbore Cannon
 
-Note: If a weapon is not eligible for a certain mode, it will use its vanilla AI as a fallback mode
+Note: If a weapon is not eligible for a certain mode, it will use its base AI as a fallback mode
 
 ## Settings ##
 
-The settings allow you to configure many aspects of the mod, most prominently: Whether to use custom AI or vanilla AI only
+The settings allow you to configure many aspects of the mod, most prominently: Whether to use custom AI or base AI only
 and which fire modes you want to have access to and in which order you want to cycle through them.
 There are more settings available, but you can ignore those unless you are feeling adventurous.
 
@@ -100,9 +97,9 @@ If you find the number of options overwhelming, try the following setting:
 
 ### Enable Custom AI ###
 
-Whether you enable the custom AI or not, all weapon fire modes will first attempt to use the vanilla AI 
+Whether you enable the custom AI or not, all weapon fire modes will first attempt to use the base AI 
 (i.e. the AI that the weapon has without this mod) to select a target and firing solution, unless you use the forceCustomAI setting.
-Only when the target selected by the vanilla AI does not match the type specified by the weapon mode, will there be a difference.
+Only when the target selected by the base AI does not match the type specified by the weapon mode, will there be a difference.
 
 If the custom AI is **disabled**, the weapon simply won't fire at all.
 
@@ -132,7 +129,7 @@ custom AI as a fallback and "(override AI)" when using only the custom AI.
 In Starsector, each Weapon has a so-called AutofireAIPlugin. When that weapon is on autofire, this plugin will make the
 decision where the weapon should aim and whether it should fire or not.
 
-When you first toggle the autofire mode of a weapon, this mod will extract the original AutofireAIPlugin (AKA the base/vanilla AI)
+When you first toggle the autofire mode of a weapon, this mod will extract the original AutofireAIPlugin (AKA the base AI)
 from the weapon and store it in a new Plugin called the AdjustableAIPlugin. Additionally, it will create a new Plugin for
 every available autofire mode and also store it in the AdjustableAIPlugin. Then, whenever you toggle the autofire mode,
 the AdjustableAIPlugin will check whether the plugin corresponding to the selected mode is compatible with the weapon.
@@ -196,8 +193,11 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.3.1: minor polish and bugfixes
 - 0.4.0: Experimental support for setting allied ship's fire modes, UI Settings
 - 0.4.1: bugfix (allied ships were still referencing the player ship weapons), setting for info hotkey
-- 0.5.0: fire modes are now exclusively stored on a per-ship-basis, meaning the data can be saved/loaded between combats
+- 0.5.0-ALPHA: fire modes are now exclusively stored on a per-ship-basis, meaning the data can be saved/loaded between combats
 - 0.5.1: fire mode settings are now saved between saving/reloading, several bugfixes.
+- 0.5.2: fixed bug where customAIFriendlyFireCaution had a much higher effect than intended
+         changed it so that pressing J-Key is no longer required to initialize other ships.
+
 
 ## Acknowledgements ##
 

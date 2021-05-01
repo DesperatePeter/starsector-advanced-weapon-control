@@ -57,7 +57,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun cycleWeaponGroupMode() {
-        val aiManager = initOrGetAiManager(determineSelectedShip(engine)) ?: return
+        val aiManager = initOrGetAIManager(determineSelectedShip(engine)) ?: return
         val index = keyManager.mkeyStatus.mpressedWeaponGroup - 1
         aiManager.cycleWeaponGroupMode(index)
         if(Settings.uiForceFullInfo){
@@ -67,7 +67,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
-    private fun initOrGetAiManager(ship: ShipAPI?) : WeaponAIManager? {
+    private fun initOrGetAIManager(ship: ShipAPI?) : WeaponAIManager? {
         ship?.let { ship_ ->
             if (ship_.customData?.containsKey(Values.WEAPON_AI_MANAGER_KEY) == true){
                 ship_.customData?.get(Values.WEAPON_AI_MANAGER_KEY)?.let { unsafeManager ->
@@ -78,16 +78,15 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             Settings.shipModeStorage.modesByShip[ship_.variant?.fullDesignationWithHullNameForShip]?.let {
                 aiManager.refresh(it)
             }
-
             ship_.setCustomData(Values.WEAPON_AI_MANAGER_KEY, aiManager)
+            return aiManager
         }
         return null
     }
 
     private fun printShipInfo() {
         determineSelectedShip(engine)?.let { ship ->
-            initOrGetAiManager(ship)
-            val wpAiManager = initOrGetAiManager(ship)
+            val wpAiManager = initOrGetAIManager(ship)
             val shipInfo = ship.variant.fullDesignationWithHullNameForShip
             var i = 1 // current weapon group display number
             val weaponGroupInfo = ship.weaponGroupsCopy.map { weaponGroup ->
@@ -103,7 +102,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun saveCurrentShipState(){
         val ship = determineSelectedShip(engine) ?: return
-        initOrGetAiManager(ship)?.let {
+        initOrGetAIManager(ship)?.let {
             Settings.shipModeStorage.modesByShip[ship.variant.fullDesignationWithHullNameForShip] = it.weaponGroupModes
         }
     }

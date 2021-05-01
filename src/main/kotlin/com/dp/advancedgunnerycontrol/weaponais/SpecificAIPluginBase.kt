@@ -196,9 +196,11 @@ abstract class SpecificAIPluginBase(
         return friendliesInDangerZone(aimPoint, friendlies).isNotEmpty()
     }
 
-    protected fun friendliesInDangerZone(aimPoint : Vector2f, friendlies: List<Pair<CombatEntityAPI, Vector2f>>) : List<Pair<CombatEntityAPI, Vector2f>>{
+    protected fun friendliesInDangerZone(aimPoint : Vector2f,
+                                         friendlies: List<Pair<CombatEntityAPI, Vector2f>>) : List<Pair<CombatEntityAPI, Vector2f>>{
         return friendlies.filter {
-            abs(angularDistanceFromWeapon(aimPoint) - angularDistanceFromWeapon(it.second)) <= it.first.collisionRadius * Settings.customAIFriendlyFireCaution
+            abs(angularDistanceFromWeapon(aimPoint) - angularDistanceFromWeapon(it.second)) * linearDistanceFromWeapon(it.second) <=
+                    it.first.collisionRadius * Settings.customAIFriendlyFireCaution
         }
     }
 
