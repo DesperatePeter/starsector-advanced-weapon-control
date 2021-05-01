@@ -73,6 +73,7 @@ if "__main__" == __name__:
     if(not (todosOk and versionOk)):
         print("WARNING! Found issues? Proceed anyways?")
         if(not 'y' == input("Type 'y' to proceed, anything else to abort\n")):
+            print("Aborting...")
             exit()
         print("Proceeding anyways")
 

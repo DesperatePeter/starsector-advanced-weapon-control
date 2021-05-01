@@ -41,6 +41,8 @@ class AdvancedGunneryControlSettings {
             private set
         var infoHotkey = Values.DEFAULT_INFO_HOTKEY
             private set
+        var enablePersistentModes = Values.DEFAULT_ENABLE_PERSISTENT_STORAGE
+            private set
 
         var weaponBlacklist = listOf<String>()
             private set
@@ -117,7 +119,8 @@ class AdvancedGunneryControlSettings {
                 uiPositionX = getInt(Values.SETTINGS_UI_X)
                 uiPositionY = getInt(Values.SETTINGS_UI_Y)
                 uiForceFullInfo = getBoolean(Values.SETTINGS_FORCE_FULL_INFO) == true
-                infoHotkey = getString(Values.SETTINGS_INFO_HOTKEY_KEY)[0]
+                infoHotkey = getString(Values.SETTINGS_INFO_HOTKEY_KEY)[0].toLowerCase()
+                enablePersistentModes = getBoolean(Values.SETTINGS_PERSISTENT_STORAGE) == true
             }
 
         } catch (e: JSONException) {

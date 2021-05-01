@@ -11,7 +11,7 @@ object Variables {
     val author = "DesperatePeter"
     const val description = "A Starsector mod that adds more autofire modes for weapon groups."
     val gameVersion = "0.95a-RC15"
-    val jars = arrayOf("jars/$jarFileName")
+    val jars = arrayOf("jars/$jarFileName", "libs/Questgiver-1.0.0.jar")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
     val isUtilityMod = true
     val masterVersionFile = "https://raw.githubusercontent.com/DesperatePeter/starsector-advanced-weapon-control/master/$modId.version"

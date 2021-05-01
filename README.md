@@ -38,7 +38,7 @@ and d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon wi
 
 Press the J-Key (re-bindable in Settings.editme, saveLoadInfoHotkey) to see complete info about current firing modes.
 Pressing this key will also store the current firing modes for the ship. When you first press the J-Key or try to cycle
-weapon modes during the next 
+weapon modes during the next combat, it will load the stored fire modes for you. (you can opt-out in the settings)
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
@@ -196,6 +196,7 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.3.1: minor polish and bugfixes
 - 0.4.0: Experimental support for setting allied ship's fire modes, UI Settings
 - 0.4.1: bugfix (allied ships were still referencing the player ship weapons), setting for info hotkey
+- 0.5.0: fire modes are now exclusively stored on a per-ship-basis, meaning the data can saved/loaded between combats
 
 ## Acknowledgements ##
 

@@ -5,7 +5,7 @@ import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.*
 
 class WeaponAIManager(private val engine: CombatEngineAPI, private var ship : ShipAPI?) {
-    var weaponGroupModes = HashMap<Int, WeaponModeSelector>()
+    var weaponGroupModes = emptyMap<Int, WeaponModeSelector>().toMutableMap()
         private set
     private var weaponAIs = HashMap<WeaponAPI, AdjustableAIPlugin>()
 
@@ -14,11 +14,11 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship : Sh
         weaponAIs.values.forEach{
             it.switchFireMode(FireMode.DEFAULT)
         }
-        weaponGroupModes = HashMap()
+        weaponGroupModes = emptyMap<Int, WeaponModeSelector>().toMutableMap()
         weaponAIs = HashMap()
     }
 
-    fun refresh(modesByGroup: HashMap<Int, WeaponModeSelector>){
+    fun refresh(modesByGroup: MutableMap<Int, WeaponModeSelector>){
         reset()
         weaponGroupModes = modesByGroup
         weaponGroupModes.forEach { (index, modeSelector) ->

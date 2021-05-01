@@ -48,7 +48,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         when (keyManager.mkeyStatus.mcontrolEvent) {
             ControlEventType.COMBINE -> combineWeaponGroup()
             ControlEventType.CYCLE -> cycleWeaponGroupMode()
-            ControlEventType.INFO -> {printShipInfo(); saveCurrentShipState()}
+            ControlEventType.INFO -> {
+                printShipInfo()
+                if(Settings.enablePersistentModes) saveCurrentShipState()
+            }
             else -> printMessage("Unrecognized Command (please send bug report)")
         }
     }
@@ -127,7 +130,6 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             }
 
             this.engine = engine
-            // TODO: weapon AI manager only on ships
             isInitialized = true
         }
     }
