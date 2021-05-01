@@ -196,7 +196,8 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.3.1: minor polish and bugfixes
 - 0.4.0: Experimental support for setting allied ship's fire modes, UI Settings
 - 0.4.1: bugfix (allied ships were still referencing the player ship weapons), setting for info hotkey
-- 0.5.0: fire modes are now exclusively stored on a per-ship-basis, meaning the data can saved/loaded between combats
+- 0.5.0: fire modes are now exclusively stored on a per-ship-basis, meaning the data can be saved/loaded between combats
+- 0.5.1: fire mode settings are now saved between saving/reloading, several bugfixes.
 
 ## Acknowledgements ##
 
