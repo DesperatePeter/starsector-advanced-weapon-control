@@ -1,4 +1,8 @@
 #! /usr/bin/env python3
+# LICENSE NOTE: I hereby release this script into public domain
+# Should that not be possible under national law, I hereby grant everyone the right to use and modify this script
+# to their heart's content. I don't provide any form of guarantee/warranty etc.
+
 import re
 import os
 import sys
