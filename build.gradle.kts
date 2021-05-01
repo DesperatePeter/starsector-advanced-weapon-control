@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.5.2"
+    val modVersion = "0.5.3"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -11,7 +11,7 @@ object Variables {
     val author = "DesperatePeter"
     const val description = "A Starsector mod that adds more autofire modes for weapon groups."
     val gameVersion = "0.95a-RC15"
-    val jars = arrayOf("jars/$jarFileName", "libs/Questgiver-1.0.0.jar")
+    val jars = arrayOf("jars/$jarFileName")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
     val isUtilityMod = true
     val masterVersionFile = "https://raw.githubusercontent.com/DesperatePeter/starsector-advanced-weapon-control/master/$modId.version"
@@ -25,7 +25,7 @@ object Variables {
 //////////////////////
 
 // Note: On Linux, use "${Variables.starsectorDirectory}" as core directory
-val starsectorCoreDirectory = "${Variables.starsectorDirectory}"
+val starsectorCoreDirectory = Variables.starsectorDirectory
 val starsectorModDirectory = "${Variables.starsectorDirectory}/mods"
 val modInModsFolder = File("$starsectorModDirectory/${Variables.modFolderName}")
 

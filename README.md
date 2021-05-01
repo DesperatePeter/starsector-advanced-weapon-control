@@ -196,8 +196,10 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.5.0-ALPHA: fire modes are now exclusively stored on a per-ship-basis, meaning the data can be saved/loaded between combats
 - 0.5.1: fire mode settings are now saved between saving/reloading, several bugfixes.
 - 0.5.2: fixed bug where customAIFriendlyFireCaution had a much higher effect than intended
-         changed it so that pressing J-Key is no longer required to initialize other ships.
-
+  changed it so that pressing J-Key is no longer required to initialize other ships.
+- 0.5.3: In accordance with Wisp, removed dependency on Questgiver lib, 
+  as that might cause compatibility issues with PerseanChronicles.
+  fixed issue where refitting could cause weird behaviour (hopefully)
 
 ## Acknowledgements ##
 

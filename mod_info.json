@@ -4,10 +4,10 @@
     "name": "AdvancedGunneryControl",
     "author": "DesperatePeter",
     "utility": "true",
-    "version": { "major":"0", "minor": "5", "patch": "2" },
+    "version": { "major":"0", "minor": "5", "patch": "3" },
     "description": "A Starsector mod that adds more autofire modes for weapon groups.",
     "gameVersion": "0.95a-RC15",
-    "jars":["jars/AdvancedGunneryControl.jar", "libs/Questgiver-1.0.0.jar"],
+    "jars":["jars/AdvancedGunneryControl.jar"],
     "modPlugin":"com.dp.advancedgunnerycontrol.WeaponControlBasePlugin",
     "dependencies": [
         {

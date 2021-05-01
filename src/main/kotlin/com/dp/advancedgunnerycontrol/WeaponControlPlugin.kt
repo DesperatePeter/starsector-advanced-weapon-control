@@ -57,9 +57,14 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun cycleWeaponGroupMode() {
-        val aiManager = initOrGetAIManager(determineSelectedShip(engine)) ?: return
+        val ship = determineSelectedShip(engine)
+        val aiManager = initOrGetAIManager(ship) ?: return
         val index = keyManager.mkeyStatus.mpressedWeaponGroup - 1
         aiManager.cycleWeaponGroupMode(index)
+        if( ship?.weaponGroupsCopy?.size ?: 0 <= index){
+            printMessage("Invalid Weapon Group")
+            return
+        }
         if(Settings.uiForceFullInfo){
             printShipInfo()
         }else{
@@ -75,9 +80,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 }
             }
             val aiManager = WeaponAIManager(engine, ship_)
-            Settings.shipModeStorage.modesByShip[ship_.variant?.fullDesignationWithHullNameForShip]?.let {
-                aiManager.refresh(it)
+            ship_.fleetMemberId?.let { id ->
+                Settings.shipModeStorage.modesByShip[id]?.let {
+                    aiManager.refresh(it)
+                }
             }
+
             ship_.setCustomData(Values.WEAPON_AI_MANAGER_KEY, aiManager)
             return aiManager
         }
@@ -103,7 +111,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private fun saveCurrentShipState(){
         val ship = determineSelectedShip(engine) ?: return
         initOrGetAIManager(ship)?.let {
-            Settings.shipModeStorage.modesByShip[ship.variant.fullDesignationWithHullNameForShip] = it.weaponGroupModes
+            ship.fleetMemberId?.let { id ->
+                Settings.shipModeStorage.modesByShip[id] = it.weaponGroupModes
+            }
         }
     }
 
