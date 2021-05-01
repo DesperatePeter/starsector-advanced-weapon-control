@@ -36,7 +36,9 @@ In order, this let's you know that a) group 2 is in b) the second out of 4 modes
 c) the current mode is Missiles, c) it's using custom AI when vanilla AI wants to target something else
 and d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default).
 
-Press the J-Key (re-bindable in Settings.editme) to see complete info about current firing modes.
+Press the J-Key (re-bindable in Settings.editme, saveLoadInfoHotkey) to see complete info about current firing modes.
+Pressing this key will also store the current firing modes for the ship. When you first press the J-Key or try to cycle
+weapon modes during the next 
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.

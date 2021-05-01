@@ -17,7 +17,7 @@ class Values {
         const val SETTINGS_UI_X = "messagePositionX"
         const val SETTINGS_UI_Y = "messagePositionY"
         const val SETTINGS_FORCE_FULL_INFO = "alwaysShowFullInfo"
-        const val SETTINGS_INFO_HOTKEY_KEY = "infoHotkey"
+        const val SETTINGS_INFO_HOTKEY_KEY = "saveLoadInfoHotkey"
 
         const val WEAPON_BLACKLIST_KEY = "weaponBlacklist"
         const val THIS_MOD_NAME = "AdvancedGunneryControl"
