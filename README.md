@@ -40,6 +40,8 @@ Press the J-Key (re-bindable in Settings.editme, saveLoadInfoHotkey) to see comp
 Pressing this key will also store the current firing modes for the ship. When you first press the J-Key or try to cycle
 weapon modes during the next combat, it will load the stored fire modes for you. (you can opt-out in the settings)
 
+Press the /-Key to reset current fire mode settings. Try using this if you run into any weird issues.
+
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
 If you bind the numpad numbers as secondary weapon group keys, this mod won't work at all.
@@ -205,7 +207,7 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.5.3: In accordance with Wisp, removed dependency on Questgiver lib, 
   as that might cause compatibility issues with PerseanChronicles.
   fixed issue where refitting could cause weird behaviour (hopefully)
-- 0.5.4: fixed blacklist-bug, 
+- 0.6.0: added 3 new fire modes, added reset function, fixed blacklist-bug, fixed several AI bugs, fixed issues with persistent storage
 
 ## Acknowledgements ##
 
