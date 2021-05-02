@@ -16,6 +16,7 @@ object Values {
     const val SETTINGS_FORCE_FULL_INFO = "alwaysShowFullInfo"
     const val SETTINGS_INFO_HOTKEY_KEY = "saveLoadInfoHotkey"
     const val SETTINGS_PERSISTENT_STORAGE = "enablePersistentFireModes"
+    const val SETTINGS_RESET_HOTKEY_KEY = "resetHotkey"
 
     const val WEAPON_BLACKLIST_KEY = "weaponBlacklist"
     const val THIS_MOD_NAME = "AdvancedGunneryControl"
@@ -34,6 +35,7 @@ object Values {
     const val DEFAULT_FORCE_FULL_INFO = false
     const val DEFAULT_INFO_HOTKEY = 'j'
     const val DEFAULT_ENABLE_PERSISTENT_STORAGE = true
+    const val DEFAULT_RESET_HOTKEY = '/'
 
     const val WEAPON_AI_MANAGER_KEY = "WeaponAIManagerAGC"
 

@@ -182,6 +182,7 @@ tasks {
                    |   , "alwaysShowFullInfo" : false # <---- EDIT HERE ----
                    |   # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings
                    |   , "saveLoadInfoHotkey" : "j" # <---- EDIT HERE ----
+                   |   , "resetHotkey" : "/" # <---- EDIT HERE ----
 
 
                    |   #                                 #### CUSTOM AI CONFIGURATION  ####

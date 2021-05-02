@@ -19,6 +19,11 @@ class KeyStatusManager {
             return true
         }
 
+        if (event.eventChar == Settings.resetHotkey){
+            mkeyStatus.mcontrolEvent = ControlEventType.RESET
+            return true
+        }
+
         if (event.eventChar !in weaponGroupKeys) return false
         // Note: char.toInt gets the ascii value rather than the contained number
         mkeyStatus.mpressedWeaponGroup = event.eventChar.toString().toInt()

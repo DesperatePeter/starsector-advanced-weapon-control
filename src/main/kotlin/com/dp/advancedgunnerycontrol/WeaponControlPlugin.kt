@@ -53,6 +53,11 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 printShipInfo()
                 if (Settings.enablePersistentModes) saveCurrentShipState()
             }
+            ControlEventType.RESET -> {
+                resetAiManager()
+                if (Settings.enablePersistentModes) saveCurrentShipState()
+                printShipInfo()
+            }
             else -> printMessage("Unrecognized Command (please send bug report)")
         }
     }
@@ -71,6 +76,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         } else {
             printMessage(aiManager.getFireModeDescription(index))
         }
+    }
+
+    private fun resetAiManager(){
+        initOrGetAIManager(determineSelectedShip(engine))?.reset()
     }
 
     private fun initOrGetAIManager(ship: ShipAPI?): WeaponAIManager? {
@@ -111,9 +120,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun saveCurrentShipState() {
         val ship = determineSelectedShip(engine) ?: return
-        initOrGetAIManager(ship)?.let {
+        initOrGetAIManager(ship)?.let { aiManager ->
             ship.fleetMemberId?.let { id ->
-                Settings.shipModeStorage.modesByShip[id] = it.weaponGroupModes
+                Settings.shipModeStorage.modesByShip[id] = aiManager.weaponGroupModes
             }
         }
     }
