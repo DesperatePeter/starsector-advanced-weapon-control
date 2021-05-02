@@ -19,8 +19,9 @@ class SmallShipAI(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI) {
             .filterNotNull().filter { isSmall(it) }
     }
 
-    override fun isTargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean = ship?.let { isSmall(it) } ?: false
+    override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean = ship?.let { isSmall(it) } ?: false
 
+    override fun isBaseAIOverwritable(): Boolean = true
 
     override fun isValid(): Boolean = true
 }

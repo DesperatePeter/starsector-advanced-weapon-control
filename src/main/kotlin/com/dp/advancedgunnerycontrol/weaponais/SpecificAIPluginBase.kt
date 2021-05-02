@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
 import com.dp.advancedgunnerycontrol.Settings
-import com.dp.advancedgunnerycontrol.Values
+import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
@@ -38,7 +38,9 @@ abstract class SpecificAIPluginBase(
     /**
      * @return true if the target selected by the baseAI matches what the weapon should target
      */
-    protected abstract fun isTargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean
+    protected abstract fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean
+
+    protected abstract fun isBaseAIOverwritable(): Boolean
 
     /**
      * perform checks to see if this AI is compatible with the weapon
@@ -66,8 +68,9 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun advanceBaseAI(p0: Float): Boolean {
+        if(Settings.forceCustomAI && isBaseAIOverwritable()) return false
         baseAI.advance(p0)
-        if (isTargetValid(baseAI.targetShip, baseAI.targetMissile)) {
+        if (isBaseAITargetValid(baseAI.targetShip, baseAI.targetMissile)) {
             baseAI.targetMissile?.let { targetEntity = it } ?: baseAI.targetShip?.let { targetEntity = it }
             baseAI.target?.let { targetPoint = it }
             weaponShouldFire = baseAI.shouldFire()
@@ -86,7 +89,6 @@ abstract class SpecificAIPluginBase(
             // this is a deceptively expensive call (therefore locked behind opt-in setting)
             potentialTargets = potentialTargets.filter { !isFriendlyFire(it.second, getFriendlies()) }
         }
-
         val bestTarget = potentialTargets.minBy {
             computeTargetPriority(it.first, it.second)
         }

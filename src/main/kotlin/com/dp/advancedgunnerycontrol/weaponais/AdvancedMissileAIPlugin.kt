@@ -24,10 +24,11 @@ class AdvancedMissileAIPlugin(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(b
         return CombatUtils.getMissilesWithinRange(weapon.location, weapon.range + 200f).filterNotNull()
     }
 
-    override fun isTargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {
-        if (Settings.forceCustomAI) return false
+    override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {
         return (null != missile)
     }
+
+    override fun isBaseAIOverwritable(): Boolean = true
 
     override fun isValid(): Boolean {
         return isPD(weapon)

@@ -21,10 +21,11 @@ class AdvancedFighterAIPlugin(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(b
         return CombatUtils.getShipsWithinRange(weapon.location, weapon.range + 200f).filterNotNull()
     }
 
-    override fun isTargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {
-        if (Settings.forceCustomAI) return false
+    override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {
         return ship?.isFighter ?: false
     }
+
+    override fun isBaseAIOverwritable(): Boolean = true
 
     override fun isValid(): Boolean {
         return true

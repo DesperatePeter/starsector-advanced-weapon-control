@@ -154,9 +154,10 @@ tasks {
                    |   #                                 #### CYCLE ORDER ####
                    |   # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
                    |   # Delete modes you want to skip. Note: "Default" will always be the first mode.
-                   |   # Allowed items: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining"
+                   |   # Allowed values: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining"
                    |   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
                    |   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters" ] # <---- EDIT HERE ----
+                   |   # "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining" ]
 
 
                    |   #                                 #### CUSTOM AI ####
@@ -199,8 +200,10 @@ tasks {
                    |   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
                    |   ,"forceCustomAI" : false # <---- EDIT HERE (maybe) ----
 
-                   |   # Any positive or negative float possible, reasonable values: between 0.5 ~ 5.0 or so
-                   |   ,"customAITriggerHappiness" : 2.0 # <---- EDIT HERE (maybe) ----
+                   |   # Any positive or negative float possible, reasonable values: between 0.7 ~ 2.0 or so
+                   |   # 1.0 means "fire if shot will land within 1.0*(targetHitbox+10)"
+                   |   # (the +10 serves to compensate for very small targets such as missiles and fighters)
+                   |   ,"customAITriggerHappiness" : 1.2 # <---- EDIT HERE (maybe) ----
 
                    |   # Set this to true if you want the custom AI to perform better :P
                    |   ,"customAIAlwaysUsesBestTargetLeading" : false # <---- EDIT HERE (maybe) ----
@@ -215,7 +218,7 @@ tasks {
                    |   #     - 2 : Weapon will only select targets that don't risk friendly fire (potentially high performance cost)
                    |   ,"customAIFriendlyFireAlgorithmComplexity" : 1 # <---- EDIT HERE (maybe) ----
 
-                   |   # Essentially the same as triggerHappiness, but with the opposite effect.
+                   |   # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
                    |   # Setting this to 5.0+ means "don't you dare fire if there is even a remote chance you'll hit an ally!"
                    |   ,"customAIFriendlyFireCaution" : 1.0 # <---- EDIT HERE (maybe) ----
                    | }

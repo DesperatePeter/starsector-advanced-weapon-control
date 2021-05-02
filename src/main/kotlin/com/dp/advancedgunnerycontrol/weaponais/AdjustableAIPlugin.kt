@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
-import com.dp.advancedgunnerycontrol.Values
-import com.dp.advancedgunnerycontrol.enums.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
+import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.MissileAPI
 import com.fs.starfarer.api.combat.ShipAPI
@@ -13,7 +13,7 @@ import org.lwjgl.util.vector.Vector2f
 class AdjustableAIPlugin constructor(private val baseAI: AutofireAIPlugin) : AutofireAIPlugin {
 
     private var activeAI = baseAI
-    private var aiPlugins = Values.modeToPluginMap(baseAI)
+    private var aiPlugins = FMValues.modeToPluginMap(baseAI)
 
     fun switchFireMode(mode: FireMode): Boolean {
         activeAI = aiPlugins[mode] ?: baseAI

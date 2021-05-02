@@ -64,12 +64,12 @@ Mode | Targets | Prioritizes | Requirements | Can use Custom AI | Weapon Example
 :---: | :---   | :---        | :---         | :---:             | :---: | :---:
 Default | Same as base AI | Same as base AI | None | No | All weapons | Yes
 PD | Fighters/Missiles | Fighters/Missiles | PD Weapon | No | Flak | Yes
-Missiles | Missiles (Mines/Flares) | Missiles | PD Weapon | Yes | Burst PD | Yes 
 Fighters | Fighters | Fighters | None | Yes | Devastator Cannon | Yes
+Missiles | Missiles (Mines/Flares) | Missiles | PD Weapon | Yes | Burst PD | Yes 
 NoFighters | Anything but Fighters | Same as base AI | None | No | Hellbore Cannon | Yes
 BigShips | Destroyers to Capitals | Bigger=Better | None | Yes | Squall MLRM | No
 SmallShips | Fighters to Destroyers | Smaller=Better | None | Yes | Phase Lance | No
-Mining | Asteroids | Asteroids | None | Always | Mining Blaster | No
+Mining | Asteroids | Asteroids | None | Yes | Mining Blaster | No
 
 Note: If a weapon is not eligible for a certain mode, it will use its base AI as a fallback mode
 
@@ -231,6 +231,15 @@ I usually push to the current feature-branch somewhat regularly. So feel free to
 (just copy & paste the entire repository into a folder called AdvancedGunneryControl in your mods folder)
 and give me life feedback (you can DM me on Discord @Jannes#9184)
 
-On the off-chance that you want to support me financially, please don't :P My day-job pays enough to cover my living expenses.
-I believe there are better places where you can donate your money to, 
-check out <https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance
+Do you have an idea for a cool new firing mode? Please feel free to contribute them!
+Just follow the following steps:
+- Create XyzAI class that inherits from (extends) AdustableAIPlugin
+- Extend FireMode.kt such that your fire mode appears in all relevant fields
+- Add to readme-table
+- Add to Settings.editme allowed-values comment (please refrain from adding to default list)
+- Test that the mode works as intended!
+
+On the off-chance that you want to support me financially, please don't :P My day-job as an engineer
+pays enough to cover my living expenses.
+
+I believe there are better places where you can donate your money to, check out <https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance

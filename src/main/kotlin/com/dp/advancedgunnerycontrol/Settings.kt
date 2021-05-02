@@ -1,6 +1,8 @@
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.enums.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
+import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 import data.scripts.util.MagicSettings
 import org.json.JSONException
@@ -52,7 +54,7 @@ class AdvancedGunneryControlSettings {
 
         fun buildCycleOrder(additionalItems: List<String>): List<FireMode> {
             return (listOf(FireMode.DEFAULT) + additionalItems.mapNotNull {
-                Values.FIRE_MODE_TRANSLATIONS[it]
+                FMValues.FIRE_MODE_TRANSLATIONS[it]
             })
         }
     }

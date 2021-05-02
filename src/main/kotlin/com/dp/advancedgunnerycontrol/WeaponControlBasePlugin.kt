@@ -1,6 +1,6 @@
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.enums.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.fs.starfarer.api.BaseModPlugin
 import com.fs.starfarer.api.Global
 
@@ -39,8 +39,8 @@ class WeaponControlBasePlugin : BaseModPlugin() {
         } else {
             " (base AI)"
         }
-        Values.modesAvailableForCustomAI.forEach {
-            Values.FIRE_MODE_DESCRIPTIONS[it] += postfix
+        FMValues.modesAvailableForCustomAI.forEach {
+            FMValues.FIRE_MODE_DESCRIPTIONS[it] += postfix
         }
     }
 }

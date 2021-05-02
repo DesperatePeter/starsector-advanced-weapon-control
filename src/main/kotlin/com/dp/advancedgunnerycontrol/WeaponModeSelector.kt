@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol
 
+import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.weaponais.Fraction
 
 /**
@@ -33,7 +34,7 @@ class WeaponModeSelector {
         var positionIndicator: String = " [" + "_".repeat(currentIndex) + "X" +
                 "_".repeat(Settings.cycleOrder.size - 1 - currentIndex) + "] "
 
-        return positionIndicator + Values.FIRE_MODE_DESCRIPTIONS[currentMode] +
+        return positionIndicator + FMValues.FIRE_MODE_DESCRIPTIONS[currentMode] +
                 " ${fractionOfWeaponsInMode.asString()}"
     }
 }

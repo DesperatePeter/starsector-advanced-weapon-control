@@ -21,7 +21,7 @@ class MiningAI(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI) {
         return asteroids
     }
 
-    override fun isTargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean = false //ships and missiles are not valid!
+    override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean = false //ships and missiles are not valid!
 
     override fun isValid(): Boolean = true
 
@@ -43,6 +43,8 @@ class MiningAI(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI) {
         }
         tofire
     }
+
+    override fun isBaseAIOverwritable(): Boolean = true
 
     override fun shouldFire(): Boolean = tofire
 }

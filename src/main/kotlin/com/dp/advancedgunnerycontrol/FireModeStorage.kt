@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol
 
+import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 
 typealias ModeStorage = MutableMap<String, MutableMap<Int, WeaponModeSelector>>

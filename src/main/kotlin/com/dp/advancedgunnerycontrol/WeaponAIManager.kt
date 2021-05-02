@@ -1,6 +1,6 @@
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.enums.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.*
 

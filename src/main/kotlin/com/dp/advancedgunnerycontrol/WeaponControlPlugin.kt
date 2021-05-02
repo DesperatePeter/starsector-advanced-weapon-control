@@ -2,8 +2,9 @@
 
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.enums.ControlEventType
+import com.dp.advancedgunnerycontrol.typesandvalues.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
+import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
 import com.fs.starfarer.api.combat.CombatEngineAPI

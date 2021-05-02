@@ -20,7 +20,9 @@ class BigShipAI(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI) {
         }
     }
 
-    override fun isTargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean = ship?.let { isBig(it) } ?: false
+    override fun isBaseAIOverwritable(): Boolean = true
+
+    override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean = ship?.let { isBig(it) } ?: false
 
     override fun isValid(): Boolean = true
 }

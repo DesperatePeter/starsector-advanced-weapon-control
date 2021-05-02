@@ -12,9 +12,11 @@ class NoFighterAIPlugin(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI,
         return emptyList()
     }
 
-    override fun isTargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {
-        return ship?.let { !it.isFighter } ?: return true
+    override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {
+        return ship?.let { !it.isFighter } ?: true
     }
+
+    override fun isBaseAIOverwritable(): Boolean = false
 
     override fun isValid(): Boolean {
         return true
