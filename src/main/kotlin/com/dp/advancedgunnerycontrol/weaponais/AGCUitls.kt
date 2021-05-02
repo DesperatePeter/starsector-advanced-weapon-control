@@ -5,6 +5,7 @@ package com.dp.advancedgunnerycontrol.weaponais
 import com.dp.advancedgunnerycontrol.Settings
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.CombatEntityAPI
+import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.PI
@@ -24,9 +25,22 @@ fun isAimable(weapon: WeaponAPI): Boolean {
 }
 
 fun isInvalid(aiPlugin: AutofireAIPlugin): Boolean {
-    if (aiPlugin.weapon.id in Settings.weaponBlacklist) return false
-    return (aiPlugin as? SpecificAIPluginBase)?.let { !it.isValid() }
-        ?: return false // if it's note one of my plugins it's safe to assume that it's valid (at least it's not my job)
+    (aiPlugin as? SpecificAIPluginBase)?.let {
+        if (it.weapon.id in Settings.weaponBlacklist) return true
+        return !it.isValid()
+    }
+    // if it's note one of my plugins it's safe to assume that it's valid (at least it's not my job)
+    return false
+}
+
+fun bigness(ship: ShipAPI?) : Float{
+    return when(ship?.hullSize){
+        ShipAPI.HullSize.FRIGATE -> 0.5f
+        ShipAPI.HullSize.DESTROYER -> 2f
+        ShipAPI.HullSize.CRUISER -> 5f
+        ShipAPI.HullSize.CAPITAL_SHIP -> 20f
+        else -> 0.1f
+    }
 }
 
 fun isHostile(entity: CombatEntityAPI): Boolean {
