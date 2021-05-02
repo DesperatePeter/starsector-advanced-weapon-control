@@ -7,7 +7,7 @@
    # Delete modes you want to skip. Note: "Default" will always be the first mode.
    # Allowed items: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining"
    # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
-   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters" ] # <---- EDIT HERE ----
+   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining" ] # <---- EDIT HERE ----
 
 
    #                                 #### CUSTOM AI ####
@@ -61,7 +61,7 @@
    # The number entered here roughly corresponds to the big O notation (i.e. runtime of friendly fire algorithm ~ n^i,
    # where n is the number of entities (ships/missiles) in range of the ship and i is the number chosen here)
    # Valid numbers are:
-   #     - 0 : No friendly fire computation, weapon won't care about hitting allies
+   #     - 0 : No friendly fire computation, weapons won't care about hitting allies
    #     - 1 : Weapon won't consider friendly fire for target selection, only for deciding whether to fire or not
    #     - 2 : Weapon will only select targets that don't risk friendly fire (potentially high performance cost)
    ,"customAIFriendlyFireAlgorithmComplexity" : 1 # <---- EDIT HERE (maybe) ----

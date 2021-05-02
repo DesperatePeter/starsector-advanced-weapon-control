@@ -25,8 +25,8 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var textFrameTimer: Int = 0
     private var isInitialized = false
 
-    companion object{
-        fun determineSelectedShip(engine: CombatEngineAPI) : ShipAPI? {
+    companion object {
+        fun determineSelectedShip(engine: CombatEngineAPI): ShipAPI? {
             return if (engine.combatUI.isShowingCommandUI && engine.playerShip?.shipTarget?.owner == 0) {
                 (engine.playerShip?.shipTarget) ?: engine.playerShip
             } else {
@@ -44,13 +44,13 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
-    private fun processControlEvents(){
+    private fun processControlEvents() {
         when (keyManager.mkeyStatus.mcontrolEvent) {
             ControlEventType.COMBINE -> combineWeaponGroup()
             ControlEventType.CYCLE -> cycleWeaponGroupMode()
             ControlEventType.INFO -> {
                 printShipInfo()
-                if(Settings.enablePersistentModes) saveCurrentShipState()
+                if (Settings.enablePersistentModes) saveCurrentShipState()
             }
             else -> printMessage("Unrecognized Command (please send bug report)")
         }
@@ -61,20 +61,20 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         val aiManager = initOrGetAIManager(ship) ?: return
         val index = keyManager.mkeyStatus.mpressedWeaponGroup - 1
         aiManager.cycleWeaponGroupMode(index)
-        if( ship?.weaponGroupsCopy?.size ?: 0 <= index){
+        if (ship?.weaponGroupsCopy?.size ?: 0 <= index) {
             printMessage("Invalid Weapon Group")
             return
         }
-        if(Settings.uiForceFullInfo){
+        if (Settings.uiForceFullInfo) {
             printShipInfo()
-        }else{
+        } else {
             printMessage(aiManager.getFireModeDescription(index))
         }
     }
 
-    private fun initOrGetAIManager(ship: ShipAPI?) : WeaponAIManager? {
+    private fun initOrGetAIManager(ship: ShipAPI?): WeaponAIManager? {
         ship?.let { ship_ ->
-            if (ship_.customData?.containsKey(Values.WEAPON_AI_MANAGER_KEY) == true){
+            if (ship_.customData?.containsKey(Values.WEAPON_AI_MANAGER_KEY) == true) {
                 ship_.customData?.get(Values.WEAPON_AI_MANAGER_KEY)?.let { unsafeManager ->
                     (unsafeManager as? WeaponAIManager)?.let { return it }
                 }
@@ -108,7 +108,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
-    private fun saveCurrentShipState(){
+    private fun saveCurrentShipState() {
         val ship = determineSelectedShip(engine) ?: return
         initOrGetAIManager(ship)?.let {
             ship.fleetMemberId?.let { id ->

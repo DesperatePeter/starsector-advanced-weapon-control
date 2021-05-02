@@ -60,15 +60,20 @@ I opted to limit this feature to the Command UI only, as I want to prevent this 
 
 ## Fire Modes ##
 
-Mode | Description | Notes | Affected by Custom AI | Suitable Weapon Example
-:---: | :--- | :--- | :---: | :---
-Default | Behaves exactly like normal | - | No | All weapons
-PD | Weapons will ONLY fire at missiles and fighters. | Will only work for PD-weapons | No | Flak
-Missiles | Weapons will ONLY fire at missiles/mines | Will only work for PD-weapons | Yes | Burst PD
-Fighters | Weapons will ONLY fire at fighters | - | Yes | Devastator Cannon
-NoFighters | Weapon will NOT fire at fighters | Will otherwise work normally | No | Hellbore Cannon
+Mode | Targets | Prioritizes | Requirements | Can use Custom AI | Weapon Example | Enabled by Default
+:---: | :---   | :---        | :---         | :---:             | :---: | :---:
+Default | Same as base AI | Same as base AI | None | No | All weapons | Yes
+PD | Fighters/Missiles | Fighters/Missiles | PD Weapon | No | Flak | Yes
+Missiles | Missiles (Mines/Flares) | Missiles | PD Weapon | Yes | Burst PD | Yes 
+Fighters | Fighters | Fighters | None | Yes | Devastator Cannon | Yes
+NoFighters | Anything but Fighters | Same as base AI | None | No | Hellbore Cannon | Yes
+BigShips | Destroyers to Capitals | Bigger=Better | None | Yes | Squall MLRM | No
+SmallShips | Fighters to Destroyers | Smaller=Better | None | Yes | Phase Lance | No
+Mining | Asteroids | Asteroids | None | Always | Mining Blaster | No
 
 Note: If a weapon is not eligible for a certain mode, it will use its base AI as a fallback mode
+
+Note: You need to manually add modes that are not enabled by default in the settings
 
 ## Settings ##
 
@@ -200,6 +205,7 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.5.3: In accordance with Wisp, removed dependency on Questgiver lib, 
   as that might cause compatibility issues with PerseanChronicles.
   fixed issue where refitting could cause weird behaviour (hopefully)
+- 0.5.4: fixed blacklist-bug, 
 
 ## Acknowledgements ##
 

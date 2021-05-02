@@ -33,13 +33,20 @@ fun isInvalid(aiPlugin: AutofireAIPlugin): Boolean {
     return false
 }
 
-fun bigness(ship: ShipAPI?) : Float{
-    return when(ship?.hullSize){
-        ShipAPI.HullSize.FRIGATE -> 0.5f
-        ShipAPI.HullSize.DESTROYER -> 2f
-        ShipAPI.HullSize.CRUISER -> 5f
-        ShipAPI.HullSize.CAPITAL_SHIP -> 20f
-        else -> 0.1f
+const val bignessFrigate = 0.5f
+const val bignessDestroyer = 2f
+const val bignessCruiser = 5f
+const val bignessCapital = 20f
+const val bignessFighter = 0.1f
+fun isBig(ship: ShipAPI): Boolean = bigness(ship) > bignessFrigate + 0.1f
+fun isSmall(ship: ShipAPI): Boolean = bigness(ship) < bignessCruiser - 0.1f
+fun bigness(ship: ShipAPI): Float {
+    return when (ship.hullSize) {
+        ShipAPI.HullSize.FRIGATE -> bignessFrigate
+        ShipAPI.HullSize.DESTROYER -> bignessDestroyer
+        ShipAPI.HullSize.CRUISER -> bignessCruiser
+        ShipAPI.HullSize.CAPITAL_SHIP -> bignessCapital
+        else -> bignessFighter
     }
 }
 

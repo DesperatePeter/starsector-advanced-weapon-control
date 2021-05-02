@@ -14,7 +14,7 @@ class KeyStatusManager {
     private fun parseInputEvent(event: InputEventAPI): Boolean {
         if (event.isConsumed || !event.isKeyDownEvent) return false
 
-        if(event.eventChar == Settings.infoHotkey){
+        if (event.eventChar == Settings.infoHotkey) {
             mkeyStatus.mcontrolEvent = ControlEventType.INFO
             return true
         }

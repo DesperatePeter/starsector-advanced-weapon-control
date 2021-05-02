@@ -4,7 +4,7 @@ import com.dp.advancedgunnerycontrol.enums.FireMode
 import com.fs.starfarer.api.BaseModPlugin
 import com.fs.starfarer.api.Global
 
-public class WeaponControlBasePlugin : BaseModPlugin() {
+class WeaponControlBasePlugin : BaseModPlugin() {
 
     override fun onApplicationLoad() {
         super.onApplicationLoad()
@@ -14,7 +14,7 @@ public class WeaponControlBasePlugin : BaseModPlugin() {
         logSettings()
     }
 
-    private fun logSettings(){
+    private fun logSettings() {
         Global.getLogger(this.javaClass).info("Loaded AdvancedGunneryControl!")
         Global.getLogger(this.javaClass).info("Using cycle order:${Settings.cycleOrder}")
         Global.getLogger(this.javaClass).info(
@@ -30,8 +30,8 @@ public class WeaponControlBasePlugin : BaseModPlugin() {
     }
 
     private fun modifyFighterAndMissileModeDescriptionsToIncludeAIType() {
-        val postfix = if ( Settings.enableCustomAI ) {
-            if ( Settings.forceCustomAI ) {
+        val postfix = if (Settings.enableCustomAI) {
+            if (Settings.forceCustomAI) {
                 " (override AI)"
             } else {
                 " (custom AI)"
@@ -39,7 +39,8 @@ public class WeaponControlBasePlugin : BaseModPlugin() {
         } else {
             " (base AI)"
         }
-        Values.FIRE_MODE_DESCRIPTIONS[FireMode.FIGHTER] += postfix
-        Values.FIRE_MODE_DESCRIPTIONS[FireMode.MISSILE] += postfix
+        Values.modesAvailableForCustomAI.forEach {
+            Values.FIRE_MODE_DESCRIPTIONS[it] += postfix
+        }
     }
 }
