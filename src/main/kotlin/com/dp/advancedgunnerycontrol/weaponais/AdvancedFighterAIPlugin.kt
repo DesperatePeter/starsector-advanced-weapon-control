@@ -19,6 +19,7 @@ class AdvancedFighterAIPlugin(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(b
 
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {
         return CombatUtils.getShipsWithinRange(weapon.location, weapon.range + 200f).filterNotNull()
+            .filter { it.isFighter }
     }
 
     override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {

@@ -25,6 +25,7 @@ abstract class SpecificAIPluginBase(
      * @return a value dependent on distance and velocity of target. Lower is better
      * If this turns out to eat too much performance, picking a pseudo-random target might be better
      * hint: use computeBasePriority
+     * simply use return 0f if isBaseAIOverwritable = false
      */
     protected abstract fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float
 
@@ -32,6 +33,7 @@ abstract class SpecificAIPluginBase(
      * @return all enemy entities within weapon range and arc
      * hint: use something like:
      * CombatUtils.getXYZWithinRange(...).filterNotNull()
+     * simply use emptyList() if isBaseAIOverwritable = false
      */
     protected abstract fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI>
 
@@ -40,6 +42,9 @@ abstract class SpecificAIPluginBase(
      */
     protected abstract fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean
 
+    /**
+     * @return true if the weapon should try to acquire a new target using custom AI if base AI fails
+     */
     protected abstract fun isBaseAIOverwritable(): Boolean
 
     /**

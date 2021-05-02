@@ -85,7 +85,7 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
     }
 
     fun getFireModeSuffix(groupNumber: Int): String {
-        return weaponGroupModes[groupNumber]?.currentModeAsString(groupNumber) ?: " --"
+        return weaponGroupModes[groupNumber]?.currentModeAsString() ?: " --"
 
     }
 
