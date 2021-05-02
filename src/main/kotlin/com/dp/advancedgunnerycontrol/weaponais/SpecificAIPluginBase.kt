@@ -20,6 +20,7 @@ abstract class SpecificAIPluginBase(
     private val weapon = baseAI.weapon
     private var weaponShouldFire = false
     private var currentTgtLeadAcc = 1.0f
+    private var lastP0 = 0.0f
 
     /**
      * @return a value dependent on distance and velocity of target. Lower is better
@@ -66,6 +67,7 @@ abstract class SpecificAIPluginBase(
     }
 
     override fun advance(p0: Float) {
+        lastP0 = p0
         reset()
         if (!advanceBaseAI(p0) && customAIActive) {
             advanceWithCustomAI()
@@ -116,7 +118,7 @@ abstract class SpecificAIPluginBase(
             return
         }
         currentTgtLeadAcc = if (currentTarget == lastTarget) {
-            min(currentTgtLeadAcc + 0.1f, 1.0f)
+            min(currentTgtLeadAcc + 0.2f*lastP0, 1.0f)
         } else {
             weapon.ship?.mutableStats?.autofireAimAccuracy?.modifiedValue ?: 1.0f
         }
