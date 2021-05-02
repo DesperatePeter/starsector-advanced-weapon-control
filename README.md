@@ -16,7 +16,7 @@ Also visit the forums post: <https://fractalsoftworks.com/forum/index.php?topic=
 
 - Unzip the archive in your Starsector/mods folder
 - Enable the NUMPAD-Numlock on your keyboard
-- Play the game and press NUMPAD-Keys during combat
+- Play the game and press NUMPAD-Keys during combat to cycle fire modes
 - (optional) edit Starsector/mods/AdvancedGunneryControl/Settings.editme and remove modes you don't like etc.
 
 ## Installation ##
@@ -33,10 +33,14 @@ Whenever you cycle modes, you will see a message like this:
 ```Group 2: [_X__] Missiles (custom AI) 2/3```
 
 In order, this let's you know that a) group 2 is in b) the second out of 4 modes, 
-c) the current mode is Missiles, c) it's using custom AI when vanilla AI wants to target something else
+c) the current mode is Missiles, c) it's using custom AI when base AI wants to target something else
 and d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default).
 
-Press the J-Key (re-bindable in Settings.editme) to see complete info about current firing modes.
+Press the J-Key (re-bindable in Settings.editme, saveLoadInfoHotkey) to see complete info about current firing modes.
+Pressing this key will also store the current firing modes for the ship. When you first press the J-Key or try to cycle
+weapon modes during the next combat, it will load the stored fire modes for you. (you can opt-out in the settings)
+
+Press the /-Key to reset current fire mode settings. Try using this if you run into any weird issues.
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
@@ -50,30 +54,32 @@ Starsector Settings Menu to use this feature properly.
 
 While in combat, target an allied ship (hover over it with your mouse cursor and press the R-Key).
 Open the Command UI (TAB-Key) and press the J-Key. This will display information about the target's weapon groups.
-The first time you do this, it will also unlock the option to modify that ship's fire modes.
 
 While you are in the Command UI and have that ship targeted, you can modify that ship's weapon groups in the same way you
 can normally modify your own.
 
 I opted to limit this feature to the Command UI only, as I want to prevent this from happening accidentally.
 
-Note: Switching ships will reset the firing modes.
-
 ## Fire Modes ##
 
-Mode | Description | Notes | Affected by Custom AI | Suitable Weapon Example
-:---: | :--- | :--- | :---: | :---
-Default | Behaves exactly like normal | - | No | All weapons
-PD | Weapons will ONLY fire at missiles and fighters. | Will only work for PD-weapons | No | Flak
-Missiles | Weapons will ONLY fire at missiles/mines | Will only work for PD-weapons | Yes | Burst PD
-Fighters | Weapons will ONLY fire at fighters | - | Yes | Devastator Cannon
-NoFighters | Weapon will NOT fire at fighters | Will otherwise work normally | No | Hellbore Cannon
+Mode | Targets | Prioritizes | Requirements | Can use Custom AI | Weapon Example | Enabled by Default
+:---: | :---   | :---        | :---         | :---:             | :---: | :---:
+Default | Same as base AI | Same as base AI | None | No | All weapons | Yes
+PD | Fighters/Missiles | Fighters/Missiles | PD Weapon | No | Flak | Yes
+Fighters | Fighters | Fighters | None | Yes | Devastator Cannon | Yes
+Missiles | Missiles (Mines/Flares) | Missiles | PD Weapon | Yes | Burst PD | Yes 
+NoFighters | Anything but Fighters | Same as base AI | None | No | Hellbore Cannon | Yes
+BigShips | Destroyers to Capitals | Bigger=Better | None | Yes | Squall MLRM | No
+SmallShips | Fighters to Destroyers | Smaller=Better | None | Yes | Phase Lance | No
+Mining | Asteroids | Asteroids | None | Yes | Mining Blaster | No
 
-Note: If a weapon is not eligible for a certain mode, it will use its vanilla AI as a fallback mode
+Note: If a weapon is not eligible for a certain mode, it will use its base AI as a fallback mode
+
+Note: You need to manually add modes that are not enabled by default in the settings
 
 ## Settings ##
 
-The settings allow you to configure many aspects of the mod, most prominently: Whether to use custom AI or vanilla AI only
+The settings allow you to configure many aspects of the mod, most prominently: Whether to use custom AI or base AI only
 and which fire modes you want to have access to and in which order you want to cycle through them.
 There are more settings available, but you can ignore those unless you are feeling adventurous.
 
@@ -98,9 +104,9 @@ If you find the number of options overwhelming, try the following setting:
 
 ### Enable Custom AI ###
 
-Whether you enable the custom AI or not, all weapon fire modes will first attempt to use the vanilla AI 
+Whether you enable the custom AI or not, all weapon fire modes will first attempt to use the base AI 
 (i.e. the AI that the weapon has without this mod) to select a target and firing solution, unless you use the forceCustomAI setting.
-Only when the target selected by the vanilla AI does not match the type specified by the weapon mode, will there be a difference.
+Only when the target selected by the base AI does not match the type specified by the weapon mode, will there be a difference.
 
 If the custom AI is **disabled**, the weapon simply won't fire at all.
 
@@ -130,7 +136,7 @@ custom AI as a fallback and "(override AI)" when using only the custom AI.
 In Starsector, each Weapon has a so-called AutofireAIPlugin. When that weapon is on autofire, this plugin will make the
 decision where the weapon should aim and whether it should fire or not.
 
-When you first toggle the autofire mode of a weapon, this mod will extract the original AutofireAIPlugin (AKA the base/vanilla AI)
+When you first toggle the autofire mode of a weapon, this mod will extract the original AutofireAIPlugin (AKA the base AI)
 from the weapon and store it in a new Plugin called the AdjustableAIPlugin. Additionally, it will create a new Plugin for
 every available autofire mode and also store it in the AdjustableAIPlugin. Then, whenever you toggle the autofire mode,
 the AdjustableAIPlugin will check whether the plugin corresponding to the selected mode is compatible with the weapon.
@@ -194,6 +200,14 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.3.1: minor polish and bugfixes
 - 0.4.0: Experimental support for setting allied ship's fire modes, UI Settings
 - 0.4.1: bugfix (allied ships were still referencing the player ship weapons), setting for info hotkey
+- 0.5.0-ALPHA: fire modes are now exclusively stored on a per-ship-basis, meaning the data can be saved/loaded between combats
+- 0.5.1: fire mode settings are now saved between saving/reloading, several bugfixes.
+- 0.5.2: fixed bug where customAIFriendlyFireCaution had a much higher effect than intended
+  changed it so that pressing J-Key is no longer required to initialize other ships.
+- 0.5.3: In accordance with Wisp, removed dependency on Questgiver lib, 
+  as that might cause compatibility issues with PerseanChronicles.
+  fixed issue where refitting could cause weird behaviour (hopefully)
+- 0.6.0: added 3 new fire modes, added reset function, fixed blacklist-bug, fixed several AI bugs, fixed issues with persistent storage
 
 ## Acknowledgements ##
 
@@ -219,6 +233,15 @@ I usually push to the current feature-branch somewhat regularly. So feel free to
 (just copy & paste the entire repository into a folder called AdvancedGunneryControl in your mods folder)
 and give me life feedback (you can DM me on Discord @Jannes#9184)
 
-On the off-chance that you want to support me financially, please don't :P My day-job pays enough to cover my living expenses.
-I believe there are better places where you can donate your money to, 
-check out <https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance
+Do you have an idea for a cool new firing mode? Please feel free to contribute them!
+Just follow the following steps:
+- Create XyzAI class that inherits from (extends) AdustableAIPlugin
+- Extend FireMode.kt such that your fire mode appears in all relevant fields
+- Add to readme-table
+- Add to Settings.editme allowed-values comment (please refrain from adding to default list)
+- Test that the mode works as intended!
+
+On the off-chance that you want to support me financially, please don't :P My day-job as an engineer
+pays enough to cover my living expenses.
+
+I believe there are better places where you can donate your money to, check out <https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance

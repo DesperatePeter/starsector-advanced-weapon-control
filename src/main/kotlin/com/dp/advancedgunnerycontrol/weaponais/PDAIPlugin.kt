@@ -3,7 +3,7 @@ package com.dp.advancedgunnerycontrol.weaponais
 import com.fs.starfarer.api.combat.*
 import org.lwjgl.util.vector.Vector2f
 
-class PDAIPlugin(baseAI : AutofireAIPlugin) : SpecificAIPluginBase(baseAI, false) {
+class PDAIPlugin(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI, false) {
     override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return 0f
     }
@@ -17,7 +17,9 @@ class PDAIPlugin(baseAI : AutofireAIPlugin) : SpecificAIPluginBase(baseAI, false
         return ship?.isFighter ?: false
     }
 
-    override fun isValid() : Boolean{
+    override fun isBaseAIOverwritable(): Boolean = false
+
+    override fun isValid(): Boolean {
         return isPD(weapon)
     }
 }

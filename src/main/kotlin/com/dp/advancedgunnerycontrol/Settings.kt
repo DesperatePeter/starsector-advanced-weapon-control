@@ -1,6 +1,8 @@
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.enums.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
+import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 import data.scripts.util.MagicSettings
 import org.json.JSONException
@@ -11,7 +13,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 typealias Settings = AdvancedGunneryControlSettings
-
+//TODO make a Setting class template
 class AdvancedGunneryControlSettings {
     companion object {
         var settings: JSONObject? = null
@@ -41,15 +43,19 @@ class AdvancedGunneryControlSettings {
             private set
         var infoHotkey = Values.DEFAULT_INFO_HOTKEY
             private set
+        var enablePersistentModes = Values.DEFAULT_ENABLE_PERSISTENT_STORAGE
+            private set
+        var resetHotkey = Values.DEFAULT_RESET_HOTKEY
 
         var weaponBlacklist = listOf<String>()
             private set
         var isFallbackToDefault = false
             private set
+        val shipModeStorage = FireModeStorage()
 
         fun buildCycleOrder(additionalItems: List<String>): List<FireMode> {
             return (listOf(FireMode.DEFAULT) + additionalItems.mapNotNull {
-                Values.FIRE_MODE_TRANSLATIONS[it]
+                FMValues.FIRE_MODE_TRANSLATIONS[it]
             })
         }
     }
@@ -116,7 +122,9 @@ class AdvancedGunneryControlSettings {
                 uiPositionX = getInt(Values.SETTINGS_UI_X)
                 uiPositionY = getInt(Values.SETTINGS_UI_Y)
                 uiForceFullInfo = getBoolean(Values.SETTINGS_FORCE_FULL_INFO) == true
-                infoHotkey = getString(Values.SETTINGS_INFO_HOTKEY_KEY)[0]
+                infoHotkey = getString(Values.SETTINGS_INFO_HOTKEY_KEY)[0].toLowerCase()
+                resetHotkey = getString(Values.SETTINGS_RESET_HOTKEY_KEY)[0].toLowerCase()
+                enablePersistentModes = getBoolean(Values.SETTINGS_PERSISTENT_STORAGE) == true
             }
 
         } catch (e: JSONException) {
