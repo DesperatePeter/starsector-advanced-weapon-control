@@ -17,17 +17,8 @@ class WeaponControlBasePlugin : BaseModPlugin() {
 
     private fun logSettings() {
         Global.getLogger(this.javaClass).info("Loaded AdvancedGunneryControl!")
-        Global.getLogger(this.javaClass).info("Using cycle order:${Settings.cycleOrder}")
-        Global.getLogger(this.javaClass).info(
-            "Using custom AI: ${Settings.enableCustomAI()}, force: ${Settings.forceCustomAI()}, recursion lvl :${Settings.customAIRecursionLevel()}"
-        )
-        Global.getLogger(this.javaClass).info("Persistent weapon modes: ${Settings.enablePersistentModes()}")
-//        Global.getLogger(this.javaClass).info(
-//            "Custom AI trigger happiness: ${Settings.customAITriggerHappiness}," +
-//                    " friendly fire caution: ${Settings.customAIFriendlyFireCaution}," +
-//                    " friendly fire complexity: ${Settings.customAIFriendlyFireComplexity}"
-//        )
-        Global.getLogger(this.javaClass).info("Weapon blacklist: ${Settings.weaponBlacklist}")
+        Settings.printSettings()
+        Global.getLogger(this.javaClass).info("Blacklisted weapons: ${Settings.weaponBlacklist}")
     }
 
     private fun modifyFighterAndMissileModeDescriptionsToIncludeAIType() {
@@ -39,6 +30,9 @@ class WeaponControlBasePlugin : BaseModPlugin() {
             }
         } else {
             " (base AI)"
+        }
+        FMValues.FIRE_MODE_DESCRIPTIONS.keys.forEach {
+            FMValues.FIRE_MODE_DESCRIPTIONS[it] += if (it in FMValues.modesAvailableForCustomAI) postfix else " (base AI)"
         }
         FMValues.modesAvailableForCustomAI.forEach {
             FMValues.FIRE_MODE_DESCRIPTIONS[it] += postfix

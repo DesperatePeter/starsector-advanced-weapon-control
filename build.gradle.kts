@@ -149,6 +149,7 @@ tasks {
                 """
                    | # By editing this file, you can modify the behaviour of this mod!
                    | # NOTE: If the mod fails to parse these settings, it will fall back to default settings
+                   | # NOTE: For bool values, everything but true will be interpreted as false
                    | #       Check starsector.log (in the Starsector folder) for details (ctrl+f for advancedgunnerycontrol)
                    | {
                    |   #                                 #### CYCLE ORDER ####

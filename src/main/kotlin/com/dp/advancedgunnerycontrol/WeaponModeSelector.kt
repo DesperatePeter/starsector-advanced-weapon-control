@@ -10,7 +10,7 @@ import com.dp.advancedgunnerycontrol.settings.Settings
  */
 class WeaponModeSelector() {
     private var currentIndex = 0
-    var currentMode = Settings.cycleOrder.first()
+    var currentMode = Settings.cycleOrder().first()
         private set
 
     var fractionOfWeaponsInMode =
@@ -18,15 +18,15 @@ class WeaponModeSelector() {
 
     fun reset(){
         currentIndex = 0
-        currentMode = Settings.cycleOrder.first()
+        currentMode = Settings.cycleOrder().first()
     }
 
     fun cycleMode() {
-        if (Settings.cycleOrder.size - 1 <= currentIndex) {
+        if (Settings.cycleOrder().size - 1 <= currentIndex) {
             reset()
         } else { // loop back to start
             currentIndex++
-            currentMode = Settings.cycleOrder[currentIndex]
+            currentMode = Settings.cycleOrder()[currentIndex]
         }
     }
 
@@ -34,10 +34,10 @@ class WeaponModeSelector() {
      * @return something like "Group 2: [__X_] PD Mode"
      */
     fun currentModeAsString(): String {
-        if (Settings.cycleOrder.size <= currentIndex) reset()
+        if (Settings.cycleOrder().size <= currentIndex) reset()
         // something like [__X_]
         var positionIndicator: String = " [" + "_".repeat(currentIndex) + "X" +
-                "_".repeat(Settings.cycleOrder.size - 1 - currentIndex) + "] "
+                "_".repeat(Settings.cycleOrder().size - 1 - currentIndex) + "] "
 
         return positionIndicator + FMValues.FIRE_MODE_DESCRIPTIONS[currentMode] +
                 " ${fractionOfWeaponsInMode.asString()}"
