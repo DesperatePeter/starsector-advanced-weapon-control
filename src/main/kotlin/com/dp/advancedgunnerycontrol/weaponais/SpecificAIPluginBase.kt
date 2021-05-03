@@ -1,6 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
-import com.dp.advancedgunnerycontrol.Settings
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
@@ -11,7 +11,7 @@ import kotlin.math.*
 
 abstract class SpecificAIPluginBase(
     private val baseAI: AutofireAIPlugin,
-    private val customAIActive: Boolean = Settings.enableCustomAI
+    private val customAIActive: Boolean = Settings.enableCustomAI()
 ) : AutofireAIPlugin {
     private var targetEntity: CombatEntityAPI? = null
     private var lastTargetEntity: CombatEntityAPI? = null
@@ -20,6 +20,7 @@ abstract class SpecificAIPluginBase(
     private val weapon = baseAI.weapon
     private var weaponShouldFire = false
     private var currentTgtLeadAcc = 1.0f
+    private var lastP0 = 0.0f
 
     /**
      * @return a value dependent on distance and velocity of target. Lower is better
@@ -66,6 +67,7 @@ abstract class SpecificAIPluginBase(
     }
 
     override fun advance(p0: Float) {
+        lastP0 = p0
         reset()
         if (!advanceBaseAI(p0) && customAIActive) {
             advanceWithCustomAI()
@@ -73,7 +75,7 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun advanceBaseAI(p0: Float): Boolean {
-        if(Settings.forceCustomAI && isBaseAIOverwritable()) return false
+        if(Settings.forceCustomAI() && isBaseAIOverwritable()) return false
         baseAI.advance(p0)
         if (isBaseAITargetValid(baseAI.targetShip, baseAI.targetMissile)) {
             baseAI.targetMissile?.let { targetEntity = it } ?: baseAI.targetShip?.let { targetEntity = it }
@@ -90,7 +92,7 @@ abstract class SpecificAIPluginBase(
             getRelevantEntitiesWithinRange().filter { isWithinArc(it) && isHostile(it) }
         ).filter { isInRange(it.second) }
 
-        if (Settings.customAIFriendlyFireComplexity >= 2) {
+        if (Settings.customAIFriendlyFireComplexity() >= 2) {
             // this is a deceptively expensive call (therefore locked behind opt-in setting)
             potentialTargets = potentialTargets.filter { !isFriendlyFire(it.second, getFriendlies()) }
         }
@@ -111,12 +113,12 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun determineTargetLeadingAccuracy(currentTarget: CombatEntityAPI?, lastTarget: CombatEntityAPI?) {
-        if (Settings.customAIPerfectTargetLeading) {
+        if (Settings.customAIPerfectTargetLeading()) {
             currentTgtLeadAcc = 1.0f
             return
         }
         currentTgtLeadAcc = if (currentTarget == lastTarget) {
-            min(currentTgtLeadAcc + 0.1f, 1.0f)
+            min(currentTgtLeadAcc + 0.2f*lastP0, 1.0f)
         } else {
             weapon.ship?.mutableStats?.autofireAimAccuracy?.modifiedValue ?: 1.0f
         }
@@ -158,7 +160,7 @@ abstract class SpecificAIPluginBase(
             return tgtPoint
         }
 
-        for (i in 0 until Settings.customAIRecursionLevel) {
+        for (i in 0 until Settings.customAIRecursionLevel()) {
             val travelT =
                 linearDistanceFromWeapon(tgtPoint) / (weapon.projectileSpeed * (1.5f - 0.5f * currentTgtLeadAcc))
 
@@ -207,7 +209,7 @@ abstract class SpecificAIPluginBase(
             abs(angularDistanceFromWeapon(aimPoint) - angularDistanceFromWeapon(it.second)) * linearDistanceFromWeapon(
                 it.second
             ) <=
-                    it.first.collisionRadius * Settings.customAIFriendlyFireCaution
+                    it.first.collisionRadius * Settings.customAIFriendlyFireCaution()
         }
     }
 
@@ -222,7 +224,7 @@ abstract class SpecificAIPluginBase(
             val lateralTargetOffset = angularDistanceFromWeapon(it.second) * linearDistanceFromWeapon(it.second)
             if (lateralTargetOffset <= tolerance) return true
         }
-        if (Settings.customAIFriendlyFireComplexity >= 1) {
+        if (Settings.customAIFriendlyFireComplexity() >= 1) {
             if (isFriendlyFire(vectorFromAngleDeg(weapon.currAngle), getFriendlies())) return false
         }
         return false
@@ -246,8 +248,7 @@ abstract class SpecificAIPluginBase(
 
     companion object {
         protected val aimingToleranceFactor =
-            1.0f * Settings.customAITriggerHappiness// if aim is up to 25% off, the weapon should still fire
-        protected val aimingToleranceFlat = 10f * Settings.customAITriggerHappiness
-        // protected val aimingToleranceAccelFactor = 0.5f * Settings.customAITriggerHappiness
+            1.0f * Settings.customAITriggerHappiness()// if aim is up to 25% off, the weapon should still fire
+        protected val aimingToleranceFlat = 10f * Settings.customAITriggerHappiness()
     }
 }
