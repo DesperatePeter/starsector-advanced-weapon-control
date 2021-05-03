@@ -2,6 +2,7 @@ package com.dp.advancedgunnerycontrol
 
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.weaponais.Fraction
+import com.dp.advancedgunnerycontrol.settings.Settings
 
 /**
  * Essentially a cyclic list iterator for the cycleOrder

@@ -1,10 +1,8 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
-import com.dp.advancedgunnerycontrol.Settings
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lwjgl.util.vector.Vector2f
-import kotlin.math.abs
 import kotlin.math.pow
 
 

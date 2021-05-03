@@ -4,7 +4,7 @@ import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.MissileAPI
 import com.fs.starfarer.api.combat.ShipAPI
-import com.dp.advancedgunnerycontrol.Settings
+import com.dp.advancedgunnerycontrol.settings.Settings
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lwjgl.util.vector.Vector2f
 
@@ -39,7 +39,7 @@ class MiningAI(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI) {
         tgtPoint = priorities.minBy { computeTargetPriority(it.first, it.second) }?.second
         tofire = asteroids.any {
             (angularDistanceFromWeapon(it.location) * linearDistanceFromWeapon(it.location) <=
-                    (it.collisionRadius * Settings.customAITriggerHappiness) + 50f)
+                    (it.collisionRadius * Settings.customAITriggerHappiness()) + 50f)
         }
         tofire
     }

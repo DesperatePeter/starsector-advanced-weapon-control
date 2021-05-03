@@ -1,6 +1,5 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
-import com.dp.advancedgunnerycontrol.Settings
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.combat.MissileAPI
 import org.lazywizard.lazylib.combat.CombatUtils
