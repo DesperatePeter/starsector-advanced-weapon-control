@@ -211,6 +211,7 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.7.0: automatically load fire modes for all ships on combat start (opt-out in settings), no longer need to be in Command UI to set friendly modes
   added hotkey to load fire modes for all ships
 
+
 ## Acknowledgements ##
 
 Many thanks to Wisp for answering my endless questions about Kotlin and Starsector modding and for providing
