@@ -34,8 +34,5 @@ class WeaponControlBasePlugin : BaseModPlugin() {
         FMValues.FIRE_MODE_DESCRIPTIONS.keys.forEach {
             FMValues.FIRE_MODE_DESCRIPTIONS[it] += if (it in FMValues.modesAvailableForCustomAI) postfix else " (base AI)"
         }
-        FMValues.modesAvailableForCustomAI.forEach {
-            FMValues.FIRE_MODE_DESCRIPTIONS[it] += postfix
-        }
     }
 }

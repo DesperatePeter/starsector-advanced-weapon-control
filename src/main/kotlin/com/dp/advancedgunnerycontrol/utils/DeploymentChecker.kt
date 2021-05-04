@@ -13,7 +13,7 @@ class DeploymentChecker(private var engine: CombatEngineAPI?) {
         if (wasInDeplyomentScreen) { // check for selected ships
             if (engine?.combatUI?.isShowingDeploymentDialog == false) {
                 wasInDeplyomentScreen = false
-                return selectedShips // TODO
+                return selectedShips
             }
             selectedShips = engine?.combatUI?.currentlySelectedInFleetDeploymentDialog
                 ?.mapNotNull { it.id }?.ifEmpty { selectedShips }
