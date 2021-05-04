@@ -92,6 +92,7 @@ abstract class SpecificAIPluginBase(
             getRelevantEntitiesWithinRange().filter { isWithinArc(it) && isHostile(it) }
         ).filter { isInRange(it.second) }
 
+        // TODO: It would be faster to get friendlies and foes in one go
         if (Settings.customAIFriendlyFireComplexity() >= 2) {
             // this is a deceptively expensive call (therefore locked behind opt-in setting)
             potentialTargets = potentialTargets.filter { !isFriendlyFire(it.second, getFriendlies()) }
@@ -108,7 +109,7 @@ abstract class SpecificAIPluginBase(
     protected fun getFriendlies(): List<Pair<CombatEntityAPI, Vector2f>> {
         return addPredictedLocationToTargets(
             CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter {
-                it.isAlly && isWithinArc(it) && !it.isFighter
+                (it.isAlly || (it.owner == 0)) && isWithinArc(it) && !it.isFighter
             }).filter { isInRange(it.second) }
     }
 

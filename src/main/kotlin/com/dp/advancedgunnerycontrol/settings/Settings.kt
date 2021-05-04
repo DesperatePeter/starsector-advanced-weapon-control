@@ -1,6 +1,6 @@
 package com.dp.advancedgunnerycontrol.settings
 
-import com.dp.advancedgunnerycontrol.FireModeStorage
+import com.dp.advancedgunnerycontrol.utils.FireModeStorage
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
@@ -28,8 +28,10 @@ object Settings : SettingsDefinition() {
     val uiPositionY = addSetting<Int>("messagePositionY", 150)
     val uiForceFullInfo = addSetting<Boolean>("alwaysShowFullInfo", false)
     val infoHotkey = addSetting<Char>("saveLoadInfoHotkey", 'j')
-    val resetHotkey= addSetting<Char>("resetHotkey", '/')
+    val resetHotkey = addSetting<Char>("resetHotkey", '/')
+    val loadHotkey = addSetting<Char>("loadAllShipsHotkey", '*')
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
+    val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
 
     var weaponBlacklist = listOf<String>()
         private set
@@ -45,6 +47,7 @@ object Settings : SettingsDefinition() {
     override fun applySettings() {
         super.applySettings()
         forceCustomAI.set(forceCustomAI() && enableCustomAI())
+        enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set ( max(0, min(2, customAIFriendlyFireComplexity())))
         infoHotkey.set(infoHotkey().toLowerCase())
         resetHotkey.set(resetHotkey().toLowerCase())

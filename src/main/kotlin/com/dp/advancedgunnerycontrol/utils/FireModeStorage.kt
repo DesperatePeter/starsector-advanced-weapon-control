@@ -1,4 +1,4 @@
-package com.dp.advancedgunnerycontrol
+package com.dp.advancedgunnerycontrol.utils
 
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global

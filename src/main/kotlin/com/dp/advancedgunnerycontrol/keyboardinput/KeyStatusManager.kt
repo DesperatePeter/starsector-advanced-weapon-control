@@ -1,7 +1,6 @@
 package com.dp.advancedgunnerycontrol.keyboardinput
 
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.typesandvalues.ControlEventType
 import com.fs.starfarer.api.input.InputEventAPI
 
 class KeyStatusManager {
@@ -24,6 +23,11 @@ class KeyStatusManager {
             return true
         }
 
+        if(event.eventChar == Settings.loadHotkey()){
+            mkeyStatus.mcontrolEvent = ControlEventType.LOAD
+            return true
+        }
+
         if (event.eventChar !in weaponGroupKeys) return false
         // Note: char.toInt gets the ascii value rather than the contained number
         mkeyStatus.mpressedWeaponGroup = event.eventChar.toString().toInt()
@@ -43,7 +47,7 @@ class KeyStatusManager {
         mkeyStatus.reset()
         var wasRelevant = false
         events?.iterator()?.forEach {
-            wasRelevant = wasRelevant || parseInputEvent(it)
+            wasRelevant = (wasRelevant || parseInputEvent(it))
         }
         return wasRelevant
     }

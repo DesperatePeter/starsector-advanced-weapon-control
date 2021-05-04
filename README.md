@@ -208,6 +208,8 @@ If you happen to have any clues to fixing these issues, please let me know.
   as that might cause compatibility issues with PerseanChronicles.
   fixed issue where refitting could cause weird behaviour (hopefully)
 - 0.6.0: added 3 new fire modes, added reset function, fixed blacklist-bug, fixed several AI bugs, fixed issues with persistent storage
+- 0.7.0: automatically load fire modes for all ships on combat start (opt-out in settings), no longer need to be in Command UI to set friendly modes
+  added hotkey to load fire modes for all ships
 
 ## Acknowledgements ##
 
