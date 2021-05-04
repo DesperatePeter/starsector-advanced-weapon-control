@@ -7,13 +7,22 @@ typealias FireModeMap = Map<FireMode, AutofireAIPlugin>
 
 enum class FireMode {
     DEFAULT, PD, MISSILE, FIGHTER, NO_FIGHTERS, BIG_SHIPS, SMALL_SHIPS, MINING
-
 }
 
 object FMValues{
     val modesAvailableForCustomAI = // Only add if AI has "isBaseAIOverwritable(): Boolean = true"
         listOf(FireMode.SMALL_SHIPS, FireMode.BIG_SHIPS, FireMode.FIGHTER, FireMode.MISSILE)
-
+// "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining"
+    var FIRE_MODE_DESCRIPTIONS = mutableMapOf(
+        FireMode.DEFAULT to "Default",
+        FireMode.PD to "PD",
+        FireMode.FIGHTER to "Fighters",
+        FireMode.MISSILE to "Missiles",
+        FireMode.NO_FIGHTERS to "NoFighters",
+        FireMode.BIG_SHIPS to "BigShips",
+        FireMode.SMALL_SHIPS to "SmallShips",
+        FireMode.MINING to "Mining"
+    )
 
     val FIRE_MODE_TRANSLATIONS = mapOf(
         "Default" to FireMode.DEFAULT,
@@ -24,17 +33,6 @@ object FMValues{
         "BigShips" to FireMode.BIG_SHIPS,
         "SmallShips" to FireMode.SMALL_SHIPS,
         "Mining" to FireMode.MINING
-    )
-
-    var FIRE_MODE_DESCRIPTIONS = mutableMapOf(
-        FireMode.DEFAULT to "Default (base AI)",
-        FireMode.PD to "PD Mode (base AI)",
-        FireMode.FIGHTER to "Fighters only",
-        FireMode.MISSILE to "Missiles only",
-        FireMode.NO_FIGHTERS to "Ignore Fighters (base AI)",
-        FireMode.BIG_SHIPS to "Big Ships",
-        FireMode.SMALL_SHIPS to "Small Ships",
-        FireMode.MINING to "Mining (Asteroids)"
     )
 
     // not technically a value, but this way all the mappings are in one place...

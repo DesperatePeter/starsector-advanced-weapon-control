@@ -4,6 +4,7 @@ package com.dp.advancedgunnerycontrol
 
 import com.dp.advancedgunnerycontrol.typesandvalues.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
@@ -51,11 +52,11 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             ControlEventType.CYCLE -> cycleWeaponGroupMode()
             ControlEventType.INFO -> {
                 printShipInfo()
-                if (Settings.enablePersistentModes) saveCurrentShipState()
+                if (Settings.enablePersistentModes()) saveCurrentShipState()
             }
             ControlEventType.RESET -> {
                 resetAiManager()
-                if (Settings.enablePersistentModes) saveCurrentShipState()
+                if (Settings.enablePersistentModes()) saveCurrentShipState()
                 printShipInfo()
             }
             else -> printMessage("Unrecognized Command (please send bug report)")
@@ -71,7 +72,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             printMessage("Invalid Weapon Group")
             return
         }
-        if (Settings.uiForceFullInfo) {
+        if (Settings.uiForceFullInfo()) {
             printShipInfo()
         } else {
             printMessage(aiManager.getFireModeDescription(index))
@@ -129,7 +130,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun printMessage(message: String) {
         drawable = font?.createText(message, color = Color.GREEN)
-        textFrameTimer = Settings.uiDisplayFrames
+        textFrameTimer = Settings.uiDisplayFrames()
     }
 
     private fun combineWeaponGroup() {
@@ -144,10 +145,6 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             } catch (e: FontException) {
                 Global.getLogger(this.javaClass).error("Failed to load font, won't de displaying messages", e)
             }
-            if (Settings.isFallbackToDefault) {
-                printMessage("Failed to load Settings for ${Values.THIS_MOD_NAME}, check starsector.log for details")
-            }
-
             this.engine = engine
             isInitialized = true
         }
@@ -156,10 +153,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     override fun renderInUICoords(viewport: ViewportAPI?) {
         super.renderInUICoords(viewport)
         drawable?.apply {
-            draw(Settings.uiPositionX.toFloat(), Settings.uiPositionY.toFloat())
+            draw(Settings.uiPositionX().toFloat(), Settings.uiPositionY().toFloat())
             textFrameTimer--
         }
-        if ((textFrameTimer <= 0) && (Settings.uiDisplayFrames >= 0)) {
+        if ((textFrameTimer <= 0) && (Settings.uiDisplayFrames() >= 0)) {
             drawable = null
         }
     }
