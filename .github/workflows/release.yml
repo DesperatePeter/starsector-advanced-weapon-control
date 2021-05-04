@@ -29,6 +29,15 @@ jobs:
           echo "VERSION=$(git describe --tags)" >> $GITHUB_ENV
           git log --format=%B -n 1 $(git log -1 --pretty=format:"%h") | cat - > changes.txt
 
+      - name: Check if prerelease
+        run: |
+          branch="$(git status -sb | grep master)"
+          prerelease=true
+          if [ ${#branch} -ge 2 ]; then
+              prerelease=false
+          fi
+          echo "$ISPRE=$prerelease" >> $GITHUB_ENV
+
       - name: Create Mod Zipfile
         run: |
           cd ./.github/workflows/
@@ -42,6 +51,6 @@ jobs:
           tag: ${{ env.VERSION }}
           bodyFile: changes.txt
           draft: false
-          prerelease: false
+          prerelease: ${{ env.ISPRE }}
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: ".github/workflows/artifacts/*"
