@@ -75,7 +75,7 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
         for (i in 0 until weaponAIList.size) {
             var weaponAI = weaponAIList[i]
             val weapon = weaponAI.weapon
-            if ((weaponAI as? AdjustableAIPlugin) != null) continue // skip if already custom AI plugin
+            if (((weaponAI as? AdjustableAIPlugin) != null) && (weaponAIs[weapon] != null)) continue // skip if already custom AI plugin
             if (null == weaponAIs[weapon]) weaponAIs[weapon] = AdjustableAIPlugin(weaponAI)
             weaponAIs[weapon]?.let { weaponAI = it }
         }
