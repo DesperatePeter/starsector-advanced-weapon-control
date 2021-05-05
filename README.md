@@ -17,7 +17,7 @@ Also visit the forums post: <https://fractalsoftworks.com/forum/index.php?topic=
 ## TL;DR Instructions ##
 
 - Unzip the archive in your Starsector/mods folder
-- Enable the NUMPAD-Numlock on your keyboard
+- Enable the NUMPAD-Numlock on your keyboard ![Numlock](imgs/numlock.png "Numlock")
 - Play the game and press NUMPAD-Keys during combat to cycle fire modes
 - Target an ally (R-Key) in combat to cycle their firing modes
 - By default, firing modes are automatically saved/loaded between combats (per ship)
@@ -46,9 +46,9 @@ in the settings.
 
 Hotkeys (rebindable in Settings.editme):
 - NUMPAD 1-7 - Cycle firing modes for weapon groups 1-7 for targeted or player ship
-- J - Show info about current firing modes (and load/save modes)
-- / - Reset all modes back to default for current ship
-- * - Manually load firing modes for all deployed ships
+- "J" - Show info about current firing modes (and load/save modes)
+- "/" - Reset all modes back to default for current ship
+- "*" - Manually load firing modes for all deployed ships
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
