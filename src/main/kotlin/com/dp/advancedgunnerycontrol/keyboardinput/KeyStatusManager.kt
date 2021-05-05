@@ -13,17 +13,17 @@ class KeyStatusManager {
     private fun parseInputEvent(event: InputEventAPI): Boolean {
         if (event.isConsumed || !event.isKeyDownEvent) return false
 
-        if (event.eventChar == Settings.infoHotkey()) {
+        if (event.eventChar.toLowerCase() == Settings.infoHotkey()) {
             mkeyStatus.mcontrolEvent = ControlEventType.INFO
             return true
         }
 
-        if (event.eventChar == Settings.resetHotkey()){
+        if (event.eventChar.toLowerCase() == Settings.resetHotkey()){
             mkeyStatus.mcontrolEvent = ControlEventType.RESET
             return true
         }
 
-        if(event.eventChar == Settings.loadHotkey()){
+        if(event.eventChar.toLowerCase() == Settings.loadHotkey()){
             mkeyStatus.mcontrolEvent = ControlEventType.LOAD
             return true
         }

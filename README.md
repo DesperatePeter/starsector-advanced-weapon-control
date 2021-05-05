@@ -58,10 +58,10 @@ If this becomes an issue for you, please let me know, and I will try to implemen
 ### Setting fire modes for allied ships ###
 
 You can simply set up fire modes for allied ships by running a simulation with them and adjusting fire modes. Alternatively,
-you can target allied ships in combat by using the R-Key and then adjust their fire modes via the NUMPAD-Keys. When you
-next deploy that ship, its fire modes will be loaded automatically. 
+you can target allied ships in combat by using the R-Key and then adjust their fire modes via the NUMPAD-Keys. The next 
+time you deploy that ship, its fire modes will be loaded automatically. 
 
-NOTE: The allied ship AI will still "manually" fire weapons independent of their fire mode, but still often
+NOTE: The allied ship AI will "manually" fire weapons independent of their fire mode, but still often
 rely on autofire. So, think of fire modes for allied ships as suggestions, not hard rules.
 
 ## Fire Modes ##
@@ -94,25 +94,20 @@ the default settings instead! Make sure to check the log (Starsector/starsector.
 
 ### Enable Custom AI ###
 
-Whether you enable the custom AI or not, all weapon fire modes will first attempt to use the base AI 
-(unless you force custom AI) to select a target and firing solution, unless you use the forceCustomAI setting.
-Only when the target selected by the base AI does not match the type specified by the weapon mode, will there be a difference.
+There are three different AI settings:
 
-If the custom AI is **disabled**, the weapon simply won't fire at all.
-
-If the custom AI is **enabled**, the weapon will try to acquire a new target of the chosen type and a fitting firing solution,
-based on an algorithm designed by me.
-
-If you **force** the custom AI, i.e. not use the base AI at all. Doing so actually improves performance compared to
-just enabling it.
+- If the custom AI is **disabled**, the weapon will use the baseAI to acquire a target. If the target doesn't match
+  the mode, the weapon won't fire. (base AI)
+- (default) If the custom AI is **enabled**, the weapon will first try the base AI. If the target doesn't match, 
+  the custom AI will take over. (custom AI)
+- If you **force and enable** the custom AI, the weapon will immediately try to acquire a target via custom AI. (override AI)
 
 You should **disable** the custom AI, if:
 
-- You have performance issues (as enabling it might have to calculate two firing solutions)
 - You want an experience that is as close to vanilla Starsector as possible
 - You absolutely hate it when your weapons occasionally fire at weird stuff (as my algorithm is still undergoing development, though mostly complete)
 
-You should **enable** the custom AI, if:
+You should **enable or force-enable** the custom AI, if:
 
 - You want to set weapons to prioritize targets they normally wouldn't (e.g. phase lances as anti-fighter weapons)
 - You dislike it when your weapons don't fire even if there is a reasonable target
@@ -121,8 +116,16 @@ You should **enable** the custom AI, if:
 - You want to use Fighter/Missile-only modes
 - You want to help me improve my custom AI by sending me written reports/video snippets of glitchy weapon behaviour
 
-Note: Weapon groups will display "(base AI)" when custom AI is off/not applicable, "(custom AI)" when using the
-custom AI as a fallback and "(override AI)" when using only the custom AI.
+### Performance Considerations ###
+
+This mod will have a negative effect on performance. That effect will range from barely noticeable to considerable,
+depending on the settings. On my machine (which is ~9 years old), the mod generally doesn't have a noticeable impact unless
+I go crazy in the settings. Below I will list a few options for improving performance:
+
+- Either enable & force customAI, or disable it (as this prevents the occasional computation of two firing solutions).
+- Try not to set every weapon group for every ship to a special fire mode.
+- Leave the AI recursion level and friendly fire complexity at 1.
+- Consider turning off auto save/load and instead manually save ("J"-Key) and load ("*"-Key).
 
 ## How does the mod work? ##
 
@@ -143,7 +146,7 @@ tell the weapon to not fire, or try to come up with its own firing solution.
 ### Compatibility with other mods ###
 
 This mod should be compatible with other mods that provide custom AIs for their weapons, as long as they don't try to
-manipulate the weapon AI mid-combat. This mod will simply use the custom AI of that weapon as the base AI for that weapon.
+manipulate the weapon AI mid-combat. This mod will simply use the custom AI of that weapon as the base AI.
 
 If you are a mod-author and want to explicitly tell my mod to not tweak the AI of your weapon(s), include the weapon id
 into your mod's modSettings.json:
@@ -158,12 +161,11 @@ into your mod's modSettings.json:
 }
 ```
 
-This mod doesn't affect anything outside the current combat. So it's unlikely to cause problems on the campaign level.
+This mod doesn't affect anything outside of combat, so it's very unlikely to cause problems on the campaign level.
 
 ## Roadmap ##
 
-This is still an early version. It has not yet been tested sufficiently. If you encounter any bugs/crashes,
-please let me know.
+This is still a relatively early version. If you encounter any bugs, please let me know.
 
 After some more testing, bug-fixing and implementing requested features,
 I would like to add a feature where you can merge other weapon groups into your active weapon group.
@@ -175,7 +177,7 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - Add ability to issue fire modes to AI-controlled allied ships **DONE**
 - Add weapon-blacklist for other mods such that their weapons stay unaffected by fire modes from this mod **DONE**
 - Automatically load fire modes on ship deployment **DONE**
-- Add a GUI to set fire modes in the ship loadout editor (might be difficult)
+- Add a GUI to set fire modes in the ship refit editor (might be difficult)
 
 ## Known Issues ##
 

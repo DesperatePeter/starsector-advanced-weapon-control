@@ -175,7 +175,7 @@ tasks {
                    |   # Switch this off if you want to reset fire modes every battle
                    |   , "enablePersistentFireModes" : true # <---- EDIT HERE ----
                    |   # Number of frames messages will be displayed before fading. -1 for infinite
-                   |   , "messageDisplayDuration" : 150 # <---- EDIT HERE ----
+                   |   , "messageDisplayDuration" : 180 # <---- EDIT HERE ----
                    |   # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
                    |   , "messagePositionX" : 900 # <---- EDIT HERE ----
                    |   , "messagePositionY" : 150 # <---- EDIT HERE ----

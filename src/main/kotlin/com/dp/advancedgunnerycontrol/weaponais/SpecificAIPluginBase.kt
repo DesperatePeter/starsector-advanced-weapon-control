@@ -21,6 +21,7 @@ abstract class SpecificAIPluginBase(
     private var weaponShouldFire = false
     private var currentTgtLeadAcc = 1.0f
     private var lastP0 = 0.0f
+    // private var forceDisabledWeapons = mutableMapOf<WeaponAPI, Boolean>().withDefault { false }
 
     /**
      * @return a value dependent on distance and velocity of target. Lower is better
@@ -103,7 +104,20 @@ abstract class SpecificAIPluginBase(
 
         targetEntity = bestTarget?.first
         targetPoint = bestTarget?.second
-        weaponShouldFire = computeIfShouldFire(potentialTargets)
+        computeIfShouldFire(potentialTargets).let {
+            weaponShouldFire = it
+//            if(Settings.forceDisableWeapons()){ // TODO experimental
+//                if(!it && (forceDisabledWeapons[weapon] == true)){
+//                    weapon.disable(false)
+//                    weapon.usesAmmo()
+//                    forceDisabledWeapons[weapon] = false
+//                }
+//                if (it && !weapon.isDisabled){
+//                    weapon.disable()
+//                    forceDisabledWeapons[weapon] = true
+//                }
+//            }
+        }
     }
 
     protected fun getFriendlies(): List<Pair<CombatEntityAPI, Vector2f>> {
