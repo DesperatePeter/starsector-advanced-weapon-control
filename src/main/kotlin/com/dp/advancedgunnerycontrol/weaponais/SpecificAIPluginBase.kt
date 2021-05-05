@@ -76,7 +76,7 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun advanceBaseAI(p0: Float): Boolean {
-        if(Settings.forceCustomAI() && isBaseAIOverwritable()) return false
+        if (Settings.forceCustomAI() && isBaseAIOverwritable()) return false
         baseAI.advance(p0)
         if (isBaseAITargetValid(baseAI.targetShip, baseAI.targetMissile)) {
             baseAI.targetMissile?.let { targetEntity = it } ?: baseAI.targetShip?.let { targetEntity = it }
@@ -92,6 +92,7 @@ abstract class SpecificAIPluginBase(
         var potentialTargets = addPredictedLocationToTargets(
             getRelevantEntitiesWithinRange().filter { isWithinArc(it) && isHostile(it) }
         ).filter { isInRange(it.second) }
+
 
         // TODO: It would be faster to get friendlies and foes in one go
         if (Settings.customAIFriendlyFireComplexity() >= 2) {
@@ -133,7 +134,7 @@ abstract class SpecificAIPluginBase(
             return
         }
         currentTgtLeadAcc = if (currentTarget == lastTarget) {
-            min(currentTgtLeadAcc + 0.2f*lastP0, 1.0f)
+            min(currentTgtLeadAcc + 0.2f * lastP0, 1.0f)
         } else {
             weapon.ship?.mutableStats?.autofireAimAccuracy?.modifiedValue ?: 1.0f
         }

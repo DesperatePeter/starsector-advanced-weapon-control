@@ -1,14 +1,12 @@
 package com.dp.advancedgunnerycontrol.settings
 
+
 import com.dp.advancedgunnerycontrol.utils.FireModeStorage
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 import data.scripts.util.MagicSettings
-import org.json.JSONException
-import org.json.JSONObject
-import java.io.IOException
 import kotlin.math.max
 import kotlin.math.min
 
@@ -33,6 +31,7 @@ object Settings : SettingsDefinition() {
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     // val forceDisableWeapons = addSetting<Boolean>("forceDisableAIWeapons", true)
+
 
     var weaponBlacklist = listOf<String>()
         private set
