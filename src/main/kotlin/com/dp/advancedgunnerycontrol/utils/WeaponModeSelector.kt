@@ -1,4 +1,4 @@
-package com.dp.advancedgunnerycontrol
+package com.dp.advancedgunnerycontrol.utils
 
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.weaponais.Fraction

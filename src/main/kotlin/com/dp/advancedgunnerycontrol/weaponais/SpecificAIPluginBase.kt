@@ -21,6 +21,7 @@ abstract class SpecificAIPluginBase(
     private var weaponShouldFire = false
     private var currentTgtLeadAcc = 1.0f
     private var lastP0 = 0.0f
+    // private var forceDisabledWeapons = mutableMapOf<WeaponAPI, Boolean>().withDefault { false }
 
     /**
      * @return a value dependent on distance and velocity of target. Lower is better
@@ -75,7 +76,7 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun advanceBaseAI(p0: Float): Boolean {
-        if(Settings.forceCustomAI() && isBaseAIOverwritable()) return false
+        if (Settings.forceCustomAI() && isBaseAIOverwritable()) return false
         baseAI.advance(p0)
         if (isBaseAITargetValid(baseAI.targetShip, baseAI.targetMissile)) {
             baseAI.targetMissile?.let { targetEntity = it } ?: baseAI.targetShip?.let { targetEntity = it }
@@ -92,6 +93,8 @@ abstract class SpecificAIPluginBase(
             getRelevantEntitiesWithinRange().filter { isWithinArc(it) && isHostile(it) }
         ).filter { isInRange(it.second) }
 
+
+        // TODO: It would be faster to get friendlies and foes in one go
         if (Settings.customAIFriendlyFireComplexity() >= 2) {
             // this is a deceptively expensive call (therefore locked behind opt-in setting)
             potentialTargets = potentialTargets.filter { !isFriendlyFire(it.second, getFriendlies()) }
@@ -102,13 +105,26 @@ abstract class SpecificAIPluginBase(
 
         targetEntity = bestTarget?.first
         targetPoint = bestTarget?.second
-        weaponShouldFire = computeIfShouldFire(potentialTargets)
+        computeIfShouldFire(potentialTargets).let {
+            weaponShouldFire = it
+//            if(Settings.forceDisableWeapons()){ // TODO experimental
+//                if(!it && (forceDisabledWeapons[weapon] == true)){
+//                    weapon.disable(false)
+//                    weapon.usesAmmo()
+//                    forceDisabledWeapons[weapon] = false
+//                }
+//                if (it && !weapon.isDisabled){
+//                    weapon.disable()
+//                    forceDisabledWeapons[weapon] = true
+//                }
+//            }
+        }
     }
 
     protected fun getFriendlies(): List<Pair<CombatEntityAPI, Vector2f>> {
         return addPredictedLocationToTargets(
             CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter {
-                it.isAlly && isWithinArc(it) && !it.isFighter
+                (it.isAlly || (it.owner == 0)) && isWithinArc(it) && !it.isFighter
             }).filter { isInRange(it.second) }
     }
 
@@ -118,7 +134,7 @@ abstract class SpecificAIPluginBase(
             return
         }
         currentTgtLeadAcc = if (currentTarget == lastTarget) {
-            min(currentTgtLeadAcc + 0.2f*lastP0, 1.0f)
+            min(currentTgtLeadAcc + 0.2f * lastP0, 1.0f)
         } else {
             weapon.ship?.mutableStats?.autofireAimAccuracy?.modifiedValue ?: 1.0f
         }

@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.6.0"
+    val modVersion = "0.7.0"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -175,7 +175,7 @@ tasks {
                    |   # Switch this off if you want to reset fire modes every battle
                    |   , "enablePersistentFireModes" : true # <---- EDIT HERE ----
                    |   # Number of frames messages will be displayed before fading. -1 for infinite
-                   |   , "messageDisplayDuration" : 150 # <---- EDIT HERE ----
+                   |   , "messageDisplayDuration" : 180 # <---- EDIT HERE ----
                    |   # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
                    |   , "messagePositionX" : 900 # <---- EDIT HERE ----
                    |   , "messagePositionY" : 150 # <---- EDIT HERE ----
@@ -184,6 +184,10 @@ tasks {
                    |   # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings
                    |   , "saveLoadInfoHotkey" : "j" # <---- EDIT HERE ----
                    |   , "resetHotkey" : "/" # <---- EDIT HERE ----
+                   |   , "loadAllShipsHotkey" : "*"
+                   |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
+                   |   # This can't be enabled when enablePersistentFireModes is off
+                   |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
 
 
                    |   #                                 #### CUSTOM AI CONFIGURATION  ####
@@ -199,6 +203,7 @@ tasks {
 
                    |   # Enabling this will always use the customAI (for applicable modes, refer to mode table)
                    |   # It's mostly here for testing, but feel free to give it a try if you want.
+                   |   # Note that forcing & enabling custom AI should actually be beneficial for performance over just enabling it.
                    |   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
                    |   ,"forceCustomAI" : false # <---- EDIT HERE (maybe) ----
 

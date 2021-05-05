@@ -17,6 +17,19 @@ def printIfOk(ok):
     print("")
 
 
+def setPrerelease(release_yml_path):
+    gs = subprocess.Popen("git status -sb | grep master", shell=True, stdout=subprocess.PIPE)
+    gs.wait()
+    if len(gs.communicate()[0]) > 1:
+        sed = subprocess.Popen("sed -i 's/prerelease: .*/prerelease: false/' " + release_yml_path, shell=True)
+        print("Detected release! -> prerelease = false")
+        sed.wait()
+    else:
+        sed = subprocess.Popen("sed -i 's/prerelease: .*/prerelease: true/' " + release_yml_path, shell=True)
+        print("Detected prerelease! -> prerelease = true")
+        sed.wait()
+
+
 def getAllSrcFiles(baseFolder):
     fileList = []
     for root, _, files in os.walk(baseFolder):
@@ -85,10 +98,14 @@ if "__main__" == __name__:
 
     print("Writing Settings...")
     s = subprocess.Popen("./gradlew write-settings-file", stdout=subprocess.PIPE, shell=True)
+    s.wait()
 
     print("Checking if Settings up-to-date...")
     settingsOk = checkSettings()
     printIfOk(settingsOk)
+
+    print("Setting prerelease == master")
+    setPrerelease(".github/workflows/release.yml")
 
     if not (todosOk and versionOk and settingsOk):
         print("WARNING! Found issues! Proceed anyways?")
@@ -97,7 +114,7 @@ if "__main__" == __name__:
             exit()
         print("Proceeding anyways")
 
-    s.wait()
+
     print("...Done")
     p = subprocess.Popen("git tag " + versionTag, shell=True)
     p.wait()

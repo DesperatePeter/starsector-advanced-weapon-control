@@ -2,15 +2,13 @@
 
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.typesandvalues.ControlEventType
+import com.dp.advancedgunnerycontrol.keyboardinput.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
+import com.dp.advancedgunnerycontrol.utils.DeploymentChecker
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.combat.BaseEveryFrameCombatPlugin
-import com.fs.starfarer.api.combat.CombatEngineAPI
-import com.fs.starfarer.api.combat.ShipAPI
-import com.fs.starfarer.api.combat.ViewportAPI
+import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.input.InputEventAPI
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
@@ -19,6 +17,7 @@ import java.awt.Color
 
 class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private lateinit var engine: CombatEngineAPI
+    private lateinit var deployChecker: DeploymentChecker
     private var font: LazyFont? = null
 
     private var drawable: LazyFont.DrawableString? = null
@@ -29,7 +28,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     companion object {
         fun determineSelectedShip(engine: CombatEngineAPI): ShipAPI? {
-            return if (engine.combatUI.isShowingCommandUI && engine.playerShip?.shipTarget?.owner == 0) {
+            return if (engine.playerShip?.shipTarget?.owner == 0) {
                 (engine.playerShip?.shipTarget) ?: engine.playerShip
             } else {
                 engine.playerShip
@@ -41,15 +40,43 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         super.advance(amount, events)
         if (!isInitialized) return
 
+        if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
+
         if (keyManager.parseInputEvents(events)) {
             processControlEvents()
+        }
+    }
+
+    private fun initAllShips() : Boolean{
+        engine.ships.filterNotNull().filter { it.owner == 0 }.let {
+            if (it.isEmpty()) return false
+            it.forEach { ship ->
+                initOrGetAIManager(ship)
+            }
+            printMessage("Loaded fire modes for all deployed ships!")
+            return true
+        }
+    }
+
+    private fun initNewlyDeployedShips(deployedShips: List<String>?){
+        deployedShips?.let { fleetShips ->
+            if (fleetShips.isEmpty()) return
+            // at least when deploying multiple ships, this should be faster than searching each time
+            val ships = engine.ships.associateBy { it.fleetMemberId }
+            fleetShips.forEach { fleetShip ->
+                initOrGetAIManager(ships[fleetShip])
+            }
+            printMessage("Loaded fire modes for newly deployed ships!")
         }
     }
 
     private fun processControlEvents() {
         when (keyManager.mkeyStatus.mcontrolEvent) {
             ControlEventType.COMBINE -> combineWeaponGroup()
-            ControlEventType.CYCLE -> cycleWeaponGroupMode()
+            ControlEventType.CYCLE -> {
+                cycleWeaponGroupMode()
+                if(Settings.enableAutoSaveLoad()) saveCurrentShipState()
+            }
             ControlEventType.INFO -> {
                 printShipInfo()
                 if (Settings.enablePersistentModes()) saveCurrentShipState()
@@ -58,6 +85,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 resetAiManager()
                 if (Settings.enablePersistentModes()) saveCurrentShipState()
                 printShipInfo()
+            }
+            ControlEventType.LOAD -> {
+                initAllShips()
             }
             else -> printMessage("Unrecognized Command (please send bug report)")
         }
@@ -146,6 +176,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 Global.getLogger(this.javaClass).error("Failed to load font, won't de displaying messages", e)
             }
             this.engine = engine
+            deployChecker = DeploymentChecker(engine)
             isInitialized = true
         }
     }
