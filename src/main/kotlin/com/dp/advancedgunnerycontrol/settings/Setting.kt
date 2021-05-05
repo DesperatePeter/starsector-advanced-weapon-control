@@ -5,7 +5,7 @@ import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.getFloat
 
 // Note: I can't seem to find any info on template/generics-specialization or SFINAE in Kotlin,
-// so instead I implemented different types of property.
+// so instead I implemented a "when value is type XYZ" switch
 // This whole thing feels unsatisfying...
 open class Setting<T>(private val key: String, defaultValue: T)
 {
@@ -60,31 +60,3 @@ open class Setting<T>(private val key: String, defaultValue: T)
             """.trimIndent())
     }
 }
-
-//class CharSetting (private val key: String, defaultValue: Char): Setting<Char>(key, defaultValue)
-//{
-//    override fun loadImpl(json : JSONObject) : Char?{
-//        return ((json.get(key) as? String)?.get(0)?.toLowerCase())
-//    }
-//}
-//
-//class BoolSetting (private val key: String, defaultValue: Boolean): Setting<Boolean>(key, defaultValue)
-//{
-//    override fun loadImpl(json : JSONObject) : Boolean{
-//        return json.get(key) == true
-//    }
-//}
-//
-//class ListSetting (private val key: String, defaultValue: List<String>): Setting<List<String>>(key, defaultValue)
-//{
-//    override fun loadImpl(json : JSONObject) : List<String>{
-//        val list = mutableListOf<String>()
-//        json.apply {
-//            val array = getJSONArray(key)
-//            for (i in 0 until array.length()){
-//                list.add(array.getString(i))
-//            }
-//        }
-//        return list
-//    }
-//}
