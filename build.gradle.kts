@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.7.1"
+    val modVersion = "0.7.2"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -188,6 +188,8 @@ tasks {
                    |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
                    |   # This can't be enabled when enablePersistentFireModes is off
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
+                   |   # When enabled, fire modes where all weapons are invalid (e.g. PD mode for non-PD weapons) are skipped when cycling.
+                   |   , "skipInvalidModes" : true # <---- EDIT HERE ----
 
 
                    |   #                                 #### CUSTOM AI CONFIGURATION  ####
@@ -221,12 +223,12 @@ tasks {
                    |   # where n is the number of entities (ships/missiles) in range of the ship and i is the number chosen here)
                    |   # Valid numbers are:
                    |   #     - 0 : No friendly fire computation, weapons won't care about hitting allies
-                   |   #     - 1 : Weapon won't consider friendly fire for target selection, only for deciding whether to fire or not
+                   |   #     - 1 : Weapons won't consider friendly fire for target selection, only for deciding whether to fire or not
                    |   #     - 2 : Weapon will only select targets that don't risk friendly fire (potentially high performance cost)
                    |   ,"customAIFriendlyFireAlgorithmComplexity" : 1 # <---- EDIT HERE (maybe) ----
 
                    |   # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
-                   |   # Setting this to 5.0+ means "don't you dare fire if there is even a remote chance you'll hit an ally!"
+                   |   # Setting this to 3.0+ means "don't you dare fire if there is even a remote chance you'll hit an ally!"
                    |   ,"customAIFriendlyFireCaution" : 1.0 # <---- EDIT HERE (maybe) ----
                    | }
 

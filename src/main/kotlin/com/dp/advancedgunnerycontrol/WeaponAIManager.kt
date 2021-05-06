@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol
 
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.utils.WeaponModeSelector
 import com.dp.advancedgunnerycontrol.weaponais.*
@@ -50,6 +51,9 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
             if (ship.weaponGroupsCopy.size <= index) return false
             val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
             modeSelector.fractionOfWeaponsInMode = adjustWeaponAIs(weaponGroup, modeSelector.currentMode)
+            if(Settings.skipInvalidModes() && modeSelector.currentMode != FireMode.DEFAULT && modeSelector.fractionOfWeaponsInMode.numerator == 0){
+                return cycleWeaponGroupMode(index)
+            }
             return true
         }
         return false

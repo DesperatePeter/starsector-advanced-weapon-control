@@ -2,7 +2,9 @@
 
 package com.dp.advancedgunnerycontrol.weaponais
 
+import com.dp.advancedgunnerycontrol.WeaponControlPlugin
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
@@ -16,8 +18,12 @@ import kotlin.math.sin
 const val degToRad: Float = PI.toFloat() / 180f
 
 fun isPD(weapon: WeaponAPI): Boolean {
-    return weapon.hasAIHint(WeaponAPI.AIHints.PD_ALSO) || weapon.hasAIHint(WeaponAPI.AIHints.PD)
-            || weapon.hasAIHint(WeaponAPI.AIHints.PD_ONLY)
+    if (weapon.hasAIHint(WeaponAPI.AIHints.PD_ALSO) || weapon.hasAIHint(WeaponAPI.AIHints.PD)
+        || weapon.hasAIHint(WeaponAPI.AIHints.PD_ONLY)
+    ) return true
+    if ((WeaponControlPlugin.determineSelectedShip(Global.getCombatEngine())?.variant?.hasHullMod("pointdefenseai") == true)
+        && (weapon.size == WeaponAPI.WeaponSize.SMALL) && (weapon.type != WeaponAPI.WeaponType.MISSILE)) return true
+    return false
 }
 
 fun isAimable(weapon: WeaponAPI): Boolean {

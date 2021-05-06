@@ -30,6 +30,7 @@ object Settings : SettingsDefinition() {
     val loadHotkey = addSetting<Char>("loadAllShipsHotkey", '*')
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
+    val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
     // val forceDisableWeapons = addSetting<Boolean>("forceDisableAIWeapons", true)
 
 
