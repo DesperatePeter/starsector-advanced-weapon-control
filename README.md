@@ -177,7 +177,8 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - Add ability to issue fire modes to AI-controlled allied ships **DONE**
 - Add weapon-blacklist for other mods such that their weapons stay unaffected by fire modes from this mod **DONE**
 - Automatically load fire modes on ship deployment **DONE**
-- Add a GUI to set fire modes in the ship refit editor (might be difficult)
+- Add a GUI to set fire modes in the ship refit editor (probably not going to happen unless I stumble upon a good solution)
+- Fire mode settings as hullmods (I don't want to do 7 groups x 7 fire modes hullmods, I'll try to think of something clever)
 
 ## Known Issues ##
 
@@ -205,6 +206,7 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.7.0: automatically load fire modes for all ships on combat start (opt-out in settings), 
   no longer need to be in Command UI to set friendly modes,  added hotkey to load fire modes for all ships
 - 0.7.1: fix issue with reset key, adjusted readme
+- 0.7.2: IPDAI is now considered for PD/Missiles mode, invalid modes are now skipped (opt-out in settings)
   
 ## Acknowledgements ##
 

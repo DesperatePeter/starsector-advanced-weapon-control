@@ -97,6 +97,7 @@ if "__main__" == __name__:
     printIfOk(versionOk)
 
     print("Writing Settings...")
+    print("If the gradle daemon isn't running yet, this might take a bit...")
     s = subprocess.Popen("./gradlew write-settings-file", stdout=subprocess.PIPE, shell=True)
     s.wait()
 
@@ -114,6 +115,12 @@ if "__main__" == __name__:
             exit()
         print("Proceeding anyways")
 
+    d = subprocess.Popen("git diff", stdout=subprocess.PIPE, shell=True)
+    d.wait()
+    if len(d.communicate()[0]) > 1:
+        print("Non-zero diff. Please stash/commit your changes and try again.")
+        print("Aborting...")
+        exit()
 
     print("...Done")
     p = subprocess.Popen("git tag " + versionTag, shell=True)
