@@ -1,3 +1,0 @@
-name,id,tier,rarity,tech/manufacturer,tags,uiTags,base value,unlocked,hidden,hiddenEverywhere,cost_frigate,cost_dest,cost_cruiser,cost_capital,script,desc,short,sprite
-Advanced Gunnery Control,agc_agc,3,1.0,,"special, no_build_in",Special,0,TRUE,TRUE,,0,0,0,0,com.dp.advancedgunnerycontrol.hullmods.AGCHullmod,"Opens the Advanced Gunnery Control Interface when installed. Currently, the hullmod itself has no effect, so you might as well remove it again after setting up firing modes.",AGC Interface,graphics/agc/agc_hullmod.png
-,,,,,,,,,,,,,,,,,,

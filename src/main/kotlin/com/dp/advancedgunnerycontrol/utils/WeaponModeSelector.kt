@@ -3,6 +3,7 @@ package com.dp.advancedgunnerycontrol.utils
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.weaponais.Fraction
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 
 /**
  * Essentially a cyclic list iterator for the cycleOrder
@@ -15,6 +16,11 @@ class WeaponModeSelector() {
 
     var fractionOfWeaponsInMode =
         Fraction() // this was kind of an afterthought, so it's not the most fitting in this class
+
+    constructor(mode : FireMode) : this() {
+        currentMode = mode
+        currentIndex = Settings.cycleOrder().indexOf(mode)
+    }
 
     fun reset(){
         currentIndex = 0

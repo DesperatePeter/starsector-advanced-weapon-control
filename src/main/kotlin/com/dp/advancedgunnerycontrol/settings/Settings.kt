@@ -31,6 +31,7 @@ object Settings : SettingsDefinition() {
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
+    val enableTextInterface = addSetting<Boolean>("enableTextInterface", false)
     // val forceDisableWeapons = addSetting<Boolean>("forceDisableAIWeapons", true)
 
 
