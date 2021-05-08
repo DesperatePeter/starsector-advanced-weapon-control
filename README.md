@@ -64,6 +64,16 @@ time you deploy that ship, its fire modes will be loaded automatically.
 NOTE: The allied ship AI will "manually" fire weapons independent of their fire mode, but still often
 rely on autofire. So, think of fire modes for allied ships as suggestions, not hard rules.
 
+#### Text Interface (prototype) ####
+
+If you don't like having to set up your firing modes during (simulated) combat, there is also a text interface available.
+Simply press the "-"-Key while on the sector/hyperspace map, and the interface will guide you through configuring your
+firing modes. Currently, this is kind of a placeholder/proof of concept. Unfortunately, I **can't directly interface with
+the ship refit screen**, so this is the best I can do. It should be possible to refine this interface,
+by e.g. displaying some graphics and buttons. However, before I put tons of effort into this, I would like to know if
+this provides any actual usability improvement over simply deploying your ships in a simulation and setting up their fire
+modes there. So, if you would actually like to use this feature, let me know, and I'll try to improve it.
+
 ## Fire Modes ##
 
 Mode | Targets | Prioritizes | Requirements | Can use Custom AI | Weapon Example | Enabled by Default
