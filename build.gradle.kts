@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.7.2"
+    val modVersion = "0.8.0"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -190,8 +190,8 @@ tasks {
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
                    |   # When enabled, fire modes where all weapons are invalid (e.g. PD mode for non-PD weapons) are skipped when cycling.
                    |   , "skipInvalidModes" : true # <---- EDIT HERE ----
-                   |   # Press the "-"-Key while on the system/hyperspace map with this enabled :P
-                   |   , "enableTextInterface" : true # <---- EDIT HERE ----
+                   |   # Press the "G"-Key while on the system/hyperspace map with this enabled
+                   |   , "enableGUI" : true # <---- EDIT HERE ----
 
 
                    |   #                                 #### CUSTOM AI CONFIGURATION  ####

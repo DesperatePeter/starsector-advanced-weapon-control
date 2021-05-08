@@ -41,8 +41,8 @@
    , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
    # When enabled, fire modes where all weapons are invalid (e.g. PD mode for non-PD weapons) are skipped when cycling.
    , "skipInvalidModes" : true # <---- EDIT HERE ----
-   # Press the "-"-Key while on the system/hyperspace map with this enabled :P
-   , "enableTextInterface" : true # <---- EDIT HERE ----
+   # Press the "G"-Key while on the system/hyperspace map with this enabled
+   , "enableGUI" : true # <---- EDIT HERE ----
 
 
    #                                 #### CUSTOM AI CONFIGURATION  ####

@@ -2,6 +2,8 @@ package com.dp.advancedgunnerycontrol
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.createSuffix
+import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.dp.advancedgunnerycontrol.utils.WeaponModeSelector
 import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.*
@@ -80,7 +82,8 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
             var weaponAI = weaponAIList[i]
             val weapon = weaponAI.weapon
             if (((weaponAI as? AdjustableAIPlugin) != null) && (weaponAIs[weapon] != null)) continue // skip if already custom AI plugin
-            if (null == weaponAIs[weapon]) weaponAIs[weapon] = AdjustableAIPlugin(weaponAI)
+            val suffix = createSuffix(SuffixStorage.modesByShip[ship?.fleetMemberId]?.get(i), weapon)
+            if (null == weaponAIs[weapon]) weaponAIs[weapon] = AdjustableAIPlugin(weaponAI, suffix)
             weaponAIs[weapon]?.let { weaponAI = it }
         }
     }

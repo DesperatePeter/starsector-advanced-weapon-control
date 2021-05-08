@@ -23,7 +23,7 @@ class AGCGUI : InteractionDialogPlugin {
     private var text : TextPanelAPI? = null
     private var options : OptionPanelAPI? = null
     private var visualPanel : VisualPanelAPI? = null
-    private val modeStorage = FireModeStorage()
+    private val modeStorage = FireModeStorage
     private var persist : Boolean = false
     private var showHover = false
     private var customPanel : CustomPanelAPI? = null
@@ -90,11 +90,8 @@ class AGCGUI : InteractionDialogPlugin {
 
     private fun showModeGUI(){
         val shipView = ShipView() // essentially an empty CustomUIPanelPlugin
-        // visualPanel?.restoreSavedVisual()
         customPanel = visualPanel?.showCustomPanel(1000f, 600f, shipView)
         customPanel?.position?.inTMid(20f)
-        val shipDisplay = customPanel?.createUIElement(1000f, 200f)
-        shipDisplay?.position?.inTMid(5f)
         ship?.let { sh ->
             val elements = mutableListOf<UIComponentAPI>()
             for(i in 0 until sh.variant.weaponGroups.size){
@@ -102,7 +99,9 @@ class AGCGUI : InteractionDialogPlugin {
 
                 element?.let {
                     it.addTitle("Group ${i+1}")
-                    shipView.addGroupButtons(i, sh, it)
+                    shipView.addModeButtonGroup(i, sh, it)
+                    it.addPara("Suffixes:", 5.0f)
+                    shipView.addSuffixButtons(i, sh, it)
                     it.addPara(groupAsString(sh.variant.weaponGroups[i], sh), 5.0f)
                     // without this call, we get a "can only anchor to siblings" exception
                     customPanel?.addComponent(it)
@@ -124,8 +123,8 @@ class AGCGUI : InteractionDialogPlugin {
     private fun displayFleetOptions(){
         clear()
         visualPanel?.showFleetInfo("Select a ship to adjust fire modes", Global.getSector().playerFleet, "-", null)
-        text?.addPara("Welcome to the AdvancedGunneryControl text interface (experimental)")
-        text?.addPara("If this interface interferes with your flow, you can disable it in Settings.editme")
+        text?.addPara("Welcome to the AdvancedGunneryControl interface (experimental)")
+        text?.addPara("This interface lets you set fire modes and suffixes (additional conditions)")
         text?.addPara("Please select a ship to modify weapon groups for.")
 
         Global.getSector().playerFleet?.membersWithFightersCopy?.forEach {

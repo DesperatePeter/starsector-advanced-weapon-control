@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
 import com.dp.advancedgunnerycontrol.weaponais.*
+import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 
 typealias FireModeMap = Map<FireMode, AutofireAIPlugin>
@@ -36,7 +37,7 @@ object FMValues{
     )
 
     // not technically a value, but this way all the mappings are in one place...
-    fun modeToPluginMap(baseAI: AutofireAIPlugin): FireModeMap {
+    fun modeToPluginMap(baseAI: AutofireAIPlugin, suffix: SuffixBase): FireModeMap {
         return mapOf(
             FireMode.DEFAULT to baseAI,
             FireMode.PD to PDAIPlugin(baseAI),

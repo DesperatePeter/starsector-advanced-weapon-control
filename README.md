@@ -49,6 +49,7 @@ Hotkeys (rebindable in Settings.editme):
 - "J" - Show info about current firing modes (and load/save modes)
 - "/" - Reset all modes back to default for current ship
 - "*" - Manually load firing modes for all deployed ships
+- "G" - Open the Gunnery Control GUI (only campaign mode, not rebindable)
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
@@ -64,15 +65,13 @@ time you deploy that ship, its fire modes will be loaded automatically.
 NOTE: The allied ship AI will "manually" fire weapons independent of their fire mode, but still often
 rely on autofire. So, think of fire modes for allied ships as suggestions, not hard rules.
 
-#### Text Interface (prototype) ####
+### Gunnery Control GUI ###
 
-If you don't like having to set up your firing modes during (simulated) combat, there is also a text interface available.
-Simply press the "-"-Key while on the sector/hyperspace map, and the interface will guide you through configuring your
-firing modes. Currently, this is kind of a placeholder/proof of concept. Unfortunately, I **can't directly interface with
-the ship refit screen**, so this is the best I can do. It should be possible to refine this interface,
-by e.g. displaying some graphics and buttons. However, before I put tons of effort into this, I would like to know if
-this provides any actual usability improvement over simply deploying your ships in a simulation and setting up their fire
-modes there. So, if you would actually like to use this feature, let me know, and I'll try to improve it.
+If you don't like having to set up your firing modes during (simulated) combat, there is also a dialog interface available.
+Simply press the "G"-Key while on the campaign map, and the interface will guide you through configuring your
+firing modes. Unfortunately, I **can't directly interface with
+the ship refit screen**, so this is the best I can do. In addition to configuring fire modes, this also allows you to
+set mode suffixes (currently only for flux level). You can disable the GUI in the settings.
 
 ## Fire Modes ##
 
@@ -90,6 +89,18 @@ Mining | Asteroids | Asteroids | None | Yes | Mining Blaster | No
 Note: If a weapon is not eligible for a certain mode, it will use its base AI as a fallback mode
 
 Note: You need to manually add modes that are not enabled by default in the settings
+
+### Mode Suffixes ###
+
+Suffixes modify the behaviour of the selected fire mode in some way. Currently, they are only accessible via the gunnery
+control GUI.
+
+Suffix | Effect
+:---: | :---
+NONE | None
+FLUX_BELOW90 | Weapon will hold fire if ship flux >= 90%
+FLUX_BELOW75 | Weapon will hold fire if ship flux >= 75%
+FLUX_BELOW50 | Weapon will hold fire if ship flux >= 50%
 
 ## Settings ##
 
@@ -187,7 +198,8 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - Add ability to issue fire modes to AI-controlled allied ships **DONE**
 - Add weapon-blacklist for other mods such that their weapons stay unaffected by fire modes from this mod **DONE**
 - Automatically load fire modes on ship deployment **DONE**
-- Add a GUI to set fire modes in the ship refit editor (might be difficult)
+- Add a GUI to set fire modes in the ship refit editor **DONE** (though not integrated in refit screen)
+- Mode suffixes **DONE**
 
 ## Known Issues ##
 
@@ -215,6 +227,7 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.7.0: automatically load fire modes for all ships on combat start (opt-out in settings), 
   no longer need to be in Command UI to set friendly modes,  added hotkey to load fire modes for all ships
 - 0.7.1: fix issue with reset key, adjusted readme
+- 0.8.0: added mode suffixes, added gunnery control GUI
   
 ## Acknowledgements ##
 
@@ -249,4 +262,5 @@ Just follow the following steps:
 On the off-chance that you want to support me financially, please don't :P My day-job as an engineer
 pays enough to cover my living expenses.
 
-I believe there are better places where you can donate your money to, check out <https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance
+I believe there are better places where you can donate your money to, check out
+<https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance

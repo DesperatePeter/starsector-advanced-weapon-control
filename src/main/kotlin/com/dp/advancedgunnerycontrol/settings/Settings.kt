@@ -31,14 +31,14 @@ object Settings : SettingsDefinition() {
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
-    val enableTextInterface = addSetting<Boolean>("enableTextInterface", true)
+    val enableTextInterface = addSetting<Boolean>("enableGUI", true)
     // val forceDisableWeapons = addSetting<Boolean>("forceDisableAIWeapons", true)
 
 
     var weaponBlacklist = listOf<String>()
         private set
 
-    val shipModeStorage = FireModeStorage()
+    val shipModeStorage = FireModeStorage
 
 
     override fun readSettings() {

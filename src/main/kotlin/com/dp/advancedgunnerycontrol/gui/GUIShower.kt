@@ -16,7 +16,7 @@ class GUIShower : EveryFrameScript {
             || Global.getCurrentState() == GameState.TITLE
         ) return
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_MINUS)){
+        if (Keyboard.isKeyDown(Keyboard.KEY_G)){
             Global.getSector().campaignUI.showInteractionDialog(AGCGUI(), Global.getSector().playerFleet)
         }
     }
