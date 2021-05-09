@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui
 
 import com.dp.advancedgunnerycontrol.typesandvalues.Suffixes
+import com.dp.advancedgunnerycontrol.typesandvalues.suffixDescriptions
 import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.ButtonAPI
@@ -16,7 +17,7 @@ class SuffixButton(ship: FleetMemberAPI, group : Int, suffix : Suffixes, button:
             val toReturn = mutableListOf<SuffixButton>()
 
             Suffixes.values().forEach {
-                toReturn.add(SuffixButton(ship, group, it, tooltip.addAreaCheckbox(it.toString(), it,
+                toReturn.add(SuffixButton(ship, group, it, tooltip.addAreaCheckbox(suffixDescriptions[it], it,
                     Color.BLUE, Color.BLUE, Color.WHITE, 120f, 24f, 3f)))
                 if(storage.modesByShip[ship.id]?.get(group) == it) toReturn.last().check()
             }

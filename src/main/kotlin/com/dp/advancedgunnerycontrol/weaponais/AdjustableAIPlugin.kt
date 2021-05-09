@@ -2,6 +2,8 @@ package com.dp.advancedgunnerycontrol.weaponais
 
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.Suffixes
+import com.dp.advancedgunnerycontrol.typesandvalues.createSuffix
 import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.MissileAPI
@@ -11,10 +13,15 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
 
-class AdjustableAIPlugin constructor(private val baseAI: AutofireAIPlugin, val suffix: SuffixBase) : AutofireAIPlugin {
+class AdjustableAIPlugin constructor(private val baseAI: AutofireAIPlugin) : AutofireAIPlugin {
 
     private var activeAI = baseAI
+    private var suffix = SuffixBase(baseAI.weapon)
     private var aiPlugins = FMValues.modeToPluginMap(baseAI, suffix)
+
+    fun setSuffix(sfx : Suffixes?){
+        suffix = createSuffix(sfx, baseAI.weapon)
+    }
 
     fun switchFireMode(mode: FireMode): Boolean {
         activeAI = aiPlugins[mode] ?: baseAI

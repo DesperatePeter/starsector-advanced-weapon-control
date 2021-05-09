@@ -184,7 +184,8 @@ tasks {
                    |   # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings
                    |   , "saveLoadInfoHotkey" : "j" # <---- EDIT HERE ----
                    |   , "resetHotkey" : "/" # <---- EDIT HERE ----
-                   |   , "loadAllShipsHotkey" : "*"
+                   |   , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
+                   |   , "suffixHotkey" : "-" # <---- EDIT HERE ----
                    |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
                    |   # This can't be enabled when enablePersistentFireModes is off
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----

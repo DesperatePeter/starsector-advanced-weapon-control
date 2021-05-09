@@ -21,7 +21,7 @@ class ModeButton(ship: FleetMemberAPI, group : Int, mode : FireMode, button: But
             Settings.cycleOrder().forEach {
                 toReturn.add(ModeButton(ship, group, it, tooltip.addAreaCheckbox(it.toString(), it,
                     Color.BLUE, Color.BLUE, Color.WHITE, 120f, 24f, 3f)))
-                if(storage.modesByShip[ship.id]?.get(group)?.currentMode == it) toReturn.last().check()
+                if(storage.modesByShip[ship.id]?.get(group)?.currentValue == it) toReturn.last().check()
             }
             toReturn.forEach {
                 it.sameGroupButtons = toReturn

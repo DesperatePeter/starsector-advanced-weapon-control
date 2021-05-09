@@ -29,6 +29,7 @@ object Settings : SettingsDefinition() {
     val infoHotkey = addSetting<Char>("saveLoadInfoHotkey", 'j')
     val resetHotkey = addSetting<Char>("resetHotkey", '/')
     val loadHotkey = addSetting<Char>("loadAllShipsHotkey", '*')
+    val suffixHotkey = addSetting<Char>("suffixHotkey", '-')
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
@@ -53,6 +54,8 @@ object Settings : SettingsDefinition() {
         customAIFriendlyFireComplexity.set ( max(0, min(2, customAIFriendlyFireComplexity())))
         infoHotkey.set(infoHotkey().toLowerCase())
         resetHotkey.set(resetHotkey().toLowerCase())
+        loadHotkey.set(loadHotkey().toLowerCase())
+        suffixHotkey.set(suffixHotkey().toLowerCase())
         cycleOrderStrings.set(listOf("Default") + cycleOrderStrings())
         cycleOrderInternal = cycleOrderStrings().mapNotNull { FMValues.FIRE_MODE_TRANSLATIONS[it] }
         if(cycleOrderInternal.size != cycleOrderStrings().size){

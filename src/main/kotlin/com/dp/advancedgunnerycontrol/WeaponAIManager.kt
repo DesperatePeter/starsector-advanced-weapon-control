@@ -4,13 +4,17 @@ import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.typesandvalues.Suffixes
 import com.dp.advancedgunnerycontrol.typesandvalues.createSuffix
+import com.dp.advancedgunnerycontrol.utils.SuffixSelector
 import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.dp.advancedgunnerycontrol.utils.WeaponModeSelector
 import com.dp.advancedgunnerycontrol.weaponais.*
+import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.*
 
 class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: ShipAPI?) {
-    var weaponGroupModes = emptyMap<Int, WeaponModeSelector>().toMutableMap()
+    var weaponGroupModes = mutableMapOf<Int, WeaponModeSelector>()
+        private set
+    var weaponGroupSuffixes = mutableMapOf<Int, SuffixSelector>()
         private set
     private var weaponAIs = HashMap<WeaponAPI, AdjustableAIPlugin>()
 
@@ -18,8 +22,10 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
         // Todo: truly revert to old plugin?
         weaponAIs.values.forEach {
             it.switchFireMode(FireMode.DEFAULT)
+            it.setSuffix(Suffixes.NONE)
         }
-        weaponGroupModes = emptyMap<Int, WeaponModeSelector>().toMutableMap()
+        weaponGroupModes = mutableMapOf()
+        weaponGroupSuffixes = mutableMapOf()
         weaponAIs = HashMap()
     }
 
@@ -39,9 +45,33 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
         if (!weaponGroupModes.containsKey(index)) {
             weaponGroupModes[index] = WeaponModeSelector()
         }
-        weaponGroupModes[index]?.cycleMode() ?: return false
+        weaponGroupModes[index]?.cycle() ?: return false
         weaponGroupModes[index]?.let {
             return applyWeaponGroupMode(index, it)
+        }
+        return false
+    }
+
+    fun cycleSuffix(index: Int): Boolean{
+        if(!weaponGroupSuffixes.containsKey(index)){
+            weaponGroupSuffixes[index] = SuffixSelector()
+        }
+        val suffixSelector = weaponGroupSuffixes[index] ?: return false
+        suffixSelector.cycle()
+        if (null == ship) {
+            ship = WeaponControlPlugin.determineSelectedShip(engine)
+        }
+        ship?.let { sh ->
+            if (sh.weaponGroupsCopy.size <= index) return false
+            val weaponGroup = sh.weaponGroupsCopy[index] ?: return false
+            var successful = false
+            weaponGroup.weaponsCopy.forEach {
+                weaponAIs[it]?.run {
+                    setSuffix(suffixSelector.currentValue)
+                    successful = true
+                }
+            }
+            return successful
         }
         return false
     }
@@ -53,8 +83,8 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
         ship?.let { ship ->
             if (ship.weaponGroupsCopy.size <= index) return false
             val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
-            modeSelector.fractionOfWeaponsInMode = adjustWeaponAIs(weaponGroup, modeSelector.currentMode)
-            if(Settings.skipInvalidModes() && modeSelector.currentMode != FireMode.DEFAULT && modeSelector.fractionOfWeaponsInMode.numerator == 0){
+            modeSelector.fractionOfWeaponsInMode = adjustWeaponAIs(weaponGroup, modeSelector.currentValue)
+            if(Settings.skipInvalidModes() && modeSelector.currentValue != FireMode.DEFAULT && modeSelector.fractionOfWeaponsInMode.numerator == 0){
                 return cycleWeaponGroupMode(index)
             }
             return true
@@ -68,7 +98,7 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
         weaponGroup.weaponsCopy.iterator().forEach { weapon ->
             if (weaponAIs[weapon]?.switchFireMode(fireMode) == true) affectedWeapons.numerator += 1
         }
-        // TODO: Cleanup (Code's a bit messy)
+
         // This for-loop shouldn't be necessary from my understanding of how Kotlin works (every object is a reference)
         // But for some reason, the mod doesn't work properly without this loop, so...yeah...
         for (i in 0 until weaponGroup.aiPlugins.size) {
@@ -83,8 +113,9 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
             var weaponAI = weaponAIList[i]
             val weapon = weaponAI.weapon
             if (((weaponAI as? AdjustableAIPlugin) != null) && (weaponAIs[weapon] != null)) continue // skip if already custom AI plugin
-            val suffix = createSuffix(SuffixStorage.modesByShip[ship?.fleetMemberId]?.get(i), weapon)
-            if (null == weaponAIs[weapon]) weaponAIs[weapon] = AdjustableAIPlugin(weaponAI, suffix)
+            val plugin = AdjustableAIPlugin(weaponAI)
+            plugin.setSuffix(SuffixStorage.modesByShip[ship?.fleetMemberId]?.get(i))
+            if (null == weaponAIs[weapon]) weaponAIs[weapon] = plugin
             weaponAIs[weapon]?.let { weaponAI = it }
         }
     }
@@ -94,14 +125,11 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
     }
 
     fun getFireModeSuffix(groupNumber: Int): String {
-        var suffixDescription = ""
-        SuffixStorage.modesByShip[ship?.fleetMemberId]?.get(groupNumber)?.let {
-            if (Suffixes.NONE != it){ suffixDescription = it.toString() }
-        }
-        weaponGroupModes[groupNumber]?.currentModeAsString()?.let {
-            return "$it, $suffixDescription"
+        var suffixDescription = (weaponGroupSuffixes[groupNumber]?.currentValueAsString() ?: "")
+
+        weaponGroupModes[groupNumber]?.currentValueAsString()?.let {
+            return "$it $suffixDescription"
         }
         return ""
     }
-
 }

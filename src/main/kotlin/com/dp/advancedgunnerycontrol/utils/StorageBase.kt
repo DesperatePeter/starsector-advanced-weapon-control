@@ -27,6 +27,6 @@ open class StorageBase<T> (private val persistentDataKey: String){
         }
 
     fun purge() {
-        modesByShip = mutableMapOf()
+        Global.getSector().persistentData.remove(persistentDataKey)
     }
 }

@@ -32,23 +32,26 @@ If you install a new version, please make sure to delete the old folder before d
 ## Controls ##
 
 Press the NUMPAD Keys 1-7, to cycle between firing modes for that group. **Make sure to enable Num-Lock!**
+Press the "-"-Key after 1-7 to cycle suffixes for that group.
 
 Whenever you cycle modes, you will see a message like this:
 
-```Group 2: [_X__] Missiles (custom AI) 2/3```
+```Group 2: [_X__] Missiles (custom AI) 2/3 Flux<90%```
 
 In order, this let's you know that a) group 2 is in b) the second out of 4 modes, 
-c) the current mode is Missiles, c) it's using custom AI when base AI wants to target something else
-and d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default).
+c) the current mode is Missiles, c) it's using custom AI when base AI wants to target something else,
+d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default)
+and e) (optional) the mode suffix prevents the weapon from firing if ship flux >= 90%.
 
 When you deploy a ship in combat, its last used fire modes will be loaded automatically. You can disable this behaviour
 in the settings.
 
 Hotkeys (rebindable in Settings.editme):
-- NUMPAD 1-7 - Cycle firing modes for weapon groups 1-7 for targeted or player ship
+- NUMPAD 1-7 - Cycle firing modes for weapon groups 1-7 for targeted or player ship (not rebindable)
 - "J" - Show info about current firing modes (and load/save modes)
 - "/" - Reset all modes back to default for current ship
 - "*" - Manually load firing modes for all deployed ships
+- "-" - Cycle suffix for the last group you cycled modes for
 - "G" - Open the Gunnery Control GUI (only campaign mode, not rebindable)
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
@@ -70,8 +73,7 @@ rely on autofire. So, think of fire modes for allied ships as suggestions, not h
 If you don't like having to set up your firing modes during (simulated) combat, there is also a dialog interface available.
 Simply press the "G"-Key while on the campaign map, and the interface will guide you through configuring your
 firing modes. Unfortunately, I **can't directly interface with
-the ship refit screen**, so this is the best I can do. In addition to configuring fire modes, this also allows you to
-set mode suffixes (currently only for flux level). You can disable the GUI in the settings.
+the ship refit screen**, so this is the best I can do.
 
 ## Fire Modes ##
 
@@ -92,15 +94,14 @@ Note: You need to manually add modes that are not enabled by default in the sett
 
 ### Mode Suffixes ###
 
-Suffixes modify the behaviour of the selected fire mode in some way. Currently, they are only accessible via the gunnery
-control GUI.
+Suffixes modify the behaviour of the selected fire mode in some way. Only one suffix may be applied.
 
 Suffix | Effect
 :---: | :---
 NONE | None
-FLUX_BELOW90 | Weapon will hold fire if ship flux >= 90%
-FLUX_BELOW75 | Weapon will hold fire if ship flux >= 75%
-FLUX_BELOW50 | Weapon will hold fire if ship flux >= 50%
+Flux<90% | Weapon will hold fire if ship flux >= 90%
+Flux<75% | Weapon will hold fire if ship flux >= 75%
+Flux<50% | Weapon will hold fire if ship flux >= 50%
 
 ## Settings ##
 
@@ -147,6 +148,19 @@ I go crazy in the settings. Below I will list a few options for improving perfor
 - Try not to set every weapon group for every ship to a special fire mode.
 - Leave the AI recursion level and friendly fire complexity at 1.
 - Consider turning off auto save/load and instead manually save ("J"-Key) and load ("*"-Key).
+
+## Troubleshooting ##
+
+If you get an error when loading a save that was using an old version of this mod or if you want to disable this mod,
+use the last version of this mod that worked with that save and disable the "enablePersistentFireModes" option.
+Load the save again, and the mod will purge its persistent data. Save the game and update/remove the mod.
+
+If that doesn't work, you can manually delete the data:
+Open the campaign.xml in Starsector/saves/saveXYZ in a text editor of your choice.
+Search for "$Advanced" and delete the lines from (including) ```<e>``` above ```<st>$AdvancedGunnery...</st>``` 
+until the last ```</e>``` before the next ```<st>``` or ```</persistentData>```. Repeat until you don't find "$Advanced" anymore.
+
+![DeleteData](imgs/delPersData.png "Delete persistent data")
 
 ## How does the mod work? ##
 

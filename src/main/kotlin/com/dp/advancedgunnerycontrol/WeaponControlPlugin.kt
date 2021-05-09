@@ -89,19 +89,40 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             ControlEventType.LOAD -> {
                 initAllShips()
             }
+            ControlEventType.SUFFIX -> {
+                cycleSuffix()
+            }
             else -> printMessage("Unrecognized Command (please send bug report)")
         }
+    }
+
+    private fun cycleSuffix(){
+        if(tryCycleSuffix()){
+            printShipInfo()
+        }else{
+            printMessage("Invalid Weapon Group\nCycle fire mode and try again.")
+        }
+    }
+
+    private fun tryCycleSuffix() :  Boolean{
+        val ship = determineSelectedShip(engine) ?: return false
+        val aiManager = initOrGetAIManager(ship) ?: return false
+        val index = keyManager.mkeyStatus.lastPressedWeaponGroup - 1
+        if (index == -1 || ship?.weaponGroupsCopy?.size ?: 0 <= index) {
+            return false
+        }
+        return aiManager.cycleSuffix(index)
     }
 
     private fun cycleWeaponGroupMode() {
         val ship = determineSelectedShip(engine)
         val aiManager = initOrGetAIManager(ship) ?: return
         val index = keyManager.mkeyStatus.mpressedWeaponGroup - 1
-        aiManager.cycleWeaponGroupMode(index)
         if (ship?.weaponGroupsCopy?.size ?: 0 <= index) {
             printMessage("Invalid Weapon Group")
             return
         }
+        aiManager.cycleWeaponGroupMode(index)
         if (Settings.uiForceFullInfo()) {
             printShipInfo()
         } else {
