@@ -8,6 +8,8 @@ enum class Suffixes {
     NONE, FLUX_90, FLUX_75, FLUX_50
 }
 
+const val defaultSuffixString = ""
+
 fun createSuffix(suffix: Suffixes?, weapon: WeaponAPI) : SuffixBase {
     return when(suffix){
         Suffixes.NONE -> SuffixBase(weapon)
@@ -24,3 +26,5 @@ val suffixDescriptions = mapOf(
     Suffixes.FLUX_75 to "Flux<75%",
     Suffixes.FLUX_90 to "Flux<90%"
 )
+
+val suffixFromString = suffixDescriptions.map { it.value to it.key }.toMap()

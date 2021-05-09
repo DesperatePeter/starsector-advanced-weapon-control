@@ -151,7 +151,12 @@ I go crazy in the settings. Below I will list a few options for improving perfor
 
 ## Troubleshooting ##
 
-If you get an error when loading a save that was using an old version of this mod or if you want to disable this mod,
+### Broken Saves ###
+
+Note: I already fixed the issue that lead to this problem (now I only store strings rather than enums/objects). 
+Unfortunately, I can't fix it retroactively...
+
+If you get an error when loading a save that was using an old version of this mod (after updating/disabling this mod),
 use the last version of this mod that worked with that save and disable the "enablePersistentFireModes" option.
 Load the save again, and the mod will purge its persistent data. Save the game and update/remove the mod.
 

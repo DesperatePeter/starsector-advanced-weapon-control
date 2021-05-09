@@ -1,7 +1,6 @@
 package com.dp.advancedgunnerycontrol.utils
 
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 
 open class StorageBase<T> (private val persistentDataKey: String){

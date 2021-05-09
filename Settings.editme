@@ -24,7 +24,7 @@
 
    #                                 #### UI SETTINGS ####
    # Switch this off if you want to reset fire modes every battle
-   , "enablePersistentFireModes" : false # <---- EDIT HERE ----
+   , "enablePersistentFireModes" : true # <---- EDIT HERE ----
    # Number of frames messages will be displayed before fading. -1 for infinite
    , "messageDisplayDuration" : 180 # <---- EDIT HERE ----
    # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
@@ -35,7 +35,8 @@
    # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings
    , "saveLoadInfoHotkey" : "j" # <---- EDIT HERE ----
    , "resetHotkey" : "/" # <---- EDIT HERE ----
-   , "loadAllShipsHotkey" : "*"
+   , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
+   , "suffixHotkey" : "-" # <---- EDIT HERE ----
    # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
    # This can't be enabled when enablePersistentFireModes is off
    , "enableAutoSaveLoad" : true # <---- EDIT HERE ----

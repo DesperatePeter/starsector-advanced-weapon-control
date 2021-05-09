@@ -15,7 +15,7 @@ class WeaponModeSelector : CycleSelectorBase<FireMode>{
 
     constructor() : super(Settings.cycleOrder())
 
-    constructor(mode: FireMode) : super(Settings.cycleOrder(), mode)
+    constructor(mode: FireMode?) : super(Settings.cycleOrder(), (mode ?: FireMode.DEFAULT))
 
     /**
      * @return something like "Group 2: [__X_] PD Mode"

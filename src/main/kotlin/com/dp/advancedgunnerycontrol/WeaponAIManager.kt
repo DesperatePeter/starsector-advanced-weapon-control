@@ -4,6 +4,7 @@ import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.typesandvalues.Suffixes
 import com.dp.advancedgunnerycontrol.typesandvalues.createSuffix
+import com.dp.advancedgunnerycontrol.typesandvalues.suffixFromString
 import com.dp.advancedgunnerycontrol.utils.SuffixSelector
 import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.dp.advancedgunnerycontrol.utils.WeaponModeSelector
@@ -29,11 +30,12 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
         weaponAIs = HashMap()
     }
 
-    fun refresh(modesByGroup: MutableMap<Int, WeaponModeSelector>) {
+    fun refresh(modesByGroup: MutableMap<Int, WeaponModeSelector>?, suffixByGroup : MutableMap<Int, SuffixSelector>?) {
         reset()
-        weaponGroupModes = modesByGroup
+        weaponGroupSuffixes = (suffixByGroup ?: mutableMapOf())
+        weaponGroupModes = (modesByGroup ?: mutableMapOf())
         weaponGroupModes.forEach { (index, modeSelector) ->
-            applyWeaponGroupMode(index, modeSelector)
+            applyWeaponGroupMode(index, modeSelector, suffixByGroup?.get(index))
         }
     }
 
@@ -47,7 +49,7 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
         }
         weaponGroupModes[index]?.cycle() ?: return false
         weaponGroupModes[index]?.let {
-            return applyWeaponGroupMode(index, it)
+            return applyWeaponGroupMode(index, it, weaponGroupSuffixes[index])
         }
         return false
     }
@@ -76,14 +78,14 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
         return false
     }
 
-    private fun applyWeaponGroupMode(index: Int, modeSelector: WeaponModeSelector): Boolean {
+    private fun applyWeaponGroupMode(index: Int, modeSelector: WeaponModeSelector, suffixSelector: SuffixSelector?): Boolean {
         if (null == ship) {
             ship = WeaponControlPlugin.determineSelectedShip(engine)
         }
         ship?.let { ship ->
             if (ship.weaponGroupsCopy.size <= index) return false
             val weaponGroup = ship.weaponGroupsCopy[index] ?: return false
-            modeSelector.fractionOfWeaponsInMode = adjustWeaponAIs(weaponGroup, modeSelector.currentValue)
+            modeSelector.fractionOfWeaponsInMode = adjustWeaponAIs(weaponGroup, modeSelector.currentValue, suffixSelector?.currentValue)
             if(Settings.skipInvalidModes() && modeSelector.currentValue != FireMode.DEFAULT && modeSelector.fractionOfWeaponsInMode.numerator == 0){
                 return cycleWeaponGroupMode(index)
             }
@@ -92,11 +94,12 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
         return false
     }
 
-    private fun adjustWeaponAIs(weaponGroup: WeaponGroupAPI, fireMode: FireMode): Fraction {
+    private fun adjustWeaponAIs(weaponGroup: WeaponGroupAPI, fireMode: FireMode, suffix: Suffixes?): Fraction {
         initializeAIsIfNecessary(weaponGroup.aiPlugins)
         var affectedWeapons = Fraction(0, weaponGroup.aiPlugins.size)
         weaponGroup.weaponsCopy.iterator().forEach { weapon ->
             if (weaponAIs[weapon]?.switchFireMode(fireMode) == true) affectedWeapons.numerator += 1
+            weaponAIs[weapon]?.setSuffix(suffix)
         }
 
         // This for-loop shouldn't be necessary from my understanding of how Kotlin works (every object is a reference)
@@ -114,7 +117,6 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
             val weapon = weaponAI.weapon
             if (((weaponAI as? AdjustableAIPlugin) != null) && (weaponAIs[weapon] != null)) continue // skip if already custom AI plugin
             val plugin = AdjustableAIPlugin(weaponAI)
-            plugin.setSuffix(SuffixStorage.modesByShip[ship?.fleetMemberId]?.get(i))
             if (null == weaponAIs[weapon]) weaponAIs[weapon] = plugin
             weaponAIs[weapon]?.let { weaponAI = it }
         }

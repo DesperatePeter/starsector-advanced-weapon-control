@@ -58,12 +58,12 @@ class AGCGUI : InteractionDialogPlugin {
 
     private fun showModeGUI(){
         val shipView = ShipView() // essentially an empty CustomUIPanelPlugin
-        customPanel = visualPanel?.showCustomPanel(1000f, 600f, shipView)
+        customPanel = visualPanel?.showCustomPanel(1200f, 600f, shipView)
         customPanel?.position?.inTMid(20f)
         ship?.let { sh ->
             val elements = mutableListOf<UIComponentAPI>()
             for(i in 0 until sh.variant.weaponGroups.size){
-                val element = customPanel?.createUIElement(125f, 400f, true)
+                val element = customPanel?.createUIElement(162f, 500f, true)
 
                 element?.let {
                     it.addTitle("Group ${i+1}")
@@ -78,7 +78,7 @@ class AGCGUI : InteractionDialogPlugin {
                         if (elements.isNotEmpty()){
                             p.rightOfTop(elements.last(), 10f)
                         }else{
-                            p.inBL(10f, 10f)
+                            p.inTL(15f, 90f)
                         }
                     }
                     elements.add(it)
@@ -92,18 +92,16 @@ class AGCGUI : InteractionDialogPlugin {
 
         clear()
         dialog?.showFleetMemberPickerDialog("Pick a ship to adjust weapon modes & suffixes for",
-            "Confirm", "Cancel", 5, 6, 100f, true, false,
+            "Confirm", "Exit", 5, 6, 100f, true, false,
             Global.getSector().playerFleet.membersWithFightersCopy.filter{ !it.isFighterWing }, object : FleetMemberPickerListener{
                 override fun pickedFleetMembers(selected: MutableList<FleetMemberAPI>?) {
-                    selected?.first()?.let {
+                    selected?.firstOrNull()?.let {
                         ship = it
                         level = Level.SHIP
                         displayOptions()
                         return
                     }
-                    ship = null
-                    level = Level.TOP
-                    displayOptions()
+                    dialog?.dismiss()
                 }
 
                 override fun cancelledFleetMemberPicking() {

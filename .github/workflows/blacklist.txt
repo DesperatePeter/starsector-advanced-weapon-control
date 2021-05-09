@@ -10,3 +10,4 @@ DO_NOT_USE
 .flac$
 ^.github/
 banner.png$
+prepareRelease.py

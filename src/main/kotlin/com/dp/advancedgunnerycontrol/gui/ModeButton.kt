@@ -1,6 +1,8 @@
 package com.dp.advancedgunnerycontrol.gui
 
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
+import com.dp.advancedgunnerycontrol.typesandvalues.FMValues.defaultFireModeString
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.utils.FireModeStorage
 import com.dp.advancedgunnerycontrol.utils.WeaponModeSelector
@@ -20,8 +22,8 @@ class ModeButton(ship: FleetMemberAPI, group : Int, mode : FireMode, button: But
 
             Settings.cycleOrder().forEach {
                 toReturn.add(ModeButton(ship, group, it, tooltip.addAreaCheckbox(it.toString(), it,
-                    Color.BLUE, Color.BLUE, Color.WHITE, 120f, 24f, 3f)))
-                if(storage.modesByShip[ship.id]?.get(group)?.currentValue == it) toReturn.last().check()
+                    Color.BLUE, Color.BLUE, Color.WHITE, 160f, 24f, 3f)))
+                if(FMValues.FIRE_MODE_TRANSLATIONS[storage.modesByShip[ship.id]?.get(group)] == it) toReturn.last().check()
             }
             toReturn.forEach {
                 it.sameGroupButtons = toReturn
@@ -34,6 +36,6 @@ class ModeButton(ship: FleetMemberAPI, group : Int, mode : FireMode, button: But
         if(storage.modesByShip[ship.id] == null){
             storage.modesByShip[ship.id] = mutableMapOf()
         }
-        storage.modesByShip[ship.id]?.let { it[group] = WeaponModeSelector(associatedValue) }
+        storage.modesByShip[ship.id]?.let { it[group] = FMValues.fireModeAsString[associatedValue] ?: defaultFireModeString }
     }
 }
