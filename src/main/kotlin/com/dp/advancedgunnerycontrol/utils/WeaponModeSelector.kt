@@ -14,8 +14,8 @@ class WeaponModeSelector() {
     var currentMode = Settings.cycleOrder().first()
         private set
 
-    var fractionOfWeaponsInMode =
-        Fraction() // this was kind of an afterthought, so it's not the most fitting in this class
+    // this was kind of an afterthought, so it's not the most fitting in this class
+    var fractionOfWeaponsInMode = Fraction()
 
     constructor(mode : FireMode) : this() {
         currentMode = mode

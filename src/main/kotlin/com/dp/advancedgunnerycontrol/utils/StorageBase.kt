@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.utils
 
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 
@@ -16,6 +17,9 @@ open class StorageBase<T> (private val persistentDataKey: String){
 
     var modesByShip: MutableMap<String, MutableMap<Int, T>>
         get() {
+            if(!Settings.enablePersistentModes()){
+                return mutableMapOf()
+            }
             return getMap()
         }
         private set(value) {

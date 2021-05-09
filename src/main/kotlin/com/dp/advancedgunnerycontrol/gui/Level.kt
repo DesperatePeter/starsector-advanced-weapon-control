@@ -1,5 +1,5 @@
 package com.dp.advancedgunnerycontrol.gui
 
 enum class Level {
-    TOP, SHIP, WEAPON
+    TOP, SHIP
 }

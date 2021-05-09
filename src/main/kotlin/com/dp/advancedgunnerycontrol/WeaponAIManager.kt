@@ -2,6 +2,7 @@ package com.dp.advancedgunnerycontrol
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
+import com.dp.advancedgunnerycontrol.typesandvalues.Suffixes
 import com.dp.advancedgunnerycontrol.typesandvalues.createSuffix
 import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.dp.advancedgunnerycontrol.utils.WeaponModeSelector
@@ -93,8 +94,14 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
     }
 
     fun getFireModeSuffix(groupNumber: Int): String {
-        return weaponGroupModes[groupNumber]?.currentModeAsString() ?: " --"
-
+        var suffixDescription = ""
+        SuffixStorage.modesByShip[ship?.fleetMemberId]?.get(groupNumber)?.let {
+            if (Suffixes.NONE != it){ suffixDescription = it.toString() }
+        }
+        weaponGroupModes[groupNumber]?.currentModeAsString()?.let {
+            return "$it, $suffixDescription"
+        }
+        return ""
     }
 
 }

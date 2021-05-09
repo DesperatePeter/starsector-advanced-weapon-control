@@ -5,6 +5,7 @@ import com.dp.advancedgunnerycontrol.utils.FireModeStorage
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
+import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.fs.starfarer.api.Global
 import data.scripts.util.MagicSettings
 import kotlin.math.max
@@ -34,12 +35,11 @@ object Settings : SettingsDefinition() {
     val enableTextInterface = addSetting<Boolean>("enableGUI", true)
     // val forceDisableWeapons = addSetting<Boolean>("forceDisableAIWeapons", true)
 
-
     var weaponBlacklist = listOf<String>()
         private set
 
     val shipModeStorage = FireModeStorage
-
+    val suffixStorage = SuffixStorage
 
     override fun readSettings() {
         super.readSettings()

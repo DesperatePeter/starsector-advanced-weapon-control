@@ -9,7 +9,7 @@ abstract class ButtonBase<T>(protected var ship: FleetMemberAPI, protected var g
     protected var sameGroupButtons : List<ButtonBase<T>> = emptyList()
         set(value) {field = value.filter { it.associatedValue != this.associatedValue }}
 
-    public fun executeCallbackIfChecked(){
+    fun executeCallbackIfChecked(){
         if (!active && button.isChecked){
             check()
         }
