@@ -79,7 +79,7 @@ class AGCGUI : InteractionDialogPlugin {
         when(level){
             Level.TOP -> {
                 displayFleetOptions()
-                options?.addOption("Close", false)
+                // options?.addOption("Close", false)
                 return
             }
             Level.SHIP -> displayShipOptions()
@@ -121,21 +121,42 @@ class AGCGUI : InteractionDialogPlugin {
     }
 
     private fun displayFleetOptions(){
-        clear()
-        visualPanel?.showFleetInfo("Select a ship to adjust fire modes", Global.getSector().playerFleet, "-", null)
-        text?.addPara("Welcome to the AdvancedGunneryControl interface (experimental)")
-        text?.addPara("This interface lets you set fire modes and suffixes (additional conditions)")
-        text?.addPara("Please select a ship to modify weapon groups for.")
 
-        Global.getSector().playerFleet?.membersWithFightersCopy?.forEach {
-            it?.let { fleetMember ->
-                if(!fleetMember.isFighterWing){
-                    options?.let { opts ->
-                        opts.addOption("${fleetMember.shipName} (${fleetMember.variant.fullDesignationWithHullNameForShip})", fleetMember)
+        clear()
+        //visualPanel?.showFleetInfo("Select a ship to adjust fire modes", Global.getSector().playerFleet, "-", null)
+//        text?.addPara("Welcome to the AdvancedGunneryControl interface (experimental)")
+//        text?.addPara("This interface lets you set fire modes and suffixes (additional conditions)")
+//        text?.addPara("Please select a ship to modify weapon groups for.")
+        dialog?.showFleetMemberPickerDialog("Pick a ship to adjust weapon modes & suffixes for",
+            "Confirm", "Cancel", 5, 6, 100f, true, false,
+            Global.getSector().playerFleet.membersWithFightersCopy.filter{ !it.isFighterWing }, object : FleetMemberPickerListener{
+                override fun pickedFleetMembers(selected: MutableList<FleetMemberAPI>?) {
+                    selected?.first()?.let {
+                        ship = it
+                        level = Level.SHIP
+                        displayOptions()
+                        return
                     }
+                    ship = null
+                    level = Level.TOP
+                    displayOptions()
                 }
-            }
-        }
+
+                override fun cancelledFleetMemberPicking() {
+                    dialog?.dismiss()
+                }
+
+            })
+
+//        Global.getSector().playerFleet?.membersWithFightersCopy?.forEach {
+//            it?.let { fleetMember ->
+//                if(!fleetMember.isFighterWing){
+//                    options?.let { opts ->
+//                        opts.addOption("${fleetMember.shipName} (${fleetMember.variant.fullDesignationWithHullNameForShip})", fleetMember)
+//                    }
+//                }
+//            }
+//        }
     }
 
     private fun displayShipOptions(){
