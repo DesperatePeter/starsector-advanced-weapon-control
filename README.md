@@ -153,10 +153,11 @@ I go crazy in the settings. Below I will list a few options for improving perfor
 
 ### Broken Saves ###
 
-Note: I already fixed the issue that lead to this problem (now I only store strings rather than enums/objects). 
+Note: I already fixed the issue that lead to this problem (now I only store strings rather than enums/objects). As of now,
+it will be possible to remove this mod from an ongoing save without issues.
 Unfortunately, I can't fix it retroactively...
 
-If you get an error when loading a save that was using an old version of this mod (after updating/disabling this mod),
+If you get an error when loading a save that was using an old version of this mod (after updating from 0.8.0-ALPHA or disabling this mod),
 use the last version of this mod that worked with that save and disable the "enablePersistentFireModes" option.
 Load the save again, and the mod will purge its persistent data. Save the game and update/remove the mod.
 
@@ -220,11 +221,11 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - Add a GUI to set fire modes in the ship refit editor **DONE** (though not integrated in refit screen)
 - Mode suffixes **DONE**
 
+
 ## Known Issues ##
 
-- Depending on the machine/OS(?), keyboard inputs will not be accepted while holding SHIFT-Key.
-
-If you happen to have any clues to fixing these issues, please let me know.
+- Versions before 0.8.2 saved custom classes as persistent data, meaning it was not possible to remove the mod.
+  Please refer to the troubleshooting section.
 
 ## Changelog ## 
 
@@ -246,8 +247,10 @@ If you happen to have any clues to fixing these issues, please let me know.
 - 0.7.0: automatically load fire modes for all ships on combat start (opt-out in settings), 
   no longer need to be in Command UI to set friendly modes,  added hotkey to load fire modes for all ships
 - 0.7.1: fix issue with reset key, adjusted readme
+- 0.7.2: IPDAI is now considered for PD/Missiles mode, invalid modes are now skipped (opt-out in settings)
 - 0.8.0: added mode suffixes, added gunnery control GUI
 - 0.8.1: cleaned up GUI, display weapon mode suffixes
+- 0.8.2: add ability to cyclce suffixes during combat, fix issues with persistence and save game corruption
 
 ## Acknowledgements ##
 

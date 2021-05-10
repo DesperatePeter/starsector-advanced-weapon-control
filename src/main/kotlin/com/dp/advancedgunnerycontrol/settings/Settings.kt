@@ -34,7 +34,7 @@ object Settings : SettingsDefinition() {
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
     val enableTextInterface = addSetting<Boolean>("enableGUI", true)
-    // val forceDisableWeapons = addSetting<Boolean>("forceDisableAIWeapons", true)
+
 
     var weaponBlacklist = listOf<String>()
         private set
