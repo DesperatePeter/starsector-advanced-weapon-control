@@ -4,8 +4,7 @@
 
 This is a utility mod that allows you to set your auto-fire weapon groups to different modes.
 For example, in PD-Only mode, weapons will ONLY fire at missiles and fighters, not at enemy ships.
-This is especially useful for e.g. Bust PD Lasers, to not waste charges to deal soft-flux to enemy shields.
-Check out the list of available modes below!
+Check out the full list of available modes below!
 
 Sections of this readme are roughly ordered by importance. For the most important stuff, stop after Settings.
 
@@ -19,9 +18,11 @@ Also visit the forums post: <https://fractalsoftworks.com/forum/index.php?topic=
 - Unzip the archive in your Starsector/mods folder
 - Enable the NUMPAD-Numlock on your keyboard ![Numlock](imgs/numlock.png "Numlock")
 - Play the game and press NUMPAD-Keys during combat to cycle fire modes
+- (optional) after that, add suffixes to that mode by pressing "-"
 - Target an ally (R-Key) in combat to cycle their firing modes
 - By default, firing modes are automatically saved/loaded between combats (per ship)
 - (optional) edit Starsector/mods/AdvancedGunneryControl/Settings.editme and add/remove modes you don't like etc.
+- (optional) press "G" in the campaign map to open a GUI
 
 ## Installation ##
 
@@ -63,17 +64,16 @@ If this becomes an issue for you, please let me know, and I will try to implemen
 
 You can simply set up fire modes for allied ships by running a simulation with them and adjusting fire modes. Alternatively,
 you can target allied ships in combat by using the R-Key and then adjust their fire modes via the NUMPAD-Keys. The next 
-time you deploy that ship, its fire modes will be loaded automatically. 
+time you deploy that ship, its fire modes will be loaded automatically.
 
 NOTE: The allied ship AI will "manually" fire weapons independent of their fire mode, but still often
 rely on autofire. So, think of fire modes for allied ships as suggestions, not hard rules.
 
 ### Gunnery Control GUI ###
 
-If you don't like having to set up your firing modes during (simulated) combat, there is also a dialog interface available.
+If you don't like having to set up your ships firing modes during (simulated) combat, there is also a dialog interface available.
 Simply press the "G"-Key while on the campaign map, and the interface will guide you through configuring your
-firing modes. Unfortunately, I **can't directly interface with
-the ship refit screen**, so this is the best I can do.
+firing modes. Unfortunately, I **can't directly interface with the ship refit screen**, so this is the best I can do.
 
 ## Fire Modes ##
 
@@ -206,8 +206,6 @@ This mod doesn't affect anything outside of combat, so it's very unlikely to cau
 
 ## Roadmap ##
 
-This is still a relatively early version. If you encounter any bugs, please let me know.
-
 After some more testing, bug-fixing and implementing requested features,
 I would like to add a feature where you can merge other weapon groups into your active weapon group.
 Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
@@ -218,7 +216,7 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - Add ability to issue fire modes to AI-controlled allied ships **DONE**
 - Add weapon-blacklist for other mods such that their weapons stay unaffected by fire modes from this mod **DONE**
 - Automatically load fire modes on ship deployment **DONE**
-- Add a GUI to set fire modes in the ship refit editor **DONE** (though not integrated in refit screen)
+- Add a GUI to set fire modes in the ship refit editor **partially DONE** (not integrated in refit screen)
 - Mode suffixes **DONE**
 
 
@@ -251,10 +249,11 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - 0.8.0: added mode suffixes, added gunnery control GUI
 - 0.8.1: cleaned up GUI, display weapon mode suffixes
 - 0.8.2: add ability to cyclce suffixes during combat, fix issues with persistence and save game corruption
+- 0.8.3: minor polish
 
 ## Acknowledgements ##
 
-Many thanks to Wisp for answering my endless questions about Kotlin and Starsector modding and for providing
+Many thanks to Wisp(borne) for answering my endless questions about Kotlin and Starsector modding and for providing
 an awesome repository template.
 
 Thanks to LazyWizard for providing the LazyLib.
