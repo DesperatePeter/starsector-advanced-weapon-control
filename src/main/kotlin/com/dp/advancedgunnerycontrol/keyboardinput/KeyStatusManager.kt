@@ -13,30 +13,21 @@ class KeyStatusManager {
     private fun parseInputEvent(event: InputEventAPI): Boolean {
         if (event.isConsumed || !event.isKeyDownEvent) return false
 
+        when(event.eventChar.toLowerCase()){
+            Settings.infoHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.INFO
+            Settings.resetHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.RESET
+            Settings.loadHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.LOAD
+            Settings.suffixHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.SUFFIX
 
-        if (event.eventChar.toLowerCase() == Settings.infoHotkey()) {
-            mkeyStatus.mcontrolEvent = ControlEventType.INFO
-            return true
-        }
-
-
-        if (event.eventChar.toLowerCase() == Settings.resetHotkey()){
-            mkeyStatus.mcontrolEvent = ControlEventType.RESET
-            return true
-        }
-
-        if(event.eventChar.toLowerCase() == Settings.loadHotkey()){
-            mkeyStatus.mcontrolEvent = ControlEventType.LOAD
-            return true
-        }
-
-        if (event.eventChar !in weaponGroupKeys) return false
-        // Note: char.toInt gets the ascii value rather than the contained number
-        mkeyStatus.mpressedWeaponGroup = event.eventChar.toString().toInt()
-
-        mkeyStatus.mcontrolEvent = ControlEventType.CYCLE
-        if (event.isAltDown) {
-            mkeyStatus.mcontrolEvent = ControlEventType.COMBINE
+            in weaponGroupKeys -> {
+                mkeyStatus.mpressedWeaponGroup = event.eventChar.toString().toInt()
+                mkeyStatus.lastPressedWeaponGroup = mkeyStatus.mpressedWeaponGroup
+                mkeyStatus.mcontrolEvent = ControlEventType.CYCLE
+                if (event.isAltDown) {
+                    mkeyStatus.mcontrolEvent = ControlEventType.COMBINE
+                }
+            }
+            else -> return false
         }
         event.consume()
         return true

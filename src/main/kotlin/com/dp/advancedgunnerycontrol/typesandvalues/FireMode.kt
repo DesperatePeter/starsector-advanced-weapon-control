@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
 import com.dp.advancedgunnerycontrol.weaponais.*
+import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 
 typealias FireModeMap = Map<FireMode, AutofireAIPlugin>
@@ -12,8 +13,10 @@ enum class FireMode {
 object FMValues{
     val modesAvailableForCustomAI = // Only add if AI has "isBaseAIOverwritable(): Boolean = true"
         listOf(FireMode.SMALL_SHIPS, FireMode.BIG_SHIPS, FireMode.FIGHTER, FireMode.MISSILE)
-// "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining"
-    var FIRE_MODE_DESCRIPTIONS = mutableMapOf(
+
+    const val defaultFireModeString = "Default"
+
+    var fireModeAsString = mapOf(
         FireMode.DEFAULT to "Default",
         FireMode.PD to "PD",
         FireMode.FIGHTER to "Fighters",
@@ -24,19 +27,12 @@ object FMValues{
         FireMode.MINING to "Mining"
     )
 
-    val FIRE_MODE_TRANSLATIONS = mapOf(
-        "Default" to FireMode.DEFAULT,
-        "PD" to FireMode.PD,
-        "Fighters" to FireMode.FIGHTER,
-        "Missiles" to FireMode.MISSILE,
-        "NoFighters" to FireMode.NO_FIGHTERS,
-        "BigShips" to FireMode.BIG_SHIPS,
-        "SmallShips" to FireMode.SMALL_SHIPS,
-        "Mining" to FireMode.MINING
-    )
+    var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()
+
+    val FIRE_MODE_TRANSLATIONS = fireModeAsString.map { it.value to it.key }.toMap()
 
     // not technically a value, but this way all the mappings are in one place...
-    fun modeToPluginMap(baseAI: AutofireAIPlugin): FireModeMap {
+    fun modeToPluginMap(baseAI: AutofireAIPlugin, suffix: SuffixBase): FireModeMap {
         return mapOf(
             FireMode.DEFAULT to baseAI,
             FireMode.PD to PDAIPlugin(baseAI),

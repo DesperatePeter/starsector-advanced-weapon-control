@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol
 
+import com.dp.advancedgunnerycontrol.gui.GUIShower
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.BaseModPlugin
@@ -10,9 +11,19 @@ class WeaponControlBasePlugin : BaseModPlugin() {
     override fun onApplicationLoad() {
         super.onApplicationLoad()
         Settings.loadSettings()
-        if (!Settings.enablePersistentModes()) Settings.shipModeStorage.purge()
         modifyFighterAndMissileModeDescriptionsToIncludeAIType()
         logSettings()
+    }
+
+    override fun onGameLoad(newGame: Boolean) {
+        super.onGameLoad(newGame)
+        if (!Settings.enablePersistentModes()) {
+            Settings.shipModeStorage.purge()
+            Settings.suffixStorage.purge()
+        }
+        if (Settings.enableTextInterface()){
+            Global.getSector().addTransientScript(GUIShower())
+        }
     }
 
     private fun logSettings() {

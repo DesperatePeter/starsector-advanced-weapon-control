@@ -2,6 +2,7 @@ package com.dp.advancedgunnerycontrol.weaponais
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
+import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
@@ -11,7 +12,8 @@ import kotlin.math.*
 
 abstract class SpecificAIPluginBase(
     private val baseAI: AutofireAIPlugin,
-    private val customAIActive: Boolean = Settings.enableCustomAI()
+    private val customAIActive: Boolean = Settings.enableCustomAI(),
+    var suffix: SuffixBase = SuffixBase(baseAI.weapon)
 ) : AutofireAIPlugin {
     private var targetEntity: CombatEntityAPI? = null
     private var lastTargetEntity: CombatEntityAPI? = null
@@ -223,6 +225,7 @@ abstract class SpecificAIPluginBase(
 
     protected fun computeIfShouldFire(potentialTargets: List<Pair<CombatEntityAPI, Vector2f>>): Boolean {
         // Note: In a sequence, all calculations are done on the first element before moving to the next
+        if(suffix.suppressFire()) return false
         potentialTargets.asSequence().filter { isInRange(it.second) }.iterator().forEach {
             val tolerance = it.first.collisionRadius * aimingToleranceFactor + aimingToleranceFlat
             val lateralTargetOffset = angularDistanceFromWeapon(it.second) * linearDistanceFromWeapon(it.second)
@@ -239,7 +242,7 @@ abstract class SpecificAIPluginBase(
             angularDistanceFromWeapon(it) + Values.distToAngularDistEvalutionFactor * linearDistanceFromWeapon(it)
         }.let {
             if (lastTargetEntity == entity) it * 0.05f else it // heavily incentivize sticking to one target
-        }
+        } * suffix.modifyPriority(entity)
     }
 
     override fun shouldFire(): Boolean {

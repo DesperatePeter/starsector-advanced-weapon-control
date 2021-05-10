@@ -5,8 +5,8 @@ package com.dp.advancedgunnerycontrol
 import com.dp.advancedgunnerycontrol.keyboardinput.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.utils.DeploymentChecker
+import com.dp.advancedgunnerycontrol.typesandvalues.*
+import com.dp.advancedgunnerycontrol.utils.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.input.InputEventAPI
@@ -89,19 +89,41 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             ControlEventType.LOAD -> {
                 initAllShips()
             }
+            ControlEventType.SUFFIX -> {
+                cycleSuffix()
+                if (Settings.enablePersistentModes()) saveCurrentShipState()
+            }
             else -> printMessage("Unrecognized Command (please send bug report)")
         }
+    }
+
+    private fun cycleSuffix(){
+        if(tryCycleSuffix()){
+            printShipInfo()
+        }else{
+            printMessage("Invalid Weapon Group\nCycle fire mode and try again.")
+        }
+    }
+
+    private fun tryCycleSuffix() :  Boolean{
+        val ship = determineSelectedShip(engine) ?: return false
+        val aiManager = initOrGetAIManager(ship) ?: return false
+        val index = keyManager.mkeyStatus.lastPressedWeaponGroup - 1
+        if (index == -1 || ship.weaponGroupsCopy?.size ?: 0 <= index) {
+            return false
+        }
+        return aiManager.cycleSuffix(index)
     }
 
     private fun cycleWeaponGroupMode() {
         val ship = determineSelectedShip(engine)
         val aiManager = initOrGetAIManager(ship) ?: return
         val index = keyManager.mkeyStatus.mpressedWeaponGroup - 1
-        aiManager.cycleWeaponGroupMode(index)
         if (ship?.weaponGroupsCopy?.size ?: 0 <= index) {
             printMessage("Invalid Weapon Group")
             return
         }
+        aiManager.cycleWeaponGroupMode(index)
         if (Settings.uiForceFullInfo()) {
             printShipInfo()
         } else {
@@ -122,12 +144,16 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             }
             val aiManager = WeaponAIManager(engine, ship_)
             ship_.fleetMemberId?.let { id ->
-                Settings.shipModeStorage.modesByShip[id]?.let {
-                    aiManager.refresh(it)
-                }
-            }
+                val suffixMap = SuffixStorage.modesByShip[id]?.mapValues { SuffixSelector(suffixFromString[it.value]) }
+                    ?.toMutableMap()
+                val modeMap =
+                    FireModeStorage.modesByShip[id]?.mapValues { WeaponModeSelector(FMValues.FIRE_MODE_TRANSLATIONS[it.value]) }
+                        ?.toMutableMap()
+                aiManager.refresh(modeMap, suffixMap)
 
-            ship_.setCustomData(Values.WEAPON_AI_MANAGER_KEY, aiManager)
+                ship_.setCustomData(Values.WEAPON_AI_MANAGER_KEY, aiManager)
+
+            }
             return aiManager
         }
         return null
@@ -153,7 +179,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         val ship = determineSelectedShip(engine) ?: return
         initOrGetAIManager(ship)?.let { aiManager ->
             ship.fleetMemberId?.let { id ->
-                Settings.shipModeStorage.modesByShip[id] = aiManager.weaponGroupModes
+                Settings.shipModeStorage.modesByShip[id] = aiManager.weaponGroupModes.mapValues {
+                    FMValues.fireModeAsString[it.value.currentValue] ?: FMValues.defaultFireModeString
+                }.toMutableMap()
+                Settings.suffixStorage.modesByShip[id] = aiManager.weaponGroupSuffixes.mapValues {
+                    suffixDescriptions[it.value.currentValue] ?: defaultSuffixString
+                }.toMutableMap()
             }
         }
     }

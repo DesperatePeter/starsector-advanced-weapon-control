@@ -5,6 +5,7 @@ import com.dp.advancedgunnerycontrol.utils.FireModeStorage
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
+import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.fs.starfarer.api.Global
 import data.scripts.util.MagicSettings
 import kotlin.math.max
@@ -28,15 +29,18 @@ object Settings : SettingsDefinition() {
     val infoHotkey = addSetting<Char>("saveLoadInfoHotkey", 'j')
     val resetHotkey = addSetting<Char>("resetHotkey", '/')
     val loadHotkey = addSetting<Char>("loadAllShipsHotkey", '*')
+    val suffixHotkey = addSetting<Char>("suffixHotkey", '-')
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
+    val enableTextInterface = addSetting<Boolean>("enableGUI", true)
+
 
     var weaponBlacklist = listOf<String>()
         private set
 
-    val shipModeStorage = FireModeStorage()
-
+    val shipModeStorage = FireModeStorage
+    val suffixStorage = SuffixStorage
 
     override fun readSettings() {
         super.readSettings()
@@ -50,6 +54,8 @@ object Settings : SettingsDefinition() {
         customAIFriendlyFireComplexity.set ( max(0, min(2, customAIFriendlyFireComplexity())))
         infoHotkey.set(infoHotkey().toLowerCase())
         resetHotkey.set(resetHotkey().toLowerCase())
+        loadHotkey.set(loadHotkey().toLowerCase())
+        suffixHotkey.set(suffixHotkey().toLowerCase())
         cycleOrderStrings.set(listOf("Default") + cycleOrderStrings())
         cycleOrderInternal = cycleOrderStrings().mapNotNull { FMValues.FIRE_MODE_TRANSLATIONS[it] }
         if(cycleOrderInternal.size != cycleOrderStrings().size){

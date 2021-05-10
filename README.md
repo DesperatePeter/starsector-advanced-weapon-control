@@ -32,23 +32,27 @@ If you install a new version, please make sure to delete the old folder before d
 ## Controls ##
 
 Press the NUMPAD Keys 1-7, to cycle between firing modes for that group. **Make sure to enable Num-Lock!**
+Press the "-"-Key after 1-7 to cycle suffixes for that group.
 
 Whenever you cycle modes, you will see a message like this:
 
-```Group 2: [_X__] Missiles (custom AI) 2/3```
+```Group 2: [_X__] Missiles (custom AI) 2/3 Flux<90%```
 
 In order, this let's you know that a) group 2 is in b) the second out of 4 modes, 
-c) the current mode is Missiles, c) it's using custom AI when base AI wants to target something else
-and d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default).
+c) the current mode is Missiles, c) it's using custom AI when base AI wants to target something else,
+d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default)
+and e) (optional) the mode suffix prevents the weapon from firing if ship flux >= 90%.
 
 When you deploy a ship in combat, its last used fire modes will be loaded automatically. You can disable this behaviour
 in the settings.
 
 Hotkeys (rebindable in Settings.editme):
-- NUMPAD 1-7 - Cycle firing modes for weapon groups 1-7 for targeted or player ship
+- NUMPAD 1-7 - Cycle firing modes for weapon groups 1-7 for targeted or player ship (not rebindable)
 - "J" - Show info about current firing modes (and load/save modes)
 - "/" - Reset all modes back to default for current ship
 - "*" - Manually load firing modes for all deployed ships
+- "-" - Cycle suffix for the last group you cycled modes for
+- "G" - Open the Gunnery Control GUI (only campaign mode, not rebindable)
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
@@ -63,6 +67,13 @@ time you deploy that ship, its fire modes will be loaded automatically.
 
 NOTE: The allied ship AI will "manually" fire weapons independent of their fire mode, but still often
 rely on autofire. So, think of fire modes for allied ships as suggestions, not hard rules.
+
+### Gunnery Control GUI ###
+
+If you don't like having to set up your firing modes during (simulated) combat, there is also a dialog interface available.
+Simply press the "G"-Key while on the campaign map, and the interface will guide you through configuring your
+firing modes. Unfortunately, I **can't directly interface with
+the ship refit screen**, so this is the best I can do.
 
 ## Fire Modes ##
 
@@ -80,6 +91,17 @@ Mining | Asteroids | Asteroids | None | Yes | Mining Blaster | No
 Note: If a weapon is not eligible for a certain mode, it will use its base AI as a fallback mode
 
 Note: You need to manually add modes that are not enabled by default in the settings
+
+### Mode Suffixes ###
+
+Suffixes modify the behaviour of the selected fire mode in some way. Only one suffix may be applied.
+
+Suffix | Effect
+:---: | :---
+NONE | None
+Flux<90% | Weapon will hold fire if ship flux >= 90%
+Flux<75% | Weapon will hold fire if ship flux >= 75%
+Flux<50% | Weapon will hold fire if ship flux >= 50%
 
 ## Settings ##
 
@@ -126,6 +148,25 @@ I go crazy in the settings. Below I will list a few options for improving perfor
 - Try not to set every weapon group for every ship to a special fire mode.
 - Leave the AI recursion level and friendly fire complexity at 1.
 - Consider turning off auto save/load and instead manually save ("J"-Key) and load ("*"-Key).
+
+## Troubleshooting ##
+
+### Broken Saves ###
+
+Note: I already fixed the issue that lead to this problem (now I only store strings rather than enums/objects). As of now,
+it will be possible to remove this mod from an ongoing save without issues.
+Unfortunately, I can't fix it retroactively...
+
+If you get an error when loading a save that was using an old version of this mod (after updating from 0.8.0-ALPHA or disabling this mod),
+use the last version of this mod that worked with that save and disable the "enablePersistentFireModes" option.
+Load the save again, and the mod will purge its persistent data. Save the game and update/remove the mod.
+
+If that doesn't work, you can manually delete the data:
+Open the campaign.xml in Starsector/saves/saveXYZ in a text editor of your choice.
+Search for "$Advanced" and delete the lines from (including) ```<e>``` above ```<st>$AdvancedGunnery...</st>``` 
+until the last ```</e>``` before the next ```<st>``` or ```</persistentData>```. Repeat until you don't find "$Advanced" anymore.
+
+![DeleteData](imgs/delPersData.png "Delete persistent data")
 
 ## How does the mod work? ##
 
@@ -177,14 +218,14 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - Add ability to issue fire modes to AI-controlled allied ships **DONE**
 - Add weapon-blacklist for other mods such that their weapons stay unaffected by fire modes from this mod **DONE**
 - Automatically load fire modes on ship deployment **DONE**
-- Add a GUI to set fire modes in the ship refit editor (probably not going to happen unless I stumble upon a good solution)
-- Fire mode settings as hullmods (I don't want to do 7 groups x 7 fire modes hullmods, I'll try to think of something clever)
+- Add a GUI to set fire modes in the ship refit editor **DONE** (though not integrated in refit screen)
+- Mode suffixes **DONE**
+
 
 ## Known Issues ##
 
-- Depending on the machine/OS(?), keyboard inputs will not be accepted while holding SHIFT-Key.
-
-If you happen to have any clues to fixing these issues, please let me know.
+- Versions before 0.8.2 saved custom classes as persistent data, meaning it was not possible to remove the mod.
+  Please refer to the troubleshooting section.
 
 ## Changelog ## 
 
@@ -207,7 +248,10 @@ If you happen to have any clues to fixing these issues, please let me know.
   no longer need to be in Command UI to set friendly modes,  added hotkey to load fire modes for all ships
 - 0.7.1: fix issue with reset key, adjusted readme
 - 0.7.2: IPDAI is now considered for PD/Missiles mode, invalid modes are now skipped (opt-out in settings)
-  
+- 0.8.0: added mode suffixes, added gunnery control GUI
+- 0.8.1: cleaned up GUI, display weapon mode suffixes
+- 0.8.2: add ability to cyclce suffixes during combat, fix issues with persistence and save game corruption
+
 ## Acknowledgements ##
 
 Many thanks to Wisp for answering my endless questions about Kotlin and Starsector modding and for providing
@@ -241,4 +285,5 @@ Just follow the following steps:
 On the off-chance that you want to support me financially, please don't :P My day-job as an engineer
 pays enough to cover my living expenses.
 
-I believe there are better places where you can donate your money to, check out <https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance
+I believe there are better places where you can donate your money to, check out
+<https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance
