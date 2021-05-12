@@ -7,6 +7,7 @@ import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.utils.*
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.input.InputEventAPI
@@ -25,6 +26,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private var textFrameTimer: Int = 0
     private var isInitialized = false
+    private var initialShipInitRequired = Settings.enableAutoSaveLoad()
 
     companion object {
         fun determineSelectedShip(engine: CombatEngineAPI): ShipAPI? {
@@ -40,6 +42,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         super.advance(amount, events)
         if (!isInitialized) return
 
+        if(initialShipInitRequired){
+            initialShipInitRequired = !initAllShips()
+        }
+
         if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
 
         if (keyManager.parseInputEvents(events)) {
@@ -50,10 +56,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private fun initAllShips() : Boolean{
         engine.ships.filterNotNull().filter { it.owner == 0 }.let {
             if (it.isEmpty()) return false
+            var n = 0
             it.forEach { ship ->
+                n++
                 initOrGetAIManager(ship)
             }
-            printMessage("Loaded fire modes for all deployed ships!")
+            printMessage("Loaded fire modes for $n ship(s)!")
             return true
         }
     }
@@ -62,11 +70,18 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         deployedShips?.let { fleetShips ->
             if (fleetShips.isEmpty()) return
             // at least when deploying multiple ships, this should be faster than searching each time
-            val ships = engine.ships.associateBy { it.fleetMemberId }
+            val ships = engine.ships.associateBy { it.fleetMemberId }.filter { it.value?.owner == 0 }
+            if(ships.isEmpty()) return
+            var n = 0
             fleetShips.forEach { fleetShip ->
-                initOrGetAIManager(ships[fleetShip])
+                if(ships.containsKey(fleetShip)){
+                    initOrGetAIManager(ships[fleetShip])
+                    n++
+                }
             }
-            printMessage("Loaded fire modes for newly deployed ships!")
+            if(n>0) {
+                printMessage("Loaded fire modes for $n newly deployed ship(s)!")
+            }
         }
     }
 
@@ -206,9 +221,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             } catch (e: FontException) {
                 Global.getLogger(this.javaClass).error("Failed to load font, won't de displaying messages", e)
             }
-            this.engine = engine
-            deployChecker = DeploymentChecker(engine)
-            isInitialized = true
+            // don't init during title screen
+            if(Global.getCurrentState() != GameState.TITLE) {
+                this.engine = engine
+                deployChecker = DeploymentChecker(engine)
+                isInitialized = true
+            }
         }
     }
 
