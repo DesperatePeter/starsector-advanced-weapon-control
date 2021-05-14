@@ -53,7 +53,7 @@ Hotkeys (rebindable in Settings.editme):
 - "/" - Reset all modes back to default for current ship
 - "*" - Manually load firing modes for all deployed ships
 - "-" - Cycle suffix for the last group you cycled modes for
-- "G" - Open the Gunnery Control GUI (only campaign mode, not rebindable)
+- "J" - Open the Gunnery Control GUI (only campaign mode)
 
 Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
