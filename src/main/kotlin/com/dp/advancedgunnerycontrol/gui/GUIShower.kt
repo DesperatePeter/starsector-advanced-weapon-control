@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.gui
 
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.EveryFrameScript
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
@@ -16,7 +17,7 @@ class GUIShower : EveryFrameScript {
             || Global.getCurrentState() == GameState.TITLE
         ) return
 
-        if (Keyboard.isKeyDown(Keyboard.KEY_G)){
+        if (Keyboard.getEventCharacter().toLowerCase() == Settings.guiHoteky()){
             Global.getSector().campaignUI.showInteractionDialog(AGCGUI(), Global.getSector().playerFleet)
         }
     }

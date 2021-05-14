@@ -251,6 +251,7 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - 0.8.2: add ability to cyclce suffixes during combat, fix issues with persistence and save game corruption
 - 0.8.3: minor polish
 - 0.8.4: pre-deployed ships (e.g. when trying do disengage) will now also automatically load firing modes
+- 0.8.5: automatically purge incompatible persistent data, changed GUI hotkey to "J" and made it rebindable
 
 ## Acknowledgements ##
 

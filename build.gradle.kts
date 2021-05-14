@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.8.4"
+    val modVersion = "0.8.5"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -186,6 +186,7 @@ tasks {
                    |   , "resetHotkey" : "/" # <---- EDIT HERE ----
                    |   , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
                    |   , "suffixHotkey" : "-" # <---- EDIT HERE ----
+                   |   , "guiHotkey" : "j" # <---- EDIT HERE ----
 
                    |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
                    |   # This can't be enabled when enablePersistentFireModes is off

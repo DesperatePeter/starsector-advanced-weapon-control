@@ -17,10 +17,10 @@ class WeaponControlBasePlugin : BaseModPlugin() {
 
     override fun onGameLoad(newGame: Boolean) {
         super.onGameLoad(newGame)
-        if (!Settings.enablePersistentModes()) {
-            Settings.shipModeStorage.purge()
-            Settings.suffixStorage.purge()
-        }
+
+        Settings.shipModeStorage.purgeIfNecessary()
+        Settings.suffixStorage.purgeIfNecessary()
+
         if (Settings.enableTextInterface()){
             Global.getSector().addTransientScript(GUIShower())
         }
