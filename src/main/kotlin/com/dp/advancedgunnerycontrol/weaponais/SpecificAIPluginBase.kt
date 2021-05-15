@@ -242,7 +242,8 @@ abstract class SpecificAIPluginBase(
             angularDistanceFromWeapon(it) + Values.distToAngularDistEvalutionFactor * linearDistanceFromWeapon(it)
         }.let {
             if (lastTargetEntity == entity) it * 0.05f else it // heavily incentivize sticking to one target
-        } * suffix.modifyPriority(entity)
+        } * suffix.modifyPriority(entity) *
+                (if (target == weapon.ship.shipTarget) 0.01f else 1.0f) // heavily incentivize targeting the ship target
     }
 
     override fun shouldFire(): Boolean {
