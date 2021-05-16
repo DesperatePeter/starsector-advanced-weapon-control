@@ -62,9 +62,15 @@ class AGCGUI : InteractionDialogPlugin {
         customPanel?.position?.inTMid(20f)
         ship?.let { sh ->
             val elements = mutableListOf<UIComponentAPI>()
+            val shipModeElement = customPanel?.createUIElement(1190f, 40f, false)
+            shipModeElement?.let {
+                it.addTitle("Ship AI Modes")
+                shipView.addShipModeButtonGroup(sh, it)
+                customPanel?.addComponent(it)
+                customPanel?.addUIElement(it)?.inTL(5f, 5f)
+            }
             for(i in 0 until sh.variant.weaponGroups.size){
-                val element = customPanel?.createUIElement(162f, 500f, true)
-
+                val element = customPanel?.createUIElement(162f, 500f, false)
                 element?.let {
                     it.addTitle("Group ${i+1}")
                     shipView.addModeButtonGroup(i, sh, it)
@@ -78,7 +84,7 @@ class AGCGUI : InteractionDialogPlugin {
                         if (elements.isNotEmpty()){
                             p.rightOfTop(elements.last(), 10f)
                         }else{
-                            p.inTL(15f, 90f)
+                            p.belowLeft(shipModeElement, 5f)
                         }
                     }
                     elements.add(it)

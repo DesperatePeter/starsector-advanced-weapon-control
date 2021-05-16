@@ -7,12 +7,12 @@ import com.fs.starfarer.api.combat.AutofireAIPlugin
 typealias FireModeMap = Map<FireMode, AutofireAIPlugin>
 
 enum class FireMode {
-    DEFAULT, PD, MISSILE, FIGHTER, NO_FIGHTERS, BIG_SHIPS, SMALL_SHIPS, MINING
+    DEFAULT, PD, MISSILE, FIGHTER, NO_FIGHTERS, BIG_SHIPS, SMALL_SHIPS, MINING, OPPORTUNIST
 }
 
 object FMValues{
     val modesAvailableForCustomAI = // Only add if AI has "isBaseAIOverwritable(): Boolean = true"
-        listOf(FireMode.SMALL_SHIPS, FireMode.BIG_SHIPS, FireMode.FIGHTER, FireMode.MISSILE)
+        listOf(FireMode.SMALL_SHIPS, FireMode.BIG_SHIPS, FireMode.FIGHTER, FireMode.MISSILE, FireMode.OPPORTUNIST)
 
     const val defaultFireModeString = "Default"
 
@@ -24,7 +24,8 @@ object FMValues{
         FireMode.NO_FIGHTERS to "NoFighters",
         FireMode.BIG_SHIPS to "BigShips",
         FireMode.SMALL_SHIPS to "SmallShips",
-        FireMode.MINING to "Mining"
+        FireMode.MINING to "Mining",
+        FireMode.OPPORTUNIST to "Opportunist"
     )
 
     var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()
@@ -41,7 +42,8 @@ object FMValues{
             FireMode.NO_FIGHTERS to NoFighterAIPlugin(baseAI),
             FireMode.BIG_SHIPS to BigShipAI(baseAI),
             FireMode.SMALL_SHIPS to SmallShipAI(baseAI),
-            FireMode.MINING to MiningAI(baseAI)
+            FireMode.MINING to MiningAI(baseAI),
+            FireMode.OPPORTUNIST to OpportunistAI(baseAI)
         )
     }
 }

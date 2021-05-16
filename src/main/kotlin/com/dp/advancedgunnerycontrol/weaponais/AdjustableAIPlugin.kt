@@ -34,7 +34,7 @@ class AdjustableAIPlugin constructor(private val baseAI: AutofireAIPlugin) : Aut
 
     override fun advance(p0: Float) = activeAI.advance(p0)
 
-    override fun shouldFire(): Boolean = activeAI.shouldFire() && (!suffix.suppressFire())
+    override fun shouldFire(): Boolean = suffix.shouldFire(activeAI.shouldFire(), targetShip)
 
     override fun forceOff() = activeAI.forceOff()
 

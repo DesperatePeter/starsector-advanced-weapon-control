@@ -155,10 +155,10 @@ tasks {
                    |   #                                 #### CYCLE ORDER ####
                    |   # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
                    |   # Delete modes you want to skip. Note: "Default" will always be the first mode.
-                   |   # Allowed values: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining"
+                   |   # Allowed values: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist"
                    |   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
-                   |   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters" ] # <---- EDIT HERE ----
-                   |   # "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining" ]
+                   |   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "Opportunist" ] # <---- EDIT HERE ----
+                   |   # "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Opportunist", "Mining" ]
 
 
                    |   #                                 #### CUSTOM AI ####

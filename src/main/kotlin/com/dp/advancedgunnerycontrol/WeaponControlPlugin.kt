@@ -7,6 +7,8 @@ import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.utils.*
+import com.dp.advancedgunnerycontrol.weaponais.shipais.AutofireShipAI
+import com.dp.advancedgunnerycontrol.weaponais.shipais.CustomShipAI
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
@@ -152,6 +154,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun initOrGetAIManager(ship: ShipAPI?): WeaponAIManager? {
         ship?.let { ship_ ->
+            ShipModeStorage.modesByShip[ship_.fleetMemberId]?.values?.firstOrNull()?.let {
+                assignShipMode(it, ship_)
+            }
             if (ship_.customData?.containsKey(Values.WEAPON_AI_MANAGER_KEY) == true) {
                 ship_.customData?.get(Values.WEAPON_AI_MANAGER_KEY)?.let { unsafeManager ->
                     (unsafeManager as? WeaponAIManager)?.let { return it }

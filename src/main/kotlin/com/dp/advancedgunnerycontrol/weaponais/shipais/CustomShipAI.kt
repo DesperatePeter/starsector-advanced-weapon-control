@@ -5,18 +5,51 @@ import com.fs.starfarer.api.combat.ShipAIPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipwideAIFlags
 
-open class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: ShipAPI) : ShipAIPlugin {
-    override fun setDoNotFireDelay(p0: Float) = baseAI.setDoNotFireDelay(p0)
 
-    override fun forceCircumstanceEvaluation() = baseAI.forceCircumstanceEvaluation()
 
-    override fun advance(p0: Float) = baseAI.advance(p0)
+abstract class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: ShipAPI) : ShipAIPlugin {
 
-    override fun needsRefit(): Boolean = baseAI.needsRefit()
 
-    override fun getAIFlags(): ShipwideAIFlags = baseAI.aiFlags
+    override fun setDoNotFireDelay(p0: Float) {
+        ship.shipAI = baseAI
+        setDoNotFireDelayImpl(p0)
+        baseAI.setDoNotFireDelay(p0)
+        ship.shipAI = this
+    }
 
-    override fun cancelCurrentManeuver() = baseAI.cancelCurrentManeuver()
+    protected abstract fun setDoNotFireDelayImpl(p0: Float)
 
-    override fun getConfig(): ShipAIConfig = baseAI.config
+    override fun forceCircumstanceEvaluation() {
+        ship.shipAI = baseAI
+        forceCircumstanceEvaluationImpl()
+        baseAI.forceCircumstanceEvaluation()
+        ship.shipAI = this
+    }
+
+    protected abstract fun forceCircumstanceEvaluationImpl()
+
+    override fun advance(p0: Float) {
+        ship.shipAI = baseAI
+        advanceImpl(p0)
+        baseAI.advance(p0)
+        ship.shipAI = this
+    }
+
+    protected abstract fun advanceImpl(p0: Float)
+
+    override fun needsRefit(): Boolean {
+        ship.shipAI = baseAI
+        val result = baseAI.needsRefit()
+        ship.shipAI = this
+        return result
+    }
+    override fun getAIFlags(): ShipwideAIFlags? = baseAI.aiFlags
+
+    override fun cancelCurrentManeuver() {
+        ship.shipAI = baseAI
+        baseAI.cancelCurrentManeuver()
+        ship.shipAI = this
+    }
+
+    override fun getConfig(): ShipAIConfig? = baseAI.config
 }
