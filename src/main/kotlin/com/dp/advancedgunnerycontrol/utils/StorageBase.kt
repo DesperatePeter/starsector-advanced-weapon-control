@@ -5,6 +5,16 @@ import com.fs.starfarer.api.Global
 
 open class StorageBase<T> (private val persistentDataKey: String){
 
+    companion object{
+        fun <T> assembleStorageArray(baseKey : String, size : Int = Settings.maxLoadouts()) : List<StorageBase<T>>{
+            val toReturn = mutableListOf(StorageBase<T>(baseKey))
+            for (i in 1 until size){
+                toReturn.add(StorageBase<T>(baseKey + i.toString()))
+            }
+            return toReturn.toList()
+        }
+    }
+
     private fun getMap(wasFallback: Boolean = false): MutableMap<String, MutableMap<Int, T>> {
         return (Global.getSector().persistentData[persistentDataKey] as? MutableMap<String, MutableMap<Int, T>>?) ?: kotlin.run {
             Global.getSector().persistentData.remove(persistentDataKey)
@@ -22,7 +32,7 @@ open class StorageBase<T> (private val persistentDataKey: String){
             }
             return getMap()
         }
-        private set(value) {
+        set(value) {
             Global.getSector().persistentData[persistentDataKey] = value
         }
 

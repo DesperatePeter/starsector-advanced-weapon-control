@@ -13,6 +13,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.input.InputEventAPI
+import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
@@ -27,6 +28,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private val keyManager = KeyStatusManager()
 
     private var textFrameTimer: Int = 0
+    var storageIndex = 0
     private var isInitialized = false
     private var initialShipInitRequired = Settings.enableAutoSaveLoad()
 
@@ -106,6 +108,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             ControlEventType.LOAD -> {
                 initAllShips()
             }
+            ControlEventType.CYCLE_LOADOUT -> {
+                cycleLoadouts()
+                printMessage("Switched to loadout ${storageIndex + 1} / ${Settings.maxLoadouts()} <${Settings.loadoutNames()[storageIndex]}>")
+            }
             ControlEventType.SUFFIX -> {
                 cycleSuffix()
                 if (Settings.enablePersistentModes()) saveCurrentShipState()
@@ -154,7 +160,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun initOrGetAIManager(ship: ShipAPI?): WeaponAIManager? {
         ship?.let { ship_ ->
-            ShipModeStorage.modesByShip[ship_.fleetMemberId]?.values?.firstOrNull()?.let {
+            ShipModeStorage[storageIndex].modesByShip[ship_.fleetMemberId]?.values?.firstOrNull()?.let {
                 assignShipMode(it, ship_)
             }
             if (ship_.customData?.containsKey(Values.WEAPON_AI_MANAGER_KEY) == true) {
@@ -164,10 +170,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             }
             val aiManager = WeaponAIManager(engine, ship_)
             ship_.fleetMemberId?.let { id ->
-                val suffixMap = SuffixStorage.modesByShip[id]?.mapValues { SuffixSelector(suffixFromString[it.value]) }
+                val suffixMap = SuffixStorage[storageIndex].modesByShip[id]?.mapValues { SuffixSelector(suffixFromString[it.value]) }
                     ?.toMutableMap()
                 val modeMap =
-                    FireModeStorage.modesByShip[id]?.mapValues { WeaponModeSelector(FMValues.FIRE_MODE_TRANSLATIONS[it.value]) }
+                    FireModeStorage[storageIndex].modesByShip[id]?.mapValues { WeaponModeSelector(FMValues.FIRE_MODE_TRANSLATIONS[it.value]) }
                         ?.toMutableMap()
                 aiManager.refresh(modeMap, suffixMap)
 
@@ -195,14 +201,22 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
+    private fun cycleLoadouts() {
+        if (storageIndex < Settings.maxLoadouts() - 1) storageIndex+=1 else storageIndex = 0
+        engine.ships.filterNotNull().filter { it.owner == 0 }.forEach {
+            it.customData.remove(Values.WEAPON_AI_MANAGER_KEY)
+            initOrGetAIManager(it)
+        }
+    }
+
     private fun saveCurrentShipState() {
         val ship = determineSelectedShip(engine) ?: return
         initOrGetAIManager(ship)?.let { aiManager ->
             ship.fleetMemberId?.let { id ->
-                Settings.shipModeStorage.modesByShip[id] = aiManager.weaponGroupModes.mapValues {
+                Settings.shipModeStorage[storageIndex].modesByShip[id] = aiManager.weaponGroupModes.mapValues {
                     FMValues.fireModeAsString[it.value.currentValue] ?: FMValues.defaultFireModeString
                 }.toMutableMap()
-                Settings.suffixStorage.modesByShip[id] = aiManager.weaponGroupSuffixes.mapValues {
+                Settings.suffixStorage[storageIndex].modesByShip[id] = aiManager.weaponGroupSuffixes.mapValues {
                     suffixDescriptions[it.value.currentValue] ?: defaultSuffixString
                 }.toMutableMap()
             }

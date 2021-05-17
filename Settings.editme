@@ -37,7 +37,10 @@
    , "resetHotkey" : "/" # <---- EDIT HERE ----
    , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
    , "suffixHotkey" : "-" # <---- EDIT HERE ----
-   , "guiHotkey" : "j" # <---- EDIT HERE ----
+   , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
+   , "maxLoadouts" : 3 # <---- EDIT HERE ----
+   , "GUIHotkey" : "j" # <---- EDIT HERE ----
+   , "loadoutNames" : [ "EditMe1", "EditMe2", "EditMe3" ]
 
    # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
    # This can't be enabled when enablePersistentFireModes is off

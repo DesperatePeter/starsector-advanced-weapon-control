@@ -37,7 +37,7 @@ Press the "-"-Key after 1-7 to cycle suffixes for that group.
 
 Whenever you cycle modes, you will see a message like this:
 
-```Group 2: [_X__] Missiles (custom AI) 2/3 Flux<90%```
+```Group 2: [_X__] Missiles (custom AI) 2/3 HoldFire(Flux>90%)```
 
 In order, this let's you know that a) group 2 is in b) the second out of 4 modes, 
 c) the current mode is Missiles, c) it's using custom AI when base AI wants to target something else,
@@ -53,9 +53,10 @@ Hotkeys (rebindable in Settings.editme):
 - "/" - Reset all modes back to default for current ship
 - "*" - Manually load firing modes for all deployed ships
 - "-" - Cycle suffix for the last group you cycled modes for
+- "+" - Cycle loadouts for **all** ships
 - "J" - Open the Gunnery Control GUI (only campaign mode)
 
-Technical Note: Any key that represents the numbers 1 to 7 and isn't used by the base game will work.
+Technical Note: For NUMPAD 1-7, any key that represents the numbers 1 to 7 and isn't used by the base game will work.
 So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to use the normal number keys.
 If you bind the numpad numbers as secondary weapon group keys, this mod won't work at all.
 If this becomes an issue for you, please let me know, and I will try to implement a solution.
@@ -75,6 +76,13 @@ If you don't like having to set up your ships firing modes during (simulated) co
 Simply press the "G"-Key while on the campaign map, and the interface will guide you through configuring your
 firing modes. Unfortunately, I **can't directly interface with the ship refit screen**, so this is the best I can do.
 
+### Loadouts ###
+
+You can define (by default 3) different mode loadouts for each ship. You can then cycle through these loadouts for all
+ships by pressing the "+"-Key in combat. Doing so will switch all firing modes etc. to those defined in the next loadout.
+This means you can e.g. have loadout 1 be your default loadout, loadout 2 be a sepcialized anti-fighter loadout and loadout 3
+be all default for all ships.
+
 ## Fire Modes ##
 
 Mode | Targets | Prioritizes | Requirements | Can use Custom AI | Weapon Example | Enabled by Default
@@ -84,9 +92,13 @@ PD | Fighters/Missiles | Fighters/Missiles | PD Weapon | No | Flak | Yes
 Fighters | Fighters | Fighters | None | Yes | Devastator Cannon | Yes
 Missiles | Missiles (Mines/Flares) | Missiles | PD Weapon | Yes | Burst PD | Yes 
 NoFighters | Anything but Fighters | Same as base AI | None | No | Hellbore Cannon | Yes
+Opportunist | Ignores fighters/missiles | Special* | None | Always | Missiles | Yes
 BigShips | Destroyers to Capitals | Bigger=Better | None | Yes | Squall MLRM | No
 SmallShips | Fighters to Destroyers | Smaller=Better | None | Yes | Phase Lance | No
 Mining | Asteroids | Asteroids | None | Yes | Mining Blaster | No
+
+*Depending on damage type, will try to only fire when the shot is likely to be effective. Will try to avoid
+targets that move too fast or are too far away. Mainly intended for missiles with limited ammo.
 
 Note: If a weapon is not eligible for a certain mode, it will use its base AI as a fallback mode
 
@@ -99,9 +111,26 @@ Suffixes modify the behaviour of the selected fire mode in some way. Only one su
 Suffix | Effect
 :---: | :---
 NONE | None
-Flux<90% | Weapon will hold fire if ship flux >= 90%
-Flux<75% | Weapon will hold fire if ship flux >= 75%
-Flux<50% | Weapon will hold fire if ship flux >= 50%
+HoldFire(Flux>90%) | Weapon will hold fire if ship flux >= 90%
+HoldFire(Flux>75%) | Weapon will hold fire if ship flux >= 75%
+HoldFire(Flux>50%) | Weapon will hold fire if ship flux >= 50%
+ConserveAmmo* | Weapon will use Opportunist mode when ammo < 90%
+PanicFire* | When ship hull drops below 50%, this weapon will fire hail mary shots. Useful for guided missiles.
+PD(Flux>50%) | Weapon will only target missiles/fighters when above 50% flux. Only use with modes/weapons that can target fighters/missiles.
+PD(Ammo<90%) | Same as PD(Flux>50%), but instead activates when ammo is below 90%. Mainly intended for burst PD lasers etc.
+
+*these suffixes rely on custom AI and will not work well with custom AI disabled. 
+They will work best when forcing custom AI in the settings.
+
+### Ship Modes ###
+
+Ship modes only affect AI-controlled ships. There are currently two modes to choose from:
+
+- Default will let the ship AI choose which weapon groups to set to autofire
+- ForceAutofire will force the ship to put all weapon groups on autofire. This forces the ship AI to comply with selected
+  fire modes (99% of the time). However, use caution, because usually the default AI will make relatively
+  sensible decisions on which group(s) to control manually. Pairing this setting with HoldFire suffixes,
+  to prevent the ship from fluxing out prematurely, is highly recommended.
 
 ## Settings ##
 
@@ -109,7 +138,8 @@ The settings allow you to configure many aspects of the mod, most prominently: W
 and which fire modes you want to have access to and in which order you want to cycle through them.
 There are more settings available, but you can ignore those unless you are feeling adventurous.
 
-Simply open the file ***Settings.editme*** (located in the folder of this mod) in a text editor of your choice and modify the lines marked with <---- EDIT HERE ----
+Simply open the file ***Settings.editme*** (located in the folder of this mod) in a text editor of your choice 
+and modify the lines marked with <---- EDIT HERE ----
 
 Please be careful to adhere to the syntax and allowed values. If your settings file contains errors, the mod will use
 the default settings instead! Make sure to check the log (Starsector/starsector.log) if your settings don't apply!
@@ -153,15 +183,14 @@ I go crazy in the settings. Below I will list a few options for improving perfor
 
 ### Broken Saves ###
 
-Note: I already fixed the issue that lead to this problem (now I only store strings rather than enums/objects). As of now,
-it will be possible to remove this mod from an ongoing save without issues.
-Unfortunately, I can't fix it retroactively...
+Usually, installing the newest version of the mod will automatically fix any issues with persistent data from previous versions.
 
-If you get an error when loading a save that was using an old version of this mod (after updating from 0.8.0-ALPHA or disabling this mod),
+However, if you still get an error when loading a save that was using an old version of this mod 
+(after updating from 0.8.0-ALPHA or disabling this mod),
 use the last version of this mod that worked with that save and disable the "enablePersistentFireModes" option.
 Load the save again, and the mod will purge its persistent data. Save the game and update/remove the mod.
 
-If that doesn't work, you can manually delete the data:
+If that also doesn't work, you can manually delete the data:
 Open the campaign.xml in Starsector/saves/saveXYZ in a text editor of your choice.
 Search for "$Advanced" and delete the lines from (including) ```<e>``` above ```<st>$AdvancedGunnery...</st>``` 
 until the last ```</e>``` before the next ```<st>``` or ```</persistentData>```. Repeat until you don't find "$Advanced" anymore.

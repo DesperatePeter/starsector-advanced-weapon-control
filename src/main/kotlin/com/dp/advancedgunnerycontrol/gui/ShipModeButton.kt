@@ -12,17 +12,22 @@ import java.awt.Color
 class ShipModeButton(ship: FleetMemberAPI, mode : ShipModes, button: ButtonAPI) : ButtonBase<ShipModes>(ship, 0, mode, button) {
 
     companion object{
-        private val storage = ShipModeStorage
+        private var storage = ShipModeStorage[AGCGUI.storageIndex]
 
         public fun createModeButtonGroup(ship: FleetMemberAPI, tooltip: TooltipMakerAPI) : List<ShipModeButton>{
+            storage = ShipModeStorage[AGCGUI.storageIndex]
             val toReturn = mutableListOf<ShipModeButton>()
-
+            var isSomethingChecked = false
             ShipModes.values().forEach {
                 toReturn.add(ShipModeButton(ship, it, tooltip.addAreaCheckbox(
                     shipModeToString[it], it, Color.BLUE, Color.BLUE, Color.WHITE, 160f, 24f, 3f)))
 
-                if(shipModeFromString[storage.modesByShip[ship.id]?.values?.firstOrNull()]== it) toReturn.last().check()
+                if(shipModeFromString[storage.modesByShip[ship.id]?.values?.firstOrNull()]== it) {
+                    toReturn.last().check()
+                    isSomethingChecked = true
+                }
             }
+            if(!isSomethingChecked) toReturn.firstOrNull()?.check()
             toReturn.forEach {
                 it.sameGroupButtons = toReturn
             }

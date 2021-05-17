@@ -13,16 +13,21 @@ import java.awt.Color
 class SuffixButton(ship: FleetMemberAPI, group : Int, suffix : Suffixes, button: ButtonAPI) : ButtonBase<Suffixes>(ship, group, suffix, button) {
 
     companion object{
-        private val storage = SuffixStorage
+        private var storage = SuffixStorage[AGCGUI.storageIndex]
 
         public fun createModeButtonGroup(ship: FleetMemberAPI, group: Int, tooltip: TooltipMakerAPI) : List<SuffixButton>{
+            storage = SuffixStorage[AGCGUI.storageIndex]
             val toReturn = mutableListOf<SuffixButton>()
-
+            var isSomethingChecked = false
             Suffixes.values().forEach {
                 toReturn.add(SuffixButton(ship, group, it, tooltip.addAreaCheckbox(suffixDescriptions[it], it,
                     Color.BLUE, Color.BLUE, Color.WHITE, 160f, 24f, 3f)))
-                if(suffixFromString[storage.modesByShip[ship.id]?.get(group)] == it) toReturn.last().check()
+                if(suffixFromString[storage.modesByShip[ship.id]?.get(group)] == it){
+                    toReturn.last().check()
+                    isSomethingChecked = true
+                }
             }
+            if(!isSomethingChecked) toReturn.firstOrNull()?.check()
             toReturn.forEach {
                 it.sameGroupButtons = toReturn
             }
