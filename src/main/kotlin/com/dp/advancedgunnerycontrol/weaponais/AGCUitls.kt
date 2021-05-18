@@ -62,7 +62,7 @@ fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weap
     val target = tgt as? ShipAPI ?: return false
     val p = predictedLocation ?: return false
     if(!isOpportuneType(target, weapon)) return false
-    var trackingFactor = when (weapon.spec.trackingStr.toLowerCase()){
+    var trackingFactor = when (weapon.spec?.trackingStr?.toLowerCase()){
         "none" -> 1.0f
         "very poor" -> 1.25f
         "poor" -> 1.5f
@@ -72,14 +72,14 @@ fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weap
         "excellent" -> 3.0f
         else -> 1.0f
     } * 0.2f
-    if(weapon.id.contains("sabot")) trackingFactor*=3
+    if(weapon.id?.contains("sabot") == true) trackingFactor*=3
     if(target.maxSpeed > weapon.projectileSpeed * trackingFactor) return false
-    if((p - weapon.location).length() > weapon.range * 0.9f) return false
+    if((p - weapon.location).length() > weapon.range * 0.75f) return false
     return true
 }
 
 private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
-    if(weapon.spec.primaryRoleStr.toLowerCase() == "finisher"){
+    if(weapon.spec?.primaryRoleStr?.toLowerCase() == "finisher"){
         return isDefenseless(target)
     }
     if(weapon.damageType == DamageType.HIGH_EXPLOSIVE || weapon.damageType == DamageType.FRAGMENTATION){
@@ -89,7 +89,8 @@ private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
     }
     if(weapon.damageType == DamageType.KINETIC){
         if(isDefenseless(target)) return false
-        if(target.hardFluxLevel > 0.5f) return false
+        if(target.shield == null) return false
+        if(target.hardFluxLevel > 0.7f) return false
     }
     return true
 }

@@ -22,7 +22,7 @@ Also visit the forums post: <https://fractalsoftworks.com/forum/index.php?topic=
 - Target an ally (R-Key) in combat to cycle their firing modes
 - By default, firing modes are automatically saved/loaded between combats (per ship)
 - (optional) edit Starsector/mods/AdvancedGunneryControl/Settings.editme and add/remove modes you don't like etc.
-- (optional) press "G" in the campaign map to open a GUI
+- (optional) press "J" in the campaign map to open a GUI
 
 ## Installation ##
 
