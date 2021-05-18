@@ -73,7 +73,7 @@ rely on autofire. So, think of fire modes for allied ships as suggestions, not h
 ### Gunnery Control GUI ###
 
 If you don't like having to set up your ships firing modes during (simulated) combat, there is also a dialog interface available.
-Simply press the "G"-Key while on the campaign map, and the interface will guide you through configuring your
+Simply press the "J"-Key while on the campaign map, and the interface will guide you through configuring your
 firing modes. Unfortunately, I **can't directly interface with the ship refit screen**, so this is the best I can do.
 
 ### Loadouts ###
