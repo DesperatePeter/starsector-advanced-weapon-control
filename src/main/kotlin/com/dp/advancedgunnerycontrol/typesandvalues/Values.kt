@@ -1,7 +1,5 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
-import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
-
 object Values {
     const val SETTINGS_FILE_NAME = "Settings.editme"
     const val WEAPON_BLACKLIST_KEY = "weaponBlacklist"

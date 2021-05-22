@@ -36,14 +36,14 @@ object FMValues{
     fun modeToPluginMap(baseAI: AutofireAIPlugin, suffix: SuffixBase): FireModeMap {
         return mapOf(
             FireMode.DEFAULT to baseAI,
-            FireMode.PD to PDAIPlugin(baseAI),
-            FireMode.FIGHTER to AdvancedFighterAIPlugin(baseAI),
-            FireMode.MISSILE to AdvancedMissileAIPlugin(baseAI),
-            FireMode.NO_FIGHTERS to NoFighterAIPlugin(baseAI),
-            FireMode.BIG_SHIPS to BigShipAI(baseAI),
-            FireMode.SMALL_SHIPS to SmallShipAI(baseAI),
-            FireMode.MINING to MiningAI(baseAI),
-            FireMode.OPPORTUNIST to OpportunistAI(baseAI)
+            FireMode.PD to PDAIPlugin(baseAI, suffix),
+            FireMode.FIGHTER to AdvancedFighterAIPlugin(baseAI, suffix),
+            FireMode.MISSILE to AdvancedMissileAIPlugin(baseAI, suffix),
+            FireMode.NO_FIGHTERS to NoFighterAIPlugin(baseAI, suffix),
+            FireMode.BIG_SHIPS to BigShipAI(baseAI, suffix),
+            FireMode.SMALL_SHIPS to SmallShipAI(baseAI, suffix),
+            FireMode.MINING to MiningAI(baseAI, suffix),
+            FireMode.OPPORTUNIST to OpportunistAI(baseAI, suffix)
         )
     }
 }

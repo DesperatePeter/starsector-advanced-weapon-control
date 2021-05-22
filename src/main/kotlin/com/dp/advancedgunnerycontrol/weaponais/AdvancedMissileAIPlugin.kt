@@ -1,11 +1,12 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
+import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.combat.MissileAPI
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lwjgl.util.vector.Vector2f
 
-class AdvancedMissileAIPlugin(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI) {
+class AdvancedMissileAIPlugin(baseAI: AutofireAIPlugin, suffix: SuffixBase) : SpecificAIPluginBase(baseAI, suffix=suffix) {
     override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         val missile = (entity as? MissileAPI) ?: return Float.MAX_VALUE
         return computeBasePriority(entity, predictedLocation).let {

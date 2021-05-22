@@ -21,6 +21,9 @@ class AdjustableAIPlugin constructor(private val baseAI: AutofireAIPlugin) : Aut
 
     fun setSuffix(sfx : Suffixes?){
         suffix = createSuffix(sfx, baseAI.weapon)
+        aiPlugins.values.mapNotNull { (it as? SpecificAIPluginBase) }.forEach {
+            it.suffix = suffix
+        }
     }
 
     fun switchFireMode(mode: FireMode): Boolean {

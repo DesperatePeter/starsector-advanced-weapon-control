@@ -1,6 +1,4 @@
 package com.dp.advancedgunnerycontrol.weaponais.suffixes
-
-import com.dp.advancedgunnerycontrol.weaponais.isValidPDTarget
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 

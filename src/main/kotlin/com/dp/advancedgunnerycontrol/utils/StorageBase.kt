@@ -9,7 +9,7 @@ open class StorageBase<T> (private val persistentDataKey: String){
         fun <T> assembleStorageArray(baseKey : String, size : Int = Settings.maxLoadouts()) : List<StorageBase<T>>{
             val toReturn = mutableListOf(StorageBase<T>(baseKey))
             for (i in 1 until size){
-                toReturn.add(StorageBase<T>(baseKey + i.toString()))
+                toReturn.add(StorageBase(baseKey + i.toString()))
             }
             return toReturn.toList()
         }

@@ -23,7 +23,7 @@ class WeaponModeSelector : CycleSelectorBase<FireMode>{
     override fun currentValueAsString(): String {
         if (Settings.cycleOrder().size <= currentIndex) reset()
         // something like [__X_]
-        var positionIndicator: String = " [" + "_".repeat(currentIndex) + "X" +
+        val positionIndicator: String = " [" + "_".repeat(currentIndex) + "X" +
                 "_".repeat(Settings.cycleOrder().size - 1 - currentIndex) + "] "
 
         return positionIndicator + FMValues.FIRE_MODE_DESCRIPTIONS[currentValue] +

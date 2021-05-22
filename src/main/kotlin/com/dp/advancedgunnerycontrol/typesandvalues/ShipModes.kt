@@ -1,8 +1,6 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
 import com.dp.advancedgunnerycontrol.weaponais.shipais.AutofireShipAI
-import com.fs.starfarer.api.combat.AutofireAIPlugin
-import com.fs.starfarer.api.combat.ShipAIPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 
 enum class ShipModes {

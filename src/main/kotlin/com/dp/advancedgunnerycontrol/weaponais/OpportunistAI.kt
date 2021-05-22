@@ -1,11 +1,11 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
+import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
-import org.lazywizard.lazylib.ext.minus
 import org.lwjgl.util.vector.Vector2f
 
-class OpportunistAI (baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI, true) {
+class OpportunistAI (baseAI: AutofireAIPlugin, suffix: SuffixBase) : SpecificAIPluginBase(baseAI, true, suffix) {
     override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return if (isOpportuneTarget(entity, predictedLocation, weapon)) {
             computeBasePriority(entity, predictedLocation)
@@ -15,8 +15,7 @@ class OpportunistAI (baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI, tr
     }
 
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {
-        val toReturn = CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filterNotNull().filter { !it.isFighter }
-        return toReturn
+        return CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filterNotNull().filter { !it.isFighter }
     }
 
     override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean = false

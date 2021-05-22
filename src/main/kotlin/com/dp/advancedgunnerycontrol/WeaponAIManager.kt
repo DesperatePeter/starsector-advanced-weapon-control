@@ -3,13 +3,9 @@ package com.dp.advancedgunnerycontrol
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.typesandvalues.Suffixes
-import com.dp.advancedgunnerycontrol.typesandvalues.createSuffix
-import com.dp.advancedgunnerycontrol.typesandvalues.suffixFromString
 import com.dp.advancedgunnerycontrol.utils.SuffixSelector
-import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.dp.advancedgunnerycontrol.utils.WeaponModeSelector
 import com.dp.advancedgunnerycontrol.weaponais.*
-import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.*
 
 class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: ShipAPI?) {
@@ -20,7 +16,6 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
     private var weaponAIs = HashMap<WeaponAPI, AdjustableAIPlugin>()
 
     fun reset() {
-        // Todo: truly revert to old plugin?
         weaponAIs.values.forEach {
             it.switchFireMode(FireMode.DEFAULT)
             it.setSuffix(Suffixes.NONE)
@@ -96,7 +91,7 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
 
     private fun adjustWeaponAIs(weaponGroup: WeaponGroupAPI, fireMode: FireMode, suffix: Suffixes?): Fraction {
         initializeAIsIfNecessary(weaponGroup.aiPlugins)
-        var affectedWeapons = Fraction(0, weaponGroup.aiPlugins.size)
+        val affectedWeapons = Fraction(0, weaponGroup.aiPlugins.size)
         weaponGroup.weaponsCopy.iterator().forEach { weapon ->
             if (weaponAIs[weapon]?.switchFireMode(fireMode) == true) affectedWeapons.numerator += 1
             weaponAIs[weapon]?.setSuffix(suffix)
@@ -127,7 +122,7 @@ class WeaponAIManager(private val engine: CombatEngineAPI, private var ship: Shi
     }
 
     fun getFireModeSuffix(groupNumber: Int): String {
-        var suffixDescription = (weaponGroupSuffixes[groupNumber]?.currentValueAsString() ?: "")
+        val suffixDescription = (weaponGroupSuffixes[groupNumber]?.currentValueAsString() ?: "")
 
         weaponGroupModes[groupNumber]?.currentValueAsString()?.let {
             return "$it $suffixDescription"
