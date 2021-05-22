@@ -188,7 +188,8 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private fun printShipInfo() {
         determineSelectedShip(engine)?.let { ship ->
             val wpAiManager = initOrGetAIManager(ship)
-            val shipInfo = ship.variant.fullDesignationWithHullNameForShip
+            val shipMode = (ShipModeStorage[storageIndex].modesByShip[ship.fleetMemberId ?: ""]?.values?.firstOrNull() ?: "Default")
+            val shipInfo = "${ship.variant.fullDesignationWithHullNameForShip} ($shipMode)"
             var i = 1 // current weapon group display number
             val weaponGroupInfo = ship.weaponGroupsCopy.map { weaponGroup ->
                 "Group ${i}: " + weaponGroup.weaponsCopy.map { weapon -> weapon.displayName }.toSet() +
@@ -213,7 +214,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         val ship = determineSelectedShip(engine) ?: return
         initOrGetAIManager(ship)?.let { aiManager ->
             ship.fleetMemberId?.let { id ->
-                Settings.shipModeStorage[storageIndex].modesByShip[id] = aiManager.weaponGroupModes.mapValues {
+                Settings.fireModeStorage[storageIndex].modesByShip[id] = aiManager.weaponGroupModes.mapValues {
                     FMValues.fireModeAsString[it.value.currentValue] ?: FMValues.defaultFireModeString
                 }.toMutableMap()
                 Settings.suffixStorage[storageIndex].modesByShip[id] = aiManager.weaponGroupSuffixes.mapValues {

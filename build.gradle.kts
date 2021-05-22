@@ -169,6 +169,11 @@ tasks {
                    |   # Beware though that enabling it will have a negative effect on game performance.
                    |   # Allowed values: true/false
                    |   ,"enableCustomAI" : true # <---- EDIT HERE ----
+                   |   
+                   |   # Enabling this will always use the customAI (for applicable modes, refer to mode table)
+                   |   # Note that forcing & enabling custom AI should actually be beneficial for performance over just enabling it.
+                   |   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
+                   |   ,"forceCustomAI" : false # <---- EDIT HERE ----
 
 
                    |   #                                 #### UI SETTINGS ####
@@ -189,7 +194,7 @@ tasks {
                    |   , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
                    |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
                    |   , "GUIHotkey" : "j" # <---- EDIT HERE ----
-                   |   , "loadoutNames" : [ "EditMe1", "EditMe2", "EditMe3" ]
+                   |   , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
 
                    |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
                    |   # This can't be enabled when enablePersistentFireModes is off
@@ -209,13 +214,7 @@ tasks {
                    |   # I.e. doubling this value doubles the time required to compute firing solutions but only increases their
                    |   # accuracy a little bit.
                    |   # I believe that 1 is the value used in Vanilla
-                   |   ,"customAIRecursionLevel" : 1 # <---- EDIT HERE (maybe)----
-
-                   |   # Enabling this will always use the customAI (for applicable modes, refer to mode table)
-                   |   # It's mostly here for testing, but feel free to give it a try if you want.
-                   |   # Note that forcing & enabling custom AI should actually be beneficial for performance over just enabling it.
-                   |   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
-                   |   ,"forceCustomAI" : false # <---- EDIT HERE (maybe) ----
+                   |   ,"customAIRecursionLevel" : 1 # <---- EDIT HERE (maybe)----                   
 
                    |   # Any positive or negative float possible, reasonable values: between 0.7 ~ 2.0 or so
                    |   # 1.0 means "fire if shot will land within 1.0*(targetHitbox+10)"

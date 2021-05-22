@@ -11,26 +11,26 @@ abstract class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val sh
 
 
     override fun setDoNotFireDelay(p0: Float) {
-        ship.shipAI = baseAI
         setDoNotFireDelayImpl(p0)
+        ship.shipAI = baseAI
         baseAI.setDoNotFireDelay(p0)
         ship.shipAI = this
     }
 
-    protected abstract fun setDoNotFireDelayImpl(p0: Float)
+    protected open fun setDoNotFireDelayImpl(p0: Float) {}
 
     override fun forceCircumstanceEvaluation() {
-        ship.shipAI = baseAI
         forceCircumstanceEvaluationImpl()
+        ship.shipAI = baseAI
         baseAI.forceCircumstanceEvaluation()
         ship.shipAI = this
     }
 
-    protected abstract fun forceCircumstanceEvaluationImpl()
+    protected open fun forceCircumstanceEvaluationImpl() {}
 
     override fun advance(p0: Float) {
-        ship.shipAI = baseAI
         advanceImpl(p0)
+        ship.shipAI = baseAI
         baseAI.advance(p0)
         ship.shipAI = this
     }

@@ -33,13 +33,15 @@ If you install a new version, please make sure to delete the old folder before d
 ## Controls ##
 
 Press the NUMPAD Keys 1-7, to cycle between firing modes for that group. **Make sure to enable Num-Lock!**
-Press the "-"-Key after 1-7 to cycle suffixes for that group.
+Press the "-"-Key after 1-7 to cycle suffixes for that group. 
+
+Target an ally ("R"-Key) to instead adjust their modes.
 
 Whenever you cycle modes, you will see a message like this:
 
 ```Group 2: [_X__] Missiles (custom AI) 2/3 HoldFire(Flux>90%)```
 
-In order, this let's you know that a) group 2 is in b) the second out of 4 modes, 
+In order, this lets you know that a) group 2 is in b) the second out of 4 modes, 
 c) the current mode is Missiles, c) it's using custom AI when base AI wants to target something else,
 d) 2 out of 3 weapons are eligible for that mode (the non-eligible weapon will use mode Default)
 and e) (optional) the mode suffix prevents the weapon from firing if ship flux >= 90%.
@@ -50,7 +52,7 @@ in the settings.
 Hotkeys (rebindable in Settings.editme):
 - NUMPAD 1-7 - Cycle firing modes for weapon groups 1-7 for targeted or player ship (not rebindable)
 - "J" - Show info about current firing modes (and load/save modes)
-- "/" - Reset all modes back to default for current ship
+- "/" - Reset all modes back to default for current ship (for current loadout)
 - "*" - Manually load firing modes for all deployed ships
 - "-" - Cycle suffix for the last group you cycled modes for
 - "+" - Cycle loadouts for **all** ships
@@ -61,15 +63,6 @@ So, if you rebind your weapon group keys (to e.g. F1-F7), you should be able to 
 If you bind the numpad numbers as secondary weapon group keys, this mod won't work at all.
 If this becomes an issue for you, please let me know, and I will try to implement a solution.
 
-### Setting fire modes for allied ships ###
-
-You can simply set up fire modes for allied ships by running a simulation with them and adjusting fire modes. Alternatively,
-you can target allied ships in combat by using the R-Key and then adjust their fire modes via the NUMPAD-Keys. The next 
-time you deploy that ship, its fire modes will be loaded automatically.
-
-NOTE: The allied ship AI will "manually" fire weapons independent of their fire mode, but still often
-rely on autofire. So, think of fire modes for allied ships as suggestions, not hard rules.
-
 ### Gunnery Control GUI ###
 
 If you don't like having to set up your ships firing modes during (simulated) combat, there is also a dialog interface available.
@@ -79,9 +72,12 @@ firing modes. Unfortunately, I **can't directly interface with the ship refit sc
 ### Loadouts ###
 
 You can define (by default 3) different mode loadouts for each ship. You can then cycle through these loadouts for all
-ships by pressing the "+"-Key in combat. Doing so will switch all firing modes etc. to those defined in the next loadout.
-This means you can e.g. have loadout 1 be your default loadout, loadout 2 be a sepcialized anti-fighter loadout and loadout 3
-be all default for all ships.
+ships by pressing the "+"-Key in combat. Doing so will switch all firing modes, suffixes and ship modes
+to those defined in the next loadout.
+
+You can configure the number of available loadouts, and their names in the Settings.editme file.
+
+I would recommend leaving one loadout blank (i.e. everything default) for your entire fleet to give you a fallback option.
 
 ## Fire Modes ##
 
@@ -116,7 +112,7 @@ HoldFire(Flux>75%) | Weapon will hold fire if ship flux >= 75%
 HoldFire(Flux>50%) | Weapon will hold fire if ship flux >= 50%
 ConserveAmmo* | Weapon will use Opportunist mode when ammo < 90%
 PanicFire* | When ship hull drops below 50%, this weapon will fire hail mary shots. Useful for guided missiles.
-PD(Flux>50%) | Weapon will only target missiles/fighters when above 50% flux. Only use with modes/weapons that can target fighters/missiles.
+PD(Flux>50%) | Weapon will only shoot missiles/fighters when flux > 50%. Only use with modes/weapons that can target fighters/missiles.
 PD(Ammo<90%) | Same as PD(Flux>50%), but instead activates when ammo is below 90%. Mainly intended for burst PD lasers etc.
 
 *these suffixes rely on custom AI and will not work well with custom AI disabled. 
@@ -124,13 +120,15 @@ They will work best when forcing custom AI in the settings.
 
 ### Ship Modes ###
 
-Ship modes only affect AI-controlled ships. There are currently two modes to choose from:
+Ship modes only affect AI-controlled ships. Ship modes can only be set in the GUI.
 
-- Default will let the ship AI choose which weapon groups to set to autofire
-- ForceAutofire will force the ship to put all weapon groups on autofire. This forces the ship AI to comply with selected
-  fire modes (99% of the time). However, use caution, because usually the default AI will make relatively
-  sensible decisions on which group(s) to control manually. Pairing this setting with HoldFire suffixes,
-  to prevent the ship from fluxing out prematurely, is highly recommended.
+Mode | Effect | Notes
+:---: | :--- | :---
+Default | Base game ship AI | -
+ForceAutofire | Force deselect all weapon groups and set them to autofire | Combine with HoldFire-suffixes to prevent fluxing out
+Retreat(Hull<50%) | Issue retreat command for the ship if hull < 50% | This WILL use a command point
+ShieldsOff(Flux>50%) | Force turn off shield at ship flux > 50% | Only recommended for high armor ships with good PD
+Vent(Flux>50%) | Force vent at ship flux > 50% | Beware of Harpoons! (Use secondary loadout)
 
 ## Settings ##
 
@@ -150,8 +148,8 @@ There are three different AI settings:
 
 - If the custom AI is **disabled**, the weapon will use the baseAI to acquire a target. If the target doesn't match
   the mode, the weapon won't fire. (base AI)
-- (default) If the custom AI is **enabled**, the weapon will first try the base AI. If the target doesn't match, 
-  the custom AI will take over. (custom AI)
+- (default) If the custom AI is **enabled**, the weapon will first try the base AI. If the target doesn't 
+  match the selected mode, the custom AI will take over. (custom AI)
 - If you **force and enable** the custom AI, the weapon will immediately try to acquire a target via custom AI. (override AI)
 
 You should **disable** the custom AI, if:
@@ -164,8 +162,8 @@ You should **enable or force-enable** the custom AI, if:
 - You want to set weapons to prioritize targets they normally wouldn't (e.g. phase lances as anti-fighter weapons)
 - You dislike it when your weapons don't fire even if there is a reasonable target
 - You want to be able to customize the AI behaviour (in Settings.editme)
+- You want to use advanced modes/suffixes (Opportunist etc.)
 - You want to get the "full experience"
-- You want to use Fighter/Missile-only modes
 - You want to help me improve my custom AI by sending me written reports/video snippets of glitchy weapon behaviour
 
 ### Performance Considerations ###
@@ -178,8 +176,13 @@ I go crazy in the settings. Below I will list a few options for improving perfor
 - Try not to set every weapon group for every ship to a special fire mode.
 - Leave the AI recursion level and friendly fire complexity at 1.
 - Consider turning off auto save/load and instead manually save ("J"-Key) and load ("*"-Key).
+- Stick to ship mode Default
 
 ## Troubleshooting ##
+
+When updating versions of this mod, if you notice any issues, consider purging the old persistent data 
+(set "enablePersistentFireModes" to false in the settings, launch Starsector, load your game & save. 
+Then you can re-enable enablePersistentFireModes and restart the game).
 
 ### Broken Saves ###
 
@@ -212,6 +215,9 @@ Each Plugin corresponding to an autofire mode also contains a reference to the b
 a decision, it first asks the base plugin what it would like to do. If that behaviour is in line with the selected mode,
 the plugin will simply let the base AI do its thing. Otherwise, depending on whether customAI is enabled or not, it will
 tell the weapon to not fire, or try to come up with its own firing solution.
+
+Similarly, when setting ship AI modes, the mod will replace the base ship AI plugin with a custom plugin that will perform
+some actions and then let the base AI take back over.
 
 ### Compatibility with other mods ###
 
@@ -247,7 +253,9 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - Automatically load fire modes on ship deployment **DONE**
 - Add a GUI to set fire modes in the ship refit editor **partially DONE** (not integrated in refit screen)
 - Mode suffixes **DONE**
-
+- Add a way to quickly change fire modes for all ships back to default **DONE** (loadouts)
+- Add a way to change fire behaviour based on circumstances **DONE** (PD(X), PanicFire suffixes)
+- Add a way to force the AI to adhere to configured fire modes **DONE** (ForceAutofire ship mode)
 
 ## Known Issues ##
 
@@ -275,12 +283,16 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
   no longer need to be in Command UI to set friendly modes,  added hotkey to load fire modes for all ships
 - 0.7.1: fix issue with reset key, adjusted readme
 - 0.7.2: IPDAI is now considered for PD/Missiles mode, invalid modes are now skipped (opt-out in settings)
-- 0.8.0: added mode suffixes, added gunnery control GUI
-- 0.8.1: cleaned up GUI, display weapon mode suffixes
+- 0.8.0 (pre-release): added mode suffixes, added gunnery control GUI
+- 0.8.1 (pre-release): cleaned up GUI, display weapon mode suffixes
 - 0.8.2: add ability to cyclce suffixes during combat, fix issues with persistence and save game corruption
 - 0.8.3: minor polish
 - 0.8.4: pre-deployed ships (e.g. when trying do disengage) will now also automatically load firing modes
 - 0.8.5: automatically purge incompatible persistent data, changed GUI hotkey to "J" and made it rebindable
+- 0.9.0 (pre-release): Added loadouts, ship modes & additional modes/suffixes
+- 0.9.1 (pre-release): Fixed an issue that could lead to a nullptr-exception
+- 0.9.2: Fixed issues (suffixes didn't properly affect targeting priority, ship modes got occasionally reset),
+  added additional ship modes.
 
 ## Acknowledgements ##
 
@@ -312,8 +324,7 @@ Just follow the following steps:
 - Add to Settings.editme allowed-values comment (please refrain from adding to default list)
 - Test that the mode works as intended!
 
-On the off-chance that you want to support me financially, please don't :P My day-job as an engineer
-pays enough to cover my living expenses.
+On the off-chance that you want to support me financially, please don't :P 
 
 I believe there are better places where you can donate your money to, check out
-<https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance
+<https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance.

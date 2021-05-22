@@ -5,10 +5,6 @@ import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipCommand
 
 class AutofireShipAI(baseAI: ShipAIPlugin, ship: ShipAPI) : CustomShipAI(baseAI, ship) {
-    override fun setDoNotFireDelayImpl(p0: Float) { }
-
-    override fun forceCircumstanceEvaluationImpl() { }
-
     override fun advanceImpl(p0: Float) {
         forceAutofireGroups()
     }
