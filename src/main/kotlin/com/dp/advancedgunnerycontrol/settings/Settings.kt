@@ -1,11 +1,10 @@
 package com.dp.advancedgunnerycontrol.settings
 
 
-import com.dp.advancedgunnerycontrol.utils.FireModeStorage
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.utils.SuffixStorage
+import com.dp.advancedgunnerycontrol.utils.StorageBase
 import com.fs.starfarer.api.Global
 import data.scripts.util.MagicSettings
 import kotlin.math.max
@@ -35,13 +34,17 @@ object Settings : SettingsDefinition() {
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
     val enableTextInterface = addSetting<Boolean>("enableGUI", true)
+    val cycleLoadout = addSetting<Char>("cycleLoadoutHotkey", '+')
+    val maxLoadouts = addSetting<Int>("maxLoadouts", 3)
+    val loadoutNames = addSetting<List<String>> ("loadoutNames", listOf())
 
 
     var weaponBlacklist = listOf<String>()
         private set
 
-    val shipModeStorage = FireModeStorage
-    val suffixStorage = SuffixStorage
+    var shipModeStorage : List<StorageBase<String>> = listOf()
+    var suffixStorage : List<StorageBase<String>> = listOf()
+    var fireModeStorage : List<StorageBase<String>> = listOf()
 
     override fun readSettings() {
         super.readSettings()
@@ -50,14 +53,12 @@ object Settings : SettingsDefinition() {
 
     override fun applySettings() {
         super.applySettings()
+        shipModeStorage =  StorageBase.assembleStorageArray<String>("$" + Values.THIS_MOD_NAME + "shipModes")
+        suffixStorage = StorageBase.assembleStorageArray<String>("$" + Values.THIS_MOD_NAME + "suffixes")
+        fireModeStorage = StorageBase.assembleStorageArray<String>("$" + Values.THIS_MOD_NAME + "weaponModes")
         forceCustomAI.set(forceCustomAI() && enableCustomAI())
         enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set ( max(0, min(2, customAIFriendlyFireComplexity())))
-        infoHotkey.set(infoHotkey().toLowerCase())
-        resetHotkey.set(resetHotkey().toLowerCase())
-        loadHotkey.set(loadHotkey().toLowerCase())
-        suffixHotkey.set(suffixHotkey().toLowerCase())
-        guiHoteky.set(guiHoteky().toLowerCase())
         cycleOrderStrings.set(listOf("Default") + cycleOrderStrings())
         cycleOrderInternal = cycleOrderStrings().mapNotNull { FMValues.FIRE_MODE_TRANSLATIONS[it] }
         if(cycleOrderInternal.size != cycleOrderStrings().size){

@@ -8,8 +8,7 @@ import org.lwjgl.opengl.GL11
 
 class ShipView : CustomUIPanelPlugin {
     private var pos : PositionAPI? = null
-    private val modeButtons : MutableList<ModeButton> = mutableListOf()
-    private val suffixButtons : MutableList<SuffixButton> = mutableListOf()
+    private val buttons : MutableList<ButtonBase<*>> = mutableListOf()
     override fun positionChanged(pos: PositionAPI?) {
         pos?.let {
             this.pos = it
@@ -43,16 +42,19 @@ class ShipView : CustomUIPanelPlugin {
     }
 
     fun addModeButtonGroup(group: Int, ship: FleetMemberAPI, tooltip: TooltipMakerAPI){
-        modeButtons.addAll(ModeButton.createModeButtonGroup(ship, group, tooltip))
+        buttons.addAll(ModeButton.createModeButtonGroup(ship, group, tooltip))
     }
 
     fun addSuffixButtons(group: Int, ship: FleetMemberAPI, tooltip: TooltipMakerAPI){
-        suffixButtons.addAll(SuffixButton.createModeButtonGroup(ship, group, tooltip))
+        buttons.addAll(SuffixButton.createModeButtonGroup(ship, group, tooltip))
+    }
+
+    fun addShipModeButtonGroup(ship: FleetMemberAPI, panel: CustomPanelAPI){
+        buttons.addAll(ShipModeButton.createModeButtonGroup(ship, panel))
     }
 
     override fun advance(t: Float) {
-        modeButtons.forEach { it.executeCallbackIfChecked() }
-        suffixButtons.forEach { it.executeCallbackIfChecked() }
+        buttons.forEach { it.executeCallbackIfChecked() }
     }
 
     override fun processInput(events: MutableList<InputEventAPI>?) {}

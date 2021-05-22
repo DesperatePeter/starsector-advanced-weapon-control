@@ -1,6 +1,9 @@
 package com.dp.advancedgunnerycontrol.gui
 
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.utils.FireModeStorage
+import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
+import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
@@ -10,6 +13,16 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 
 class AGCGUI : InteractionDialogPlugin {
+    companion object{
+        var storageIndex = 0
+        fun incrementIndex(){
+            if (storageIndex < Settings.maxLoadouts() - 1) storageIndex += 1 else storageIndex = 0
+        }
+        fun lastIndex() : Int{
+            if (storageIndex == 0) return Settings.maxLoadouts() -1
+            return storageIndex -1
+        }
+    }
     private var level = Level.TOP
     private var ship : FleetMemberAPI? = null
     private var dialog: InteractionDialogAPI? = null
@@ -19,6 +32,7 @@ class AGCGUI : InteractionDialogPlugin {
     private var customPanel : CustomPanelAPI? = null
 
     override fun init(dialog: InteractionDialogAPI?) {
+        storageIndex = 0
         dialog?.let {
             this.dialog = it
             text = it.textPanel
@@ -40,6 +54,21 @@ class AGCGUI : InteractionDialogPlugin {
             if("Back" == it) level=Level.TOP
             if("Exit" == it) dialog?.dismiss()
         }
+        (data as? String)?.let {
+            if("cycle" == it){
+                incrementIndex()
+            }
+            if("copy" == it){
+                ship?.id?.let { shipId->
+                    ShipModeStorage[storageIndex].modesByShip[shipId] =
+                        (ShipModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+                    FireModeStorage[storageIndex].modesByShip[shipId] =
+                        (FireModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+                    SuffixStorage[storageIndex].modesByShip[shipId] =
+                        (SuffixStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+                }
+            }
+        }
         displayOptions()
         return
     }
@@ -54,6 +83,8 @@ class AGCGUI : InteractionDialogPlugin {
             Level.SHIP -> displayShipOptions()
         }
         options?.addOption("Back", false)
+        options?.addOption("Cycle loadout [Current ${storageIndex + 1} / ${Settings.maxLoadouts()}] <${Settings.loadoutNames().getOrNull(storageIndex) ?: "NoName"}>", "cycle")
+        options?.addOption("Copy last loadout", "copy")
     }
 
     private fun showModeGUI(){
@@ -61,10 +92,22 @@ class AGCGUI : InteractionDialogPlugin {
         customPanel = visualPanel?.showCustomPanel(1200f, 600f, shipView)
         customPanel?.position?.inTMid(20f)
         ship?.let { sh ->
+
+//            val shipModeElement = customPanel?.createUIElement(1190f, 40f, false)
+//            shipModeElement?.let {
+//                it.addTitle("Ship AI Modes")
+//                shipView.addShipModeButtonGroup(sh, it)
+//                customPanel?.addComponent(it)
+//                customPanel?.addUIElement(it)?.inTL(5f, 5f)
+//            }
+            val shipModeHeader = customPanel?.createUIElement(1200f, 20f, false)
+            shipModeHeader?.addTitle("Ship AI Modes:")
+            customPanel?.addUIElement(shipModeHeader)?.inTL(1f, 1f)
+
+            customPanel?.let { shipView.addShipModeButtonGroup(sh, it) }
             val elements = mutableListOf<UIComponentAPI>()
             for(i in 0 until sh.variant.weaponGroups.size){
-                val element = customPanel?.createUIElement(162f, 500f, true)
-
+                val element = customPanel?.createUIElement(162f, 500f, false)
                 element?.let {
                     it.addTitle("Group ${i+1}")
                     shipView.addModeButtonGroup(i, sh, it)
@@ -78,7 +121,8 @@ class AGCGUI : InteractionDialogPlugin {
                         if (elements.isNotEmpty()){
                             p.rightOfTop(elements.last(), 10f)
                         }else{
-                            p.inTL(15f, 90f)
+                            p.inTL(5f, 70f)
+                            //p.belowLeft(shipModeElement, 5f)
                         }
                     }
                     elements.add(it)

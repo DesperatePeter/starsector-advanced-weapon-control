@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.8.5"
+    val modVersion = "0.9.1"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -155,10 +155,10 @@ tasks {
                    |   #                                 #### CYCLE ORDER ####
                    |   # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
                    |   # Delete modes you want to skip. Note: "Default" will always be the first mode.
-                   |   # Allowed values: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining"
+                   |   # Allowed values: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist"
                    |   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
-                   |   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters" ] # <---- EDIT HERE ----
-                   |   # "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining" ]
+                   |   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "Opportunist" ] # <---- EDIT HERE ----
+                   |   # "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Opportunist", "Mining" ]
 
 
                    |   #                                 #### CUSTOM AI ####
@@ -169,6 +169,11 @@ tasks {
                    |   # Beware though that enabling it will have a negative effect on game performance.
                    |   # Allowed values: true/false
                    |   ,"enableCustomAI" : true # <---- EDIT HERE ----
+                   |   
+                   |   # Enabling this will always use the customAI (for applicable modes, refer to mode table)
+                   |   # Note that forcing & enabling custom AI should actually be beneficial for performance over just enabling it.
+                   |   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
+                   |   ,"forceCustomAI" : false # <---- EDIT HERE ----
 
 
                    |   #                                 #### UI SETTINGS ####
@@ -186,7 +191,10 @@ tasks {
                    |   , "resetHotkey" : "/" # <---- EDIT HERE ----
                    |   , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
                    |   , "suffixHotkey" : "-" # <---- EDIT HERE ----
-                   |   , "guiHotkey" : "j" # <---- EDIT HERE ----
+                   |   , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
+                   |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
+                   |   , "GUIHotkey" : "j" # <---- EDIT HERE ----
+                   |   , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
 
                    |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
                    |   # This can't be enabled when enablePersistentFireModes is off
@@ -206,13 +214,7 @@ tasks {
                    |   # I.e. doubling this value doubles the time required to compute firing solutions but only increases their
                    |   # accuracy a little bit.
                    |   # I believe that 1 is the value used in Vanilla
-                   |   ,"customAIRecursionLevel" : 1 # <---- EDIT HERE (maybe)----
-
-                   |   # Enabling this will always use the customAI (for applicable modes, refer to mode table)
-                   |   # It's mostly here for testing, but feel free to give it a try if you want.
-                   |   # Note that forcing & enabling custom AI should actually be beneficial for performance over just enabling it.
-                   |   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
-                   |   ,"forceCustomAI" : false # <---- EDIT HERE (maybe) ----
+                   |   ,"customAIRecursionLevel" : 1 # <---- EDIT HERE (maybe)----                   
 
                    |   # Any positive or negative float possible, reasonable values: between 0.7 ~ 2.0 or so
                    |   # 1.0 means "fire if shot will land within 1.0*(targetHitbox+10)"

@@ -3,6 +3,9 @@ package com.dp.advancedgunnerycontrol
 import com.dp.advancedgunnerycontrol.gui.GUIShower
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.utils.FireModeStorage
+import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
+import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.fs.starfarer.api.BaseModPlugin
 import com.fs.starfarer.api.Global
 
@@ -18,8 +21,15 @@ class WeaponControlBasePlugin : BaseModPlugin() {
     override fun onGameLoad(newGame: Boolean) {
         super.onGameLoad(newGame)
 
-        Settings.shipModeStorage.purgeIfNecessary()
-        Settings.suffixStorage.purgeIfNecessary()
+        ShipModeStorage.forEach {
+            it.purgeIfNecessary()
+        }
+        FireModeStorage.forEach {
+            it.purgeIfNecessary()
+        }
+        SuffixStorage.forEach {
+            it.purgeIfNecessary()
+        }
 
         if (Settings.enableTextInterface()){
             Global.getSector().addTransientScript(GUIShower())

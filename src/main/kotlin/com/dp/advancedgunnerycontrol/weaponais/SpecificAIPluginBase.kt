@@ -15,9 +15,9 @@ abstract class SpecificAIPluginBase(
     private val customAIActive: Boolean = Settings.enableCustomAI(),
     var suffix: SuffixBase = SuffixBase(baseAI.weapon)
 ) : AutofireAIPlugin {
-    private var targetEntity: CombatEntityAPI? = null
+    protected var targetEntity: CombatEntityAPI? = null
     private var lastTargetEntity: CombatEntityAPI? = null
-    private var targetPoint: Vector2f? = null
+    protected var targetPoint: Vector2f? = null
     private var forceOff = false
     private val weapon = baseAI.weapon
     private var weaponShouldFire = false
@@ -91,9 +91,8 @@ abstract class SpecificAIPluginBase(
     protected fun advanceWithCustomAI() {
 
         var potentialTargets = addPredictedLocationToTargets(
-            getRelevantEntitiesWithinRange().filter { isWithinArc(it) && isHostile(it) }
+            getRelevantEntitiesWithinRange().filter { isHostile(it) }
         ).filter { isInRange(it.second) }
-
 
         // TODO: It would be faster to get friendlies and foes in one go
         if (Settings.customAIFriendlyFireComplexity() >= 2) {
@@ -189,7 +188,11 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun isWithinArc(entity: CombatEntityAPI): Boolean {
-        return weapon.distanceFromArc(entity.location) <= 0.01f
+        return isWithinArc(entity.location)
+    }
+
+    protected fun isWithinArc(position: Vector2f) : Boolean {
+        return weapon.distanceFromArc(position) <= 0.01f
     }
 
     /**
@@ -223,17 +226,20 @@ abstract class SpecificAIPluginBase(
         return (weapon.location - entity).length()
     }
 
-    protected fun computeIfShouldFire(potentialTargets: List<Pair<CombatEntityAPI, Vector2f>>): Boolean {
+    protected open fun computeIfShouldFire(potentialTargets: List<Pair<CombatEntityAPI, Vector2f>>): Boolean {
+        if (weapon.hasAIHint(WeaponAPI.AIHints.DO_NOT_AIM) || weapon.spec.trackingStr != null){
+            return potentialTargets.isNotEmpty()
+        }
+        if (Settings.customAIFriendlyFireComplexity() >= 1) {
+            if (isFriendlyFire(vectorFromAngleDeg(weapon.currAngle), getFriendlies())) return false
+        }
         // Note: In a sequence, all calculations are done on the first element before moving to the next
-        if(suffix.suppressFire()) return false
         potentialTargets.asSequence().filter { isInRange(it.second) }.iterator().forEach {
             val tolerance = it.first.collisionRadius * aimingToleranceFactor + aimingToleranceFlat
             val lateralTargetOffset = angularDistanceFromWeapon(it.second) * linearDistanceFromWeapon(it.second)
             if (lateralTargetOffset <= tolerance) return true
         }
-        if (Settings.customAIFriendlyFireComplexity() >= 1) {
-            if (isFriendlyFire(vectorFromAngleDeg(weapon.currAngle), getFriendlies())) return false
-        }
+
         return false
     }
 
@@ -251,7 +257,11 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun isInRange(entity: Vector2f): Boolean {
-        return weapon.distanceFromArc(entity) <= 0.01f && (linearDistanceFromWeapon(entity) <= weapon.range)
+        return if(!weapon.hasAIHint(WeaponAPI.AIHints.DO_NOT_AIM) && weapon.spec.trackingStr == null) {
+            weapon.distanceFromArc(entity) <= 0.01f && (linearDistanceFromWeapon(entity) <= weapon.range)
+        }else{
+            linearDistanceFromWeapon(entity) <= weapon.range
+        }
     }
 
     companion object {

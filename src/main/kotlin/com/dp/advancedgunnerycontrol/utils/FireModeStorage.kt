@@ -1,6 +1,5 @@
 package com.dp.advancedgunnerycontrol.utils
 
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
+import com.dp.advancedgunnerycontrol.settings.Settings
 
-object FireModeStorage : StorageBase<String>("$" + Values.THIS_MOD_NAME + "weaponModes"){
-}
+val FireModeStorage = Settings.fireModeStorage

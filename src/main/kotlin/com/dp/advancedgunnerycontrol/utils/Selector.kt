@@ -1,7 +1,5 @@
 package com.dp.advancedgunnerycontrol.utils
 
-import com.dp.advancedgunnerycontrol.settings.Settings
-
 abstract class CycleSelectorBase<T>(protected val selectionList: List<T>) {
     protected var currentIndex = 0
     var currentValue = selectionList.first()
