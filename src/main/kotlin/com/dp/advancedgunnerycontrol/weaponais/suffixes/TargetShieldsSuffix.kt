@@ -10,8 +10,8 @@ class TargetShieldsSuffix (weapon: WeaponAPI) : SuffixBase(weapon) {
         return 1f/computeShieldFactor(tgtShip)
     }
 
-    override fun suppressFire(target: CombatEntityAPI?): Boolean {
+    override fun shouldFire(baseDecision: Boolean, target: CombatEntityAPI?): Boolean {
         val tgtShip = (target as? ShipAPI) ?: return false
-        return computeShieldFactor(tgtShip) > 0.5f
+        return computeShieldFactor(tgtShip) > 0.9f && baseDecision
     }
 }

@@ -15,16 +15,21 @@ import java.awt.Color
 class ModeButton(ship: FleetMemberAPI, group : Int, mode : FireMode, button: ButtonAPI) : ButtonBase<FireMode>(ship, group, mode, button) {
 
     companion object{
-        private val storage = FireModeStorage
+        private var storage = FireModeStorage[AGCGUI.storageIndex]
 
         public fun createModeButtonGroup(ship: FleetMemberAPI, group: Int, tooltip: TooltipMakerAPI) : List<ModeButton>{
+            storage = FireModeStorage[AGCGUI.storageIndex]
             val toReturn = mutableListOf<ModeButton>()
-
+            var isSomethingChecked = false
             Settings.cycleOrder().forEach {
                 toReturn.add(ModeButton(ship, group, it, tooltip.addAreaCheckbox(it.toString(), it,
                     Color.BLUE, Color.BLUE, Color.WHITE, 160f, 24f, 3f)))
-                if(FMValues.FIRE_MODE_TRANSLATIONS[storage.modesByShip[ship.id]?.get(group)] == it) toReturn.last().check()
+                if(FMValues.FIRE_MODE_TRANSLATIONS[storage.modesByShip[ship.id]?.get(group)] == it){
+                    toReturn.last().check()
+                    isSomethingChecked = true
+                }
             }
+            if(!isSomethingChecked) toReturn.firstOrNull()?.check()
             toReturn.forEach {
                 it.sameGroupButtons = toReturn
             }

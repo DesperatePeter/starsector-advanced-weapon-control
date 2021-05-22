@@ -5,10 +5,8 @@ package com.dp.advancedgunnerycontrol.weaponais
 import com.dp.advancedgunnerycontrol.WeaponControlPlugin
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.combat.AutofireAIPlugin
-import com.fs.starfarer.api.combat.CombatEntityAPI
-import com.fs.starfarer.api.combat.ShipAPI
-import com.fs.starfarer.api.combat.WeaponAPI
+import com.fs.starfarer.api.combat.*
+import org.lazywizard.lazylib.ext.minus
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.PI
 import kotlin.math.cos
@@ -58,6 +56,52 @@ fun bigness(ship: ShipAPI): Float {
 
 fun isHostile(entity: CombatEntityAPI): Boolean {
     return entity.owner == 1
+}
+
+fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weapon: WeaponAPI) : Boolean{
+    val target = tgt as? ShipAPI ?: return false
+    val p = predictedLocation ?: return false
+    if(!isOpportuneType(target, weapon)) return false
+    var trackingFactor = when (weapon.spec?.trackingStr?.toLowerCase()){
+        "none" -> 1.0f
+        "very poor" -> 1.25f
+        "poor" -> 1.5f
+        "medium" -> 2.0f
+        "special" -> 2.0f
+        "good" -> 2.5f
+        "excellent" -> 3.0f
+        else -> 1.0f
+    } * 0.2f
+    if(weapon.id?.contains("sabot") == true) trackingFactor*=3
+    if(target.maxSpeed > weapon.projectileSpeed * trackingFactor) return false
+    if((p - weapon.location).length() > weapon.range * 0.75f) return false
+    return true
+}
+
+private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
+    if(weapon.spec?.primaryRoleStr?.toLowerCase() == "finisher"){
+        return isDefenseless(target)
+    }
+    if(weapon.damageType == DamageType.HIGH_EXPLOSIVE || weapon.damageType == DamageType.FRAGMENTATION){
+        if(isDefenseless(target)) return true
+        if(target.fluxLevel > 0.9f) return true
+        return false
+    }
+    if(weapon.damageType == DamageType.KINETIC){
+        if(isDefenseless(target)) return false
+        if(target.shield == null) return false
+        if(target.hardFluxLevel > 0.7f) return false
+    }
+    return true
+}
+
+private fun isDefenseless(target : ShipAPI) : Boolean {
+    if(target.shield == null && target.phaseCloak == null) return true
+    return target.isDefenseDisabled
+}
+
+fun isValidPDTarget(target: CombatEntityAPI?) : Boolean {
+    return (target is MissileAPI || ((target as? ShipAPI)?.isFighter == true))
 }
 
 fun vectorFromAngleDeg(degs: Float): Vector2f {

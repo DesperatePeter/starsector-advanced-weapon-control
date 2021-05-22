@@ -5,13 +5,14 @@ import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.MissileAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lwjgl.util.vector.Vector2f
 
-class MiningAI(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI) {
+class MiningAI(baseAI: AutofireAIPlugin, suffix: SuffixBase) : SpecificAIPluginBase(baseAI, suffix = suffix) {
     private var asteroids : MutableList<CombatEntityAPI> = mutableListOf()
     private var tgtPoint : Vector2f? = null
-    private var tofire = false
+    private var toFire = false
     // don't care
     override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float =
         computeBasePriority(entity, predictedLocation)
@@ -32,19 +33,19 @@ class MiningAI(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI) {
         getRelevantEntitiesWithinRange()
         if(asteroids.isEmpty()){
             tgtPoint = null
-            tofire = false
+            toFire = false
             return
         }
         val priorities = addPredictedLocationToTargets(asteroids)
         tgtPoint = priorities.minBy { computeTargetPriority(it.first, it.second) }?.second
-        tofire = asteroids.any {
+        toFire = asteroids.any {
             (angularDistanceFromWeapon(it.location) * linearDistanceFromWeapon(it.location) <=
                     (it.collisionRadius * Settings.customAITriggerHappiness()) + 50f)
         }
-        tofire
+        toFire
     }
 
     override fun isBaseAIOverwritable(): Boolean = true
 
-    override fun shouldFire(): Boolean = tofire
+    override fun shouldFire(): Boolean = toFire
 }

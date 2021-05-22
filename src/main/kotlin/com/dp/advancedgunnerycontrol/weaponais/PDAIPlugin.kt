@@ -1,9 +1,10 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
+import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.*
 import org.lwjgl.util.vector.Vector2f
 
-class PDAIPlugin(baseAI: AutofireAIPlugin) : SpecificAIPluginBase(baseAI, false) {
+class PDAIPlugin(baseAI: AutofireAIPlugin, suffix: SuffixBase) : SpecificAIPluginBase(baseAI, false, suffix) {
     override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return 0f
     }

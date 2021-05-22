@@ -1,10 +1,13 @@
 package com.dp.advancedgunnerycontrol.weaponais.suffixes
-
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 
-class FluxSuffix(weapon: WeaponAPI, private val fluxCap : Float) : SuffixBase(weapon) {
+class PanicFireSuffix (weapon: WeaponAPI, private val hullThreshold : Float = 0.5f) : SuffixBase(weapon) {
     override fun shouldFire(baseDecision: Boolean, target: CombatEntityAPI?): Boolean {
-        return weapon.ship.fluxLevel <= fluxCap && baseDecision
+        if(weapon.ship.hullLevel <= hullThreshold){
+            return true
+        }
+        return baseDecision
     }
+
 }
