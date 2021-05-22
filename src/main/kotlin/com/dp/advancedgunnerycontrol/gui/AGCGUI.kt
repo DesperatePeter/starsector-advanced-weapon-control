@@ -10,7 +10,9 @@ import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.combat.EngagementResultAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
+import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
+import java.awt.Color
 
 class AGCGUI : InteractionDialogPlugin {
     companion object{
@@ -18,11 +20,24 @@ class AGCGUI : InteractionDialogPlugin {
         fun incrementIndex(){
             if (storageIndex < Settings.maxLoadouts() - 1) storageIndex += 1 else storageIndex = 0
         }
+
         fun lastIndex() : Int{
             if (storageIndex == 0) return Settings.maxLoadouts() -1
             return storageIndex -1
         }
+
+        fun makeTooltip(description: String) : TooltipMakerAPI.TooltipCreator {
+            return object : TooltipMakerAPI.TooltipCreator {
+                override fun isTooltipExpandable(p0: Any?): Boolean = false
+                override fun getTooltipWidth(p0: Any?): Float = 450f
+
+                override fun createTooltip(tooltip: TooltipMakerAPI?, p1: Boolean, p2: Any?) {
+                    tooltip?.addPara(description, Color.GREEN, 5f)
+                }
+            }
+        }
     }
+
     private var level = Level.TOP
     private var ship : FleetMemberAPI? = null
     private var dialog: InteractionDialogAPI? = null
@@ -93,13 +108,6 @@ class AGCGUI : InteractionDialogPlugin {
         customPanel?.position?.inTMid(20f)
         ship?.let { sh ->
 
-//            val shipModeElement = customPanel?.createUIElement(1190f, 40f, false)
-//            shipModeElement?.let {
-//                it.addTitle("Ship AI Modes")
-//                shipView.addShipModeButtonGroup(sh, it)
-//                customPanel?.addComponent(it)
-//                customPanel?.addUIElement(it)?.inTL(5f, 5f)
-//            }
             val shipModeHeader = customPanel?.createUIElement(1200f, 20f, false)
             shipModeHeader?.addTitle("Ship AI Modes:")
             customPanel?.addUIElement(shipModeHeader)?.inTL(1f, 1f)

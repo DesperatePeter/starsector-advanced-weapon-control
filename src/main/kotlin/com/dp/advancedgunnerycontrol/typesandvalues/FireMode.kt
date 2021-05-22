@@ -28,6 +28,18 @@ object FMValues{
         FireMode.OPPORTUNIST to "Opportunist"
     )
 
+    val fireModeDetailedDescriptions = mapOf(
+        FireMode.DEFAULT to "Use the base AI",
+        FireMode.PD to "Use the base AI, but only fire at missiles/fighters",
+        FireMode.FIGHTER to "Only target and fire at fighters",
+        FireMode.MISSILE to "Only target and fire at missiles",
+        FireMode.NO_FIGHTERS to "Use the base AI, but don't fire if target is a fighter",
+        FireMode.BIG_SHIPS to "Ignore frigates and fighters, prioritize capitals>cruisers>destroyers",
+        FireMode.SMALL_SHIPS to "Ignore anything bigger than destroyers, prioritize fighters>frigates>destroyers",
+        FireMode.MINING to "Only target asteroids",
+        FireMode.OPPORTUNIST to "Only fire if the shot is likely to hit and be effective. Good for limited ammo weapons."
+    ).withDefault { it.toString() }
+
     var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()
 
     val FIRE_MODE_TRANSLATIONS = fireModeAsString.map { it.value to it.key }.toMap()

@@ -15,10 +15,18 @@ const val defaultShipMode = "DEFAULT"
  val shipModeFromString = mapOf(
     "DEFAULT" to ShipModes.DEFAULT,
     "ForceAutofire" to ShipModes.FORCE_AUTOFIRE,
-    "ShieldsOff(Flux>50%)" to ShipModes.SHIELDS_OFF,
-    "Vent(Flux>50%)" to ShipModes.VENT,
-    "Retreat(Hull<50%)" to ShipModes.RETREAT
+    "ShieldsOff (Flux>50%)" to ShipModes.SHIELDS_OFF,
+    "Vent (Flux>50%)" to ShipModes.VENT,
+    "Retreat (Hull<50%)" to ShipModes.RETREAT
 )
+
+val detailedShipModeDescriptions = mapOf(
+    ShipModes.DEFAULT to "Base game ship AI",
+    ShipModes.FORCE_AUTOFIRE to "Forces autofire for all weapon groups. Use this to make ships obey all modes literally.",
+    ShipModes.SHIELDS_OFF to "Force turn off the shield when ship flux exceeds 50%",
+    ShipModes.VENT to "Force vent when ship flux exceeds 50%",
+    ShipModes.RETREAT to "Order a retreat command to the ship if hull < 50%. This WILL use a CP."
+).withDefault { it.toString() }
 
 val shipModeToString = shipModeFromString.map { it.value to it.key }.toMap()
 

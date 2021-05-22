@@ -62,10 +62,10 @@ def findTodos(folder):
             i = 0
             for line in txt:
                 i = i + 1
-                todos = re.search("TODO.*", line)
+                todos = re.search("FIXME.*", line)
                 if todos:
                     isOk = False
-                    print("TODO in " + file + ":" + str(i) + ": " + todos[0])
+                    print("FIXME in " + file + ":" + str(i) + ": " + todos[0])
     return isOk
 
 def checkSettings():
@@ -88,7 +88,7 @@ if "__main__" == __name__:
     print("It will first look for TODOs and version mismatches and then do git tag for you.")
     print("")
     versionTag = sys.argv[1]
-    print("Checking for TODOs....")
+    print("Checking for FIXMEs....")
     todosOk = findTodos("src")
     printIfOk(todosOk)
 
