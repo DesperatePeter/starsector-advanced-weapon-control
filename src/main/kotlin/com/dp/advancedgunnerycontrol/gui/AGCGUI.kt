@@ -92,14 +92,20 @@ class AGCGUI : InteractionDialogPlugin {
         customPanel = visualPanel?.showCustomPanel(1200f, 600f, shipView)
         customPanel?.position?.inTMid(20f)
         ship?.let { sh ->
+
+//            val shipModeElement = customPanel?.createUIElement(1190f, 40f, false)
+//            shipModeElement?.let {
+//                it.addTitle("Ship AI Modes")
+//                shipView.addShipModeButtonGroup(sh, it)
+//                customPanel?.addComponent(it)
+//                customPanel?.addUIElement(it)?.inTL(5f, 5f)
+//            }
+            val shipModeHeader = customPanel?.createUIElement(1200f, 20f, false)
+            shipModeHeader?.addTitle("Ship AI Modes:")
+            customPanel?.addUIElement(shipModeHeader)?.inTL(1f, 1f)
+
+            customPanel?.let { shipView.addShipModeButtonGroup(sh, it) }
             val elements = mutableListOf<UIComponentAPI>()
-            val shipModeElement = customPanel?.createUIElement(1190f, 40f, false)
-            shipModeElement?.let {
-                it.addTitle("Ship AI Modes")
-                shipView.addShipModeButtonGroup(sh, it)
-                customPanel?.addComponent(it)
-                customPanel?.addUIElement(it)?.inTL(5f, 5f)
-            }
             for(i in 0 until sh.variant.weaponGroups.size){
                 val element = customPanel?.createUIElement(162f, 500f, false)
                 element?.let {
@@ -115,7 +121,8 @@ class AGCGUI : InteractionDialogPlugin {
                         if (elements.isNotEmpty()){
                             p.rightOfTop(elements.last(), 10f)
                         }else{
-                            p.belowLeft(shipModeElement, 5f)
+                            p.inTL(5f, 70f)
+                            //p.belowLeft(shipModeElement, 5f)
                         }
                     }
                     elements.add(it)

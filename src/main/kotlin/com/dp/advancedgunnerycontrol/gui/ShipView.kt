@@ -49,8 +49,8 @@ class ShipView : CustomUIPanelPlugin {
         buttons.addAll(SuffixButton.createModeButtonGroup(ship, group, tooltip))
     }
 
-    fun addShipModeButtonGroup(ship: FleetMemberAPI, tooltip: TooltipMakerAPI){
-        buttons.addAll(ShipModeButton.createModeButtonGroup(ship, tooltip))
+    fun addShipModeButtonGroup(ship: FleetMemberAPI, panel: CustomPanelAPI){
+        buttons.addAll(ShipModeButton.createModeButtonGroup(ship, panel))
     }
 
     override fun advance(t: Float) {
