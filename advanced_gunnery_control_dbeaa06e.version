@@ -2,11 +2,11 @@
 {
     "masterVersionFile":"https://raw.githubusercontent.com/DesperatePeter/starsector-advanced-weapon-control/master/advanced_gunnery_control_dbeaa06e.version",
     "modName":"AdvancedGunneryControl",
-    "modThreadId":62744,
+    "modThreadId":21280,
     "modVersion":
     {
         "major":0,
         "minor":9,
-        "patch":2
+        "patch":3
     }
 }

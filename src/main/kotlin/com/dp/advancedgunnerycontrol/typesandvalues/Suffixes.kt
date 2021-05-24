@@ -39,10 +39,14 @@ val detailedSuffixDescriptions = mapOf(
     Suffixes.FLUX_50 to "Weapon group will stop firing if ship flux exceeds 50%.",
     Suffixes.FLUX_75 to "Weapon group will stop firing if ship flux exceeds 75%.",
     Suffixes.FLUX_90 to "Weapon group will stop firing if ship flux exceeds 90%.",
-    Suffixes.CONSERVE_AMMO to "When below 90% ammo, weapons will only fire when the shot seems effective.",
-    Suffixes.PANIC_FIRE to "When the ship is dying (below 50% hull), it will blindly fire this weapon group.",
-    Suffixes.PD_IF_FLUX50 to "Weapon group will only shoot missiles/fighters if flux exceeds 50%",
-    Suffixes.PD_IF_LOW_AMMO to "Weapon group will only shoot missiles/fighters if weapon uses ammo and ammo < 90%"
+    Suffixes.CONSERVE_AMMO to "When below 90% ammo, weapons will only fire when the shot seems effective (same as Opportunist fire mode). " +
+            "Weapons without ammo will ignore this suffix. Works best with modes that support custom AI.",
+    Suffixes.PANIC_FIRE to "When the ship is dying (below 50% hull), it will blindly fire this weapon group. " +
+            "Mainly useful for guided missiles. Best combined wth Opportunist fire mode. Works best with modes that support custom AI.",
+    Suffixes.PD_IF_FLUX50 to "Weapon group will only shoot missiles/fighters if flux exceeds 50%. " +
+            "Only use with PD weapons and modes that can target missiles/fighters!",
+    Suffixes.PD_IF_LOW_AMMO to "Weapon group will only shoot missiles/fighters if weapon uses ammo and ammo < 90%. Mainly for Burst PD Lasers. " +
+            "Only use with PD weapons and modes that can target missiles/fighters! Weapons without ammo will ignore this suffix."
 ).withDefault { it.toString() }
 
 val suffixFromString = suffixDescriptions.map { it.value to it.key }.toMap()

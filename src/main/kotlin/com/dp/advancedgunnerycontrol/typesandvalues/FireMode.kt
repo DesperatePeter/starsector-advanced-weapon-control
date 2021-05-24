@@ -29,15 +29,21 @@ object FMValues{
     )
 
     val fireModeDetailedDescriptions = mapOf(
-        FireMode.DEFAULT to "Use the base AI",
-        FireMode.PD to "Use the base AI, but only fire at missiles/fighters",
-        FireMode.FIGHTER to "Only target and fire at fighters",
-        FireMode.MISSILE to "Only target and fire at missiles",
-        FireMode.NO_FIGHTERS to "Use the base AI, but don't fire if target is a fighter",
-        FireMode.BIG_SHIPS to "Ignore frigates and fighters, prioritize capitals>cruisers>destroyers",
-        FireMode.SMALL_SHIPS to "Ignore anything bigger than destroyers, prioritize fighters>frigates>destroyers",
-        FireMode.MINING to "Only target asteroids",
-        FireMode.OPPORTUNIST to "Only fire if the shot is likely to hit and be effective. Good for limited ammo weapons."
+        FireMode.DEFAULT to "Use the base AI (most suffixes still apply).",
+        FireMode.PD to "Use the base AI, but only fire at missiles/fighters. " +
+                "Won't fire if the base AI would target something else. " +
+                "Only for PD-weapons (non-PD weapons in this group will use default).",
+        FireMode.FIGHTER to "Only target and fire at fighters. Can use custom AI.",
+        FireMode.MISSILE to "Only target and fire at missiles. Only for PD-weapons (non-PD weapons in this group will use default). " +
+                "Can use custom AI.",
+        FireMode.NO_FIGHTERS to "Use the base AI, but don't fire if target is a fighter.",
+        FireMode.BIG_SHIPS to "Ignore frigates and fighters, prioritize capitals>cruisers>destroyers. Can use custom AI.",
+        FireMode.SMALL_SHIPS to "Ignore anything bigger than destroyers, prioritize fighters>frigates>destroyers. " +
+                "Can use custom AI.",
+        FireMode.MINING to "Only target asteroids. Always uses custom AI.",
+        FireMode.OPPORTUNIST to "Only fire if the shot is likely to hit and be effective. Good for limited ammo weapons (e.g. missiles). " +
+                "HE weapons will only fire if target is shieldless or at high flux, kinetic weapons will only fire if target " +
+                "is shielded and at lowish flux. This mode won't fire at missiles/fighters. Always uses custom AI."
     ).withDefault { it.toString() }
 
     var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()

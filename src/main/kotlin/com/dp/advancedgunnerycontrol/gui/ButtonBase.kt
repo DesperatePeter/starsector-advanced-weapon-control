@@ -22,6 +22,10 @@ abstract class ButtonBase<T>(protected var ship: FleetMemberAPI, protected var g
         button.isChecked = true
     }
 
+    fun disable(){
+        button.isEnabled = false
+    }
+
     private fun uncheck(){
         active = false
         button.isChecked = false

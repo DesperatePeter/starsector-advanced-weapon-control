@@ -18,7 +18,7 @@ class GUIShower : EveryFrameScript {
         ) return
 
         if (Keyboard.getEventCharacter().toLowerCase() == Settings.guiHoteky()){
-            Global.getSector().campaignUI.showInteractionDialog(AGCGUI(), Global.getSector().playerFleet)
+            Global.getSector()?.campaignUI?.showInteractionDialog(AGCGUI(), Global.getSector().playerFleet)
         }
     }
 }

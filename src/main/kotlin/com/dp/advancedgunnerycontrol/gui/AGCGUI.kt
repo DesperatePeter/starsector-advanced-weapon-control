@@ -13,6 +13,7 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import java.awt.Color
+import kotlin.math.min
 
 class AGCGUI : InteractionDialogPlugin {
     companion object{
@@ -29,7 +30,7 @@ class AGCGUI : InteractionDialogPlugin {
         fun makeTooltip(description: String) : TooltipMakerAPI.TooltipCreator {
             return object : TooltipMakerAPI.TooltipCreator {
                 override fun isTooltipExpandable(p0: Any?): Boolean = false
-                override fun getTooltipWidth(p0: Any?): Float = 450f
+                override fun getTooltipWidth(p0: Any?): Float = min(description.length.toFloat()*7f, 850f)
 
                 override fun createTooltip(tooltip: TooltipMakerAPI?, p1: Boolean, p2: Any?) {
                     tooltip?.addPara(description, Color.GREEN, 5f)
@@ -104,12 +105,12 @@ class AGCGUI : InteractionDialogPlugin {
 
     private fun showModeGUI(){
         val shipView = ShipView() // essentially an empty CustomUIPanelPlugin
-        customPanel = visualPanel?.showCustomPanel(1200f, 600f, shipView)
+        customPanel = visualPanel?.showCustomPanel(1210f, 600f, shipView)
         customPanel?.position?.inTMid(20f)
         ship?.let { sh ->
 
             val shipModeHeader = customPanel?.createUIElement(1200f, 20f, false)
-            shipModeHeader?.addTitle("Ship AI Modes:")
+            shipModeHeader?.addTitle("Ship AI Modes (${sh.shipName}, ${sh.variant?.fullDesignationWithHullNameForShip}):")
             customPanel?.addUIElement(shipModeHeader)?.inTL(1f, 1f)
 
             customPanel?.let { shipView.addShipModeButtonGroup(sh, it) }
