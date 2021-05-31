@@ -1,10 +1,7 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.weaponais.shipais.AutofireShipAI
-import com.dp.advancedgunnerycontrol.weaponais.shipais.RetreatShipAI
-import com.dp.advancedgunnerycontrol.weaponais.shipais.ShieldsOffShipAI
-import com.dp.advancedgunnerycontrol.weaponais.shipais.VentShipAI
+import com.dp.advancedgunnerycontrol.weaponais.shipais.*
 import com.fs.starfarer.api.combat.ShipAPI
 
 enum class ShipModes {
@@ -69,17 +66,25 @@ val detailedShipModeDescriptions = mapOf(
             "\n - Consider leaving one loadout blank (all default) to give you a fallback option."
 ).withDefault { it.toString() }
 
-fun assignShipMode(mode: String, ship: ShipAPI){
-    ship.resetDefaultAI()
-    val baseAI = ship.shipAI ?: return
-    val plugin = when (shipModeFromString[mode]){
-        ShipModes.DEFAULT -> baseAI
-        ShipModes.FORCE_AUTOFIRE -> AutofireShipAI(baseAI, ship)
-        ShipModes.SHIELDS_OFF -> ShieldsOffShipAI(baseAI, ship, Settings.shieldsOffThreshold())
-        ShipModes.VENT -> VentShipAI(baseAI, ship, Settings.ventFluxThreshold(), Settings.ventSafetyFactor(), false)
-        ShipModes.VENT_AGGRESSIVE -> VentShipAI(baseAI, ship, Settings.aggressiveVentFluxThreshold(), Settings.aggressiveVentSafetyFactor(), true)
-        ShipModes.RETREAT -> RetreatShipAI(baseAI, ship, Settings.retreatHullThreshold())
-        else -> baseAI
+private fun generateCommander(mode: ShipModes, ship: ShipAPI) : ShipCommandGenerator{
+    return when (mode){
+        ShipModes.FORCE_AUTOFIRE -> AutofireShipAI(ship)
+        ShipModes.SHIELDS_OFF -> ShieldsOffShipAI(ship, Settings.shieldsOffThreshold())
+        ShipModes.VENT -> VentShipAI(ship, Settings.ventFluxThreshold(), Settings.ventSafetyFactor(), false)
+        ShipModes.VENT_AGGRESSIVE -> VentShipAI(ship, Settings.aggressiveVentFluxThreshold(), Settings.aggressiveVentSafetyFactor(), true)
+        ShipModes.RETREAT -> RetreatShipAI(ship, Settings.retreatHullThreshold())
+        else -> ShipCommandGenerator(ship)
     }
-    ship.shipAI = plugin
+}
+
+fun assignShipMode(modes: List<String>, ship: ShipAPI){
+    ship.resetDefaultAI()
+    val shipModes = modes.mapNotNull { shipModeFromString[it] }
+    if(shipModes.contains(ShipModes.DEFAULT) || shipModes.isEmpty()) return
+
+    val baseAI = ship.shipAI ?: return
+
+    val commanders = shipModes.map { generateCommander(it, ship) }
+
+    ship.shipAI = CustomShipAI(baseAI, ship, commanders)
 }

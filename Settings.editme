@@ -116,4 +116,6 @@
    ,"conserveAmmo_ammo" : 0.9
    
    ,"panicFire_hull" : 0.5
+   
+   ,"retreat_shouldDirectRetreat" : false
  }

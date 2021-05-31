@@ -12,43 +12,18 @@ import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class VentShipAI(baseAI: ShipAIPlugin, ship: ShipAPI, private val fluxThreshold : Float = 0.5f,
+class VentShipAI(ship: ShipAPI, private val fluxThreshold : Float = 0.5f,
                  private val safetyFactor : Float = 1.5f, private val aggressive : Boolean = false)
-    : CustomShipAI(baseAI, ship) {
+    : ShipCommandGenerator(ship) {
     private var isSafe = false
     private var frameTracker = 0
     private var wasVenting = false
+    private var shouldReevaluate = false
+    private var blockCommands = listOf<ShipCommand>()
 
     companion object {
         const val scanningRange = 2000f
         const val checkFrequency = 20
-    }
-
-    override fun advanceImpl(p0: Float) {
-        if(ship.fluxTracker?.isVenting == true){
-            wasVenting = true
-            if(aggressive) {
-                ship.giveCommand(ShipCommand.ACCELERATE, ship.shipTarget, 0)
-                ship.blockCommandForOneFrame(ShipCommand.ACCELERATE_BACKWARDS)
-            }
-            return
-        }
-        if(wasVenting){
-            wasVenting = false
-            forceCircumstanceEvaluation()
-        }
-        if (ship.fluxLevel >= fluxThreshold) {
-            if(frameTracker <= 0){
-                frameTracker = checkFrequency
-                isSafe = isSafeToVent()
-            }
-            if(isSafe) {
-                ship.giveCommand(ShipCommand.VENT_FLUX, null, 0)
-            }
-            frameTracker--
-        }else{
-            frameTracker = 0
-        }
     }
 
     private fun isSafeToVent(): Boolean {
@@ -93,4 +68,39 @@ class VentShipAI(baseAI: ShipAIPlugin, ship: ShipAPI, private val fluxThreshold 
             else -> 1f
         }
     }
+
+    override fun generateCommands(): List<ShipCommandWrapper> {
+        shouldReevaluate = false
+        blockCommands = listOf()
+        if(ship.fluxTracker?.isVenting == true){
+            wasVenting = true
+            if(aggressive) {
+                blockCommands = listOf(ShipCommand.ACCELERATE_BACKWARDS)
+                return listOf(ShipCommandWrapper(ShipCommand.ACCELERATE, ship.shipTarget?.location))
+            }
+            return emptyList()
+        }
+
+        if(wasVenting){
+            wasVenting = false
+            shouldReevaluate = true
+        }
+
+        if (ship.fluxLevel >= fluxThreshold) {
+            frameTracker--
+            if(frameTracker <= 0){
+                frameTracker = checkFrequency
+                isSafe = isSafeToVent()
+            }
+            if(isSafe) {
+                return listOf(ShipCommandWrapper(ShipCommand.VENT_FLUX))
+            }
+        }else{
+            frameTracker = 0
+        }
+        return emptyList()
+    }
+
+    override fun shouldReevaluate(): Boolean = shouldReevaluate
+    override fun blockCommands(): List<ShipCommand> = blockCommands
 }

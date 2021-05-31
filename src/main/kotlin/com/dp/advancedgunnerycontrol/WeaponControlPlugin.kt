@@ -160,8 +160,8 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun initOrGetAIManager(ship: ShipAPI?): WeaponAIManager? {
         ship?.let { ship_ ->
-            ShipModeStorage[storageIndex].modesByShip[ship_.fleetMemberId]?.values?.firstOrNull()?.let {
-                assignShipMode(it, ship_)
+            ShipModeStorage[storageIndex].modesByShip[ship_.fleetMemberId]?.values?.let {
+                assignShipMode(it.toList(), ship_)
             }
             if (ship_.customData?.containsKey(Values.WEAPON_AI_MANAGER_KEY) == true) {
                 ship_.customData?.get(Values.WEAPON_AI_MANAGER_KEY)?.let { unsafeManager ->

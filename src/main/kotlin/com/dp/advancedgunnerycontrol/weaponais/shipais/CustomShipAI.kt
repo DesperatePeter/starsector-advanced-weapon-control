@@ -7,26 +7,19 @@ import com.fs.starfarer.api.combat.ShipwideAIFlags
 
 
 
-abstract class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: ShipAPI) : ShipAIPlugin {
-
+open class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: ShipAPI, protected val commanders : List<ShipCommandGenerator>) : ShipAIPlugin {
 
     override fun setDoNotFireDelay(p0: Float) {
-        setDoNotFireDelayImpl(p0)
         ship.shipAI = baseAI
         baseAI.setDoNotFireDelay(p0)
         ship.shipAI = this
     }
 
-    protected open fun setDoNotFireDelayImpl(p0: Float) {}
-
     override fun forceCircumstanceEvaluation() {
-        forceCircumstanceEvaluationImpl()
         ship.shipAI = baseAI
         baseAI.forceCircumstanceEvaluation()
         ship.shipAI = this
     }
-
-    protected open fun forceCircumstanceEvaluationImpl() {}
 
     override fun advance(p0: Float) {
         advanceImpl(p0)
@@ -35,7 +28,17 @@ abstract class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val sh
         ship.shipAI = this
     }
 
-    protected abstract fun advanceImpl(p0: Float)
+    protected fun advanceImpl(p0: Float){
+        commanders.forEach { cmdr ->
+            cmdr.generateCommands().forEach {
+                ship.giveCommand(it.command, it.position, it.index)
+            }
+            cmdr.blockCommands().forEach {
+                ship.blockCommandForOneFrame(it)
+            }
+        }
+        if(commanders.any { it.shouldReevaluate() }) forceCircumstanceEvaluation()
+    }
 
     override fun needsRefit(): Boolean {
         ship.shipAI = baseAI
