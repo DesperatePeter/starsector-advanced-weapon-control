@@ -8,7 +8,7 @@ import com.dp.advancedgunnerycontrol.weaponais.shipais.VentShipAI
 import com.fs.starfarer.api.combat.ShipAPI
 
 enum class ShipModes {
-    DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, RETREAT, HELP
+    DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, VENT_AGGRESSIVE, RETREAT, HELP
 }
 
 const val defaultShipMode = "DEFAULT"
@@ -17,21 +17,30 @@ const val defaultShipMode = "DEFAULT"
     "DEFAULT" to ShipModes.DEFAULT,
     "ForceAutofire" to ShipModes.FORCE_AUTOFIRE,
     "ShieldsOff (Flux>50%)" to ShipModes.SHIELDS_OFF,
-    "Vent (Flux>50%)" to ShipModes.VENT,
+    "Vent (Flux>75%)" to ShipModes.VENT,
+    "VentAggressive (Flux>25%)" to ShipModes.VENT_AGGRESSIVE,
     "Retreat (Hull<50%)" to ShipModes.RETREAT,
      "?" to ShipModes.HELP
 )
+
+val shipModeToString = shipModeFromString.map { it.value to it.key }.toMap()
 
 val detailedShipModeDescriptions = mapOf(
     ShipModes.DEFAULT to "Base ship AI. Recommended most of the time.",
     ShipModes.FORCE_AUTOFIRE to "Forces autofire for all weapon groups. Use this to make ships obey all modes literally (99% of the time)." +
             " Use with caution and make sure to combine with HoldFire-suffixes to prevent the ship from fluxing out.",
     ShipModes.SHIELDS_OFF to "Force turn off the shield when ship flux exceeds 50%. Make sure you have enough armor/PD to pull this off.",
-    ShipModes.VENT to "Force vent when ship flux exceeds 50%. Use with caution (harpoons will wreck you)! Not recommended on primary loadout.",
+    ShipModes.VENT to "Vent when ship flux exceeds 75%. The ship will try to evaluate the situation and only vent if it believes" +
+            " that it will survive doing so. The ship will feel safer if it has high armor/hull and enemies lack high DPS HE weapons" +
+            " and finisher missiles and/or if there are many allies nearby. This mode works best on big, heavily armored, ships.",
+    ShipModes.VENT_AGGRESSIVE to "Similar to ${shipModeToString[ShipModes.VENT]}, but at 50% flux and with much less concern for" +
+            " the ship's survival. It will also prevent the AI from backing off while venting. Use with caution!",
     ShipModes.RETREAT to "Order a retreat command to the ship if hull < 50%. This WILL use a CP.",
     ShipModes.HELP to "---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
             " for the stated modifications. Note that, unless you use the ForceAutofire ship mode, AI-controlled ships won't" +
             " follow the configured modes all the time, as the ship AI will manually control/fire weapon groups." +
+            "\n If you set the player-controlled ship to autopilot and want to use the configured ship mode, you have to" +
+            " manually load it (${Settings.infoHotkey()}-Key), as the player-controlled ship doesn't use an AI by default." +
             "\n\n---Fire Modes---\nThese are the core of this mod. They will modify what the weapon group targets and whether" +
             " it will fire or not. Given default settings, most modes will first try to find a firing solution using the" +
             " base weapon AI. Only when the base AI selects a target that doesn't match the fire mode, the custom AI will" +
@@ -60,17 +69,16 @@ val detailedShipModeDescriptions = mapOf(
             "\n - Consider leaving one loadout blank (all default) to give you a fallback option."
 ).withDefault { it.toString() }
 
-val shipModeToString = shipModeFromString.map { it.value to it.key }.toMap()
-
 fun assignShipMode(mode: String, ship: ShipAPI){
     ship.resetDefaultAI()
     val baseAI = ship.shipAI ?: return
     val plugin = when (shipModeFromString[mode]){
         ShipModes.DEFAULT -> baseAI
         ShipModes.FORCE_AUTOFIRE -> AutofireShipAI(baseAI, ship)
-        ShipModes.SHIELDS_OFF -> ShieldsOffShipAI(baseAI, ship)
-        ShipModes.VENT -> VentShipAI(baseAI, ship)
-        ShipModes.RETREAT -> RetreatShipAI(baseAI, ship)
+        ShipModes.SHIELDS_OFF -> ShieldsOffShipAI(baseAI, ship, Settings.shieldsOffThreshold())
+        ShipModes.VENT -> VentShipAI(baseAI, ship, Settings.ventFluxThreshold(), Settings.ventSafetyFactor(), false)
+        ShipModes.VENT_AGGRESSIVE -> VentShipAI(baseAI, ship, Settings.aggressiveVentFluxThreshold(), Settings.aggressiveVentSafetyFactor(), true)
+        ShipModes.RETREAT -> RetreatShipAI(baseAI, ship, Settings.retreatHullThreshold())
         else -> baseAI
     }
     ship.shipAI = plugin

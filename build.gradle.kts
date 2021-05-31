@@ -236,7 +236,35 @@ tasks {
 
                    |   # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
                    |   # Setting this to 3.0+ means "don't you dare fire if there is even a remote chance you'll hit an ally!"
-                   |   ,"customAIFriendlyFireCaution" : 1.0 # <---- EDIT HERE (maybe) ----
+                   |   ,"customAIFriendlyFireCaution" : 1.0 # <---- EDIT HERE (maybe) ----                   
+                   | 
+                   |   #                                 #### MODE/SUFFIX CUSTOMIZATION ####
+                   |   # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)
+                   |   # NOTE: Using invalid values might cause very odd behaviour and/or crashes!
+                   |   # Opportunist fire mode AND conserveAmmo suffix:
+                   |   ,"opportunist_kineticFlux" : 0.7 # fire kinetic weapons if enemy flux level < X
+                   |   ,"opportunist_HEFlux" : 0.8 # fire HE/fragment weapons if enemy flux level > X
+                   |   # Vent ship modes:
+                   |   # Vent (Flux>75%)
+                   |   ,"vent_flux" : 0.75 # vent if flux level > X
+                   |   ,"vent_safetyFactor" : 2.0 # vent only if ship thinks it will survive venting X times (positive non-zero number)
+                   |   
+                   |   # VentAggressive (Flux>25%)
+                   |   ,"aggressiveVent_flux" : 0.25 # vent if flux level > X
+                   |   ,"aggressiveVent_safetyFactor" : 0.25 # (positive non-zero number)
+                   |   
+                   |   ,"retreat_hull" : 0.5 # retreat if hull level < X
+                   |   ,"shieldsOff_flux" : 0.5 # In ShieldsOff (Flux>50%) mode, turn off shields if flux level > X
+                   |   
+                   |   ,"holdFire50_flux" : 0.5
+                   |   ,"holdFire75_flux" : 0.75
+                   |   ,"holdFire90_flux" : 0.9
+                   |   
+                   |   ,"pd50_flux" : 0.5
+                   |   ,"pd90_ammo" : 0.9
+                   |   ,"conserveAmmo_ammo" : 0.9
+                   |   
+                   |   ,"panicFire_hull" : 0.5
                    | }
 
                 """.trimMargin()

@@ -24,7 +24,7 @@ class ShipModeButton(ship: FleetMemberAPI, mode : ShipModes, button: ButtonAPI) 
             ShipModes.values().forEach {
                 val tooltip = panel.createUIElement(160f, 30f, false)
                 toReturn.add(ShipModeButton(ship, it, tooltip.addAreaCheckbox(
-                    shipModeToString[it], it, Color.BLUE, Color.BLUE, Color.WHITE, 160f, 24f, 3f)))
+                    shipModeToString[it], it, Color.BLUE, Color.BLUE, Color.WHITE, 160f, 18f, 3f)))
                 tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(detailedShipModeDescriptions[it] ?: ""), TooltipMakerAPI.TooltipLocation.BELOW)
                 if(ShipModes.HELP == it) toReturn.lastOrNull()?.disable()
                 if(shipModeFromString[storage.modesByShip[ship.id]?.values?.firstOrNull()]== it) {

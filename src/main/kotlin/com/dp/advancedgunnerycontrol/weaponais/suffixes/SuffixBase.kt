@@ -20,8 +20,8 @@ open class SuffixBase(protected val weapon: WeaponAPI) {
          */
         fun computeShieldFactor(tgtShip: ShipAPI) : Float{ // todo facing
             if(tgtShip.shield == null) return 0.01f
-            if(tgtShip.shield?.isOff == true) return 0.5f/(tgtShip.fluxLevel.pow(2) + 0.01f)
-            if(tgtShip.shield?.isOn == true) return 1f/(tgtShip.fluxLevel.pow(2) + 0.01f)
+            if(tgtShip.shield?.isOff == true) return 0.5f/(tgtShip.fluxLevel.pow(2) + 0.001f)
+            if(tgtShip.shield?.isOn == true) return 1f/(tgtShip.fluxLevel.pow(2) + 0.001f)
             return 1.0f
         }
     }

@@ -18,7 +18,7 @@ class SuffixButton(ship: FleetMemberAPI, group : Int, suffix : Suffixes, button:
             var isSomethingChecked = false
             Suffixes.values().forEach {
                 toReturn.add(SuffixButton(ship, group, it, tooltip.addAreaCheckbox(suffixDescriptions[it], it,
-                    Color.BLUE, Color.BLUE, Color.WHITE, 160f, 24f, 3f)))
+                    Color.BLUE, Color.BLUE, Color.WHITE, 160f, 18f, 3f)))
                 tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(detailedSuffixDescriptions[it] ?: ""), TooltipMakerAPI.TooltipLocation.BELOW)
                 if(suffixFromString[storage.modesByShip[ship.id]?.get(group)] == it){
                     toReturn.last().check()

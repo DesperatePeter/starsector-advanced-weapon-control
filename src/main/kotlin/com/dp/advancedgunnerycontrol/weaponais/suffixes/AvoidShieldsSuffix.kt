@@ -12,6 +12,6 @@ class AvoidShieldsSuffix(weapon: WeaponAPI) : SuffixBase(weapon) {
 
     override fun shouldFire(baseDecision: Boolean, target: CombatEntityAPI?): Boolean {
         val tgtShip = (target as? ShipAPI) ?: return false
-        return computeShieldFactor(tgtShip) < 1.1f && baseDecision
+        return computeShieldFactor(tgtShip) < 1.3f && baseDecision
     }
 }

@@ -40,10 +40,14 @@ object FMValues{
         FireMode.BIG_SHIPS to "Ignore frigates and fighters, prioritize capitals>cruisers>destroyers. Can use custom AI.",
         FireMode.SMALL_SHIPS to "Ignore anything bigger than destroyers, prioritize fighters>frigates>destroyers. " +
                 "Can use custom AI.",
-        FireMode.MINING to "Only target asteroids. Always uses custom AI.",
-        FireMode.OPPORTUNIST to "Only fire if the shot is likely to hit and be effective. Good for limited ammo weapons (e.g. missiles). " +
-                "HE weapons will only fire if target is shieldless or at high flux, kinetic weapons will only fire if target " +
-                "is shielded and at lowish flux. This mode won't fire at missiles/fighters. Always uses custom AI."
+        FireMode.MINING to "Only shoot/target asteroids. This is mode is just for fun. Always uses custom AI.",
+        FireMode.OPPORTUNIST to "Only fire if the shot is likely to hit and be effective. Good for limited ammo weapons (e.g. missiles)." +
+                "\nHE weapons will only fire if target is shieldless or at high flux (>80%), kinetic weapons will only fire if target" +
+                " is shielded and at lowish (<70%) flux." +
+                "\nThis mode will only fire, if the enemy is likely to still be in range after the projectile travels, even" +
+                " if the target moves away, and if the target is slow enough" +
+                " that it is unlikely to evade (depending on projectile speed and tracking)." +
+                "\nThis mode won't fire at missiles/fighters. Always uses custom AI."
     ).withDefault { it.toString() }
 
     var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()

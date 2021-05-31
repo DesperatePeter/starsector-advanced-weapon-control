@@ -10,6 +10,7 @@ import org.lazywizard.lazylib.ext.minus
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.PI
 import kotlin.math.cos
+import kotlin.math.max
 import kotlin.math.sin
 
 // Math.toRadians only works on doubles, which is annoying as f***
@@ -74,30 +75,55 @@ fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weap
     } * 0.2f
     if(weapon.id?.contains("sabot") == true) trackingFactor*=3
     if(target.maxSpeed > weapon.projectileSpeed * trackingFactor) return false
-    if((p - weapon.location).length() > weapon.range * 0.75f) return false
+    val ttt = (weapon.location - p).length() / weapon.projectileSpeed
+    if(((p - weapon.location).length() + ttt * target.maxSpeed) > weapon.range * 0.95f) return false
     return true
 }
 
 private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
     if(weapon.spec?.primaryRoleStr?.toLowerCase() == "finisher"){
-        return isDefenseless(target)
+        return isDefenseless(target, weapon)
     }
     if(weapon.damageType == DamageType.HIGH_EXPLOSIVE || weapon.damageType == DamageType.FRAGMENTATION){
-        if(isDefenseless(target)) return true
-        if(target.fluxLevel > 0.9f) return true
+        if(isDefenseless(target, weapon)) return true
+        if(target.fluxLevel > Settings.opportunistHEThreshold()) return true
         return false
     }
     if(weapon.damageType == DamageType.KINETIC){
-        if(isDefenseless(target)) return false
+        if(isDefenseless(target, weapon)) return false
         if(target.shield == null) return false
-        if(target.hardFluxLevel > 0.7f) return false
+        if(target.fluxLevel > Settings.opportunistKineticThreshold()) return false
     }
     return true
 }
 
-private fun isDefenseless(target : ShipAPI) : Boolean {
+fun getAverageArmor(armor: ArmorGridAPI) : Float{
+    val horizontalCells = armor.leftOf + armor.rightOf
+    val verticalCells = armor.above + armor.below
+    var sum = 0f
+    for (i in 0 until horizontalCells){
+        for (j in 0 until verticalCells){
+            sum += armor.getArmorFraction(i, j)
+        }
+    }
+    return sum * armor.maxArmorInCell
+}
+
+fun getMaxArmor(armor: ArmorGridAPI) : Float{
+    val horizontalCells = armor.leftOf + armor.rightOf
+    val verticalCells = armor.above + armor.below
+    return horizontalCells * verticalCells * armor.maxArmorInCell
+}
+
+private fun isDefenseless(target : ShipAPI, weapon: WeaponAPI) : Boolean {
     if(target.shield == null && target.phaseCloak == null) return true
-    return target.isDefenseDisabled
+    target.fluxTracker?.let {
+        if(it.isOverloadedOrVenting){
+            return max(it.overloadTimeRemaining, it.timeToVent) >=
+                    ((target.location - weapon.location).length()/weapon.projectileSpeed)
+        }
+    }
+    return false
 }
 
 fun isValidPDTarget(target: CombatEntityAPI?) : Boolean {
