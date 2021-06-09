@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.10.0"
+    val modVersion = "0.10.1"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -99,7 +99,6 @@ tasks {
                             {
                                 "id": "lw_lazylib",
                                 "name": "LazyLib",
-                                # "version": "2.6" # If a specific version or higher is required, include this line
                             },
                             {
                                 "id" : "MagicLib",
@@ -155,10 +154,10 @@ tasks {
                    |   #                                 #### CYCLE ORDER ####
                    |   # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
                    |   # Delete modes you want to skip. Note: "Default" will always be the first mode.
-                   |   # Allowed values: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist"
+                   |   # Allowed values: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist", "TargetShields", "AvoidShields"
                    |   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
-                   |   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "Opportunist" ] # <---- EDIT HERE ----
-                   |   # "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Opportunist", "Mining" ]
+                   |   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "Opportunist", "TargetShields", "AvoidShields" ] # <---- EDIT HERE ----
+                   |   # "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Opportunist", "Mining", "TargetShields", "AvoidShields" ]
 
 
                    |   #                                 #### CUSTOM AI ####

@@ -7,12 +7,13 @@ import com.fs.starfarer.api.combat.AutofireAIPlugin
 typealias FireModeMap = Map<FireMode, AutofireAIPlugin>
 
 enum class FireMode {
-    DEFAULT, PD, MISSILE, FIGHTER, NO_FIGHTERS, BIG_SHIPS, SMALL_SHIPS, MINING, OPPORTUNIST
+    DEFAULT, PD, MISSILE, FIGHTER, NO_FIGHTERS, BIG_SHIPS, SMALL_SHIPS, MINING, OPPORTUNIST, TARGET_SHIELDS, AVOID_SHIELDS
 }
 
 object FMValues{
-    val modesAvailableForCustomAI = // Only add if AI has "isBaseAIOverwritable(): Boolean = true"
-        listOf(FireMode.SMALL_SHIPS, FireMode.BIG_SHIPS, FireMode.FIGHTER, FireMode.MISSILE, FireMode.OPPORTUNIST)
+    val modesAvailableForCustomAI = // Only add if base AI is overwritable
+        listOf(FireMode.SMALL_SHIPS, FireMode.BIG_SHIPS, FireMode.FIGHTER, FireMode.MISSILE,
+            FireMode.OPPORTUNIST, FireMode.TARGET_SHIELDS, FireMode.AVOID_SHIELDS)
 
     const val defaultFireModeString = "Default"
 
@@ -25,7 +26,9 @@ object FMValues{
         FireMode.BIG_SHIPS to "BigShips",
         FireMode.SMALL_SHIPS to "SmallShips",
         FireMode.MINING to "Mining",
-        FireMode.OPPORTUNIST to "Opportunist"
+        FireMode.OPPORTUNIST to "Opportunist",
+        FireMode.AVOID_SHIELDS to "AvoidShields",
+        FireMode.TARGET_SHIELDS to "TargetShields"
     )
 
     val fireModeDetailedDescriptions = mapOf(
@@ -47,7 +50,19 @@ object FMValues{
                 "\nThis mode will only fire, if the enemy is likely to still be in range after the projectile travels, even" +
                 " if the target moves away, and if the target is slow enough" +
                 " that it is unlikely to evade (depending on projectile speed and tracking)." +
-                "\nThis mode won't fire at missiles/fighters. Always uses custom AI."
+                "\nThis mode won't fire at missiles/fighters. Always uses custom AI.",
+        FireMode.TARGET_SHIELDS to "Weapon will prioritize targets with shields or low flux/shields on." +
+                "\n - If the targets shields are off, will fire if target flux level < ~65%" +
+                "\n - If target shields are on, will fire if target flux level < ~90%" +
+                "\n - Will never fire if target doesn't have shields." +
+                "\nThis mode won't fire at missiles. Always uses custom AI." +
+                "\nNote: In future versions, I might add geometrical analysis of shield facing.",
+        FireMode.AVOID_SHIELDS to "Weapon will prioritize targets without shields or high flux/shields off." +
+                "\n - If the targets shields are off, will fire if target flux level > ~60%" +
+                "\n - If target shields are on, will fire if target flux level > ~85%" +
+                "\n - Will always fire if target doesn't have shields." +
+                "\nThis mode won't fire at missiles. Always uses custom AI." +
+                "\nNote: In future versions, I might add geometrical analysis of shield facing."
     ).withDefault { it.toString() }
 
     var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()
@@ -65,7 +80,9 @@ object FMValues{
             FireMode.BIG_SHIPS to BigShipAI(baseAI, suffix),
             FireMode.SMALL_SHIPS to SmallShipAI(baseAI, suffix),
             FireMode.MINING to MiningAI(baseAI, suffix),
-            FireMode.OPPORTUNIST to OpportunistAI(baseAI, suffix)
+            FireMode.OPPORTUNIST to OpportunistAI(baseAI, suffix),
+            FireMode.TARGET_SHIELDS to TargetShieldsAI(baseAI, suffix),
+            FireMode.AVOID_SHIELDS to AvoidShieldsAI(baseAI, suffix)
         )
     }
 }

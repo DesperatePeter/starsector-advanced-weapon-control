@@ -7,13 +7,10 @@ import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.utils.*
-import com.dp.advancedgunnerycontrol.weaponais.shipais.AutofireShipAI
-import com.dp.advancedgunnerycontrol.weaponais.shipais.CustomShipAI
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.input.InputEventAPI
-import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
@@ -188,7 +185,14 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private fun printShipInfo() {
         determineSelectedShip(engine)?.let { ship ->
             val wpAiManager = initOrGetAIManager(ship)
-            val shipMode = (ShipModeStorage[storageIndex].modesByShip[ship.fleetMemberId ?: ""]?.values?.firstOrNull() ?: "Default")
+            var shipMode = "No Ship AI"
+            if(ship.shipAI != null){
+                val numShipModes = ShipModeStorage[storageIndex].modesByShip[ship.fleetMemberId ?: ""]?.values?.size ?: 0
+                shipMode = (ShipModeStorage[storageIndex].modesByShip[ship.fleetMemberId ?: ""]?.values?.firstOrNull() ?: "Default")
+                if (numShipModes > 1){
+                    shipMode += " +${numShipModes-1}"
+                }
+            }
             val shipInfo = "${ship.variant.fullDesignationWithHullNameForShip} ($shipMode)"
             var i = 1 // current weapon group display number
             val weaponGroupInfo = ship.weaponGroupsCopy.map { weaponGroup ->

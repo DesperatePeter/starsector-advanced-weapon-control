@@ -36,7 +36,8 @@ val detailedShipModeDescriptions = mapOf(
     ShipModes.HELP to "---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
             " for the stated modifications. Note that, unless you use the ForceAutofire ship mode, AI-controlled ships won't" +
             " follow the configured modes all the time, as the ship AI will manually control/fire weapon groups." +
-            "\n If you set the player-controlled ship to autopilot and want to use the configured ship mode, you have to" +
+            "\nAs the name implies, Ship AI modes will only work for AI-controlled ships, not the player controlled ship." +
+            "\nIf you set the player-controlled ship to autopilot and want to use the configured ship mode, you have to" +
             " manually load it (${Settings.infoHotkey()}-Key), as the player-controlled ship doesn't use an AI by default." +
             "\n\n---Fire Modes---\nThese are the core of this mod. They will modify what the weapon group targets and whether" +
             " it will fire or not. Given default settings, most modes will first try to find a firing solution using the" +
@@ -78,6 +79,7 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI) : ShipCommandGener
 }
 
 fun assignShipMode(modes: List<String>, ship: ShipAPI){
+    if(ship.shipAI == null) return
     ship.resetDefaultAI()
     val shipModes = modes.mapNotNull { shipModeFromString[it] }
     if(shipModes.contains(ShipModes.DEFAULT) || shipModes.isEmpty()) return

@@ -4,7 +4,7 @@
     "name": "AdvancedGunneryControl",
     "author": "DesperatePeter",
     "utility": "true",
-    "version": { "major":"0", "minor": "10", "patch": "0" },
+    "version": { "major":"0", "minor": "10", "patch": "1" },
     "description": "A Starsector mod that adds more autofire modes for weapon groups.",
     "gameVersion": "0.95a-RC15",
     "jars":["jars/AdvancedGunneryControl.jar"],
@@ -13,7 +13,6 @@
         {
             "id": "lw_lazylib",
             "name": "LazyLib",
-            # "version": "2.6" # If a specific version or higher is required, include this line
         },
         {
             "id" : "MagicLib",
