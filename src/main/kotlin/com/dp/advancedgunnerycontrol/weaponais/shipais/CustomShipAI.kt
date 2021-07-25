@@ -33,6 +33,8 @@ open class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: 
             cmdr.generateCommands().forEach {
                 ship.giveCommand(it.command, it.position, it.index)
             }
+        }
+        commanders.forEach { cmdr ->
             cmdr.blockCommands().forEach {
                 ship.blockCommandForOneFrame(it)
             }

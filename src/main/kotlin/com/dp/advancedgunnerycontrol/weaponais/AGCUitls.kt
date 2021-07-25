@@ -69,11 +69,13 @@ fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weap
         "good" -> 2.5f
         "excellent" -> 3.0f
         else -> 1.0f
-    } * 0.2f
+    } * 0.2f * Settings.opportunistModifier()
     if(weapon.id?.contains("sabot") == true) trackingFactor*=3
     if(target.maxSpeed > weapon.projectileSpeed * trackingFactor) return false
     val ttt = (weapon.location - p).length() / weapon.projectileSpeed
-    if(((p - weapon.location).length() + ttt * target.maxSpeed) > weapon.range * 0.95f) return false
+    val ammoLessModifier = if(!weapon.usesAmmo()) 1.0f else if (weapon.ammoTracker.reloadSize > 0f) 0.5f else 0.1f
+    if(((p - weapon.location).length() - target.collisionRadius * ammoLessModifier + ttt * target.maxSpeed * 0.1f / ammoLessModifier) >
+        weapon.range * 0.95f * Settings.opportunistModifier()) return false
     return true
 }
 
@@ -83,13 +85,13 @@ private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
     }
     if(weapon.damageType == DamageType.HIGH_EXPLOSIVE || weapon.damageType == DamageType.FRAGMENTATION){
         if(isDefenseless(target, weapon)) return true
-        if(target.fluxLevel > Settings.opportunistHEThreshold()) return true
+        if(target.fluxLevel * Settings.opportunistModifier() > Settings.opportunistHEThreshold()) return true
         return false
     }
     if(weapon.damageType == DamageType.KINETIC){
         if(isDefenseless(target, weapon)) return false
         if(target.shield == null) return false
-        if(target.fluxLevel > Settings.opportunistKineticThreshold()) return false
+        if(target.fluxLevel > Settings.opportunistKineticThreshold() * Settings.opportunistModifier()) return false
     }
     return true
 }

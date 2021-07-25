@@ -260,6 +260,11 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - Add a way to quickly change fire modes for all ships back to default **DONE** (loadouts)
 - Add a way to change fire behaviour based on circumstances **DONE** (PD(X), PanicFire suffixes)
 - Add a way to force the AI to adhere to configured fire modes **DONE** (ForceAutofire ship mode)
+- Overhaul Opportunist mode to be less conservative for ammo-less weapons **DONE**
+- Support weapon modules for e.g. Gown **TODO** (probably won't happen in the near future)
+- Change <90% ammo to first magazine **WON'T DO** (simply adjusting pd90_ammo should suffice)
+- Make modes/suffixes modular (similar to ship modes) **TODO** (this would be a major overhaul, so won't happen until 1.0. Might never happen)
+- Implement a way to make phase ships only fire when their phase spools are almost off cooldown **WON'T DO** (I just don't see a way to implement this well)
 
 ## Known Issues ##
 
@@ -299,6 +304,7 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
   added additional ship modes.
 - 0.10.1: Added targetShields/avoidShields modes, possibility to activate multiple ship AI modes, reworked opportunist, 
   added mode parameters to options
+- 0.10.2: Yet another Opportunist overhaul (now less conservative for weapons with unlimited ammo, new setting), minor bugfixes
 
 ## Acknowledgements ##
 

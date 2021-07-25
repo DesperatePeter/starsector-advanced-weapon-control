@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.10.1"
+    val modVersion = "0.10.2"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -181,6 +181,7 @@ tasks {
                    |   # Number of frames messages will be displayed before fading. -1 for infinite
                    |   , "messageDisplayDuration" : 180 # <---- EDIT HERE ----
                    |   # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
+                   |   # Note: I believe the game calculates everything in 2560 x 1440 and then scales it to your actual resolution 
                    |   , "messagePositionX" : 900 # <---- EDIT HERE ----
                    |   , "messagePositionY" : 150 # <---- EDIT HERE ----
                    |   # When on, all weapon groups will be displayed (same as infoHotkey) rather than just the cycled one.
@@ -200,7 +201,7 @@ tasks {
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
                    |   # When enabled, fire modes where all weapons are invalid (e.g. PD mode for non-PD weapons) are skipped when cycling.
                    |   , "skipInvalidModes" : true # <---- EDIT HERE ----
-                   |   # Press the "G"-Key while on the system/hyperspace map with this enabled
+                   |   # Press the "J"-Key while on the system/hyperspace map with this enabled
                    |   , "enableGUI" : true # <---- EDIT HERE ----
 
 
@@ -218,7 +219,7 @@ tasks {
                    |   # Any positive or negative float possible, reasonable values: between 0.7 ~ 2.0 or so
                    |   # 1.0 means "fire if shot will land within 1.0*(targetHitbox+10)"
                    |   # (the +10 serves to compensate for very small targets such as missiles and fighters)
-                   |   ,"customAITriggerHappiness" : 1.2 # <---- EDIT HERE (maybe) ----
+                   |   ,"customAITriggerHappiness" : 1.1 # <---- EDIT HERE (maybe) ----
 
                    |   # Set this to true if you want the custom AI to perform better :P
                    |   ,"customAIAlwaysUsesBestTargetLeading" : false # <---- EDIT HERE (maybe) ----
@@ -240,9 +241,14 @@ tasks {
                    |   #                                 #### MODE/SUFFIX CUSTOMIZATION ####
                    |   # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)
                    |   # NOTE: Using invalid values might cause very odd behaviour and/or crashes!
+                   |   
                    |   # Opportunist fire mode AND conserveAmmo suffix:
-                   |   ,"opportunist_kineticFlux" : 0.7 # fire kinetic weapons if enemy flux level < X
-                   |   ,"opportunist_HEFlux" : 0.8 # fire HE/fragment weapons if enemy flux level > X
+                   |   ,"opportunist_kineticFlux" : 0.75 # fire kinetic weapons if enemy flux level < X
+                   |   ,"opportunist_HEFlux" : 0.7 # fire HE/fragment weapons if enemy flux level > X
+                   |    # increasing this value will increase the likelihood of opportunist/conserveAmmo firing (positive non-zero number)
+                   |    # Note: Relatively small changes to this value will have a considerable impact. So I'd recommend values between 0.9 and 1.2 or so
+                   |   ,"opportunist_triggerHappinessModifier" : 1.0
+                   |   
                    |   # Vent ship modes:
                    |   # Vent (Flux>75%)
                    |   ,"vent_flux" : 0.75 # vent if flux level > X

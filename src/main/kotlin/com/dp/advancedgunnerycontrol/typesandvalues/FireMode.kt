@@ -45,11 +45,13 @@ object FMValues{
                 "Can use custom AI.",
         FireMode.MINING to "Only shoot/target asteroids. This is mode is just for fun. Always uses custom AI.",
         FireMode.OPPORTUNIST to "Only fire if the shot is likely to hit and be effective. Good for limited ammo weapons (e.g. missiles)." +
-                "\nHE weapons will only fire if target is shieldless or at high flux (>80%), kinetic weapons will only fire if target" +
-                " is shielded and at lowish (<70%) flux." +
+                "\nHE weapons will only fire if target is shieldless or at high flux (value defined in settings), kinetic weapons will only fire if target" +
+                " is shielded and at lowish (see settings) flux." +
                 "\nThis mode will only fire, if the enemy is likely to still be in range after the projectile travels, even" +
                 " if the target moves away, and if the target is slow enough" +
                 " that it is unlikely to evade (depending on projectile speed and tracking)." +
+                "\nThis mode will be more conservative when the weapon uses ammo (and even more so if the ammo doesn't reload)." +
+                "\nFinisher type missiles will only fire if the target is defenseless (overloaded or unshielded)." +
                 "\nThis mode won't fire at missiles/fighters. Always uses custom AI.",
         FireMode.TARGET_SHIELDS to "Weapon will prioritize targets with shields or low flux/shields on." +
                 "\n - If the targets shields are off, will fire if target flux level < ~65%" +

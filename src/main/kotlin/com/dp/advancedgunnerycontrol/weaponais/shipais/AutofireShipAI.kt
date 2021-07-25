@@ -5,6 +5,10 @@ import com.fs.starfarer.api.combat.ShipCommand
 
 class AutofireShipAI(ship: ShipAPI) : ShipCommandGenerator(ship) {
 
+    override fun blockCommands(): List<ShipCommand> {
+        return listOf(ShipCommand.SELECT_GROUP)
+    }
+
     override fun generateCommands(): List<ShipCommandWrapper> {
         return listOf(ShipCommandWrapper(ShipCommand.SELECT_GROUP, null, (ship.weaponGroupsCopy?.size ?: 0))) +
                 ship.weaponGroupsCopy.mapIndexed { index, group ->

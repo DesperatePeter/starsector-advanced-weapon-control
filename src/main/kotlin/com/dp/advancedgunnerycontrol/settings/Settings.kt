@@ -55,6 +55,7 @@ object Settings : SettingsDefinition() {
     val conserveAmmo = addSetting<Float> ("conserveAmmo_ammo", 0.9f)
     val panicFireHull = addSetting<Float> ("panicFire_hull", 0.5f)
     val directRetreat = addSetting<Boolean> ("retreat_shouldDirectRetreat", false)
+    val opportunistModifier = addSetting<Float> ("opportunist_triggerHappinessModifier", 1.0f)
 
     var weaponBlacklist = listOf<String>()
         private set
