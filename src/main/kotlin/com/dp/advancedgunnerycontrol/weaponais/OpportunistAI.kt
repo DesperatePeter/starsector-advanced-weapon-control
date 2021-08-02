@@ -29,5 +29,6 @@ class OpportunistAI (baseAI: AutofireAIPlugin, suffix: SuffixBase) : SpecificAIP
         return isOpportuneTarget(targetEntity, targetPoint, weapon)
     }
 
+    override fun shouldConsiderNeutralsAsFriendlies(): Boolean = true
 
 }

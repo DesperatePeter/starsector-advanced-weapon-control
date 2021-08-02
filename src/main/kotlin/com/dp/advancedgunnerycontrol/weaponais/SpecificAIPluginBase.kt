@@ -113,7 +113,8 @@ abstract class SpecificAIPluginBase(
     protected fun getFriendlies(): List<Pair<CombatEntityAPI, Vector2f>> {
         return addPredictedLocationToTargets(
             CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter {
-                (it.isAlly || (it.owner == 0)) && isWithinArc(it) && !it.isFighter
+                (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) &&
+                        isWithinArc(it) && !it.isFighter
             }).filter { isInRange(it.second) }
     }
 
@@ -194,6 +195,8 @@ abstract class SpecificAIPluginBase(
     protected fun isWithinArc(position: Vector2f) : Boolean {
         return weapon.distanceFromArc(position) <= 0.01f
     }
+
+    protected open fun shouldConsiderNeutralsAsFriendlies() : Boolean = weapon?.usesAmmo() ?: true
 
     /**
      * @return approximate angular distance of target from current weapon facing in rad
