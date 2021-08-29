@@ -7,6 +7,7 @@ import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.ext.minus
+import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.*
 
@@ -54,6 +55,10 @@ fun bigness(ship: ShipAPI): Float {
 
 fun isHostile(entity: CombatEntityAPI): Boolean {
     return entity.owner == 1
+}
+
+fun getNeutralPosition(weapon: WeaponAPI) : Vector2f{
+    return weapon.location + (vectorFromAngleDeg(weapon.ship.facing) times_ 100f)
 }
 
 fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weapon: WeaponAPI) : Boolean{

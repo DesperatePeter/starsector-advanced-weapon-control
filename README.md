@@ -305,6 +305,7 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - 0.10.1: Added targetShields/avoidShields modes, possibility to activate multiple ship AI modes, reworked opportunist, 
   added mode parameters to options
 - 0.10.2: Yet another Opportunist overhaul (now less conservative for weapons with unlimited ammo, new setting), minor bugfixes
+- 0.10.4: Fixed issues with friendly fire, fixed several issues with target acquisition, turrets now assume a neutral position
 
 ## Acknowledgements ##
 
