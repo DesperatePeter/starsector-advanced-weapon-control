@@ -7,10 +7,9 @@ import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.ext.minus
+import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sin
+import kotlin.math.*
 
 // Math.toRadians only works on doubles, which is annoying as f***
 const val degToRad: Float = PI.toFloat() / 180f
@@ -58,6 +57,10 @@ fun isHostile(entity: CombatEntityAPI): Boolean {
     return entity.owner == 1
 }
 
+fun getNeutralPosition(weapon: WeaponAPI) : Vector2f{
+    return weapon.location + (vectorFromAngleDeg(weapon.ship.facing) times_ 100f)
+}
+
 fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weapon: WeaponAPI) : Boolean{
     val target = tgt as? ShipAPI ?: return false
     val p = predictedLocation ?: return false
@@ -71,33 +74,70 @@ fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weap
         "good" -> 2.5f
         "excellent" -> 3.0f
         else -> 1.0f
-    } * 0.2f
+    } * 0.2f * Settings.opportunistModifier()
     if(weapon.id?.contains("sabot") == true) trackingFactor*=3
     if(target.maxSpeed > weapon.projectileSpeed * trackingFactor) return false
-    if((p - weapon.location).length() > weapon.range * 0.75f) return false
+    val ttt = (weapon.location - p).length() / weapon.projectileSpeed
+    val ammoLessModifier = if(!weapon.usesAmmo()) 1.0f else if (weapon.ammoTracker.reloadSize > 0f) 0.5f else 0.1f
+    if(((p - weapon.location).length() - target.collisionRadius * ammoLessModifier + ttt * target.maxSpeed * 0.1f / ammoLessModifier) >
+        weapon.range * 0.95f * Settings.opportunistModifier()) return false
     return true
 }
 
 private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
     if(weapon.spec?.primaryRoleStr?.toLowerCase() == "finisher"){
-        return isDefenseless(target)
+        return isDefenseless(target, weapon)
     }
     if(weapon.damageType == DamageType.HIGH_EXPLOSIVE || weapon.damageType == DamageType.FRAGMENTATION){
-        if(isDefenseless(target)) return true
-        if(target.fluxLevel > 0.9f) return true
+        if(isDefenseless(target, weapon)) return true
+        if(target.fluxLevel * Settings.opportunistModifier() > Settings.opportunistHEThreshold()) return true
         return false
     }
     if(weapon.damageType == DamageType.KINETIC){
-        if(isDefenseless(target)) return false
+        if(isDefenseless(target, weapon)) return false
         if(target.shield == null) return false
-        if(target.hardFluxLevel > 0.7f) return false
+        if(target.fluxLevel > Settings.opportunistKineticThreshold() * Settings.opportunistModifier()) return false
     }
     return true
 }
 
-private fun isDefenseless(target : ShipAPI) : Boolean {
+/**
+ * @return a small value if target is unshielded, has shields off or is at high flux
+ */
+fun computeShieldFactor(tgtShip: ShipAPI) : Float{ // todo facing
+    if(tgtShip.shield == null) return 0.01f
+    if(tgtShip.shield?.isOff == true) return 0.5f/(tgtShip.fluxLevel.pow(2) + 0.001f)
+    if(tgtShip.shield?.isOn == true) return 1f/(tgtShip.fluxLevel.pow(2) + 0.001f)
+    return 1.0f
+}
+
+fun getAverageArmor(armor: ArmorGridAPI) : Float{
+    val horizontalCells = armor.leftOf + armor.rightOf
+    val verticalCells = armor.above + armor.below
+    var sum = 0f
+    for (i in 0 until horizontalCells){
+        for (j in 0 until verticalCells){
+            sum += armor.getArmorFraction(i, j)
+        }
+    }
+    return sum * armor.maxArmorInCell
+}
+
+fun getMaxArmor(armor: ArmorGridAPI) : Float{
+    val horizontalCells = armor.leftOf + armor.rightOf
+    val verticalCells = armor.above + armor.below
+    return horizontalCells * verticalCells * armor.maxArmorInCell
+}
+
+private fun isDefenseless(target : ShipAPI, weapon: WeaponAPI) : Boolean {
     if(target.shield == null && target.phaseCloak == null) return true
-    return target.isDefenseDisabled
+    target.fluxTracker?.let {
+        if(it.isOverloadedOrVenting){
+            return max(it.overloadTimeRemaining, it.timeToVent) >=
+                    ((target.location - weapon.location).length()/weapon.projectileSpeed)
+        }
+    }
+    return false
 }
 
 fun isValidPDTarget(target: CombatEntityAPI?) : Boolean {

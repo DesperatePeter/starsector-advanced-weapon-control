@@ -24,7 +24,7 @@ class ModeButton(ship: FleetMemberAPI, group : Int, mode : FireMode, button: But
             var isSomethingChecked = false
             Settings.cycleOrder().forEach {
                 toReturn.add(ModeButton(ship, group, it, tooltip.addAreaCheckbox(it.toString(), it,
-                    Color.BLUE, Color.BLUE, Color.WHITE, 160f, 24f, 3f)))
+                    Color.BLUE, Color.BLUE, Color.WHITE, 160f, 18f, 3f)))
                 tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(fireModeDetailedDescriptions[it] ?: ""), TooltipMakerAPI.TooltipLocation.BELOW)
                 if(FMValues.FIRE_MODE_TRANSLATIONS[storage.modesByShip[ship.id]?.get(group)] == it){
                     toReturn.last().check()

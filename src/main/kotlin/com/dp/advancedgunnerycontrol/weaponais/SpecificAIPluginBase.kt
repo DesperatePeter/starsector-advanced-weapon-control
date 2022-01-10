@@ -92,7 +92,7 @@ abstract class SpecificAIPluginBase(
 
         var potentialTargets = addPredictedLocationToTargets(
             getRelevantEntitiesWithinRange().filter { isHostile(it) }
-        ).filter { isInRange(it.second) }
+        ).filter { isInRange(it.second, it.first.collisionRadius) }
 
         // TODO: It would be faster to get friendlies and foes in one go
         if (Settings.customAIFriendlyFireComplexity() >= 2) {
@@ -104,7 +104,7 @@ abstract class SpecificAIPluginBase(
         }
 
         targetEntity = bestTarget?.first
-        targetPoint = bestTarget?.second
+        targetPoint = bestTarget?.second ?: getNeutralPosition(weapon)
         computeIfShouldFire(potentialTargets).let {
             weaponShouldFire = it
         }
@@ -112,9 +112,10 @@ abstract class SpecificAIPluginBase(
 
     protected fun getFriendlies(): List<Pair<CombatEntityAPI, Vector2f>> {
         return addPredictedLocationToTargets(
-            CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter {
-                (it.isAlly || (it.owner == 0)) && isWithinArc(it) && !it.isFighter
-            }).filter { isInRange(it.second) }
+            CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter{it != weapon.ship}.filter {
+                (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) &&
+                        isWithinArc(it) && !it.isFighter
+            }).filter { isInRange(it.second, it.first.collisionRadius) }
     }
 
     protected fun determineTargetLeadingAccuracy(currentTarget: CombatEntityAPI?, lastTarget: CombatEntityAPI?) {
@@ -159,9 +160,12 @@ abstract class SpecificAIPluginBase(
      * conclusion: Don't use acceleration, take angular velocity with a grain of salt
      */
     protected fun computePointToAimAt(tgt: CombatEntityAPI): Vector2f {
+        if(!isAimable(weapon)){
+            return getNeutralPosition(weapon)
+        }
         var tgtPoint = tgt.location
         // no need to compute stuff for beam or non-aimable weapons
-        if (weapon.isBeam || weapon.isBurstBeam || !isAimable(weapon)) {
+        if (weapon.isBeam || weapon.isBurstBeam) {
             return tgtPoint
         }
 
@@ -188,12 +192,17 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun isWithinArc(entity: CombatEntityAPI): Boolean {
-        return isWithinArc(entity.location)
+        if(!isAimable(weapon) || weapon.spec.trackingStr != null) return true
+        return isWithinArc(entity.location, entity.collisionRadius)
     }
 
-    protected fun isWithinArc(position: Vector2f) : Boolean {
-        return weapon.distanceFromArc(position) <= 0.01f
+    protected fun isWithinArc(position: Vector2f, radius: Float) : Boolean {
+        // Note: This is using an approximated angle, which should be fine as angles should be rather small
+        return weapon.distanceFromArc(position) <=
+                (radius / (weapon.location - position).length()) * 180f / PI * aimingToleranceFactor
     }
+
+    protected open fun shouldConsiderNeutralsAsFriendlies() : Boolean = true
 
     /**
      * @return approximate angular distance of target from current weapon facing in rad
@@ -217,8 +226,7 @@ abstract class SpecificAIPluginBase(
         return friendlies.filter {
             abs(angularDistanceFromWeapon(aimPoint) - angularDistanceFromWeapon(it.second)) * linearDistanceFromWeapon(
                 it.second
-            ) <=
-                    it.first.collisionRadius * Settings.customAIFriendlyFireCaution()
+            ) <= it.first.collisionRadius * Settings.customAIFriendlyFireCaution()
         }
     }
 
@@ -227,14 +235,14 @@ abstract class SpecificAIPluginBase(
     }
 
     protected open fun computeIfShouldFire(potentialTargets: List<Pair<CombatEntityAPI, Vector2f>>): Boolean {
-        if (weapon.hasAIHint(WeaponAPI.AIHints.DO_NOT_AIM) || weapon.spec.trackingStr != null){
+        if (!isAimable(weapon) || weapon.spec.trackingStr != null){
             return potentialTargets.isNotEmpty()
         }
         if (Settings.customAIFriendlyFireComplexity() >= 1) {
             if (isFriendlyFire(vectorFromAngleDeg(weapon.currAngle), getFriendlies())) return false
         }
         // Note: In a sequence, all calculations are done on the first element before moving to the next
-        potentialTargets.asSequence().filter { isInRange(it.second) }.iterator().forEach {
+        potentialTargets.asSequence().filter { isInRange(it.second, it.first.collisionRadius) }.iterator().forEach {
             val tolerance = it.first.collisionRadius * aimingToleranceFactor + aimingToleranceFlat
             val lateralTargetOffset = angularDistanceFromWeapon(it.second) * linearDistanceFromWeapon(it.second)
             if (lateralTargetOffset <= tolerance) return true
@@ -256,17 +264,14 @@ abstract class SpecificAIPluginBase(
         return weaponShouldFire
     }
 
-    protected fun isInRange(entity: Vector2f): Boolean {
-        return if(!weapon.hasAIHint(WeaponAPI.AIHints.DO_NOT_AIM) && weapon.spec.trackingStr == null) {
-            weapon.distanceFromArc(entity) <= 0.01f && (linearDistanceFromWeapon(entity) <= weapon.range)
-        }else{
-            linearDistanceFromWeapon(entity) <= weapon.range
-        }
+    protected fun isInRange(entity: Vector2f, radius: Float = 0f): Boolean {
+        return linearDistanceFromWeapon(entity) - radius <=
+                weapon.range + (0.25f * Settings.customAITriggerHappiness() * weapon.projectileFadeRange)
     }
 
     companion object {
         protected val aimingToleranceFactor =
-            1.0f * Settings.customAITriggerHappiness()// if aim is up to 25% off, the weapon should still fire
+            1.0f * Settings.customAITriggerHappiness()
         protected val aimingToleranceFlat = 10f * Settings.customAITriggerHappiness()
     }
 }

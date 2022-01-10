@@ -4,13 +4,11 @@ import com.fs.starfarer.api.combat.ShipAIPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipCommand
 
-class ShieldsOffShipAI(baseAI: ShipAIPlugin, ship: ShipAPI) : CustomShipAI(baseAI, ship) {
-    companion object{
-        const val fluxThreshold = 0.5f
-    }
-    override fun advanceImpl(p0: Float) {
+class ShieldsOffShipAI(ship: ShipAPI, private val fluxThreshold : Float) : ShipCommandGenerator(ship) {
+    override fun generateCommands(): List<ShipCommandWrapper> {
         if(ship.shield?.isOn == true && ship.fluxLevel >= fluxThreshold){
-            ship.giveCommand(ShipCommand.TOGGLE_SHIELD_OR_PHASE_CLOAK, null, 0)
+            return listOf(ShipCommandWrapper(ShipCommand.TOGGLE_SHIELD_OR_PHASE_CLOAK))
         }
+        return emptyList()
     }
 }

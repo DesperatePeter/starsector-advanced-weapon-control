@@ -38,6 +38,24 @@ object Settings : SettingsDefinition() {
     val maxLoadouts = addSetting<Int>("maxLoadouts", 3)
     val loadoutNames = addSetting<List<String>> ("loadoutNames", listOf())
 
+    // mode/suffix params
+    val opportunistKineticThreshold = addSetting<Float> ("opportunist_kineticFlux", 0.7f)
+    val opportunistHEThreshold = addSetting<Float> ("opportunist_HEFlux", 0.8f)
+    val ventFluxThreshold = addSetting<Float> ("vent_flux", 0.75f)
+    val aggressiveVentFluxThreshold = addSetting<Float> ("aggressiveVent_flux", 0.25f)
+    val ventSafetyFactor = addSetting<Float> ("vent_safetyFactor", 2f)
+    val aggressiveVentSafetyFactor = addSetting<Float> ("aggressiveVent_safetyFactor", 0.25f)
+    val retreatHullThreshold = addSetting<Float> ("retreat_hull", 0.5f)
+    val shieldsOffThreshold = addSetting<Float> ("shieldsOff_flux", 0.5f)
+    val holdFire50 = addSetting<Float> ("holdFire50_flux", 0.5f)
+    val holdFire75 = addSetting<Float> ("holdFire75_flux", 0.75f)
+    val holdFire90 = addSetting<Float> ("holdFire90_flux", 0.9f)
+    val pdFlux50 = addSetting<Float> ("pd50_flux", 0.5f)
+    val pdAmmo90 = addSetting<Float> ("pd90_ammo", 0.9f)
+    val conserveAmmo = addSetting<Float> ("conserveAmmo_ammo", 0.9f)
+    val panicFireHull = addSetting<Float> ("panicFire_hull", 0.5f)
+    val directRetreat = addSetting<Boolean> ("retreat_shouldDirectRetreat", false)
+    val opportunistModifier = addSetting<Float> ("opportunist_triggerHappinessModifier", 1.0f)
 
     var weaponBlacklist = listOf<String>()
         private set

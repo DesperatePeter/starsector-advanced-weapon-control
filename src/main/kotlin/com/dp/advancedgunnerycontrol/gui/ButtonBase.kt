@@ -5,11 +5,11 @@ import com.fs.starfarer.api.ui.ButtonAPI
 
 
 abstract class ButtonBase<T>(protected var ship: FleetMemberAPI, protected var group : Int, protected var associatedValue : T, var button: ButtonAPI) {
-    private var active = false
+    protected var active = false
     protected var sameGroupButtons : List<ButtonBase<T>> = emptyList()
         set(value) {field = value.filter { it.associatedValue != this.associatedValue }}
 
-    fun executeCallbackIfChecked(){
+    open fun executeCallbackIfChecked(){
         if (!active && button.isChecked){
             check()
         }
@@ -26,7 +26,7 @@ abstract class ButtonBase<T>(protected var ship: FleetMemberAPI, protected var g
         button.isEnabled = false
     }
 
-    private fun uncheck(){
+    protected fun uncheck(){
         active = false
         button.isChecked = false
     }

@@ -81,6 +81,8 @@ I would recommend leaving one loadout blank (i.e. everything default) for your e
 
 ## Fire Modes ##
 
+Note: Please refer to GUI tooltips for more details
+
 Mode | Targets | Prioritizes | Requirements | Can use Custom AI | Weapon Example | Enabled by Default
 :---: | :---   | :---        | :---         | :---:             | :---: | :---:
 Default | Same as base AI | Same as base AI | None | No | All weapons | Yes
@@ -92,6 +94,8 @@ Opportunist | Ignores fighters/missiles | Special* | None | Always | Missiles | 
 BigShips | Destroyers to Capitals | Bigger=Better | None | Yes | Squall MLRM | No
 SmallShips | Fighters to Destroyers | Smaller=Better | None | Yes | Phase Lance | No
 Mining | Asteroids | Asteroids | None | Yes | Mining Blaster | No
+AvoidShields | Ships (no missiles) | ships without shields or high flux | None | Always | High-intensity Laser | Yes
+TargetShields | Ships (no missiles) | ships with shields and low flux | None | Always | Needlers | Yes
 
 *Depending on damage type, will try to only fire when the shot is likely to be effective. Will try to avoid
 targets that move too fast or are too far away. Mainly intended for missiles with limited ammo.
@@ -120,7 +124,7 @@ They will work best when forcing custom AI in the settings.
 
 ### Ship Modes ###
 
-Ship modes only affect AI-controlled ships. Ship modes can only be set in the GUI.
+Ship modes only affect AI-controlled ships. Ship modes can only be set in the GUI. Multiple modes can be set.
 
 Mode | Effect | Notes
 :---: | :--- | :---
@@ -256,6 +260,11 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - Add a way to quickly change fire modes for all ships back to default **DONE** (loadouts)
 - Add a way to change fire behaviour based on circumstances **DONE** (PD(X), PanicFire suffixes)
 - Add a way to force the AI to adhere to configured fire modes **DONE** (ForceAutofire ship mode)
+- Overhaul Opportunist mode to be less conservative for ammo-less weapons **DONE**
+- Support weapon modules for e.g. Gown **TODO** (probably won't happen in the near future)
+- Change <90% ammo to first magazine **WON'T DO** (simply adjusting pd90_ammo should suffice)
+- Make modes/suffixes modular (similar to ship modes) **TODO** (this would be a major overhaul, so won't happen until 1.0. Might never happen)
+- Implement a way to make phase ships only fire when their phase spools are almost off cooldown **WON'T DO** (I just don't see a way to implement this well)
 
 ## Known Issues ##
 
@@ -285,14 +294,18 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
 - 0.7.2: IPDAI is now considered for PD/Missiles mode, invalid modes are now skipped (opt-out in settings)
 - 0.8.0 (pre-release): added mode suffixes, added gunnery control GUI
 - 0.8.1 (pre-release): cleaned up GUI, display weapon mode suffixes
-- 0.8.2: add ability to cyclce suffixes during combat, fix issues with persistence and save game corruption
+- 0.8.2: add ability to cycle suffixes during combat, fix issues with persistence and save game corruption
 - 0.8.3: minor polish
-- 0.8.4: pre-deployed ships (e.g. when trying do disengage) will now also automatically load firing modes
+- 0.8.4: pre-deployed ships (e.g. when trying to disengage) will now also automatically load firing modes
 - 0.8.5: automatically purge incompatible persistent data, changed GUI hotkey to "J" and made it rebindable
 - 0.9.0 (pre-release): Added loadouts, ship modes & additional modes/suffixes
 - 0.9.1 (pre-release): Fixed an issue that could lead to a nullptr-exception
 - 0.9.2: Fixed issues (suffixes didn't properly affect targeting priority, ship modes got occasionally reset),
   added additional ship modes.
+- 0.10.1: Added targetShields/avoidShields modes, possibility to activate multiple ship AI modes, reworked opportunist, 
+  added mode parameters to options
+- 0.10.2: Yet another Opportunist overhaul (now less conservative for weapons with unlimited ammo, new setting), minor bugfixes
+- 0.10.4: Fixed issues with friendly fire, fixed several issues with target acquisition, turrets now assume a neutral position
 
 ## Acknowledgements ##
 
