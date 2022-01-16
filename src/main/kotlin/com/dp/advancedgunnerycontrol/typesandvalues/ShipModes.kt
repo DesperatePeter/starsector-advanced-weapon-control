@@ -62,7 +62,7 @@ val detailedShipModeDescriptions = mapOf(
             "\n[${Settings.loadHotkey()}]: Manually load modes for all deployed ships." +
             "\n[${Settings.resetHotkey()}]: Reset all modes back to default for current ship and loadout." +
             "\n[${Settings.cycleLoadout()}]: Cycle loadouts for all ships (on combat start, loadout 1 is loaded)." +
-            "\n\n---Tips---\n - Often times, default mode is the best option." +
+            "\n\n---Tips---\n - Often times, default mode with no suffix is the best option." +
             "\n - Observe how the AI behaves in combat and adjust modes based on that." +
             "\n - Consider leaving one loadout blank (all default) to give you a fallback option."
 ).withDefault { it.toString() }

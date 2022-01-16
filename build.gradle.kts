@@ -3,14 +3,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.10.4"
+    val modVersion = "0.11.0"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
     val modName = "AdvancedGunneryControl"
     val author = "DesperatePeter"
     const val description = "A Starsector mod that adds more autofire modes for weapon groups. On the campaign map, press J to open a GUI. In combat, with NUMLOCK enabled, press the NUMPAD keys to cycle weapon modes."
-    val gameVersion = "0.95a-RC15"
+    val gameVersion = "0.95.1a-RC5"
     val jars = arrayOf("jars/$jarFileName")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
     val isUtilityMod = true
@@ -42,9 +42,12 @@ repositories {
 }
 
 dependencies {
+    implementation("org.junit.jupiter:junit-jupiter:5.7.0")
+    implementation("junit:junit:4.13.1")
     val kotlinVersionInLazyLib = "1.4.21"
 
     implementation(fileTree("libs") { include("*.jar") })
+    testImplementation(kotlin("test"))
 
     // Get kotlin sdk from LazyLib during runtime, only use it here during compile time
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersionInLazyLib")
@@ -69,6 +72,7 @@ dependencies {
         )
     })
 }
+
 
 tasks {
     named<Jar>("jar")
@@ -235,8 +239,8 @@ tasks {
                    |   ,"customAIFriendlyFireAlgorithmComplexity" : 1 # <---- EDIT HERE (maybe) ----
 
                    |   # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
-                   |   # Setting this to 3.0+ means "don't you dare fire if there is even a remote chance you'll hit an ally!"
-                   |   ,"customAIFriendlyFireCaution" : 1.0 # <---- EDIT HERE (maybe) ----                   
+                   |   # 1.0 should be enough to not hit allies if they don't change their course, but it's nice to have a little buffer
+                   |   ,"customAIFriendlyFireCaution" : 1.1 # <---- EDIT HERE (maybe) ----                   
                    | 
                    |   #                                 #### MODE/SUFFIX CUSTOMIZATION ####
                    |   # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)
@@ -297,7 +301,10 @@ tasks {
             }
         }
     }
+}
 
+tasks.test {
+    useJUnitPlatform()
 }
 
 // Compile to Java 6 bytecode so that Starsector can use it

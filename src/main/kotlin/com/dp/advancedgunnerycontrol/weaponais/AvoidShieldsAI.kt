@@ -11,13 +11,14 @@ import org.lwjgl.util.vector.Vector2f
 class AvoidShieldsAI (baseAI: AutofireAIPlugin, suffix: SuffixBase) : SpecificAIPluginBase(baseAI, suffix = suffix)  {
     override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         val tgtShip = (entity as? ShipAPI) ?: return computeBasePriority(entity, predictedLocation)
-        return computeShieldFactor(tgtShip)*computeBasePriority(entity, predictedLocation)
+        return (computeShieldFactor(tgtShip, weapon) + 0.5f)*computeBasePriority(entity, predictedLocation)
     }
 
     override fun shouldFire(): Boolean {
         if (!super.shouldFire()) return false
         val tgtShip = (targetEntity as? ShipAPI) ?: return false
-        return computeShieldFactor(tgtShip) < 1.3f
+        val ttt = targetPoint?.let { computeTimeToTravel(it) } ?: 1.0f
+        return computeShieldFactor(tgtShip, weapon, ttt) < 0.5f
     }
 
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {
