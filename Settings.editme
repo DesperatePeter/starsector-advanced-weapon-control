@@ -87,8 +87,8 @@
    ,"customAIFriendlyFireAlgorithmComplexity" : 1 # <---- EDIT HERE (maybe) ----
 
    # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
-   # Setting this to 3.0+ means "don't you dare fire if there is even a remote chance you'll hit an ally!"
-   ,"customAIFriendlyFireCaution" : 1.0 # <---- EDIT HERE (maybe) ----                   
+   # 1.0 should be enough to not hit allies if they don't change their course, but it's nice to have a little buffer
+   ,"customAIFriendlyFireCaution" : 1.1 # <---- EDIT HERE (maybe) ----                   
  
    #                                 #### MODE/SUFFIX CUSTOMIZATION ####
    # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)

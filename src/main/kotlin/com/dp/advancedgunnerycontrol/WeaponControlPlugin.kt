@@ -234,7 +234,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun combineWeaponGroup() {
-        printMessage("Functionality not yet implemented (combineWeaponGroups)")
+        // TODO
     }
 
     override fun init(engine: CombatEngineAPI?) {

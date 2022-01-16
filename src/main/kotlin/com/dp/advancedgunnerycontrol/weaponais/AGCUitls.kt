@@ -89,26 +89,40 @@ private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
         return isDefenseless(target, weapon)
     }
     if(weapon.damageType == DamageType.HIGH_EXPLOSIVE || weapon.damageType == DamageType.FRAGMENTATION){
-        if(isDefenseless(target, weapon)) return true
-        if(target.fluxLevel * Settings.opportunistModifier() > Settings.opportunistHEThreshold()) return true
-        return false
+        return computeShieldFactor(target, weapon) < 0.15f
     }
     if(weapon.damageType == DamageType.KINETIC){
-        if(isDefenseless(target, weapon)) return false
-        if(target.shield == null) return false
-        if(target.fluxLevel > Settings.opportunistKineticThreshold() * Settings.opportunistModifier()) return false
+        return computeShieldFactor(target, weapon) > 0.5f
     }
     return true
 }
+/**
+ * @return [0.01...~1.0] a small value if target is unshielded, has shields off or is at high flux
+ */
+fun computeShieldFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float = 1f) : Float{ // todo facing
+    if(tgtShip.shield == null || (tgtShip.shield.type != ShieldAPI.ShieldType.FRONT && tgtShip.shield.type != ShieldAPI.ShieldType.OMNI)){
+        return 0.01f
+    }
+    if( isDefenseless(tgtShip, weapon)) return 0.01f
+    return computeFluxBasedShieldFactor(tgtShip) * computeShieldFacingFactor(tgtShip, weapon, ttt)
+}
+
+fun computeFluxBasedShieldFactor(tgtShip: ShipAPI) : Float{
+    return (1.0f - tgtShip.fluxLevel) * (if (tgtShip.shield?.isOn == true) 1.0f else 0.75f)
+}
 
 /**
- * @return a small value if target is unshielded, has shields off or is at high flux
+ * @return a factor between 0.01f (shot will bypass shields) and 1f (shot will hit shields). A value in between if it's unclear
  */
-fun computeShieldFactor(tgtShip: ShipAPI) : Float{ // todo facing
-    if(tgtShip.shield == null) return 0.01f
-    if(tgtShip.shield?.isOff == true) return 0.5f/(tgtShip.fluxLevel.pow(2) + 0.001f)
-    if(tgtShip.shield?.isOn == true) return 1f/(tgtShip.fluxLevel.pow(2) + 0.001f)
-    return 1.0f
+fun computeShieldFacingFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float) : Float{
+    // Note: Angles in Starsector are always 0..360, 0 means east/right
+    val shield = tgtShip.shield ?: return 0.01f
+    if(shield.type == ShieldAPI.ShieldType.OMNI && shield.isOff){
+        return 0.5f; // Turned off omni shields means we don't know shit
+    }
+    val sCov = 0.5f * min(shield.arc, shield.activeArc + (ttt/shield.unfoldTime)*shield.arc)
+    val flankingAngle =abs( 180f - abs(weapon.currAngle - shield.facing))
+    return 1.0f - min(1.0f, max(0.01f, (flankingAngle - sCov)/15.0f)) // missing the shields by 15° or more means bypassing shot
 }
 
 fun getAverageArmor(armor: ArmorGridAPI) : Float{

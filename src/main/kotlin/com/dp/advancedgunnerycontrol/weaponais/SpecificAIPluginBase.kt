@@ -1,5 +1,9 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
+// Notes:
+// Initially I was unaware that the player ship's current velocity affects, so some of the code here is a bit patchy
+// Most of the time a "angular distance", i.e. the sin, is used instead of angles in calculations, as sin(x) ~= x for small angles
+
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
@@ -97,7 +101,7 @@ abstract class SpecificAIPluginBase(
         // TODO: It would be faster to get friendlies and foes in one go
         if (Settings.customAIFriendlyFireComplexity() >= 2) {
             // this is a deceptively expensive call (therefore locked behind opt-in setting)
-            potentialTargets = potentialTargets.filter { !isFriendlyFire(it.second, getFriendlies()) }
+            potentialTargets = potentialTargets.filter { !isFriendlyFire(getFriendlies(), it.second) }
         }
         val bestTarget = potentialTargets.minBy {
             computeTargetPriority(it.first, it.second)
@@ -110,12 +114,11 @@ abstract class SpecificAIPluginBase(
         }
     }
 
-    protected fun getFriendlies(): List<Pair<CombatEntityAPI, Vector2f>> {
+    protected open fun getFriendlies(): List<Pair<CombatEntityAPI, Vector2f>> {
         return addPredictedLocationToTargets(
-            CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter{it != weapon.ship}.filter {
-                (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) &&
-                        isWithinArc(it) && !it.isFighter
-            }).filter { isInRange(it.second, it.first.collisionRadius) }
+            CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter { it != weapon.ship }.filter {
+                (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) && !it.isFighter
+            }).filter { isInRange(it.second, it.first.collisionRadius * Settings.customAIFriendlyFireCaution()) && isWithinArc(it.second, it.first.collisionRadius * Settings.customAIFriendlyFireCaution()) }
     }
 
     protected fun determineTargetLeadingAccuracy(currentTarget: CombatEntityAPI?, lastTarget: CombatEntityAPI?) {
@@ -130,6 +133,12 @@ abstract class SpecificAIPluginBase(
         }
     }
 
+    protected fun compensateTargetPointShipSpeed(tgt: Vector2f, ttt: Float): Vector2f {
+        val vel = weapon.ship?.velocity ?: Vector2f(0.0f, 0.0f)
+        return tgt - (vel times_ ttt)
+    }
+
+    // compensates for both player ship and target velocities
     protected fun addPredictedLocationToTargets(potentialTargets: List<CombatEntityAPI>): List<Pair<CombatEntityAPI, Vector2f>> {
         return potentialTargets.map {
             Pair(it, computePointToAimAt(it))
@@ -151,16 +160,16 @@ abstract class SpecificAIPluginBase(
 
     /**
      * approximate position where the target will be after travel time
-     * based on position, velocity and rotation
-     * Note: I am somewhat unsure about this function...
+     * based on player ship and target velocities.
+     * In a way, this transforms points from an absolute to a "relative" frame
      * Some observations:
      * - angles are in degrees
      * - target ships can strafe, i.e. velocity direction =/= heading
      * - acceleration refers to max possible acceleration, not current acceleration
-     * conclusion: Don't use acceleration, take angular velocity with a grain of salt
+     * conclusion: Don't use acceleration or angular velocity, they are unreliable
      */
     protected fun computePointToAimAt(tgt: CombatEntityAPI): Vector2f {
-        if(!isAimable(weapon)){
+        if (!isAimable(weapon)) {
             return getNeutralPosition(weapon)
         }
         var tgtPoint = tgt.location
@@ -170,13 +179,16 @@ abstract class SpecificAIPluginBase(
         }
 
         for (i in 0 until Settings.customAIRecursionLevel()) {
-            val travelT =
-                linearDistanceFromWeapon(tgtPoint) / (weapon.projectileSpeed * (1.5f - 0.5f * currentTgtLeadAcc))
+            val travelT = computeTimeToTravel(tgtPoint)
 
-            val velocityOffset = (tgt.velocity /*+ rotationalVelocityModifier*/) times_ travelT
-            tgtPoint = tgt.location + velocityOffset
+            val velocityOffset = (tgt.velocity) times_ travelT
+            tgtPoint = compensateTargetPointShipSpeed(tgt.location + velocityOffset, travelT)
         }
         return tgtPoint
+    }
+
+    protected fun computeTimeToTravel(tgt: Vector2f): Float {
+        return linearDistanceFromWeapon(tgt) / (weapon.projectileSpeed * (1.5f - 0.5f * currentTgtLeadAcc))
     }
 
 //    private fun rotateVector(vec: Vector2f, omega: Float): Vector2f {
@@ -192,41 +204,42 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun isWithinArc(entity: CombatEntityAPI): Boolean {
-        if(!isAimable(weapon) || weapon.spec.trackingStr != null) return true
+        if (!isAimable(weapon) || weapon.spec.trackingStr != null) return true
         return isWithinArc(entity.location, entity.collisionRadius)
     }
 
-    protected fun isWithinArc(position: Vector2f, radius: Float) : Boolean {
+    protected fun isWithinArc(position: Vector2f, radius: Float): Boolean {
         // Note: This is using an approximated angle, which should be fine as angles should be rather small
         return weapon.distanceFromArc(position) <=
                 (radius / (weapon.location - position).length()) * 180f / PI * aimingToleranceFactor
     }
 
-    protected open fun shouldConsiderNeutralsAsFriendlies() : Boolean = true
+    protected open fun shouldConsiderNeutralsAsFriendlies(): Boolean = true
 
     /**
      * @return approximate angular distance of target from current weapon facing in rad
      * note: approximation works well for small values and is off by a factor of PI/2 for 180°
+     * @param entity: Relative coordinates (velocity-compensated)
      */
     protected fun angularDistanceFromWeapon(entity: Vector2f): Float {
-        val weaponDirection = Vector2f(cos(weapon.currAngle * degToRad), sin(weapon.currAngle * degToRad))
+        // FIXME: Cache weapon direction
+        val weaponDirection = vectorFromAngleDeg(weapon.currAngle)
         val distance = entity - weapon.location
         val entityDirection = distance times_ (1f / distance.length())
         return (weaponDirection - entityDirection).length()
     }
 
-    protected fun isFriendlyFire(aimPoint: Vector2f, friendlies: List<Pair<CombatEntityAPI, Vector2f>>): Boolean {
-        return friendliesInDangerZone(aimPoint, friendlies).isNotEmpty()
+    // if aimPoint == null, the current weapon facing will be used
+    protected fun isFriendlyFire(friendlies: List<Pair<CombatEntityAPI, Vector2f>>, aimPoint: Vector2f? = null): Boolean {
+        return friendliesInDangerZone(friendlies, aimPoint).isNotEmpty()
     }
 
-    protected fun friendliesInDangerZone(
-        aimPoint: Vector2f,
-        friendlies: List<Pair<CombatEntityAPI, Vector2f>>
-    ): List<Pair<CombatEntityAPI, Vector2f>> {
+    protected fun friendliesInDangerZone(friendlies: List<Pair<CombatEntityAPI, Vector2f>>, aimPoint: Vector2f? = null): List<Pair<CombatEntityAPI, Vector2f>> {
+
         return friendlies.filter {
-            abs(angularDistanceFromWeapon(aimPoint) - angularDistanceFromWeapon(it.second)) * linearDistanceFromWeapon(
-                it.second
-            ) <= it.first.collisionRadius * Settings.customAIFriendlyFireCaution()
+            val isCloserThanTgt = targetPoint?.let { tp ->  linearDistanceFromWeapon(it.second) < linearDistanceFromWeapon(tp)} ?: true
+            determineIfShotWillHit(it.second, it.first.collisionRadius * Settings.customAIFriendlyFireCaution(), aimPoint) &&
+                    isCloserThanTgt
         }
     }
 
@@ -235,29 +248,50 @@ abstract class SpecificAIPluginBase(
     }
 
     protected open fun computeIfShouldFire(potentialTargets: List<Pair<CombatEntityAPI, Vector2f>>): Boolean {
-        if (!isAimable(weapon) || weapon.spec.trackingStr != null){
+        if (!isAimable(weapon) || weapon.spec.trackingStr != null) {
             return potentialTargets.isNotEmpty()
         }
+
         if (Settings.customAIFriendlyFireComplexity() >= 1) {
-            if (isFriendlyFire(vectorFromAngleDeg(weapon.currAngle), getFriendlies())) return false
+            if (isFriendlyFire(getFriendlies())) return false
         }
         // Note: In a sequence, all calculations are done on the first element before moving to the next
         potentialTargets.asSequence().filter { isInRange(it.second, it.first.collisionRadius) }.iterator().forEach {
-            val tolerance = it.first.collisionRadius * aimingToleranceFactor + aimingToleranceFlat
-            val lateralTargetOffset = angularDistanceFromWeapon(it.second) * linearDistanceFromWeapon(it.second)
-            if (lateralTargetOffset <= tolerance) return true
+            val effectiveCollisionRadius = it.first.collisionRadius * aimingToleranceFactor + aimingToleranceFlat
+            if(determineIfShotWillHit(it.second, effectiveCollisionRadius)) return true
         }
 
         return false
     }
 
+    protected fun computePointCurrentlyAimedAt() : Vector2f {
+        val ship = weapon.ship ?: return Vector2f(0f,0f)
+        return (vectorFromAngleDeg(weapon.currAngle) times_ weapon.range) + ship.location
+    }
+
+    /**
+     * @param entity: In relative coordinates
+     * @param collRadius: Include any tolerances in here
+     * @param aimPoint: Point the weapon is aiming at, deduced from current weapon facing if not provided
+     */
+    protected fun determineIfShotWillHit(entity: Vector2f, collRadius: Float, aimPoint: Vector2f? = null) : Boolean{
+        val apd = aimPoint?.let { angularDistanceFromWeapon(it) } ?: 0f
+        val lateralOffset = abs(angularDistanceFromWeapon(entity) - apd) * linearDistanceFromWeapon(entity)
+        return lateralOffset < collRadius
+    }
+
+    /**
+     * @brief compute a priority number for a target based on lin/angular distance, whether it's the ship target etc
+     * @return low (>=0) number for high priority targets, high number for low priority targets
+     */
     protected fun computeBasePriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return predictedLocation.let {
-            angularDistanceFromWeapon(it) + Values.distToAngularDistEvalutionFactor * linearDistanceFromWeapon(it)
+            angularDistanceFromWeapon(it) + Values.distToAngularDistEvalutionFactor * linearDistanceFromWeapon(it) + 1.5f
         }.let {
-            if (lastTargetEntity == entity) it * 0.05f else it // heavily incentivize sticking to one target
+            if (lastTargetEntity == entity) it * 0.5f else it // incentivize sticking to one target
         } * suffix.modifyPriority(entity) *
-                (if (target == weapon.ship.shipTarget) 0.01f else 1.0f) // heavily incentivize targeting the ship target
+                (if(entity as? ShipAPI == weapon.ship.shipTarget) 0.1f else 1.0f) * // heavily incentivize targeting the ship target
+                (if((entity as? ShipAPI)?.isFighter == false) 1.0f else 2.0f) // prioritize regular ships over other stuff
     }
 
     override fun shouldFire(): Boolean {

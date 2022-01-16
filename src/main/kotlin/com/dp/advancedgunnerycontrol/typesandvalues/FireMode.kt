@@ -32,7 +32,8 @@ object FMValues{
     )
 
     val fireModeDetailedDescriptions = mapOf(
-        FireMode.DEFAULT to "Use the base AI (most suffixes still apply).",
+        FireMode.DEFAULT to "Use the base AI (most suffixes still apply). It's recommended to keep most weapons on default. " +
+                "Other modes will mainly lead to the weapon firing less.",
         FireMode.PD to "Use the base AI, but only fire at missiles/fighters. " +
                 "Won't fire if the base AI would target something else. " +
                 "Only for PD-weapons (non-PD weapons in this group will use default).",
@@ -44,27 +45,28 @@ object FMValues{
         FireMode.SMALL_SHIPS to "Ignore anything bigger than destroyers, prioritize fighters>frigates>destroyers. " +
                 "Can use custom AI.",
         FireMode.MINING to "Only shoot/target asteroids. This is mode is just for fun. Always uses custom AI.",
-        FireMode.OPPORTUNIST to "Only fire if the shot is likely to hit and be effective. Good for limited ammo weapons (e.g. missiles)." +
-                "\nHE weapons will only fire if target is shieldless or at high flux (value defined in settings), kinetic weapons will only fire if target" +
-                " is shielded and at lowish (see settings) flux." +
+        FireMode.OPPORTUNIST to "(experimental) Only fire if the shot is likely to hit and be effective. Good for limited ammo weapons (e.g. missiles)." +
+                "\nHE weapons will only fire if target is shieldless/flanked or at high flux (value defined in settings), kinetic weapons will only fire if target" +
+                " is shielded, at lowish (see settings) flux and not flanked. Same logic as target/avoid shields but much stricter." +
                 "\nThis mode will only fire, if the enemy is likely to still be in range after the projectile travels, even" +
                 " if the target moves away, and if the target is slow enough" +
                 " that it is unlikely to evade (depending on projectile speed and tracking)." +
                 "\nThis mode will be more conservative when the weapon uses ammo (and even more so if the ammo doesn't reload)." +
                 "\nFinisher type missiles will only fire if the target is defenseless (overloaded or unshielded)." +
-                "\nThis mode won't fire at missiles/fighters. Always uses custom AI.",
-        FireMode.TARGET_SHIELDS to "Weapon will prioritize targets with shields or low flux/shields on." +
-                "\n - If the targets shields are off, will fire if target flux level < ~65%" +
-                "\n - If target shields are on, will fire if target flux level < ~90%" +
+                "\nThis mode won't fire at missiles/fighters. Always uses custom AI." +
+                "\nTip: Ideally you want to manually control weapons rather than using opportunist mode. " +
+                "For non-missile weapons consider target/avoid shields instead.",
+        FireMode.TARGET_SHIELDS to "Weapon will prioritize shooting shields." +
+                "\n - Will not fire at overloaded/unshielded/venting/phase ships" +
+                "\n - Will not fire when flanking enemy shields" +
                 "\n - Will never fire if target doesn't have shields." +
-                "\nThis mode won't fire at missiles. Always uses custom AI." +
-                "\nNote: In future versions, I might add geometrical analysis of shield facing.",
+                "\n - Will not fire at very high flux (80%+) enemies" +
+                "\n - Will not fire at missiles. Always uses custom AI." +
+                "\nTip: Leave some kinetic weapons on Default to guarantee constant pressure against high-flux enemies",
         FireMode.AVOID_SHIELDS to "Weapon will prioritize targets without shields or high flux/shields off." +
-                "\n - If the targets shields are off, will fire if target flux level > ~60%" +
-                "\n - If target shields are on, will fire if target flux level > ~85%" +
+                "\n - Will not fire at low flux (50%-) enemies unless flanking shields." +
                 "\n - Will always fire if target doesn't have shields." +
-                "\nThis mode won't fire at missiles. Always uses custom AI." +
-                "\nNote: In future versions, I might add geometrical analysis of shield facing."
+                "\n - Will not fire at missiles. Always uses custom AI."
     ).withDefault { it.toString() }
 
     var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()

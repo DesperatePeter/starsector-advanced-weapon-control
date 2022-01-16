@@ -4,7 +4,7 @@
 
 This is a utility mod that allows you to set your auto-fire weapon groups to different modes.
 For example, in PD-Only mode, weapons will ONLY fire at missiles and fighters, not at enemy ships.
-Check out the full list of available modes below!
+There are many modes, check out the full list of available modes below!
 
 Sections of this readme are roughly ordered by importance. For the most important stuff, stop after Settings.
 
@@ -51,7 +51,7 @@ in the settings.
 
 Hotkeys (rebindable in Settings.editme):
 - NUMPAD 1-7 - Cycle firing modes for weapon groups 1-7 for targeted or player ship (not rebindable)
-- "J" - Show info about current firing modes (and load/save modes)
+- "J" - Show info about current firing modes (and load/save modes if automatic saving/loading is disabled)
 - "/" - Reset all modes back to default for current ship (for current loadout)
 - "*" - Manually load firing modes for all deployed ships
 - "-" - Cycle suffix for the last group you cycled modes for
@@ -67,7 +67,8 @@ If this becomes an issue for you, please let me know, and I will try to implemen
 
 If you don't like having to set up your ships firing modes during (simulated) combat, there is also a dialog interface available.
 Simply press the "J"-Key while on the campaign map, and the interface will guide you through configuring your
-firing modes. Unfortunately, I **can't directly interface with the ship refit screen**, so this is the best I can do.
+firing modes. Unfortunately, I **can't directly interface with the ship refit screen**, which would be much better,
+so this is the best I can do.
 
 ### Loadouts ###
 
@@ -182,28 +183,6 @@ I go crazy in the settings. Below I will list a few options for improving perfor
 - Consider turning off auto save/load and instead manually save ("J"-Key) and load ("*"-Key).
 - Stick to ship mode Default
 
-## Troubleshooting ##
-
-When updating versions of this mod, if you notice any issues, consider purging the old persistent data 
-(set "enablePersistentFireModes" to false in the settings, launch Starsector, load your game & save. 
-Then you can re-enable enablePersistentFireModes and restart the game).
-
-### Broken Saves ###
-
-Usually, installing the newest version of the mod will automatically fix any issues with persistent data from previous versions.
-
-However, if you still get an error when loading a save that was using an old version of this mod 
-(after updating from 0.8.0-ALPHA or disabling this mod),
-use the last version of this mod that worked with that save and disable the "enablePersistentFireModes" option.
-Load the save again, and the mod will purge its persistent data. Save the game and update/remove the mod.
-
-If that also doesn't work, you can manually delete the data:
-Open the campaign.xml in Starsector/saves/saveXYZ in a text editor of your choice.
-Search for "$Advanced" and delete the lines from (including) ```<e>``` above ```<st>$AdvancedGunnery...</st>``` 
-until the last ```</e>``` before the next ```<st>``` or ```</persistentData>```. Repeat until you don't find "$Advanced" anymore.
-
-![DeleteData](imgs/delPersData.png "Delete persistent data")
-
 ## How does the mod work? ##
 
 In Starsector, each Weapon has a so-called AutofireAIPlugin. When that weapon is on autofire, this plugin will make the
@@ -245,31 +224,13 @@ This mod doesn't affect anything outside of combat, so it's very unlikely to cau
 
 ## Roadmap ##
 
-After some more testing, bug-fixing and implementing requested features,
-I would like to add a feature where you can merge other weapon groups into your active weapon group.
-Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
-
-### Requested Features ###
-
-- Add IgnoreFighters mode **DONE**
-- Add ability to issue fire modes to AI-controlled allied ships **DONE**
-- Add weapon-blacklist for other mods such that their weapons stay unaffected by fire modes from this mod **DONE**
-- Automatically load fire modes on ship deployment **DONE**
-- Add a GUI to set fire modes in the ship refit editor **partially DONE** (not integrated in refit screen)
-- Mode suffixes **DONE**
-- Add a way to quickly change fire modes for all ships back to default **DONE** (loadouts)
-- Add a way to change fire behaviour based on circumstances **DONE** (PD(X), PanicFire suffixes)
-- Add a way to force the AI to adhere to configured fire modes **DONE** (ForceAutofire ship mode)
-- Overhaul Opportunist mode to be less conservative for ammo-less weapons **DONE**
-- Support weapon modules for e.g. Gown **TODO** (probably won't happen in the near future)
-- Change <90% ammo to first magazine **WON'T DO** (simply adjusting pd90_ammo should suffice)
-- Make modes/suffixes modular (similar to ship modes) **TODO** (this would be a major overhaul, so won't happen until 1.0. Might never happen)
-- Implement a way to make phase ships only fire when their phase spools are almost off cooldown **WON'T DO** (I just don't see a way to implement this well)
+To me, the mod feels pretty feature complete. I feel like the mod already does enough stuff and adding more features 
+(e.g. fighter controls) would make the mod too big.
+I will still try to fix reported bugs and maybe do some usability/control improvements.
 
 ## Known Issues ##
 
 - Versions before 0.8.2 saved custom classes as persistent data, meaning it was not possible to remove the mod.
-  Please refer to the troubleshooting section.
 
 ## Changelog ## 
 
@@ -306,6 +267,7 @@ Update: 0.95a-RC16 will probably fix the issue that was blocking this feature.
   added mode parameters to options
 - 0.10.2: Yet another Opportunist overhaul (now less conservative for weapons with unlimited ammo, new setting), minor bugfixes
 - 0.10.4: Fixed issues with friendly fire, fixed several issues with target acquisition, turrets now assume a neutral position
+- 0.11.0: Reworked Target/AvoidShields, reworked most of the custom AI to fix some issues (improved aim, friendly fire, target prio)
 
 ## Acknowledgements ##
 
@@ -323,11 +285,10 @@ Last but not least: Thanks to everyone using this mod and giving me feedback!
 If you'd like to review my code and give me some hints what I could improve, please do! Also, feel free to create PRs!
 
 If you happen to know how to make good videos, I'd very much appreciate if you could make a nice video showcasing the features
-of this mod. If you came here from the Starsecor mod forum, you know why I'm asking for this xD
+of this mod. If you came here from the Starsector mod forum, you know why I'm asking for this xD
 
 As you might know, writing the code is the easy part. Making sure that it works properly is where the challenge lies.
-I'm grateful for any help with testing this mod. If you're willing to test unstable versions, while I'm working on the mode,
-I usually release some pre-release builds. If you want to give me life feedback, you can DM me on Discord @Jannes#9184)
+I'm grateful for any help with testing this mod.
 
 Do you have an idea for a cool new firing mode? Please feel free to contribute them!
 Just follow the following steps:
@@ -338,6 +299,3 @@ Just follow the following steps:
 - Test that the mode works as intended!
 
 On the off-chance that you want to support me financially, please don't :P 
-
-I believe there are better places where you can donate your money to, check out
-<https://fractalsoftworks.com/forum/index.php?topic=19739.0> for instance.
