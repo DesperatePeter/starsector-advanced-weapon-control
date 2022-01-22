@@ -8,10 +8,12 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
 import com.fs.starfarer.api.combat.EngagementResultAPI
+import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
+import org.lwjgl.input.Keyboard
 import java.awt.Color
 import kotlin.math.min
 
@@ -59,34 +61,69 @@ class AGCGUI : InteractionDialogPlugin {
         if(!Settings.enablePersistentModes()){
             text?.addPara("Persistent Storage has been disabled in the settings.")
             text?.addPara("Enable it to use this GUI")
-            options?.addOption("Exit", false)
+            options?.addOption("Exit", "exit")
             return
         }
         displayOptions()
     }
 
     override fun optionSelected(str: String?, data : Any?) {
-        str?.let {
+/*        str?.let {
             if("Back" == it) level=Level.TOP
             if("Exit" == it) dialog?.dismiss()
-        }
+        }*/
         (data as? String)?.let {
-            if("cycle" == it){
-                incrementIndex()
-            }
-            if("copy" == it){
-                ship?.id?.let { shipId->
-                    ShipModeStorage[storageIndex].modesByShip[shipId] =
-                        (ShipModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
-                    FireModeStorage[storageIndex].modesByShip[shipId] =
-                        (FireModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
-                    SuffixStorage[storageIndex].modesByShip[shipId] =
-                        (SuffixStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
-                }
+            when(it){
+                "cycle" -> incrementIndex()
+                "copy" -> copyLastLoadout()
+                "next" -> selectNextShip()
+                "reset" -> resetCurrentLoadout()
+                "exit" -> dialog?.dismiss()
+                "back" -> level=Level.TOP
+                "applySuggested" -> applySuggestedModes(ship)
+                "applySuggestedFleet" -> applySuggestedModes()
+                else -> kotlin.run {  } // do nothing
             }
         }
         displayOptions()
         return
+    }
+
+    private fun applySuggestedModes(ship: FleetMemberAPI?){
+        ship?.let { sh -> applySuggestedModes( sh, storageIndex) }
+    }
+
+    private fun applySuggestedModes(){
+        Global.getSector().playerFleet.membersWithFightersCopy.filterNot { m -> m.isFighterWing }.forEach {
+            applySuggestedModes(it)
+        }
+    }
+
+    private fun copyLastLoadout(){
+        ship?.id?.let { shipId->
+            ShipModeStorage[storageIndex].modesByShip[shipId] =
+                (ShipModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+            FireModeStorage[storageIndex].modesByShip[shipId] =
+                (FireModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+            SuffixStorage[storageIndex].modesByShip[shipId] =
+                (SuffixStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+        }
+    }
+
+    private fun selectNextShip(){
+        val shipList = Global.getSector().playerFleet.membersWithFightersCopy.filterNot { m -> m.isFighterWing }
+        val index = shipList.indexOf(ship)
+        ship = if(index >= shipList.size - 1){
+            shipList.first()
+        }else{
+            shipList[index + 1]
+        }
+    }
+
+    private fun resetCurrentLoadout(){
+        ShipModeStorage[storageIndex].purge()
+        FireModeStorage[storageIndex].purge()
+        SuffixStorage[storageIndex].purge()
     }
 
     private fun displayOptions(){
@@ -98,22 +135,43 @@ class AGCGUI : InteractionDialogPlugin {
             }
             Level.SHIP -> displayShipOptions()
         }
-        options?.addOption("Back", false)
+        options?.addOption("Back", "back")
+        options?.setShortcut("back", Keyboard.KEY_ESCAPE, false, false, false, false)
         options?.addOption("Cycle loadout [Current ${storageIndex + 1} / ${Settings.maxLoadouts()}] <${Settings.loadoutNames().getOrNull(storageIndex) ?: "NoName"}>", "cycle")
         options?.addOption("Copy last loadout", "copy")
+        options?.addOption("Next Ship", "next")
+        options?.addOption("-----------------------", "")
+        options?.addOption("Reset all ships (current loadout)", "reset")
+        options?.addOption("Apply suggested modes (ship)", "applySuggested")
+        options?.setTooltip("applySuggested", "This will apply suggested weapon modes and suffixes to all " +
+                "weapon groups. The suggested modes are defined in data/config/modSettings.json. Other mods can also " +
+                "define suggested modes in their modSettings.json.\n" +
+                "Please double check that all modes look good after applying them. Groups with mixed " +
+                "weapons will arbitrarily select one of the weapons to select a mode for the group.\n" +
+                "Only affects current loadout and ship.\n" +
+                "Note that weapons from mods will usually only have suggested modes if the author" +
+                "of that mod included suggested modes in their mod.")
+        options?.addOption("Apply suggested modes (Fleet)", "applySuggestedFleet")
+        options?.setTooltip("applySuggestedFleet", "Same as above, but affects the entire fleet.")
+
     }
 
     private fun showModeGUI(){
         val shipView = ShipView() // essentially an empty CustomUIPanelPlugin
-        customPanel = visualPanel?.showCustomPanel(1210f, 600f, shipView)
+        customPanel = visualPanel?.showCustomPanel(1210f, 650f, shipView)
         customPanel?.position?.inTMid(20f)
         ship?.let { sh ->
-
-            val shipModeHeader = customPanel?.createUIElement(1200f, 20f, false)
+            val imgView = customPanel?.createUIElement(100f, 100f, false)
+            imgView?.addImage(sh.hullSpec.spriteName, 80f, 80f, 5.0f)
+            customPanel?.addUIElement(imgView)?.inTL(1f, 1f)
+            val shipModeHeader = customPanel?.createUIElement(1200f, 50f, false)
             shipModeHeader?.addTitle("Ship AI Modes (${sh.shipName}, ${sh.variant?.fullDesignationWithHullNameForShip}):")
-            customPanel?.addUIElement(shipModeHeader)?.inTL(1f, 1f)
-
-            customPanel?.let { shipView.addShipModeButtonGroup(sh, it) }
+            customPanel?.addUIElement(shipModeHeader)?.rightOfBottom(imgView, 1f)
+            customPanel?.let {
+                if (imgView != null) {
+                    shipView.addShipModeButtonGroup(sh, it, imgView)
+                }
+            }
             val elements = mutableListOf<UIComponentAPI>()
             for(i in 0 until sh.variant.weaponGroups.size){
                 val element = customPanel?.createUIElement(162f, 500f, false)
@@ -122,7 +180,10 @@ class AGCGUI : InteractionDialogPlugin {
                     shipView.addModeButtonGroup(i, sh, it)
                     it.addPara("Suffixes:", 5.0f)
                     shipView.addSuffixButtons(i, sh, it)
+                    it.addImages(162f, 35f, 1f, 1f, *groupWeaponSpriteNames(sh.variant.weaponGroups[i], sh).toTypedArray())
                     it.addPara(groupAsString(sh.variant.weaponGroups[i], sh), 5.0f)
+                    it.addPara("${groupFluxCost(sh.variant.weaponGroups[i], sh)} flux/s", 5.0f)
+                    //it.addImages()
                     // without this call, we get a "can only anchor to siblings" exception
                     customPanel?.addComponent(it)
                     val pos = customPanel?.addUIElement(it)
@@ -130,7 +191,7 @@ class AGCGUI : InteractionDialogPlugin {
                         if (elements.isNotEmpty()){
                             p.rightOfTop(elements.last(), 10f)
                         }else{
-                            p.inTL(5f, 70f)
+                            p.belowLeft(imgView, 35f)
                             //p.belowLeft(shipModeElement, 5f)
                         }
                     }

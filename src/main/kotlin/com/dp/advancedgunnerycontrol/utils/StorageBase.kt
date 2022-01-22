@@ -47,7 +47,7 @@ open class StorageBase<T> (private val persistentDataKey: String){
         if(!Settings.enablePersistentModes()) {purge(); return}
     }
 
-    private fun purge() {
+    fun purge() {
         Global.getSector().persistentData.remove(persistentDataKey)
     }
 }

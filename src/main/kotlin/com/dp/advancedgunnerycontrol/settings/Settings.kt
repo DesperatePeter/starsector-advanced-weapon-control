@@ -60,6 +60,11 @@ object Settings : SettingsDefinition() {
     var weaponBlacklist = listOf<String>()
         private set
 
+    var suggestedModes = mapOf<String, String>()
+        private set
+
+    var suggestedSuffixes = mapOf<String, String>()
+
     var shipModeStorage : List<StorageBase<String>> = listOf()
     var suffixStorage : List<StorageBase<String>> = listOf()
     var fireModeStorage : List<StorageBase<String>> = listOf()
@@ -67,6 +72,8 @@ object Settings : SettingsDefinition() {
     override fun readSettings() {
         super.readSettings()
         weaponBlacklist = MagicSettings.getList(Values.THIS_MOD_NAME, Values.WEAPON_BLACKLIST_KEY)
+        suggestedModes = MagicSettings.getStringMap(Values.THIS_MOD_NAME, Values.SUGGESTED_WEAPON_MODES_KEY)
+        suggestedSuffixes = MagicSettings.getStringMap(Values.THIS_MOD_NAME, Values.SUGGESTED_WEAPON_SUFFIXES_KEY)
     }
 
     override fun applySettings() {

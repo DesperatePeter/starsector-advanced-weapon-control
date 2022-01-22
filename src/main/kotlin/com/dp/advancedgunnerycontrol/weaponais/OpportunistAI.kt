@@ -26,6 +26,11 @@ class OpportunistAI (baseAI: AutofireAIPlugin, suffix: SuffixBase) : SpecificAIP
 
     override fun shouldFire(): Boolean {
         if (!super.shouldFire()) return false
+        target?.let {
+            if(!determineIfShotWillHit(it, targetEntity?.collisionRadius?.times(0.5f) ?: 0f)){
+                return false
+            }
+        }
         return isOpportuneTarget(targetEntity, targetPoint, weapon)
     }
 

@@ -5,6 +5,50 @@
       # Note: AdvancedGunneryControl preserves a weapons base AI and only uses its custom AI if the base AI
       #       does something that doesn't fit the selected fire mode. So most weapons should be fine.
       "phasecl" # proximity charge launchers are a good example of a weapon that doesn't play nice with conventional AI
-    ]
+    ],
+    # If you are a mod author, feel free to add suggested weapon modes and suffixes to your modSettings.json,
+    # simply map weapon ids to modes/suffixes. You may use regexes to map multiple variants of the same weapon
+    # to the same mode. Note that if both a direct match and regex match exist, the direct match will be used.
+    # If multiple regex-matches exist, an arbitrary one will be chosen. Please be mindful of not adding regexes
+    # that might match to other weapons (e.g. ".*h.*" would be a very bad idea to add...)
+    "suggestedWeaponModes" : {
+      ".*needler" : "TargetShields",
+      ".*flak" : "PD",
+      "hellbore" : "NoFighters",
+      "reaper" : "Opportunist",
+      "cyclone" : "Opportunist",
+      "typhoon" : "Opportunist",
+      "atropos.*" : "Opportunist",
+      "hammer.*" : "Opportunist",
+      "swarmer" : "Fighters",
+      "harpoon.*" : "Opportunist",
+      "breach.*" : "AvoidShields",
+      "sabot.*" : "Opportunist",
+      "hurricane" : "AvoidShields",
+      "squall" : "TargetShields",
+      "locust" : "Fighters",
+      "pdburst" : "PD",
+      "heavyburst" : "PD",
+      "phasebeam" : "AvoidShields",
+      "guardian" : "PD",
+      "hil" : "AvoidShields",
+      "amblaster" : "Opportunist"
+    },
+    "suggestedWeaponSuffixes" : {
+      "pulselaser" : "HoldFire (Flux>90%)",
+      "mjolnir" : "HoldFire (Flux>90%)",
+      ".*needler" : "HoldFire (Flux>90%)",
+      "hurricane" : "PanicFire",
+      "locust" : "PanicFire",
+      "squall" : "PanicFire",
+      "harpoon.*" : "PanicFire",
+      "mininglaser" : "PD (Flux>50%)",
+      ".*pdlaser" : "PD (Flux>50%)",
+      "phasebeam" : "HoldFire (Flux>90%)",
+      "heavyblaster" : "HoldFire (Flux>75%)",
+      "miningblaster" : "HoldFire (Flux>75%)",
+      "plasma" : "HoldFire (Flux>90%)",
+      "ionpulser" : "HoldFire (Flux>90%)"
+    }
   }
 }
