@@ -36,6 +36,11 @@ fun isInvalid(aiPlugin: AutofireAIPlugin): Boolean {
     return false
 }
 
+fun ammoLevel(weapon: WeaponAPI) : Float{
+    if(!weapon.usesAmmo()) return 1.0f
+    return weapon.ammo.toFloat() / weapon.maxAmmo.toFloat()
+}
+
 const val bignessFrigate = 0.5f
 const val bignessDestroyer = 2f
 const val bignessCruiser = 5f

@@ -8,9 +8,4 @@ import kotlin.math.pow
 open class SuffixBase(protected val weapon: WeaponAPI) {
     open fun shouldFire(baseDecision : Boolean, target: CombatEntityAPI? = null) : Boolean = baseDecision
     open fun modifyPriority(target: CombatEntityAPI?) : Float = 1.0f
-
-    protected fun ammoLevel() : Float{
-        if(!weapon.usesAmmo()) return 1.0f
-        return weapon.ammo.toFloat() / weapon.maxAmmo.toFloat()
-    }
 }

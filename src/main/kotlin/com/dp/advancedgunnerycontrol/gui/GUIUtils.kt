@@ -43,8 +43,17 @@ fun isElligibleForPD(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
     }.contains(true)
 }
 
+fun usesAmmo(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
+    val group = sh.variant.weaponGroups[groupIndex]
+    return group.slots.mapNotNull { Global.getSettings().getWeaponSpec(sh.variant.getWeaponId(it)) }.any {
+        it.usesAmmo()
+    }
+}
+
 fun shouldModeBeDisabled(groupIndex: Int, sh: FleetMemberAPI, mode: FireMode) : Boolean {
-    return (mode == FireMode.PD || mode == FireMode.MISSILE) && !isElligibleForPD(groupIndex, sh)
+    if(mode == FireMode.PD_AMMO && !usesAmmo(groupIndex, sh)) return true
+    return (mode == FireMode.PD || mode == FireMode.MISSILE || mode == FireMode.PD_AMMO || mode == FireMode.PD_FLUX) &&
+            !isElligibleForPD(groupIndex, sh)
 }
 
 fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int){

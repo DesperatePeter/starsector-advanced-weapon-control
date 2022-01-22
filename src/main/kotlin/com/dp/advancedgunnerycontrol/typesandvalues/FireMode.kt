@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.weaponais.*
 import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.AutofireAIPlugin
@@ -7,7 +8,8 @@ import com.fs.starfarer.api.combat.AutofireAIPlugin
 typealias FireModeMap = Map<FireMode, AutofireAIPlugin>
 
 enum class FireMode {
-    DEFAULT, PD, MISSILE, FIGHTER, NO_FIGHTERS, BIG_SHIPS, SMALL_SHIPS, MINING, OPPORTUNIST, TARGET_SHIELDS, AVOID_SHIELDS
+    DEFAULT, PD, MISSILE, FIGHTER, NO_FIGHTERS, BIG_SHIPS, SMALL_SHIPS, MINING, OPPORTUNIST,
+    TARGET_SHIELDS, AVOID_SHIELDS, PD_FLUX, PD_AMMO
 }
 
 object FMValues{
@@ -28,7 +30,9 @@ object FMValues{
         FireMode.MINING to "Mining",
         FireMode.OPPORTUNIST to "Opportunist",
         FireMode.AVOID_SHIELDS to "AvoidShields",
-        FireMode.TARGET_SHIELDS to "TargetShields"
+        FireMode.TARGET_SHIELDS to "TargetShields",
+        FireMode.PD_AMMO to "PD (Ammo<90%)",
+        FireMode.PD_FLUX to "PD (Flux>50%)"
     )
 
     val fireModeDetailedDescriptions = mapOf(
@@ -66,7 +70,10 @@ object FMValues{
         FireMode.AVOID_SHIELDS to "Weapon will prioritize targets without shields or high flux/shields off." +
                 "\n - Will not fire at low flux (50%-) enemies unless flanking shields." +
                 "\n - Will always fire if target doesn't have shields." +
-                "\n - Will not fire at missiles. Always uses custom AI."
+                "\n - Will not fire at missiles. Always uses custom AI.",
+        FireMode.PD_FLUX to "Weapon will behave like Default when ship flux < 50% and like PD otherwise.",
+        FireMode.PD_AMMO to "Weapon will behave like Default when ammo > 90% and like PD otherwise." +
+                " Useful for e.g. Burst PD Lasers."
     ).withDefault { it.toString() }
 
     var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()
@@ -86,7 +93,9 @@ object FMValues{
             FireMode.MINING to MiningAI(baseAI, suffix),
             FireMode.OPPORTUNIST to OpportunistAI(baseAI, suffix),
             FireMode.TARGET_SHIELDS to TargetShieldsAI(baseAI, suffix),
-            FireMode.AVOID_SHIELDS to AvoidShieldsAI(baseAI, suffix)
+            FireMode.AVOID_SHIELDS to AvoidShieldsAI(baseAI, suffix),
+            FireMode.PD_AMMO to PDAtAmmoThresholdAI(baseAI, suffix, Settings.pdAmmo90()),
+            FireMode.PD_FLUX to PDAtFluxThresholdAI(baseAI, suffix, Settings.pdFlux50())
         )
     }
 }
