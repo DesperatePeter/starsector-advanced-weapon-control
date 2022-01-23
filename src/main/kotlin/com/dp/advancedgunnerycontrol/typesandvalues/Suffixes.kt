@@ -38,7 +38,7 @@ val detailedSuffixDescriptions = mapOf(
     Suffixes.FLUX_50 to "Weapon group will stop firing if ship flux exceeds 50%.",
     Suffixes.FLUX_75 to "Weapon group will stop firing if ship flux exceeds 75%.",
     Suffixes.FLUX_90 to "Weapon group will stop firing if ship flux exceeds 90%.",
-    Suffixes.CONSERVE_AMMO to "When below 90% ammo, weapons will only fire when the shot seems effective (same as Opportunist fire mode). " +
+    Suffixes.CONSERVE_AMMO to "When below 50% ammo, weapons will only fire when the shot seems effective (similar to Opportunist fire mode). " +
             "Weapons without ammo will ignore this suffix. Works best with modes that support custom AI.",
     Suffixes.PANIC_FIRE to "When the ship is dying (below 50% hull), it will blindly fire this weapon group. " +
             "Mainly useful for guided missiles. Best combined wth Opportunist fire mode. Works best with modes that support custom AI."

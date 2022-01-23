@@ -97,6 +97,8 @@ SmallShips | Fighters to Destroyers | Smaller=Better | None | Yes | Phase Lance 
 Mining | Asteroids | Asteroids | None | Yes | Mining Blaster | No
 AvoidShields | Ships (no missiles) | ships without shields or high flux | None | Always | High-intensity Laser | Yes
 TargetShields | Ships (no missiles) | ships with shields and low flux | None | Always | Needlers | Yes
+PD(Flux>50%) | Varies | Same as default when flux < 50%, otherwise same as PD | PD Weapon | No | PD Laser | Yes
+PD(Ammo<50%) | Varies | Same as default when ammo > 50%, otherwise same as PD | PD Weapon with ammo | No | Burst PD | No
 
 *Depending on damage type, will try to only fire when the shot is likely to be effective. Will try to avoid
 targets that move too fast or are too far away. Mainly intended for missiles with limited ammo.
@@ -115,10 +117,8 @@ NONE | None
 HoldFire(Flux>90%) | Weapon will hold fire if ship flux >= 90%
 HoldFire(Flux>75%) | Weapon will hold fire if ship flux >= 75%
 HoldFire(Flux>50%) | Weapon will hold fire if ship flux >= 50%
-ConserveAmmo* | Weapon will use Opportunist mode when ammo < 90%
-PanicFire* | When ship hull drops below 50%, this weapon will fire hail mary shots. Useful for guided missiles.
-PD(Flux>50%) | Weapon will only shoot missiles/fighters when flux > 50%. Only use with modes/weapons that can target fighters/missiles.
-PD(Ammo<90%) | Same as PD(Flux>50%), but instead activates when ammo is below 90%. Mainly intended for burst PD lasers etc.
+ConserveAmmo* | Weapon will behave similar to Opportunist mode when ammo < 50%
+PanicFire* | When ship hull drops below 50%, this weapon will fire hail mary shots. Useful for _guided_ missiles.
 
 *these suffixes rely on custom AI and will not work well with custom AI disabled. 
 They will work best when forcing custom AI in the settings.
@@ -268,6 +268,8 @@ I will still try to fix reported bugs and maybe do some usability/control improv
 - 0.10.2: Yet another Opportunist overhaul (now less conservative for weapons with unlimited ammo, new setting), minor bugfixes
 - 0.10.4: Fixed issues with friendly fire, fixed several issues with target acquisition, turrets now assume a neutral position
 - 0.11.0: Reworked Target/AvoidShields, reworked most of the custom AI to fix some issues (improved aim, friendly fire, target prio)
+- 0.12.0: Converted PD(Flux>50%) and PD(Ammo<50%) to fire modes, the latter disabled by default. GUI polish. 
+  Added suggested weapon modes (prototypical). Added setting for strict/lenient BigShip/SmallShip modes.
 
 ## Acknowledgements ##
 

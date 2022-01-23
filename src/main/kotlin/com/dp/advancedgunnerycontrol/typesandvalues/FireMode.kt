@@ -31,7 +31,7 @@ object FMValues{
         FireMode.OPPORTUNIST to "Opportunist",
         FireMode.AVOID_SHIELDS to "AvoidShields",
         FireMode.TARGET_SHIELDS to "TargetShields",
-        FireMode.PD_AMMO to "PD (Ammo<90%)",
+        FireMode.PD_AMMO to "PD (Ammo<50%)",
         FireMode.PD_FLUX to "PD (Flux>50%)"
     )
 
@@ -72,7 +72,7 @@ object FMValues{
                 "\n - Will always fire if target doesn't have shields." +
                 "\n - Will not fire at missiles. Always uses custom AI.",
         FireMode.PD_FLUX to "Weapon will behave like Default when ship flux < 50% and like PD otherwise.",
-        FireMode.PD_AMMO to "Weapon will behave like Default when ammo > 90% and like PD otherwise." +
+        FireMode.PD_AMMO to "Weapon will behave like Default when ammo > 50% and like PD otherwise." +
                 " Useful for e.g. Burst PD Lasers."
     ).withDefault { it.toString() }
 

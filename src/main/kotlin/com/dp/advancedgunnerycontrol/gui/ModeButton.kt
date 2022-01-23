@@ -3,6 +3,7 @@ package com.dp.advancedgunnerycontrol.gui
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues.defaultFireModeString
+import com.dp.advancedgunnerycontrol.typesandvalues.FMValues.fireModeAsString
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues.fireModeDetailedDescriptions
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.utils.FireModeStorage
@@ -25,7 +26,7 @@ class ModeButton(ship: FleetMemberAPI, group : Int, mode : FireMode, button: But
             var isSomethingChecked = false
             Settings.cycleOrder().forEach {
                 Misc.getBasePlayerColor()
-                toReturn.add(ModeButton(ship, group, it, tooltip.addAreaCheckbox(it.toString(), it,
+                toReturn.add(ModeButton(ship, group, it, tooltip.addAreaCheckbox(fireModeAsString[it], it,
                     Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), 160f, 18f, 3f)))
                 tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(fireModeDetailedDescriptions[it] ?: ""), TooltipMakerAPI.TooltipLocation.BELOW)
                 if(FMValues.FIRE_MODE_TRANSLATIONS[storage.modesByShip[ship.id]?.get(group)] == it){

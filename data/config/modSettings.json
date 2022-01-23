@@ -32,6 +32,8 @@
       "phasebeam" : "AvoidShields",
       "guardian" : "PD",
       "hil" : "AvoidShields",
+      "mininglaser" : "PD (Flux>50%)",
+      ".*pdlaser" : "PD (Flux>50%)",
       "amblaster" : "Opportunist"
     },
     "suggestedWeaponSuffixes" : {
@@ -42,8 +44,6 @@
       "locust" : "PanicFire",
       "squall" : "PanicFire",
       "harpoon.*" : "PanicFire",
-      "mininglaser" : "PD (Flux>50%)",
-      ".*pdlaser" : "PD (Flux>50%)",
       "phasebeam" : "HoldFire (Flux>90%)",
       "heavyblaster" : "HoldFire (Flux>75%)",
       "miningblaster" : "HoldFire (Flux>75%)",
