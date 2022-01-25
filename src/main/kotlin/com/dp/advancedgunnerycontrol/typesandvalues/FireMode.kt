@@ -64,15 +64,15 @@ object FMValues{
                 "\n - Will not fire at overloaded/unshielded/venting/phase ships" +
                 "\n - Will not fire when flanking enemy shields" +
                 "\n - Will never fire if target doesn't have shields." +
-                "\n - Will not fire at very high flux (80%+) enemies" +
+                "\n - Will not fire at very high flux (~${((1.0f - Settings.targetShieldsThreshold())*100f).toInt()}%) enemies" +
                 "\n - Will not fire at missiles. Always uses custom AI." +
                 "\nTip: Leave some kinetic weapons on Default to guarantee constant pressure against high-flux enemies",
         FireMode.AVOID_SHIELDS to "Weapon will prioritize targets without shields or high flux/shields off." +
-                "\n - Will not fire at low flux (50%-) enemies unless flanking shields." +
+                "\n - Will not fire at low flux (~${((1.0f - Settings.avoidShieldsThreshold())*100f).toInt()}%) enemies unless flanking shields." +
                 "\n - Will always fire if target doesn't have shields." +
                 "\n - Will not fire at missiles. Always uses custom AI.",
-        FireMode.PD_FLUX to "Weapon will behave like Default when ship flux < 50% and like PD otherwise.",
-        FireMode.PD_AMMO to "Weapon will behave like Default when ammo > 50% and like PD otherwise." +
+        FireMode.PD_FLUX to "Weapon will behave like Default when ship flux < ${(Settings.pdFlux50()*100f).toInt()}% and like PD otherwise.",
+        FireMode.PD_AMMO to "Weapon will behave like Default when ammo > ${(Settings.pdAmmo90()*100f).toInt()}% and like PD otherwise." +
                 " Useful for e.g. Burst PD Lasers."
     ).withDefault { it.toString() }
 

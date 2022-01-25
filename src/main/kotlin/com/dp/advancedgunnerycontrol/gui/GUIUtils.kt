@@ -8,6 +8,7 @@ import com.fs.starfarer.api.loading.WeaponGroupSpec
 import kotlin.math.roundToInt
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 import com.dp.advancedgunnerycontrol.utils.FireModeStorage
+import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
 import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 
 fun groupAsString(group : WeaponGroupSpec, sh: FleetMemberAPI) : String {
@@ -81,5 +82,21 @@ fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int){
             Settings.suggestedSuffixes.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
         }
         suffixStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedSuffixes[suffixKey] ?: ""}
+    }
+}
+
+fun applyModesToSameVariantShips(ship: FleetMemberAPI, storageIndex: Int){
+    Global.getSector().playerFleet.membersWithFightersCopy.filter{!it.isFighterWing && it != ship}.filterNotNull().forEach {
+        if (it.variant.hullVariantId + it.variant.displayName == ship.variant.hullVariantId + ship.variant.displayName){
+            FireModeStorage[storageIndex].modesByShip[ship.id]?.let { v ->
+                FireModeStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
+            }
+            ShipModeStorage[storageIndex].modesByShip[ship.id]?.let { v ->
+                ShipModeStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
+            }
+            SuffixStorage[storageIndex].modesByShip[ship.id]?.let { v ->
+                SuffixStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
+            }
+        }
     }
 }

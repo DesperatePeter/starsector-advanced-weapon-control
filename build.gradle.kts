@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.12.0"
+    val modVersion = "0.12.1"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -198,6 +198,7 @@ tasks {
                    |   , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
                    |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
                    |   , "GUIHotkey" : "j" # <---- EDIT HERE ----
+                   |   , "helpHotkey" : "?" # <---- EDIT HERE ----
                    |   , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
 
                    |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
@@ -246,10 +247,19 @@ tasks {
                    |   # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)
                    |   # NOTE: Using invalid values might cause very odd behaviour and/or crashes!
                    |   
-                   |   # Opportunist fire mode AND conserveAmmo suffix:
-                   |   # Note: Increasing opportunist_kineticThreshold will make opportunist fire less, increase opportunist_HEThreshold -> fire more
-                   |   ,"opportunist_kineticThreshold" : 0.5 # fire kinetic weapons if enemy flux level < (1-X) and not flanking
-                   |   ,"opportunist_HEThreshold" : 0.15 # fire HE/fragment weapons if enemy flux level > (1-X) or flanking
+                   |   # Shield thresholds: When not flanking shields and shields are on, the shield factor is simply
+                   |   # equal to (1 - fluxLevel) of the target. When flanking shields, shield factor == 0.
+                   |   # When shields are off, the shield factor is equal to (1 - fluxLevel)*0.75
+                   |   # When omni-shields are off, it's considered as half-flanking (subject to change)
+                   |   # For frontal shields, unfold time and projectile travel time are considered to determine flanking
+                   |   # For modes that want to hit shields, reducing the threshold makes them more likely to fire
+                   |   # For modes that want to avoid shields, the opposite is true
+                   |   ,"targetShields_threshold" : 0.2
+                   |   ,"avoidShields_threshold" : 0.5
+                   |   
+                   |   # Opportunist fire mode AND conserveAmmo suffix:                   |  
+                   |   ,"opportunist_kineticThreshold" : 0.5 
+                   |   ,"opportunist_HEThreshold" : 0.15 
                    |    # increasing this value will increase the likelihood of opportunist/conserveAmmo firing (positive non-zero number)
                    |    # Note: Relatively small changes to this value will have a considerable impact. So I'd recommend values between 0.9 and 1.2 or so
                    |   ,"opportunist_triggerHappinessModifier" : 1.0

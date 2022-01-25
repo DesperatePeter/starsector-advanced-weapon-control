@@ -68,20 +68,18 @@ class AGCGUI : InteractionDialogPlugin {
     }
 
     override fun optionSelected(str: String?, data : Any?) {
-/*        str?.let {
-            if("Back" == it) level=Level.TOP
-            if("Exit" == it) dialog?.dismiss()
-        }*/
         (data as? String)?.let {
             when(it){
                 "cycle" -> incrementIndex()
                 "copy" -> copyLastLoadout()
                 "next" -> selectNextShip()
                 "reset" -> resetCurrentLoadout()
+                "resetShip" -> resetCurrentShip()
                 "exit" -> dialog?.dismiss()
                 "back" -> level=Level.TOP
                 "applySuggested" -> applySuggestedModes(ship)
                 "applySuggestedFleet" -> applySuggestedModes()
+                "applyVariant" -> ship?.let { it1 -> applyModesToSameVariantShips(it1, storageIndex) }
                 else -> kotlin.run {  } // do nothing
             }
         }
@@ -126,6 +124,14 @@ class AGCGUI : InteractionDialogPlugin {
         SuffixStorage[storageIndex].purge()
     }
 
+    private fun resetCurrentShip(){
+        ship?.let {
+            ShipModeStorage[storageIndex].modesByShip[it.id]?.clear()
+            SuffixStorage[storageIndex].modesByShip[it.id]?.clear()
+            FireModeStorage[storageIndex].modesByShip[it.id]?.clear()
+        }
+    }
+
     private fun displayOptions(){
         options?.clearOptions()
         when(level){
@@ -141,6 +147,7 @@ class AGCGUI : InteractionDialogPlugin {
         options?.addOption("Copy last loadout", "copy")
         options?.addOption("Next Ship", "next")
         options?.addOption("-----------------------", "")
+        options?.addOption("Reset current ship (current loadout)", "resetShip")
         options?.addOption("Reset all ships (current loadout)", "reset")
         options?.addOption("Apply suggested modes (ship)", "applySuggested")
         options?.setTooltip("applySuggested", "This will apply suggested weapon modes and suffixes to all " +
@@ -153,6 +160,10 @@ class AGCGUI : InteractionDialogPlugin {
                 "of that mod included suggested modes in their mod.")
         options?.addOption("Apply suggested modes (Fleet)", "applySuggestedFleet")
         options?.setTooltip("applySuggestedFleet", "Same as above, but affects the entire fleet.")
+        options?.addOption("Copy to other ships of same variant", "applyVariant")
+        options?.setTooltip("applyVariant", "This will override the modes for all other ships with the same " +
+                "hull and variant name with the modes set for the current ship.\n" +
+                "This is useful if you used autofit to set up multiple identical ships.")
 
     }
 

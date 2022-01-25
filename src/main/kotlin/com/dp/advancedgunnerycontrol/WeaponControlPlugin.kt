@@ -113,6 +113,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 cycleSuffix()
                 if (Settings.enablePersistentModes()) saveCurrentShipState()
             }
+            ControlEventType.HELP -> {
+                printMessage(Settings.getKeybindingInfoText(), Settings.uiDisplayFrames() * 5)
+            }
             else -> printMessage("Unrecognized Command (please send bug report)")
         }
     }
@@ -228,9 +231,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
-    private fun printMessage(message: String) {
+    private fun printMessage(message: String, frames: Int = Settings.uiDisplayFrames()) {
         drawable = font?.createText(message, color = Color.GREEN)
-        textFrameTimer = Settings.uiDisplayFrames()
+        textFrameTimer = frames
     }
 
     private fun combineWeaponGroup() {

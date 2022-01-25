@@ -222,7 +222,6 @@ abstract class SpecificAIPluginBase(
      * @param entity: Relative coordinates (velocity-compensated)
      */
     protected fun angularDistanceFromWeapon(entity: Vector2f): Float {
-        // FIXME: Cache weapon direction
         val weaponDirection = vectorFromAngleDeg(weapon.currAngle)
         val distance = entity - weapon.location
         val entityDirection = distance times_ (1f / distance.length())
@@ -286,7 +285,7 @@ abstract class SpecificAIPluginBase(
      */
     protected fun computeBasePriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return predictedLocation.let {
-            angularDistanceFromWeapon(it) + Values.distToAngularDistEvalutionFactor * linearDistanceFromWeapon(it) + 1.5f
+            angularDistanceFromWeapon(it) + Values.distToAngularDistEvaluationFactor * linearDistanceFromWeapon(it) + 1.5f
         }.let {
             if (lastTargetEntity == entity) it * 0.5f else it // incentivize sticking to one target
         } * suffix.modifyPriority(entity) *

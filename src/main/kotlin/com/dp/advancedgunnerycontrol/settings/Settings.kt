@@ -29,7 +29,8 @@ object Settings : SettingsDefinition() {
     val resetHotkey = addSetting<Char>("resetHotkey", '/')
     val loadHotkey = addSetting<Char>("loadAllShipsHotkey", '*')
     val suffixHotkey = addSetting<Char>("suffixHotkey", '-')
-    val guiHoteky = addSetting<Char>("GUIHotkey", 'j')
+    val guiHotkey = addSetting<Char>("GUIHotkey", 'j')
+    val helpHotkey = addSetting<Char>("helpHotkey", '?')
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
@@ -57,6 +58,8 @@ object Settings : SettingsDefinition() {
     val directRetreat = addSetting<Boolean> ("retreat_shouldDirectRetreat", false)
     val opportunistModifier = addSetting<Float> ("opportunist_triggerHappinessModifier", 1.0f)
     val strictBigSmall = addSetting<Boolean>("strictBigSmallShipMode", true)
+    val targetShieldsThreshold = addSetting<Float> ("targetShields_threshold", 0.2f)
+    val avoidShieldsThreshold = addSetting<Float> ("avoidShields_threshold", 0.5f)
 
     var weaponBlacklist = listOf<String>()
         private set
@@ -69,6 +72,18 @@ object Settings : SettingsDefinition() {
     var shipModeStorage : List<StorageBase<String>> = listOf()
     var suffixStorage : List<StorageBase<String>> = listOf()
     var fireModeStorage : List<StorageBase<String>> = listOf()
+
+    fun getKeybindingInfoText() : String{
+        return "[NUMPAD1-7]: Cycle fire mode for corresponding weapon group (make sure Numlock is enabled)." +
+                "\nTarget an ally (R-Key) to modify their modes instead." +
+                "\n[${suffixHotkey()}]: Cycle fire mode suffix (group# = last pressed NUMPAD#)." +
+                "\n[${infoHotkey()}]: Display mode info (manually save/load)." +
+                "\n[${loadHotkey()}]: Manually load modes for all deployed ships." +
+                "\n[${resetHotkey()}]: Reset all modes back to default for current ship." +
+                "\n[${cycleLoadout()}]: Cycle loadout for all ships (on combat start, loadout 1 is loaded)." +
+                "\n[${guiHotkey()}]: Open AGC GUI (campaign map, NOT in combat)." +
+                "\n[${helpHotkey()}]: Display keybinding info."
+    }
 
     override fun readSettings() {
         super.readSettings()

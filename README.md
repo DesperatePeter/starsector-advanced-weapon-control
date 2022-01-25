@@ -270,6 +270,7 @@ I will still try to fix reported bugs and maybe do some usability/control improv
 - 0.11.0: Reworked Target/AvoidShields, reworked most of the custom AI to fix some issues (improved aim, friendly fire, target prio)
 - 0.12.0: Converted PD(Flux>50%) and PD(Ammo<50%) to fire modes, the latter disabled by default. GUI polish. 
   Added suggested weapon modes (prototypical). Added setting for strict/lenient BigShip/SmallShip modes.
+- 0.12.1: Add variant mode copying, help hotkey, additional settings
 
 ## Acknowledgements ##
 

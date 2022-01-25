@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol.keyboardinput
 
 enum class ControlEventType {
-    CYCLE, COMBINE, INFO, RESET, LOAD, SUFFIX, CYCLE_LOADOUT, NONE
+    CYCLE, COMBINE, INFO, RESET, LOAD, SUFFIX, CYCLE_LOADOUT, HELP, NONE
 }
 
 class KeyStatus {

@@ -19,6 +19,7 @@ class KeyStatusManager {
             Settings.loadHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.LOAD
             Settings.suffixHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.SUFFIX
             Settings.cycleLoadout() -> mkeyStatus.mcontrolEvent = ControlEventType.CYCLE_LOADOUT
+            Settings.helpHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.HELP
 
             in weaponGroupKeys -> {
                 mkeyStatus.mpressedWeaponGroup = event.eventChar.toString().toInt()
