@@ -159,7 +159,7 @@ tasks {
                    |   #                                 #### CYCLE ORDER ####
                    |   # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
                    |   # Delete/add modes as you see fit. Note: "Default" will always be the first mode.
-                   |   # Allowed values: "PD", "PD (Flux>50%)", "PD (Ammo<90%)", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist", "TargetShields", "AvoidShields"
+                   |   # Allowed values: "PD", "PD (Flux>50%)", "PD (Ammo<90%)", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist", "TargetShields", "AvoidShields", "NoPD"
                    |   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
                    |   "cycleOrder" : ["PD", "PD (Flux>50%)", "Fighters", "Missiles", "NoFighters", "Opportunist", "TargetShields", "AvoidShields" ] # <---- EDIT HERE ----
 
