@@ -74,15 +74,14 @@ object Settings : SettingsDefinition() {
     var fireModeStorage : List<StorageBase<String>> = listOf()
 
     fun getKeybindingInfoText() : String{
-        return "[NUMPAD1-7]: Cycle fire mode for corresponding weapon group (make sure Numlock is enabled)." +
-                "\nTarget an ally (R-Key) to modify their modes instead." +
-                "\n[${suffixHotkey()}]: Cycle fire mode suffix (group# = last pressed NUMPAD#)." +
-                "\n[${infoHotkey()}]: Display mode info (manually save/load)." +
-                "\n[${loadHotkey()}]: Manually load modes for all deployed ships." +
-                "\n[${resetHotkey()}]: Reset all modes back to default for current ship." +
-                "\n[${cycleLoadout()}]: Cycle loadout for all ships (on combat start, loadout 1 is loaded)." +
-                "\n[${guiHotkey()}]: Open AGC GUI (campaign map, NOT in combat)." +
-                "\n[${helpHotkey()}]: Display keybinding info."
+        return "[NUMPAD1-7]: <MODE> Cycle fire mode for corresponding weapon group (make sure Numlock is enabled)." +
+                "\n[ ${suffixHotkey().toUpperCase()} ]: <SUFFIX> Cycle fire mode suffix (group# = last pressed NUMPAD#)." +
+                "\n[ ${infoHotkey().toUpperCase()} ]: <INFO> Display mode info (manually save/load)." +
+                "\n[ ${loadHotkey().toUpperCase()} ]: <LOAD ALL> Manually load modes for all deployed ships." +
+                "\n[ ${resetHotkey().toUpperCase()} ]: <RESET> Reset all modes back to default for current ship." +
+                "\n[ ${cycleLoadout().toUpperCase()} ]: <LOADOUT> Cycle loadout for all ships (on combat start, loadout 1 is loaded)." +
+                "\n[ ${guiHotkey().toUpperCase()} ]: <GUI> Open AGC GUI (campaign map, NOT in combat)." +
+                "\n[ ${helpHotkey().toUpperCase()} ]: <HELP> Display keybinding info."
     }
 
     override fun readSettings() {

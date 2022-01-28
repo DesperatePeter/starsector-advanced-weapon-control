@@ -145,6 +145,7 @@ class AGCGUI : InteractionDialogPlugin {
         options?.setShortcut("back", Keyboard.KEY_ESCAPE, false, false, false, false)
         options?.addOption("Cycle loadout [Current ${storageIndex + 1} / ${Settings.maxLoadouts()}] <${Settings.loadoutNames().getOrNull(storageIndex) ?: "NoName"}>", "cycle")
         options?.addOption("Copy last loadout", "copy")
+        options?.setTooltip("copy", "Copy all modes from loadout ${lastIndex() + 1 } to current loadout for current ship.")
         options?.addOption("Next Ship", "next")
         options?.addOption("-----------------------", "")
         options?.addOption("Reset current ship (current loadout)", "resetShip")

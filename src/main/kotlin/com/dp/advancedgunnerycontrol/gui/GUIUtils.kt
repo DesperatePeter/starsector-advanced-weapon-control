@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui
 
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -53,8 +54,7 @@ fun usesAmmo(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
 
 fun shouldModeBeDisabled(groupIndex: Int, sh: FleetMemberAPI, mode: FireMode) : Boolean {
     if(mode == FireMode.PD_AMMO && !usesAmmo(groupIndex, sh)) return true
-    return (mode == FireMode.PD || mode == FireMode.MISSILE || mode == FireMode.PD_AMMO || mode == FireMode.PD_FLUX) &&
-            !isElligibleForPD(groupIndex, sh)
+    return (FMValues.PDModes.contains(mode)) && !isElligibleForPD(groupIndex, sh)
 }
 
 fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int){

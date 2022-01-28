@@ -17,6 +17,8 @@ object FMValues{
         listOf(FireMode.SMALL_SHIPS, FireMode.BIG_SHIPS, FireMode.FIGHTER, FireMode.MISSILE,
             FireMode.OPPORTUNIST, FireMode.TARGET_SHIELDS, FireMode.AVOID_SHIELDS, FireMode.NO_PD)
 
+    val PDModes = listOf(FireMode.NO_PD, FireMode.MISSILE, FireMode.PD, FireMode.PD_FLUX, FireMode.PD_AMMO)
+
     const val defaultFireModeString = "Default"
 
     var fireModeAsString = mapOf(
