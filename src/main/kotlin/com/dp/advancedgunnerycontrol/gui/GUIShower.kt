@@ -17,7 +17,7 @@ class GUIShower : EveryFrameScript {
             || Global.getCurrentState() == GameState.TITLE
         ) return
 
-        if (Keyboard.getEventCharacter().toLowerCase() == Settings.guiHoteky()){
+        if (Keyboard.getEventCharacter().toLowerCase() == Settings.guiHotkey()){
             Global.getSector()?.campaignUI?.showInteractionDialog(AGCGUI(), Global.getSector().playerFleet)
         }
     }

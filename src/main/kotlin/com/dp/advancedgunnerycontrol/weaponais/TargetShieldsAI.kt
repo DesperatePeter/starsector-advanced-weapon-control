@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.CombatEntityAPI
@@ -18,7 +19,7 @@ class TargetShieldsAI (baseAI: AutofireAIPlugin, suffix: SuffixBase) : SpecificA
         if (!super.shouldFire()) return false
         val tgtShip = (targetEntity as? ShipAPI) ?: return false
         val ttt = targetPoint?.let { computeTimeToTravel(it) } ?: 1.0f
-        return computeShieldFactor(tgtShip, weapon, ttt) > 0.2f
+        return computeShieldFactor(tgtShip, weapon, ttt) > Settings.targetShieldsThreshold()
     }
 
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {

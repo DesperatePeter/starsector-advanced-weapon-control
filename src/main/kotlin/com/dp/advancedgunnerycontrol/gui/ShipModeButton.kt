@@ -7,6 +7,8 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.ui.UIComponentAPI
+import com.fs.starfarer.api.util.Misc
 import java.awt.Color
 import java.util.function.Consumer
 
@@ -15,15 +17,15 @@ class ShipModeButton(ship: FleetMemberAPI, associatedIndex : Int, mode : ShipMod
     companion object{
         private var storage = ShipModeStorage[AGCGUI.storageIndex]
 
-        fun createModeButtonGroup(ship: FleetMemberAPI, panel: CustomPanelAPI) : List<ShipModeButton>{
+        fun createModeButtonGroup(ship: FleetMemberAPI, panel: CustomPanelAPI, position: UIComponentAPI) : List<ShipModeButton>{
             storage = ShipModeStorage[AGCGUI.storageIndex]
             val toReturn = mutableListOf<ShipModeButton>()
             var isSomethingChecked = false
             val elementList = mutableListOf<TooltipMakerAPI>()
             ShipModes.values().forEachIndexed { index, it ->
                 val tooltip = panel.createUIElement(160f, 30f, false)
-                toReturn.add(ShipModeButton(ship, index, it, tooltip.addAreaCheckbox(
-                    shipModeToString[it], it, Color.BLUE, Color.BLUE, Color.WHITE, 160f, 18f, 3f)))
+                toReturn.add(ShipModeButton(ship, index, it, tooltip.addAreaCheckbox(shipModeToString[it], it,
+                    Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), 160f, 18f, 3f)))
                 tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(detailedShipModeDescriptions[it] ?: ""), TooltipMakerAPI.TooltipLocation.BELOW)
                 if(ShipModes.HELP == it) toReturn.lastOrNull()?.disable()
                 if(storage.modesByShip[ship.id]?.values?.contains(shipModeToString[it]) == true) {
@@ -31,7 +33,7 @@ class ShipModeButton(ship: FleetMemberAPI, associatedIndex : Int, mode : ShipMod
                     isSomethingChecked = true
                 }
                 if(elementList.isEmpty()){
-                    panel.addUIElement(tooltip).inTL(5f, 25f)
+                    panel.addUIElement(tooltip).belowLeft(position, 5f)
                 }else{
                     panel.addUIElement(tooltip).rightOfTop(elementList.last(), 12f)
                 }

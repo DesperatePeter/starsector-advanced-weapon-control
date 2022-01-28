@@ -5,6 +5,7 @@ import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.util.Misc
 import java.awt.Color
 
 class SuffixButton(ship: FleetMemberAPI, group : Int, suffix : Suffixes, button: ButtonAPI) : ButtonBase<Suffixes>(ship, group, suffix, button) {
@@ -18,7 +19,7 @@ class SuffixButton(ship: FleetMemberAPI, group : Int, suffix : Suffixes, button:
             var isSomethingChecked = false
             Suffixes.values().forEach {
                 toReturn.add(SuffixButton(ship, group, it, tooltip.addAreaCheckbox(suffixDescriptions[it], it,
-                    Color.BLUE, Color.BLUE, Color.WHITE, 160f, 18f, 3f)))
+                    Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), 160f, 18f, 3f)))
                 tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(detailedSuffixDescriptions[it] ?: ""), TooltipMakerAPI.TooltipLocation.BELOW)
                 if(suffixFromString[storage.modesByShip[ship.id]?.get(group)] == it){
                     toReturn.last().check()

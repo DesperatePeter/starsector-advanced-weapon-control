@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.11.0"
+    val modVersion = "0.12.1"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -135,7 +135,8 @@ tasks {
                             "major":${version._1},
                             "minor":${version._2},
                             "patch":${version._3}
-                        }
+                        },
+                        "directDownloadURL": "https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases/download/${version._1}.${version._2}.${version._3}/AdvancedGunneryControl-${version._1}.${version._2}.${version._3}.zip"
                     }
                 """.trimIndent()
             )
@@ -157,11 +158,10 @@ tasks {
                    | {
                    |   #                                 #### CYCLE ORDER ####
                    |   # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
-                   |   # Delete modes you want to skip. Note: "Default" will always be the first mode.
-                   |   # Allowed values: "PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist", "TargetShields", "AvoidShields"
+                   |   # Delete/add modes as you see fit. Note: "Default" will always be the first mode.
+                   |   # Allowed values: "PD", "PD (Flux>50%)", "PD (Ammo<90%)", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist", "TargetShields", "AvoidShields", "NoPD"
                    |   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
-                   |   "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "Opportunist", "TargetShields", "AvoidShields" ] # <---- EDIT HERE ----
-                   |   # "cycleOrder" : ["PD", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Opportunist", "Mining", "TargetShields", "AvoidShields" ]
+                   |   "cycleOrder" : ["PD", "PD (Flux>50%)", "Fighters", "Missiles", "NoFighters", "Opportunist", "TargetShields", "AvoidShields" ] # <---- EDIT HERE ----
 
 
                    |   #                                 #### CUSTOM AI ####
@@ -198,6 +198,7 @@ tasks {
                    |   , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
                    |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
                    |   , "GUIHotkey" : "j" # <---- EDIT HERE ----
+                   |   , "helpHotkey" : "?" # <---- EDIT HERE ----
                    |   , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
 
                    |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
@@ -246,9 +247,19 @@ tasks {
                    |   # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)
                    |   # NOTE: Using invalid values might cause very odd behaviour and/or crashes!
                    |   
-                   |   # Opportunist fire mode AND conserveAmmo suffix:
-                   |   ,"opportunist_kineticFlux" : 0.75 # fire kinetic weapons if enemy flux level < X
-                   |   ,"opportunist_HEFlux" : 0.7 # fire HE/fragment weapons if enemy flux level > X
+                   |   # Shield thresholds: When not flanking shields and shields are on, the shield factor is simply
+                   |   # equal to (1 - fluxLevel) of the target. When flanking shields, shield factor == 0.
+                   |   # When shields are off, the shield factor is equal to (1 - fluxLevel)*0.75
+                   |   # When omni-shields are off, it's considered as half-flanking (subject to change)
+                   |   # For frontal shields, unfold time and projectile travel time are considered to determine flanking
+                   |   # For modes that want to hit shields, reducing the threshold makes them more likely to fire
+                   |   # For modes that want to avoid shields, the opposite is true
+                   |   ,"targetShields_threshold" : 0.2
+                   |   ,"avoidShields_threshold" : 0.5
+                   |   
+                   |   # Opportunist fire mode AND conserveAmmo suffix:                   |  
+                   |   ,"opportunist_kineticThreshold" : 0.5 
+                   |   ,"opportunist_HEThreshold" : 0.15 
                    |    # increasing this value will increase the likelihood of opportunist/conserveAmmo firing (positive non-zero number)
                    |    # Note: Relatively small changes to this value will have a considerable impact. So I'd recommend values between 0.9 and 1.2 or so
                    |   ,"opportunist_triggerHappinessModifier" : 1.0
@@ -270,12 +281,14 @@ tasks {
                    |   ,"holdFire90_flux" : 0.9
                    |   
                    |   ,"pd50_flux" : 0.5
-                   |   ,"pd90_ammo" : 0.9
-                   |   ,"conserveAmmo_ammo" : 0.9
+                   |   ,"pd90_ammo" : 0.5
+                   |   ,"conserveAmmo_ammo" : 0.5
                    |   
                    |   ,"panicFire_hull" : 0.5
                    |   
                    |   ,"retreat_shouldDirectRetreat" : false
+                   |   # If false, the BigShips/SmallShips modes will still target frigates/capitals etc.
+                   |   ,"strictBigSmallShipMode" : true 
                    | }
 
                 """.trimMargin()

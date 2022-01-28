@@ -29,7 +29,8 @@ object Settings : SettingsDefinition() {
     val resetHotkey = addSetting<Char>("resetHotkey", '/')
     val loadHotkey = addSetting<Char>("loadAllShipsHotkey", '*')
     val suffixHotkey = addSetting<Char>("suffixHotkey", '-')
-    val guiHoteky = addSetting<Char>("GUIHotkey", 'j')
+    val guiHotkey = addSetting<Char>("GUIHotkey", 'j')
+    val helpHotkey = addSetting<Char>("helpHotkey", '?')
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
@@ -39,8 +40,8 @@ object Settings : SettingsDefinition() {
     val loadoutNames = addSetting<List<String>> ("loadoutNames", listOf())
 
     // mode/suffix params
-    val opportunistKineticThreshold = addSetting<Float> ("opportunist_kineticFlux", 0.7f)
-    val opportunistHEThreshold = addSetting<Float> ("opportunist_HEFlux", 0.8f)
+    val opportunistKineticThreshold = addSetting<Float> ("opportunist_kineticThreshold", 0.5f)
+    val opportunistHEThreshold = addSetting<Float> ("opportunist_HEThreshold", 0.15f)
     val ventFluxThreshold = addSetting<Float> ("vent_flux", 0.75f)
     val aggressiveVentFluxThreshold = addSetting<Float> ("aggressiveVent_flux", 0.25f)
     val ventSafetyFactor = addSetting<Float> ("vent_safetyFactor", 2f)
@@ -51,22 +52,43 @@ object Settings : SettingsDefinition() {
     val holdFire75 = addSetting<Float> ("holdFire75_flux", 0.75f)
     val holdFire90 = addSetting<Float> ("holdFire90_flux", 0.9f)
     val pdFlux50 = addSetting<Float> ("pd50_flux", 0.5f)
-    val pdAmmo90 = addSetting<Float> ("pd90_ammo", 0.9f)
-    val conserveAmmo = addSetting<Float> ("conserveAmmo_ammo", 0.9f)
+    val pdAmmo90 = addSetting<Float> ("pd90_ammo", 0.5f)
+    val conserveAmmo = addSetting<Float> ("conserveAmmo_ammo", 0.5f)
     val panicFireHull = addSetting<Float> ("panicFire_hull", 0.5f)
     val directRetreat = addSetting<Boolean> ("retreat_shouldDirectRetreat", false)
     val opportunistModifier = addSetting<Float> ("opportunist_triggerHappinessModifier", 1.0f)
+    val strictBigSmall = addSetting<Boolean>("strictBigSmallShipMode", true)
+    val targetShieldsThreshold = addSetting<Float> ("targetShields_threshold", 0.2f)
+    val avoidShieldsThreshold = addSetting<Float> ("avoidShields_threshold", 0.5f)
 
     var weaponBlacklist = listOf<String>()
         private set
+
+    var suggestedModes = mapOf<String, String>()
+        private set
+
+    var suggestedSuffixes = mapOf<String, String>()
 
     var shipModeStorage : List<StorageBase<String>> = listOf()
     var suffixStorage : List<StorageBase<String>> = listOf()
     var fireModeStorage : List<StorageBase<String>> = listOf()
 
+    fun getKeybindingInfoText() : String{
+        return "[NUMPAD1-7]: <MODE> Cycle fire mode for corresponding weapon group (make sure Numlock is enabled)." +
+                "\n[ ${suffixHotkey().toUpperCase()} ]: <SUFFIX> Cycle fire mode suffix (group# = last pressed NUMPAD#)." +
+                "\n[ ${infoHotkey().toUpperCase()} ]: <INFO> Display mode info (manually save/load)." +
+                "\n[ ${loadHotkey().toUpperCase()} ]: <LOAD ALL> Manually load modes for all deployed ships." +
+                "\n[ ${resetHotkey().toUpperCase()} ]: <RESET> Reset all modes back to default for current ship." +
+                "\n[ ${cycleLoadout().toUpperCase()} ]: <LOADOUT> Cycle loadout for all ships (on combat start, loadout 1 is loaded)." +
+                "\n[ ${guiHotkey().toUpperCase()} ]: <GUI> Open AGC GUI (campaign map, NOT in combat)." +
+                "\n[ ${helpHotkey().toUpperCase()} ]: <HELP> Display keybinding info."
+    }
+
     override fun readSettings() {
         super.readSettings()
         weaponBlacklist = MagicSettings.getList(Values.THIS_MOD_NAME, Values.WEAPON_BLACKLIST_KEY)
+        suggestedModes = MagicSettings.getStringMap(Values.THIS_MOD_NAME, Values.SUGGESTED_WEAPON_MODES_KEY)
+        suggestedSuffixes = MagicSettings.getStringMap(Values.THIS_MOD_NAME, Values.SUGGESTED_WEAPON_SUFFIXES_KEY)
     }
 
     override fun applySettings() {

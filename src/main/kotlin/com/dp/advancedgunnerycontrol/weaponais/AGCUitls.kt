@@ -36,13 +36,24 @@ fun isInvalid(aiPlugin: AutofireAIPlugin): Boolean {
     return false
 }
 
+fun ammoLevel(weapon: WeaponAPI) : Float{
+    if(!weapon.usesAmmo()) return 1.0f
+    return weapon.ammo.toFloat() / weapon.maxAmmo.toFloat()
+}
+
 const val bignessFrigate = 0.5f
 const val bignessDestroyer = 2f
 const val bignessCruiser = 5f
 const val bignessCapital = 20f
 const val bignessFighter = 0.1f
-fun isBig(ship: ShipAPI): Boolean = bigness(ship) > bignessFrigate + 0.1f
-fun isSmall(ship: ShipAPI): Boolean = bigness(ship) < bignessCruiser - 0.1f
+fun isBig(ship: ShipAPI): Boolean {
+    if(!Settings.strictBigSmall()) return true
+    return bigness(ship) > bignessFrigate + 0.1f
+}
+fun isSmall(ship: ShipAPI): Boolean {
+    if(!Settings.strictBigSmall()) return true
+    return bigness(ship) < bignessCruiser - 0.1f
+}
 fun bigness(ship: ShipAPI): Float {
     return when (ship.hullSize) {
         ShipAPI.HullSize.FRIGATE -> bignessFrigate
@@ -89,10 +100,10 @@ private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
         return isDefenseless(target, weapon)
     }
     if(weapon.damageType == DamageType.HIGH_EXPLOSIVE || weapon.damageType == DamageType.FRAGMENTATION){
-        return computeShieldFactor(target, weapon) < 0.15f
+        return computeShieldFactor(target, weapon) < Settings.opportunistHEThreshold()
     }
     if(weapon.damageType == DamageType.KINETIC){
-        return computeShieldFactor(target, weapon) > 0.5f
+        return computeShieldFactor(target, weapon) > Settings.opportunistKineticThreshold()
     }
     return true
 }

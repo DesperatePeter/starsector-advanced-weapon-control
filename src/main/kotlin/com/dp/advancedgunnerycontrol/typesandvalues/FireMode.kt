@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.weaponais.*
 import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.combat.AutofireAIPlugin
@@ -7,13 +8,16 @@ import com.fs.starfarer.api.combat.AutofireAIPlugin
 typealias FireModeMap = Map<FireMode, AutofireAIPlugin>
 
 enum class FireMode {
-    DEFAULT, PD, MISSILE, FIGHTER, NO_FIGHTERS, BIG_SHIPS, SMALL_SHIPS, MINING, OPPORTUNIST, TARGET_SHIELDS, AVOID_SHIELDS
+    DEFAULT, PD, MISSILE, FIGHTER, NO_FIGHTERS, BIG_SHIPS, SMALL_SHIPS, MINING, OPPORTUNIST,
+    TARGET_SHIELDS, AVOID_SHIELDS, PD_FLUX, PD_AMMO, NO_PD
 }
 
 object FMValues{
     val modesAvailableForCustomAI = // Only add if base AI is overwritable
         listOf(FireMode.SMALL_SHIPS, FireMode.BIG_SHIPS, FireMode.FIGHTER, FireMode.MISSILE,
-            FireMode.OPPORTUNIST, FireMode.TARGET_SHIELDS, FireMode.AVOID_SHIELDS)
+            FireMode.OPPORTUNIST, FireMode.TARGET_SHIELDS, FireMode.AVOID_SHIELDS, FireMode.NO_PD)
+
+    val PDModes = listOf(FireMode.NO_PD, FireMode.MISSILE, FireMode.PD, FireMode.PD_FLUX, FireMode.PD_AMMO)
 
     const val defaultFireModeString = "Default"
 
@@ -28,7 +32,10 @@ object FMValues{
         FireMode.MINING to "Mining",
         FireMode.OPPORTUNIST to "Opportunist",
         FireMode.AVOID_SHIELDS to "AvoidShields",
-        FireMode.TARGET_SHIELDS to "TargetShields"
+        FireMode.TARGET_SHIELDS to "TargetShields",
+        FireMode.PD_AMMO to "PD (Ammo<50%)",
+        FireMode.PD_FLUX to "PD (Flux>50%)",
+        FireMode.NO_PD to "NoPD"
     )
 
     val fireModeDetailedDescriptions = mapOf(
@@ -60,13 +67,18 @@ object FMValues{
                 "\n - Will not fire at overloaded/unshielded/venting/phase ships" +
                 "\n - Will not fire when flanking enemy shields" +
                 "\n - Will never fire if target doesn't have shields." +
-                "\n - Will not fire at very high flux (80%+) enemies" +
+                "\n - Will not fire at very high flux (~${((1.0f - Settings.targetShieldsThreshold())*100f).toInt()}%) enemies" +
                 "\n - Will not fire at missiles. Always uses custom AI." +
                 "\nTip: Leave some kinetic weapons on Default to guarantee constant pressure against high-flux enemies",
         FireMode.AVOID_SHIELDS to "Weapon will prioritize targets without shields or high flux/shields off." +
-                "\n - Will not fire at low flux (50%-) enemies unless flanking shields." +
+                "\n - Will not fire at low flux (~${((1.0f - Settings.avoidShieldsThreshold())*100f).toInt()}%) enemies unless flanking shields." +
                 "\n - Will always fire if target doesn't have shields." +
-                "\n - Will not fire at missiles. Always uses custom AI."
+                "\n - Will not fire at missiles. Always uses custom AI.",
+        FireMode.PD_FLUX to "Weapon will behave like Default when ship flux < ${(Settings.pdFlux50()*100f).toInt()}% and like PD otherwise.",
+        FireMode.PD_AMMO to "Weapon will behave like Default when ammo > ${(Settings.pdAmmo90()*100f).toInt()}% and like PD otherwise." +
+                " Useful for e.g. Burst PD Lasers.",
+        FireMode.NO_PD to "Turn a PD weapon into a regular weapon. Weapon won't target missiles and will prefer targeting " +
+                "ships over fighters."
     ).withDefault { it.toString() }
 
     var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()
@@ -86,9 +98,10 @@ object FMValues{
             FireMode.MINING to MiningAI(baseAI, suffix),
             FireMode.OPPORTUNIST to OpportunistAI(baseAI, suffix),
             FireMode.TARGET_SHIELDS to TargetShieldsAI(baseAI, suffix),
-            FireMode.AVOID_SHIELDS to AvoidShieldsAI(baseAI, suffix)
+            FireMode.AVOID_SHIELDS to AvoidShieldsAI(baseAI, suffix),
+            FireMode.PD_AMMO to PDAtAmmoThresholdAI(baseAI, suffix, Settings.pdAmmo90()),
+            FireMode.PD_FLUX to PDAtFluxThresholdAI(baseAI, suffix, Settings.pdFlux50()),
+            FireMode.NO_PD to NoPDAIPlugin(baseAI, suffix)
         )
     }
 }
-
-
