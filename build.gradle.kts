@@ -10,7 +10,7 @@ object Variables {
     val modName = "AdvancedGunneryControl"
     val author = "DesperatePeter"
     const val description = "A Starsector mod that adds more autofire modes for weapon groups. On the campaign map, press J to open a GUI. In combat, with NUMLOCK enabled, press the NUMPAD keys to cycle weapon modes."
-    val gameVersion = "0.95.1a-RC5"
+    val gameVersion = "0.95.1a-RC6"
     val jars = arrayOf("jars/$jarFileName")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
     val isUtilityMod = true

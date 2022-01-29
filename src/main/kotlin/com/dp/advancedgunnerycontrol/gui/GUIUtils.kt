@@ -57,34 +57,6 @@ fun shouldModeBeDisabled(groupIndex: Int, sh: FleetMemberAPI, mode: FireMode) : 
     return (FMValues.PDModes.contains(mode)) && !isElligibleForPD(groupIndex, sh)
 }
 
-fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int){
-    val groups = ship.variant.weaponGroups
-    val modeStore = FireModeStorage[storageIndex]
-    if(modeStore.modesByShip[ship.id] == null){
-        modeStore.modesByShip[ship.id] = mutableMapOf()
-    }
-    val suffixStore = SuffixStorage[storageIndex]
-    if(suffixStore.modesByShip[ship.id] == null){
-        suffixStore.modesByShip[ship.id] = mutableMapOf()
-    }
-    groups.forEachIndexed { index, group ->
-        val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
-        val modeKey : String = if(Settings.suggestedModes.containsKey(weaponID)){
-            weaponID
-        }else {
-            Settings.suggestedModes.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
-        }
-        modeStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedModes[modeKey] ?: ""}
-
-        val suffixKey : String = if(Settings.suggestedSuffixes.containsKey(weaponID)){
-            weaponID
-        }else {
-            Settings.suggestedSuffixes.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
-        }
-        suffixStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedSuffixes[suffixKey] ?: ""}
-    }
-}
-
 fun applyModesToSameVariantShips(ship: FleetMemberAPI, storageIndex: Int){
     Global.getSector().playerFleet.membersWithFightersCopy.filter{!it.isFighterWing && it != ship}.filterNotNull().forEach {
         if (it.variant.hullVariantId + it.variant.displayName == ship.variant.hullVariantId + ship.variant.displayName){
