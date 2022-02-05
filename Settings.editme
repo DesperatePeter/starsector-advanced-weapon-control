@@ -27,8 +27,10 @@
 
 
    #                                 #### UI SETTINGS ####
-   # Switch this off if you want to reset fire modes every battle
+   # Switch this off if you want to reset fire modes every battle (GUI only works when enabled)
    , "enablePersistentFireModes" : true # <---- EDIT HERE ----
+   # If set to false, changes are only persistent if made in the GUI or manually saved
+   , "persistChangesInCombat" : true # <---- EDIT HERE ----
    # Number of frames messages will be displayed before fading. -1 for infinite
    , "messageDisplayDuration" : 180 # <---- EDIT HERE ----
    # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
@@ -43,9 +45,10 @@
    , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
    , "suffixHotkey" : "-" # <---- EDIT HERE ----
    , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
-   , "maxLoadouts" : 3 # <---- EDIT HERE ----
    , "GUIHotkey" : "j" # <---- EDIT HERE ----
    , "helpHotkey" : "?" # <---- EDIT HERE ----
+   , "saveHotkey" : "[" # <---- EDIT HERE ----
+   , "maxLoadouts" : 3 # <---- EDIT HERE ----
    , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
 
    # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)

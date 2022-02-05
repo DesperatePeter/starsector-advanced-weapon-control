@@ -1,6 +1,5 @@
 package com.dp.advancedgunnerycontrol.gui
 
-import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
@@ -8,9 +7,6 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import kotlin.math.roundToInt
 import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
-import com.dp.advancedgunnerycontrol.utils.FireModeStorage
-import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
-import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 
 fun groupAsString(group : WeaponGroupSpec, sh: FleetMemberAPI) : String {
     val strings = group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
@@ -30,7 +26,7 @@ fun groupFluxCost(group: WeaponGroupSpec, sh: FleetMemberAPI) : Int {
 
 fun groupWeaponSpriteNames(group: WeaponGroupSpec, sh: FleetMemberAPI) : List<String> {
     return group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
-        Global.getSettings().getWeaponSpec(it).hardpointSpriteName
+        Global.getSettings().getWeaponSpec(it).turretSpriteName
     }.toSet().toList()
 }
 
@@ -55,20 +51,4 @@ fun usesAmmo(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
 fun shouldModeBeDisabled(groupIndex: Int, sh: FleetMemberAPI, mode: FireMode) : Boolean {
     if(mode == FireMode.PD_AMMO && !usesAmmo(groupIndex, sh)) return true
     return (FMValues.PDModes.contains(mode)) && !isElligibleForPD(groupIndex, sh)
-}
-
-fun applyModesToSameVariantShips(ship: FleetMemberAPI, storageIndex: Int){
-    Global.getSector().playerFleet.membersWithFightersCopy.filter{!it.isFighterWing && it != ship}.filterNotNull().forEach {
-        if (it.variant.hullVariantId + it.variant.displayName == ship.variant.hullVariantId + ship.variant.displayName){
-            FireModeStorage[storageIndex].modesByShip[ship.id]?.let { v ->
-                FireModeStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
-            }
-            ShipModeStorage[storageIndex].modesByShip[ship.id]?.let { v ->
-                ShipModeStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
-            }
-            SuffixStorage[storageIndex].modesByShip[ship.id]?.let { v ->
-                SuffixStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
-            }
-        }
-    }
 }
