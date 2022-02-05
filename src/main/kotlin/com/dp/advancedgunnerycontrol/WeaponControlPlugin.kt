@@ -91,15 +91,14 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             ControlEventType.COMBINE -> combineWeaponGroup()
             ControlEventType.CYCLE -> {
                 cycleWeaponGroupMode()
-                if(Settings.enableAutoSaveLoad()) saveCurrentShipState()
+                saveCurrentShipIfApplicable()
             }
             ControlEventType.INFO -> {
                 printShipInfo()
-                if (Settings.enablePersistentModes()) saveCurrentShipState()
             }
             ControlEventType.RESET -> {
                 resetAiManager()
-                if (Settings.enablePersistentModes()) saveCurrentShipState()
+                saveCurrentShipIfApplicable()
                 printShipInfo()
             }
             ControlEventType.LOAD -> {
@@ -111,10 +110,14 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             }
             ControlEventType.SUFFIX -> {
                 cycleSuffix()
-                if (Settings.enablePersistentModes()) saveCurrentShipState()
+                saveCurrentShipIfApplicable()
             }
             ControlEventType.HELP -> {
                 printMessage(Settings.getKeybindingInfoText(), Settings.uiDisplayFrames() * 5)
+            }
+            ControlEventType.SAVE -> {
+                saveCurrentShipState()
+                printMessage("Saved modes for current ship.")
             }
             else -> printMessage("Unrecognized Command (please send bug report)")
         }
@@ -217,7 +220,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
+    private fun saveCurrentShipIfApplicable() {
+        if(Settings.enableCombatChangePersistance()) saveCurrentShipState()
+    }
+
     private fun saveCurrentShipState() {
+        if(!Settings.enablePersistentModes()) return
         val ship = determineSelectedShip(engine) ?: return
         initOrGetAIManager(ship)?.let { aiManager ->
             ship.fleetMemberId?.let { id ->

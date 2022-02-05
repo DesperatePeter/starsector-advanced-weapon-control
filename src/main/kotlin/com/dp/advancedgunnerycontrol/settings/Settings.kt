@@ -31,7 +31,9 @@ object Settings : SettingsDefinition() {
     val suffixHotkey = addSetting<Char>("suffixHotkey", '-')
     val guiHotkey = addSetting<Char>("GUIHotkey", 'j')
     val helpHotkey = addSetting<Char>("helpHotkey", '?')
+    val saveHotkey = addSetting<Char>("saveHotkey", '[')
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
+    val enableCombatChangePersistance = addSetting<Boolean>("persistChangesInCombat", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val skipInvalidModes = addSetting<Boolean>("skipInvalidModes", true)
     val enableTextInterface = addSetting<Boolean>("enableGUI", true)
@@ -76,12 +78,15 @@ object Settings : SettingsDefinition() {
     fun getKeybindingInfoText() : String{
         return "[NUMPAD1-7]: <MODE> Cycle fire mode for corresponding weapon group (make sure Numlock is enabled)." +
                 "\n[ ${suffixHotkey().toUpperCase()} ]: <SUFFIX> Cycle fire mode suffix (group# = last pressed NUMPAD#)." +
-                "\n[ ${infoHotkey().toUpperCase()} ]: <INFO> Display mode info (manually save/load)." +
+                "\n[ ${infoHotkey().toUpperCase()} ]: <INFO> Display info." +
                 "\n[ ${loadHotkey().toUpperCase()} ]: <LOAD ALL> Manually load modes for all deployed ships." +
                 "\n[ ${resetHotkey().toUpperCase()} ]: <RESET> Reset all modes back to default for current ship." +
                 "\n[ ${cycleLoadout().toUpperCase()} ]: <LOADOUT> Cycle loadout for all ships (on combat start, loadout 1 is loaded)." +
                 "\n[ ${guiHotkey().toUpperCase()} ]: <GUI> Open AGC GUI (campaign map, NOT in combat)." +
-                "\n[ ${helpHotkey().toUpperCase()} ]: <HELP> Display keybinding info."
+                "\n[ ${helpHotkey().toUpperCase()} ]: <HELP> Display keybinding info." +
+                if (!enableCombatChangePersistance()){
+                    "\n[ ${saveHotkey().toUpperCase()} ]: <SAVE> Manually save modes for current ship"
+                }else{""}
     }
 
     override fun readSettings() {

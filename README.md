@@ -272,6 +272,7 @@ I will still try to fix reported bugs and maybe do some usability/control improv
   Added suggested weapon modes (prototypical). Added setting for strict/lenient BigShip/SmallShip modes.
 - 0.12.1: Add variant mode copying, help hotkey, additional settings (technically, this should have been 0.13.0)
 - 0.13.0: add noPD mode (disabled by default), polish
+- 0.13.1: refactor GUI dialogue options, add setting to disable automatic in-combat persistence.
 
 ## Acknowledgements ##
 

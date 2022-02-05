@@ -59,4 +59,46 @@ class ShipView : CustomUIPanelPlugin {
 
     override fun processInput(events: MutableList<InputEventAPI>?) {}
 
+    fun showShipModes(attributes: GUIAttributes){
+        attributes.customPanel = attributes.visualPanel?.showCustomPanel(1210f, 650f, this)
+        attributes.customPanel?.position?.inTMid(20f)
+        attributes.ship?.let { sh ->
+            val imgView = attributes.customPanel?.createUIElement(100f, 100f, false)
+            imgView?.addImage(sh.hullSpec.spriteName, 80f, 80f, 5.0f)
+            attributes.customPanel?.addUIElement(imgView)?.inTL(1f, 1f)
+            val shipModeHeader = attributes.customPanel?.createUIElement(1200f, 50f, false)
+            shipModeHeader?.addTitle("Ship AI Modes (${sh.shipName}, ${sh.variant?.fullDesignationWithHullNameForShip}):")
+            attributes.customPanel?.addUIElement(shipModeHeader)?.rightOfBottom(imgView, 1f)
+            attributes.customPanel?.let {
+                if (imgView != null) {
+                    addShipModeButtonGroup(sh, it, imgView)
+                }
+            }
+            val elements = mutableListOf<UIComponentAPI>()
+            for(i in 0 until sh.variant.weaponGroups.size){
+                val element = attributes.customPanel?.createUIElement(162f, 500f, false)
+                element?.let {
+                    it.addTitle("Group ${i+1}")
+                    addModeButtonGroup(i, sh, it)
+                    it.addPara("Suffixes:", 5.0f)
+                    addSuffixButtons(i, sh, it)
+                    it.addImages(162f, 35f, 1f, 1f, *groupWeaponSpriteNames(sh.variant.weaponGroups[i], sh).toTypedArray())
+                    it.addPara(groupAsString(sh.variant.weaponGroups[i], sh), 5.0f)
+                    it.addPara("${groupFluxCost(sh.variant.weaponGroups[i], sh)} flux/s", 5.0f)
+                    // without this call, we get a "can only anchor to siblings" exception
+                    attributes.customPanel?.addComponent(it)
+                    val pos = attributes.customPanel?.addUIElement(it)
+                    pos?.let { p ->
+                        if (elements.isNotEmpty()){
+                            p.rightOfTop(elements.last(), 10f)
+                        }else{
+                            p.belowLeft(imgView, 35f)
+                        }
+                    }
+                    elements.add(it)
+                }
+            }
+        }
+    }
+
 }

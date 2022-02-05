@@ -3,14 +3,14 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.13.0"
+    val modVersion = "0.13.1"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
     val modName = "AdvancedGunneryControl"
     val author = "DesperatePeter"
     const val description = "A Starsector mod that adds more autofire modes for weapon groups. On the campaign map, press J to open a GUI. In combat, with NUMLOCK enabled, press the NUMPAD keys to cycle weapon modes."
-    val gameVersion = "0.95.1a-RC5"
+    val gameVersion = "0.95.1a-RC6"
     val jars = arrayOf("jars/$jarFileName")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
     val isUtilityMod = true
@@ -180,8 +180,10 @@ tasks {
 
 
                    |   #                                 #### UI SETTINGS ####
-                   |   # Switch this off if you want to reset fire modes every battle
+                   |   # Switch this off if you want to reset fire modes every battle (GUI only works when enabled)
                    |   , "enablePersistentFireModes" : true # <---- EDIT HERE ----
+                   |   # If set to false, changes are only persistent if made in the GUI or manually saved
+                   |   , "persistChangesInCombat" : true # <---- EDIT HERE ----
                    |   # Number of frames messages will be displayed before fading. -1 for infinite
                    |   , "messageDisplayDuration" : 180 # <---- EDIT HERE ----
                    |   # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
@@ -196,9 +198,10 @@ tasks {
                    |   , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
                    |   , "suffixHotkey" : "-" # <---- EDIT HERE ----
                    |   , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
-                   |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
                    |   , "GUIHotkey" : "j" # <---- EDIT HERE ----
                    |   , "helpHotkey" : "?" # <---- EDIT HERE ----
+                   |   , "saveHotkey" : "~" # <---- EDIT HERE ---- (only relevant if persistChangesInCombat==false)
+                   |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
                    |   , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
 
                    |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
