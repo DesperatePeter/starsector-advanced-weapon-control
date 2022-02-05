@@ -47,7 +47,7 @@
    , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
    , "GUIHotkey" : "j" # <---- EDIT HERE ----
    , "helpHotkey" : "?" # <---- EDIT HERE ----
-   , "saveHotkey" : "[" # <---- EDIT HERE ----
+   , "saveHotkey" : "~" # <---- EDIT HERE ---- (only relevant if persistChangesInCombat==false)
    , "maxLoadouts" : 3 # <---- EDIT HERE ----
    , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
 
