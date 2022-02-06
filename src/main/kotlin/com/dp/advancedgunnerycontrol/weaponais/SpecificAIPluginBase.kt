@@ -103,7 +103,7 @@ abstract class SpecificAIPluginBase(
             // this is a deceptively expensive call (therefore locked behind opt-in setting)
             potentialTargets = potentialTargets.filter { !isFriendlyFire(getFriendlies(), it.second) }
         }
-        val bestTarget = potentialTargets.minBy {
+        val bestTarget = potentialTargets.minByOrNull {
             computeTargetPriority(it.first, it.second)
         }
 

@@ -2,8 +2,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
-    val starsectorDirectory = "/home/jannes/software/starsector"
-    val modVersion = "0.13.1"
+    val starsectorDirectory = "D:/Spiele/Starsector"
+    val modVersion = "0.13.2"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -25,12 +25,12 @@ object Variables {
 //////////////////////
 
 // Note: On Linux, use "${Variables.starsectorDirectory}" as core directory
-val starsectorCoreDirectory = Variables.starsectorDirectory
+val starsectorCoreDirectory = "${Variables.starsectorDirectory}/starsector-core"
 val starsectorModDirectory = "${Variables.starsectorDirectory}/mods"
 val modInModsFolder = File("$starsectorModDirectory/${Variables.modFolderName}")
 
 plugins {
-    kotlin("jvm") version "1.3.60"
+    kotlin("jvm") version "1.5.0"
     java
 }
 
@@ -44,7 +44,7 @@ repositories {
 dependencies {
     implementation("org.junit.jupiter:junit-jupiter:5.7.0")
     implementation("junit:junit:4.13.1")
-    val kotlinVersionInLazyLib = "1.4.21"
+    val kotlinVersionInLazyLib = "1.5.31"
 
     implementation(fileTree("libs") { include("*.jar") })
     testImplementation(kotlin("test"))
@@ -103,6 +103,7 @@ tasks {
                             {
                                 "id": "lw_lazylib",
                                 "name": "LazyLib",
+                                "version" : "2.7"
                             },
                             {
                                 "id" : "MagicLib",

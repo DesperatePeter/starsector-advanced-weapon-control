@@ -78,7 +78,8 @@ object FMValues{
         FireMode.PD_AMMO to "Weapon will behave like Default when ammo > ${(Settings.pdAmmo90()*100f).toInt()}% and like PD otherwise." +
                 " Useful for e.g. Burst PD Lasers.",
         FireMode.NO_PD to "Turn a PD weapon into a regular weapon. Weapon won't target missiles and will prefer targeting " +
-                "ships over fighters."
+                "ships over fighters." +
+                "\nNote: This mode only affects the weapon AI behaviour, it does not actually change the weapon tags/type!"
     ).withDefault { it.toString() }
 
     var FIRE_MODE_DESCRIPTIONS = fireModeAsString.toMutableMap()

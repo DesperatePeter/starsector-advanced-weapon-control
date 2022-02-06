@@ -240,7 +240,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun printMessage(message: String, frames: Int = Settings.uiDisplayFrames()) {
-        drawable = font?.createText(message, color = Color.GREEN)
+        drawable = font?.createText(message, baseColor = Color.GREEN)
         textFrameTimer = frames
     }
 

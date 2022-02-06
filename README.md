@@ -84,21 +84,21 @@ I would recommend leaving one loadout blank (i.e. everything default) for your e
 
 Note: Please refer to GUI tooltips for more details
 
-Mode | Targets | Prioritizes | Requirements | Can use Custom AI | Weapon Example | Enabled by Default
-:---: | :---   | :---        | :---         | :---:             | :---: | :---:
-Default | Same as base AI | Same as base AI | None | No | All weapons | Yes
-PD | Fighters/Missiles | Fighters/Missiles | PD Weapon | No | Flak | Yes
-Fighters | Fighters | Fighters | None | Yes | Devastator Cannon | Yes
-Missiles | Missiles (Mines/Flares) | Missiles | PD Weapon | Yes | Burst PD | Yes 
-NoFighters | Anything but Fighters | Same as base AI | None | No | Hellbore Cannon | Yes
-Opportunist | Ignores fighters/missiles | Special* | None | Always | Missiles | Yes
-BigShips | Destroyers to Capitals | Bigger=Better | None | Yes | Squall MLRM | No
-SmallShips | Fighters to Destroyers | Smaller=Better | None | Yes | Phase Lance | No
-Mining | Asteroids | Asteroids | None | Yes | Mining Blaster | No
-AvoidShields | Ships (no missiles) | ships without shields or high flux | None | Always | High-intensity Laser | Yes
-TargetShields | Ships (no missiles) | ships with shields and low flux | None | Always | Needlers | Yes
-PD(Flux>50%) | Varies | Same as default when flux < 50%, otherwise same as PD | PD Weapon | No | PD Laser | Yes
-PD(Ammo<50%) | Varies | Same as default when ammo > 50%, otherwise same as PD | PD Weapon with ammo | No | Burst PD | No
+|     Mode      | Targets                   | Prioritizes                                           | Requirements        | Can use Custom AI |    Weapon Example    | Enabled by Default |
+|:-------------:|:--------------------------|:------------------------------------------------------|:--------------------|:-----------------:|:--------------------:|:------------------:|
+|    Default    | Same as base AI           | Same as base AI                                       | None                |        No         |     All weapons      |        Yes         |
+|      PD       | Fighters/Missiles         | Fighters/Missiles                                     | PD Weapon           |        No         |         Flak         |        Yes         |
+|   Fighters    | Fighters                  | Fighters                                              | None                |        Yes        |  Devastator Cannon   |        Yes         |
+|   Missiles    | Missiles (Mines/Flares)   | Missiles                                              | PD Weapon           |        Yes        |       Burst PD       |        Yes         |
+|  NoFighters   | Anything but Fighters     | Same as base AI                                       | None                |        No         |   Hellbore Cannon    |        Yes         |
+|  Opportunist  | Ignores fighters/missiles | Special*                                              | None                |      Always       |       Missiles       |        Yes         |
+|   BigShips    | Destroyers to Capitals    | Bigger=Better                                         | None                |        Yes        |     Squall MLRM      |         No         |
+|  SmallShips   | Fighters to Destroyers    | Smaller=Better                                        | None                |        Yes        |     Phase Lance      |         No         |
+|    Mining     | Asteroids                 | Asteroids                                             | None                |        Yes        |    Mining Blaster    |         No         |
+| AvoidShields  | Ships (no missiles)       | ships without shields or high flux                    | None                |      Always       | High-intensity Laser |        Yes         |
+| TargetShields | Ships (no missiles)       | ships with shields and low flux                       | None                |      Always       |       Needlers       |        Yes         |
+| PD(Flux>50%)  | Varies                    | Same as default when flux < 50%, otherwise same as PD | PD Weapon           |        No         |       PD Laser       |        Yes         |
+| PD(Ammo<50%)  | Varies                    | Same as default when ammo > 50%, otherwise same as PD | PD Weapon with ammo |        No         |       Burst PD       |         No         |
 
 *Depending on damage type, will try to only fire when the shot is likely to be effective. Will try to avoid
 targets that move too fast or are too far away. Mainly intended for missiles with limited ammo.
@@ -111,14 +111,14 @@ Note: You need to manually add modes that are not enabled by default in the sett
 
 Suffixes modify the behaviour of the selected fire mode in some way. Only one suffix may be applied.
 
-Suffix | Effect
-:---: | :---
-NONE | None
-HoldFire(Flux>90%) | Weapon will hold fire if ship flux >= 90%
-HoldFire(Flux>75%) | Weapon will hold fire if ship flux >= 75%
-HoldFire(Flux>50%) | Weapon will hold fire if ship flux >= 50%
-ConserveAmmo* | Weapon will behave similar to Opportunist mode when ammo < 50%
-PanicFire* | When ship hull drops below 50%, this weapon will fire hail mary shots. Useful for _guided_ missiles.
+|       Suffix       | Effect                                                                                               |
+|:------------------:|:-----------------------------------------------------------------------------------------------------|
+|        NONE        | None                                                                                                 |
+| HoldFire(Flux>90%) | Weapon will hold fire if ship flux >= 90%                                                            |
+| HoldFire(Flux>75%) | Weapon will hold fire if ship flux >= 75%                                                            |
+| HoldFire(Flux>50%) | Weapon will hold fire if ship flux >= 50%                                                            |
+|   ConserveAmmo*    | Weapon will behave similar to Opportunist mode when ammo < 50%                                       |
+|     PanicFire*     | When ship hull drops below 50%, this weapon will fire hail mary shots. Useful for _guided_ missiles. |
 
 *these suffixes rely on custom AI and will not work well with custom AI disabled. 
 They will work best when forcing custom AI in the settings.
@@ -127,13 +127,13 @@ They will work best when forcing custom AI in the settings.
 
 Ship modes only affect AI-controlled ships. Ship modes can only be set in the GUI. Multiple modes can be set.
 
-Mode | Effect | Notes
-:---: | :--- | :---
-Default | Base game ship AI | -
-ForceAutofire | Force deselect all weapon groups and set them to autofire | Combine with HoldFire-suffixes to prevent fluxing out
-Retreat(Hull<50%) | Issue retreat command for the ship if hull < 50% | This WILL use a command point
-ShieldsOff(Flux>50%) | Force turn off shield at ship flux > 50% | Only recommended for high armor ships with good PD
-Vent(Flux>50%) | Force vent at ship flux > 50% | Beware of Harpoons! (Use secondary loadout)
+|         Mode         | Effect                                                    | Notes                                                 |
+|:--------------------:|:----------------------------------------------------------|:------------------------------------------------------|
+|       Default        | Base game ship AI                                         | -                                                     |
+|    ForceAutofire     | Force deselect all weapon groups and set them to autofire | Combine with HoldFire-suffixes to prevent fluxing out |
+|  Retreat(Hull<50%)   | Issue retreat command for the ship if hull < 50%          | This WILL use a command point                         |
+| ShieldsOff(Flux>50%) | Force turn off shield at ship flux > 50%                  | Only recommended for high armor ships with good PD    |
+|    Vent(Flux>50%)    | Force vent at ship flux > 50%                             | Beware of Harpoons! (Use secondary loadout)           |
 
 ## Settings ##
 
@@ -273,6 +273,7 @@ I will still try to fix reported bugs and maybe do some usability/control improv
 - 0.12.1: Add variant mode copying, help hotkey, additional settings (technically, this should have been 0.13.0)
 - 0.13.0: add noPD mode (disabled by default), polish
 - 0.13.1: refactor GUI dialogue options, add setting to disable automatic in-combat persistence.
+- 0.13.2: minor fixes and dependency upgrades
 
 ## Acknowledgements ##
 

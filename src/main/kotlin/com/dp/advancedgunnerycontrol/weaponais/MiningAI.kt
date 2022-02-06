@@ -37,7 +37,7 @@ class MiningAI(baseAI: AutofireAIPlugin, suffix: SuffixBase) : SpecificAIPluginB
             return
         }
         val priorities = addPredictedLocationToTargets(asteroids)
-        tgtPoint = priorities.minBy { computeTargetPriority(it.first, it.second) }?.second
+        tgtPoint = priorities.minByOrNull { computeTargetPriority(it.first, it.second) }?.second
         toFire = asteroids.any {
             (angularDistanceFromWeapon(it.location) * linearDistanceFromWeapon(it.location) <=
                     (it.collisionRadius * Settings.customAITriggerHappiness()) + 50f)
