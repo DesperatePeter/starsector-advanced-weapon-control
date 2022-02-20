@@ -2,6 +2,7 @@
 
 package com.dp.advancedgunnerycontrol
 
+import com.dp.advancedgunnerycontrol.combatgui.GuiLayout
 import com.dp.advancedgunnerycontrol.keyboardinput.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.settings.Settings
@@ -29,6 +30,8 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var isInitialized = false
     private var initialShipInitRequired = Settings.enableAutoSaveLoad()
 
+    private var combatGui: GuiLayout? = null
+
     companion object {
         fun determineSelectedShip(engine: CombatEngineAPI): ShipAPI? {
             return if (engine.playerShip?.shipTarget?.owner == 0) {
@@ -42,12 +45,13 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         super.advance(amount, events)
         if (!isInitialized) return
+        combatGui?.advance()
 
-        if(initialShipInitRequired){
-            initialShipInitRequired = !initAllShips()
-        }
+//        if(initialShipInitRequired){
+//            initialShipInitRequired = !initAllShips()
+//        }
 
-        if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
+        // if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
 
         if (keyManager.parseInputEvents(events)) {
             processControlEvents()
@@ -94,7 +98,15 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 saveCurrentShipIfApplicable()
             }
             ControlEventType.INFO -> {
-                printShipInfo()
+                // printShipInfo()
+                if (combatGui == null){
+                    engine.isPaused = true
+                    engine.viewport?.isExternalControl = true
+                    combatGui = determineSelectedShip(engine)?.let { font?.let { f -> GuiLayout(it, f) } }
+                }else{
+                    combatGui = null
+                    engine.viewport?.isExternalControl = false
+                }
             }
             ControlEventType.RESET -> {
                 resetAiManager()
@@ -267,6 +279,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     override fun renderInUICoords(viewport: ViewportAPI?) {
         super.renderInUICoords(viewport)
+        combatGui?.render()
         drawable?.apply {
             draw(Settings.uiPositionX().toFloat(), Settings.uiPositionY().toFloat())
             textFrameTimer--

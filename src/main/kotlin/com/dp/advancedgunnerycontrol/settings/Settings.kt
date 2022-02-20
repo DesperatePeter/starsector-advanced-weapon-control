@@ -74,18 +74,19 @@ object Settings : SettingsDefinition() {
     var shipModeStorage : List<StorageBase<String>> = listOf()
     var suffixStorage : List<StorageBase<String>> = listOf()
     var fireModeStorage : List<StorageBase<String>> = listOf()
+    var tagStorage : List<StorageBase<List<String>>> = listOf()
 
     fun getKeybindingInfoText() : String{
         return "[NUMPAD1-7]: <MODE> Cycle fire mode for corresponding weapon group (make sure Numlock is enabled)." +
-                "\n[ ${suffixHotkey().toUpperCase()} ]: <SUFFIX> Cycle fire mode suffix (group# = last pressed NUMPAD#)." +
-                "\n[ ${infoHotkey().toUpperCase()} ]: <INFO> Display info." +
-                "\n[ ${loadHotkey().toUpperCase()} ]: <LOAD ALL> Manually load modes for all deployed ships." +
-                "\n[ ${resetHotkey().toUpperCase()} ]: <RESET> Reset all modes back to default for current ship." +
-                "\n[ ${cycleLoadout().toUpperCase()} ]: <LOADOUT> Cycle loadout for all ships (on combat start, loadout 1 is loaded)." +
-                "\n[ ${guiHotkey().toUpperCase()} ]: <GUI> Open AGC GUI (campaign map, NOT in combat)." +
-                "\n[ ${helpHotkey().toUpperCase()} ]: <HELP> Display keybinding info." +
+                "\n[ ${suffixHotkey().uppercaseChar()} ]: <SUFFIX> Cycle fire mode suffix (group# = last pressed NUMPAD#)." +
+                "\n[ ${infoHotkey().uppercaseChar()} ]: <INFO> Display info." +
+                "\n[ ${loadHotkey().uppercaseChar()} ]: <LOAD ALL> Manually load modes for all deployed ships." +
+                "\n[ ${resetHotkey().uppercaseChar()} ]: <RESET> Reset all modes back to default for current ship." +
+                "\n[ ${cycleLoadout().uppercaseChar()} ]: <LOADOUT> Cycle loadout for all ships (on combat start, loadout 1 is loaded)." +
+                "\n[ ${guiHotkey().uppercaseChar()} ]: <GUI> Open AGC GUI (campaign map, NOT in combat)." +
+                "\n[ ${helpHotkey().uppercaseChar()} ]: <HELP> Display keybinding info." +
                 if (!enableCombatChangePersistance()){
-                    "\n[ ${saveHotkey().toUpperCase()} ]: <SAVE> Manually save modes for current ship"
+                    "\n[ ${saveHotkey().uppercaseChar()} ]: <SAVE> Manually save modes for current ship"
                 }else{""}
     }
 
@@ -101,6 +102,7 @@ object Settings : SettingsDefinition() {
         shipModeStorage =  StorageBase.assembleStorageArray<String>("$" + Values.THIS_MOD_NAME + "shipModes")
         suffixStorage = StorageBase.assembleStorageArray<String>("$" + Values.THIS_MOD_NAME + "suffixes")
         fireModeStorage = StorageBase.assembleStorageArray<String>("$" + Values.THIS_MOD_NAME + "weaponModes")
+        tagStorage = StorageBase.assembleStorageArray("$" + Values.THIS_MOD_NAME + "tags")
         forceCustomAI.set(forceCustomAI() && enableCustomAI())
         enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set ( max(0, min(2, customAIFriendlyFireComplexity())))

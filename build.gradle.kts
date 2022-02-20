@@ -189,8 +189,8 @@ tasks {
                    |   , "messageDisplayDuration" : 180 # <---- EDIT HERE ----
                    |   # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
                    |   # Note: I believe the game calculates everything in 2560 x 1440 and then scales it to your actual resolution 
-                   |   , "messagePositionX" : 900 # <---- EDIT HERE ----
-                   |   , "messagePositionY" : 150 # <---- EDIT HERE ----
+                   |   , "messagePositionX" : 300 # <---- EDIT HERE ----
+                   |   , "messagePositionY" : 800 # <---- EDIT HERE ----
                    |   # When on, all weapon groups will be displayed (same as infoHotkey) rather than just the cycled one.
                    |   , "alwaysShowFullInfo" : false # <---- EDIT HERE ----
                    |   # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings

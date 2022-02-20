@@ -9,6 +9,7 @@ object Values {
     const val SUGGESTED_WEAPON_SUFFIXES_KEY = "suggestedWeaponSuffixes"
     const val THIS_MOD_NAME = "AdvancedGunneryControl"
     const val WEAPON_AI_MANAGER_KEY = "WeaponAIManagerAGC"
+    const val CUSTOM_SHIP_DATA_TAG_KEY = "AGC_Tags"
     const val distToAngularDistEvaluationFactor = 1f / 400f
     val HELP_TEXT = "---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
             " for the stated modifications. Note that, unless you use the ForceAutofire ship mode, AI-controlled ships won't" +

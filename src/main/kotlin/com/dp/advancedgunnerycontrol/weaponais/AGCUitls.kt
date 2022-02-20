@@ -136,6 +136,10 @@ fun computeShieldFacingFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float) :
     return 1.0f - min(1.0f, max(0.01f, (flankingAngle - sCov)/15.0f)) // missing the shields by 15° or more means bypassing shot
 }
 
+fun computeTimeToTravel(weapon: WeaponAPI, tgt: Vector2f, leadingFactor: Float = 1f): Float {
+    return (weapon.location - tgt).length() / (weapon.projectileSpeed * leadingFactor)
+}
+
 fun getAverageArmor(armor: ArmorGridAPI) : Float{
     val horizontalCells = armor.leftOf + armor.rightOf
     val verticalCells = armor.above + armor.below

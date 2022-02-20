@@ -188,7 +188,7 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun computeTimeToTravel(tgt: Vector2f): Float {
-        return linearDistanceFromWeapon(tgt) / (weapon.projectileSpeed * (1.5f - 0.5f * currentTgtLeadAcc))
+        return computeTimeToTravel(weapon, tgt, (1.5f - 0.5f * currentTgtLeadAcc))
     }
 
 //    private fun rotateVector(vec: Vector2f, omega: Float): Vector2f {
