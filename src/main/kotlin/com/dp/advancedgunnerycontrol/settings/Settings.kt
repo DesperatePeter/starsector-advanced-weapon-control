@@ -72,6 +72,8 @@ object Settings : SettingsDefinition() {
 
     var suggestedSuffixes = mapOf<String, String>()
 
+    var suggestedTags = mapOf<String, List<String>>()
+
     var shipModeStorage : List<StorageBase<String>> = listOf()
     var suffixStorage : List<StorageBase<String>> = listOf()
     var fireModeStorage : List<StorageBase<String>> = listOf()
@@ -95,6 +97,7 @@ object Settings : SettingsDefinition() {
         super.readSettings()
         weaponBlacklist = MagicSettings.getList(Values.THIS_MOD_NAME, Values.WEAPON_BLACKLIST_KEY)
         suggestedModes = MagicSettings.getStringMap(Values.THIS_MOD_NAME, Values.SUGGESTED_WEAPON_MODES_KEY)
+        suggestedTags = MagicSettings.getStringMap(Values.THIS_MOD_NAME, Values.SUGGESTED_TAGS_KEY).mapValues { it.value.split(",") }
         suggestedSuffixes = MagicSettings.getStringMap(Values.THIS_MOD_NAME, Values.SUGGESTED_WEAPON_SUFFIXES_KEY)
     }
 

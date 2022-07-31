@@ -96,14 +96,14 @@ fun persistTags(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<S
     if(!Settings.tagStorage[loadoutIndex].modesByShip.containsKey(shipId)){
         Settings.tagStorage[loadoutIndex].modesByShip[shipId] = mutableMapOf()
     }
-    Settings.tagStorage[loadoutIndex].modesByShip[shipId]?.set(groupIndex, tags)
+    Settings.tagStorage[loadoutIndex].modesByShip[shipId]?.set(groupIndex, tags.toSet().toList())
 }
 
 fun saveTagsInShip(ship: ShipAPI, groupIndex: Int, tags: List<String>){
     if(!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY)){
         ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] = InShipTagStorage()
     }
-    (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipTagStorage)?.tagsByIndex?.set(groupIndex, tags)
+    (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipTagStorage)?.tagsByIndex?.set(groupIndex, tags.toSet().toList())
 }
 
 fun loadPersistentTags(shipId: String, groupIndex: Int, loadoutIndex: Int) : List<String>{

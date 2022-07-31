@@ -16,7 +16,7 @@ class ApplySuggestedModeAction(attributes: GUIAttributes) : GUIAction(attributes
     }
 
     override fun getTooltip(): String {
-        return "This will apply suggested weapon modes and suffixes to all " +
+        return "This will apply suggested weapon tags to all " +
                 "weapon groups. The suggested modes are defined in data/config/modSettings.json. Other mods can also " +
                 "define suggested modes in their modSettings.json.\n" +
                 "Please double check that all modes look good after applying them. Groups with mixed " +
@@ -31,29 +31,18 @@ class ApplySuggestedModeAction(attributes: GUIAttributes) : GUIAction(attributes
 
     private fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int){
         val groups = ship.variant.weaponGroups
-        val modeStore = FireModeStorage[storageIndex]
-        if(modeStore.modesByShip[ship.id] == null){
-            modeStore.modesByShip[ship.id] = mutableMapOf()
-        }
-        val suffixStore = SuffixStorage[storageIndex]
-        if(suffixStore.modesByShip[ship.id] == null){
-            suffixStore.modesByShip[ship.id] = mutableMapOf()
+        val tagStore = Settings.tagStorage[storageIndex]
+        if(tagStore.modesByShip[ship.id] == null){
+            tagStore.modesByShip[ship.id] = mutableMapOf()
         }
         groups.forEachIndexed { index, group ->
             val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
-            val modeKey : String = if(Settings.suggestedModes.containsKey(weaponID)){
+            val tagKey : String = if(Settings.suggestedTags.containsKey(weaponID)){
                 weaponID
             }else {
-                Settings.suggestedModes.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
+                Settings.suggestedTags.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
             }
-            modeStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedModes[modeKey] ?: ""}
-
-            val suffixKey : String = if(Settings.suggestedSuffixes.containsKey(weaponID)){
-                weaponID
-            }else {
-                Settings.suggestedSuffixes.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
-            }
-            suffixStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedSuffixes[suffixKey] ?: ""}
+            tagStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedTags[tagKey] ?: emptyList() }
         }
     }
 }

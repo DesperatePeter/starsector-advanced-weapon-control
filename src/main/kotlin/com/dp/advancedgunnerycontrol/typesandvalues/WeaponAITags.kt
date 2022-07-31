@@ -1,11 +1,28 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
+import com.dp.advancedgunnerycontrol.gui.isElligibleForPD
+import com.dp.advancedgunnerycontrol.gui.usesAmmo
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.weaponais.tags.*
 import com.fs.starfarer.api.combat.WeaponAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 
 val tags = listOf("PD", "Fighter", "AvoidShields", "TargetShields", "NoFighters",
     "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx>50%)", "ConserveAmmo", "Opportunist")
+
+val pdTags = listOf("PD")
+
+val ammoTags = listOf("ConserveAmmo")
+
+fun shouldTagBeDisabled(groupIndex: Int, sh: FleetMemberAPI, tag: String) : Boolean{
+    if(pdTags.contains(tag) && !isElligibleForPD(groupIndex, sh)){
+        return true
+    }
+    if(ammoTags.contains(tag) && !usesAmmo(groupIndex, sh)){
+        return true
+    }
+    return false
+}
 
 val tagTooltips = mapOf(
     "PD" to "Restricts targeting to fighters and missiles.",

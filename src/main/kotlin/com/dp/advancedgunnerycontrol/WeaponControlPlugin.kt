@@ -114,9 +114,13 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 }
             }
             ControlEventType.RESET -> {
-                resetAiManager()
-                saveCurrentShipIfApplicable()
-                printShipInfo()
+                if(Settings.enableLegacyCommands()) {
+                    resetAiManager()
+                    saveCurrentShipIfApplicable()
+                    printShipInfo()
+                }else{
+                    printMessage("Command unavailable, enable legacy commands in Settings.editme")
+                }
             }
             ControlEventType.LOAD -> {
                 initAllShips()
@@ -137,8 +141,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 printMessage(Settings.getKeybindingInfoText(), Settings.uiDisplayFrames() * 5)
             }
             ControlEventType.SAVE -> {
-                saveCurrentShipState()
-                printMessage("Saved modes for current ship.")
+                if(Settings.enableLegacyCommands()) {
+                    saveCurrentShipState()
+                    printMessage("Saved modes for current ship.")
+                }else{
+                    printMessage("Command unavailable, enable legacy commands in Settings.editme")
+                }
             }
             else -> printMessage("Unrecognized Command (please send bug report)")
         }

@@ -6,13 +6,14 @@
       #       does something that doesn't fit the selected fire mode. So most weapons should be fine.
       "phasecl" # proximity charge launchers are a good example of a weapon that doesn't play nice with conventional AI
     ],
-    # If you are a mod author, feel free to add suggested weapon modes and suffixes to your modSettings.json,
-    # simply map weapon ids to modes/suffixes. You may use regexes to map multiple variants of the same weapon
+    # If you are a mod author, feel free to add suggested weapon tags to your modSettings.json,
+    # simply map weapon ids to tags. For multiple tags for a single weapon, use a single string and separate
+    # tags via comma. You may use regexes to map multiple variants of the same weapon
     # to the same mode. Note that if both a direct match and regex match exist, the direct match will be used.
     # If multiple regex-matches exist, an arbitrary one will be chosen. Please be mindful of not adding regexes
-    # that might match to other weapons (e.g. ".*h.*" would be a very bad idea to add...)
-    "suggestedWeaponModes" : {
-      ".*needler" : "TargetShields",
+    # that might match to other weapons (e.g. ".*h.*" would be a very bad idea to add...),
+    "suggestedWeaponTags" : {
+      ".*needler" : "TargetShields,Hold(Flx>90%)",
       ".*flak" : "PD",
       "hellbore" : "NoFighters",
       "reaper" : "Opportunist",
@@ -20,35 +21,27 @@
       "typhoon" : "Opportunist",
       "atropos.*" : "Opportunist",
       "hammer.*" : "Opportunist",
-      "swarmer" : "Fighters",
+      "swarmer" : "Fighter",
       "harpoon.*" : "Opportunist",
       "breach.*" : "AvoidShields",
       "sabot.*" : "Opportunist",
       "hurricane" : "AvoidShields",
       "squall" : "TargetShields",
-      "locust" : "Fighters",
+      "locust" : "Fighter",
       "pdburst" : "PD",
       "heavyburst" : "PD",
-      "phasebeam" : "AvoidShields",
+      "phasebeam" : "AvoidShields,Hold(Flx>90%)",
       "guardian" : "PD",
       "hil" : "AvoidShields",
-      "mininglaser" : "PD (Flux>50%)",
-      ".*pdlaser" : "PD (Flux>50%)",
-      "amblaster" : "Opportunist"
-    },
-    "suggestedWeaponSuffixes" : {
-      "pulselaser" : "HoldFire (Flux>90%)",
-      "mjolnir" : "HoldFire (Flux>90%)",
-      ".*needler" : "HoldFire (Flux>90%)",
-      "hurricane" : "PanicFire",
-      "locust" : "PanicFire",
-      "squall" : "PanicFire",
-      "harpoon.*" : "PanicFire",
-      "phasebeam" : "HoldFire (Flux>90%)",
-      "heavyblaster" : "HoldFire (Flux>75%)",
-      "miningblaster" : "HoldFire (Flux>75%)",
-      "plasma" : "HoldFire (Flux>90%)",
-      "ionpulser" : "HoldFire (Flux>90%)"
+      "mininglaser" : "PD",
+      ".*pdlaser" : "PD",
+      "amblaster" : "Opportunist",
+      "pulselaser" : "Hold(Flx>90%)",
+      "mjolnir" : "Hold(Flx>90%)",
+      "heavyblaster" : "Hold(Flux>75%)",
+      "miningblaster" : "Hold(Flux>75%)",
+      "plasma" : "Hold(Flux>90%)",
+      "ionpulser" : "Hold(Flux>90%)"
     }
   }
 }

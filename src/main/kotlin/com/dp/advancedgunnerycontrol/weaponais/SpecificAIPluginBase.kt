@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
 // Notes:
-// Initially I was unaware that the player ship's current velocity affects, so some of the code here is a bit patchy
+// Initially I was unaware that the player ship's current velocity affects targeting, so some of the code here is a bit patchy
 // Most of the time a "angular distance", i.e. the sin, is used instead of angles in calculations, as sin(x) ~= x for small angles
 
 import com.dp.advancedgunnerycontrol.settings.Settings

@@ -12,10 +12,12 @@ class CopyLoadoutAction(attributes: GUIAttributes) : GUIAction(attributes) {
         affectedShips().map { it.id }.forEach { shipId->
             ShipModeStorage[AGCGUI.storageIndex].modesByShip[shipId] =
                 (ShipModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
-            FireModeStorage[AGCGUI.storageIndex].modesByShip[shipId] =
-                (FireModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
-            SuffixStorage[AGCGUI.storageIndex].modesByShip[shipId] =
-                (SuffixStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+//            FireModeStorage[AGCGUI.storageIndex].modesByShip[shipId] =
+//                (FireModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+//            SuffixStorage[AGCGUI.storageIndex].modesByShip[shipId] =
+//                (SuffixStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+            Settings.tagStorage[AGCGUI.storageIndex].modesByShip[shipId] =
+                ( Settings.tagStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
         }
     }
 

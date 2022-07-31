@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui.actions
 
 import com.dp.advancedgunnerycontrol.gui.GUIAttributes
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.utils.FireModeStorage
 import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
 import com.dp.advancedgunnerycontrol.utils.SuffixStorage
@@ -28,14 +29,17 @@ class CopyToSameVariantAction(attributes: GUIAttributes) : GUIAction(attributes)
     private fun applyModesToSameVariantShips(ship: FleetMemberAPI, storageIndex: Int){
         Global.getSector().playerFleet.membersWithFightersCopy.filter{!it.isFighterWing && it != ship}.filterNotNull().forEach {
             if (it.variant.hullVariantId + it.variant.displayName == ship.variant.hullVariantId + ship.variant.displayName){
-                FireModeStorage[storageIndex].modesByShip[ship.id]?.let { v ->
-                    FireModeStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
-                }
+//                FireModeStorage[storageIndex].modesByShip[ship.id]?.let { v ->
+//                    FireModeStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
+//                }
                 ShipModeStorage[storageIndex].modesByShip[ship.id]?.let { v ->
                     ShipModeStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
                 }
-                SuffixStorage[storageIndex].modesByShip[ship.id]?.let { v ->
-                    SuffixStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
+//                SuffixStorage[storageIndex].modesByShip[ship.id]?.let { v ->
+//                    SuffixStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
+//                }
+                Settings.tagStorage[storageIndex].modesByShip[ship.id]?.let { v->
+                    Settings.tagStorage[storageIndex].modesByShip[it.id] = v.toMutableMap()
                 }
             }
         }
