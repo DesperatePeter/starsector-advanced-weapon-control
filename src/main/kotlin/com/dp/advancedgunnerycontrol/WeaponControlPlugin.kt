@@ -47,11 +47,11 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         if (!isInitialized) return
         combatGui?.advance()
 
-//        if(initialShipInitRequired){
-//            initialShipInitRequired = !initAllShips()
-//        }
+        if(initialShipInitRequired){
+            initialShipInitRequired = !initAllShips()
+        }
 
-        // if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
+         if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
 
         if (keyManager.parseInputEvents(events)) {
             processControlEvents()
@@ -59,33 +59,34 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun initAllShips() : Boolean{
-        engine.ships.filterNotNull().filter { it.owner == 0 }.let {
-            if (it.isEmpty()) return false
-            var n = 0
-            it.forEach { ship ->
-                n++
-                initOrGetAIManager(ship)
-            }
-            printMessage("Loaded fire modes for $n ship(s)!")
-            return true
+        if(engine.ships.none { it.owner == 0 }){
+            return false
         }
+        val remainingShips = reloadAllShips(Values.storageIndex)
+        if(Settings.enableLegacyCommands()){
+            remainingShips.let {
+                it.forEach { ship ->
+                    initOrGetAIManager(ship)
+                }
+            }
+        }
+        return true
     }
 
     private fun initNewlyDeployedShips(deployedShips: List<String>?){
         deployedShips?.let { fleetShips ->
             if (fleetShips.isEmpty()) return
             // at least when deploying multiple ships, this should be faster than searching each time
-            val ships = engine.ships.associateBy { it.fleetMemberId }.filter { it.value?.owner == 0 }
+            val ships = engine.ships.associateBy { it.fleetMemberId }
+                .filter { it.value?.owner == 0 }.filter { fleetShips.contains(it.key) }
             if(ships.isEmpty()) return
-            var n = 0
-            fleetShips.forEach { fleetShip ->
-                if(ships.containsKey(fleetShip)){
-                    initOrGetAIManager(ships[fleetShip])
-                    n++
+            val remainingShips = reloadShips(Values.storageIndex, ships.values.toList())
+            if(Settings.enableLegacyCommands()){
+                remainingShips.let {
+                    it.forEach { ship ->
+                        initOrGetAIManager(ship)
+                    }
                 }
-            }
-            if(n>0) {
-                printMessage("Loaded fire modes for $n newly deployed ship(s)!")
             }
         }
     }
@@ -94,8 +95,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         when (keyManager.mkeyStatus.mcontrolEvent) {
             ControlEventType.COMBINE -> combineWeaponGroup()
             ControlEventType.CYCLE -> {
-                cycleWeaponGroupMode()
-                saveCurrentShipIfApplicable()
+                if(Settings.enableLegacyCommands()){
+                    cycleWeaponGroupMode()
+                    saveCurrentShipIfApplicable()
+                }else{
+                    printMessage("Command unavailable, enable legacy commands in Settings.editme")
+                }
             }
             ControlEventType.INFO -> {
                 // printShipInfo()
@@ -121,8 +126,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 printMessage("Switched to loadout ${storageIndex + 1} / ${Settings.maxLoadouts()} <${Settings.loadoutNames()[storageIndex]}>")
             }
             ControlEventType.SUFFIX -> {
-                cycleSuffix()
-                saveCurrentShipIfApplicable()
+                if(Settings.enableLegacyCommands()){
+                    cycleSuffix()
+                    saveCurrentShipIfApplicable()
+                }else{
+                    printMessage("Command unavailable, enable legacy commands in Settings.editme")
+                }
             }
             ControlEventType.HELP -> {
                 printMessage(Settings.getKeybindingInfoText(), Settings.uiDisplayFrames() * 5)
@@ -147,7 +156,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         val ship = determineSelectedShip(engine) ?: return false
         val aiManager = initOrGetAIManager(ship) ?: return false
         val index = keyManager.mkeyStatus.lastPressedWeaponGroup - 1
-        if (index == -1 || ship.weaponGroupsCopy?.size ?: 0 <= index) {
+        if (index == -1 || (ship.weaponGroupsCopy?.size ?: 0) <= index) {
             return false
         }
         return aiManager.cycleSuffix(index)
@@ -157,7 +166,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         val ship = determineSelectedShip(engine)
         val aiManager = initOrGetAIManager(ship) ?: return
         val index = keyManager.mkeyStatus.mpressedWeaponGroup - 1
-        if (ship?.weaponGroupsCopy?.size ?: 0 <= index) {
+        if ((ship?.weaponGroupsCopy?.size ?: 0) <= index) {
             printMessage("Invalid Weapon Group")
             return
         }

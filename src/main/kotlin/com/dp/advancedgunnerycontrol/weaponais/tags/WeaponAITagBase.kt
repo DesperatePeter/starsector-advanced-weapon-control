@@ -1,8 +1,12 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
+import com.dp.advancedgunnerycontrol.weaponais.times_
+import com.dp.advancedgunnerycontrol.weaponais.vectorFromAngleDeg
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
+import org.lazywizard.lazylib.ext.minus
 import org.lwjgl.util.vector.Vector2f
+import kotlin.math.abs
 
 abstract class WeaponAITagBase(protected val weapon: WeaponAPI) {
     abstract fun isValidTarget(entity: CombatEntityAPI) : Boolean
@@ -10,4 +14,5 @@ abstract class WeaponAITagBase(protected val weapon: WeaponAPI) {
     abstract fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f) : Boolean
     abstract fun isBaseAiOverridable() : Boolean
     abstract fun avoidDebris() : Boolean
+    open fun isValid() : Boolean = true
 }

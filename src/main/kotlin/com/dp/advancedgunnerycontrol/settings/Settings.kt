@@ -40,6 +40,7 @@ object Settings : SettingsDefinition() {
     val cycleLoadout = addSetting<Char>("cycleLoadoutHotkey", '+')
     val maxLoadouts = addSetting<Int>("maxLoadouts", 3)
     val loadoutNames = addSetting<List<String>> ("loadoutNames", listOf())
+    val enableLegacyCommands = addSetting<Boolean>("enableLegacyCommands", false)
 
     // mode/suffix params
     val opportunistKineticThreshold = addSetting<Float> ("opportunist_kineticThreshold", 0.5f)

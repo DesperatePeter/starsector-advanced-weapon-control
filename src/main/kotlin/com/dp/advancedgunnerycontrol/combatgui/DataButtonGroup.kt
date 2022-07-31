@@ -13,7 +13,7 @@ class DataButtonGroup(
     val xTooltip: Float, val yTooltip: Float,
     val descriptionText: String, val horizontal: Boolean = true
 ) {
-    private val buttons = mutableListOf<DataToggleButton>()
+    val buttons = mutableListOf<DataToggleButton>()
     private val descriptionOffset = 40f
     private var currentX = x
     private var currentY = y
@@ -26,11 +26,24 @@ class DataButtonGroup(
         }else{
             currentY -= h + padding
         }
-
+    }
+    fun disableButton(text: String){
+        buttons.find { it.info.txt == text }?.let { it.isDisabled = true }
+    }
+    fun refreshAllButtons(data : List<Any>){
+        buttons.forEach {
+            it.isActive = data.contains(it.data)
+        }
+    }
+    fun enableAllButtons(){
+        buttons.forEach { it.isDisabled = false }
+    }
+    fun getData() : List<Any>{
+        return buttons.mapNotNull { it.getDataIfActive() }
     }
     fun advance(){
         if(buttons.count { it.advance() } > 0){ // if at least one button was pressed
-            action.execute(buttons.mapNotNull { it.getData() })
+            action.execute(buttons.mapNotNull { it.getDataIfActive() })
         }
     }
     fun render(){

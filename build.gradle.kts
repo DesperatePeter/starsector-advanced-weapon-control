@@ -181,6 +181,11 @@ tasks {
 
 
                    |   #                                 #### UI SETTINGS ####
+                   |   # If set to true, the old hotkey commands and the Mode+Suffix style of WeaponModes still work
+                   |   # WARNING: Mixing and matching the new and old style is largely untested and might cause weird behavior
+                   |   #          If both types of data exist for a ship, priority will be given to the new system.
+                   |   #          If you prefer the old system, I'd recommend using an older version (0.13.n) instead
+                   |   , "enableLegacyCommands" : false
                    |   # Switch this off if you want to reset fire modes every battle (GUI only works when enabled)
                    |   , "enablePersistentFireModes" : true # <---- EDIT HERE ----
                    |   # If set to false, changes are only persistent if made in the GUI or manually saved
