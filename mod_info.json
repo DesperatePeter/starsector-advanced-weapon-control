@@ -4,7 +4,7 @@
     "name": "AdvancedGunneryControl",
     "author": "DesperatePeter",
     "utility": "true",
-    "version": { "major":"0", "minor": "13", "patch": "2" },
+    "version": { "major":"1", "minor": "0", "patch": "0" },
     "description": "A Starsector mod that adds more autofire modes for weapon groups. On the campaign map, press J to open a GUI. In combat, with NUMLOCK enabled, press the NUMPAD keys to cycle weapon modes.",
     "gameVersion": "0.95.1a-RC6",
     "jars":["jars/AdvancedGunneryControl.jar"],

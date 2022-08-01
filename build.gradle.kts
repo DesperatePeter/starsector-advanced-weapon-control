@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "D:/Spiele/Starsector"
-    val modVersion = "0.13.2"
+    val modVersion = "1.0.0"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -182,6 +182,7 @@ tasks {
 
                    |   #                                 #### UI SETTINGS ####
                    |   # If set to true, the old hotkey commands and the Mode+Suffix style of WeaponModes still work
+                   |   # They won't be supported in the GUIs anymore, though, and any actions in the GUI will overwrite them
                    |   # WARNING: Mixing and matching the new and old style is largely untested and might cause weird behavior
                    |   #          If both types of data exist for a ship, priority will be given to the new system.
                    |   #          If you prefer the old system, I'd recommend using an older version (0.13.n) instead
@@ -199,7 +200,7 @@ tasks {
                    |   # When on, all weapon groups will be displayed (same as infoHotkey) rather than just the cycled one.
                    |   , "alwaysShowFullInfo" : false # <---- EDIT HERE ----
                    |   # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings
-                   |   , "saveLoadInfoHotkey" : "j" # <---- EDIT HERE ----
+                   |   , "inCombatGuiHotkey" : "j" # <---- EDIT HERE ----
                    |   , "resetHotkey" : "/" # <---- EDIT HERE ----
                    |   , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
                    |   , "suffixHotkey" : "-" # <---- EDIT HERE ----
