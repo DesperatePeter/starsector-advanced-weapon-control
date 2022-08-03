@@ -7,8 +7,9 @@ import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
-class PDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
+class PDAtFluxThresholdTag(weapon: WeaponAPI, private val threshold: Float) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
+        if(weapon.ship.fluxLevel <= threshold) return true
         return (entity as? MissileAPI) != null || (entity as? ShipAPI)?.isFighter == true
     }
 

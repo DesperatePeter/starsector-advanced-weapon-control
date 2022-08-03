@@ -196,6 +196,7 @@ This mod doesn't affect anything outside of combat, so it's very unlikely to cau
 - 0.13.1: refactor GUI dialogue options, add setting to disable automatic in-combat persistence.
 - 0.13.2: minor fixes and dependency upgrades
 - 1.0.0: Big rework: Replace in-combat hotkeys with a GUI, replace weapon modes and suffixes with a tag system
+- 1.1.0: Fix issues (combat GUI with screenScale, clicking noise, settings), add customizable thresholds and new tags
 
 ## Acknowledgements ##
 

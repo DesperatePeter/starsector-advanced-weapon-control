@@ -14,6 +14,8 @@ object Settings : SettingsDefinition() {
     private val cycleOrderStrings = addSetting<List<String>>("cycleOrder", listOf("PD", "Fighters", "Missiles", "NoFighters"))
     private var cycleOrderInternal = listOf(FireMode.DEFAULT)
     fun cycleOrder() : List<FireMode> = cycleOrderInternal
+    val tagList = addSetting<List<String>>("tagList",listOf("PD", "Fighter", "AvoidShields", "TargetShields", "NoFighters",
+        "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx>50%)", "ConserveAmmo", "Opportunist"))
     val enableCustomAI = addSetting<Boolean>("enableCustomAI", true)
     val customAIRecursionLevel = addSetting<Int>("customAIRecursionLevel", 1)
     val forceCustomAI = addSetting<Boolean>("forceCustomAI", false)
@@ -25,7 +27,7 @@ object Settings : SettingsDefinition() {
     val uiPositionX = addSetting<Int>("messagePositionX", 900)
     val uiPositionY = addSetting<Int>("messagePositionY", 150)
     val uiForceFullInfo = addSetting<Boolean>("alwaysShowFullInfo", false)
-    val infoHotkey = addSetting<Char>("saveLoadInfoHotkey", 'j')
+    val infoHotkey = addSetting<Char>("inCombatGuiHotkey", 'j')
     val resetHotkey = addSetting<Char>("resetHotkey", '/')
     val loadHotkey = addSetting<Char>("loadAllShipsHotkey", '*')
     val suffixHotkey = addSetting<Char>("suffixHotkey", '-')

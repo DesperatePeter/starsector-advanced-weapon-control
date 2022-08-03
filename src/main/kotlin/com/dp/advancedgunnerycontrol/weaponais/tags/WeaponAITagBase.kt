@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.weaponais.times_
 import com.dp.advancedgunnerycontrol.weaponais.vectorFromAngleDeg
 import com.fs.starfarer.api.combat.CombatEntityAPI
@@ -14,5 +15,7 @@ abstract class WeaponAITagBase(protected val weapon: WeaponAPI) {
     abstract fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f) : Boolean
     abstract fun isBaseAiOverridable() : Boolean
     abstract fun avoidDebris() : Boolean
-    open fun isValid() : Boolean = true
+    open fun isValid() : Boolean {
+        return !Settings.weaponBlacklist.contains(weapon.id)
+    }
 }

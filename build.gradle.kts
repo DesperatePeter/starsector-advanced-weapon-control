@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "D:/Spiele/Starsector"
-    val modVersion = "1.0.0"
+    val modVersion = "1.1.0"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -157,12 +157,12 @@ tasks {
                    | # NOTE: For bool values, everything but true will be interpreted as false
                    | #       Check starsector.log (in the Starsector folder) for details (ctrl+f for advancedgunnerycontrol)
                    | {
-                   |   #                                 #### CYCLE ORDER ####
-                   |   # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
-                   |   # Delete/add modes as you see fit. Note: "Default" will always be the first mode.
-                   |   # Allowed values: "PD", "PD (Flux>50%)", "PD (Ammo<90%)", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist", "TargetShields", "AvoidShields", "NoPD"
-                   |   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
-                   |   "cycleOrder" : ["PD", "PD (Flux>50%)", "Fighters", "Missiles", "NoFighters", "Opportunist", "TargetShields", "AvoidShields" ] # <---- EDIT HERE ----
+                   |   #                                 #### TAG LIST ####
+                   |   # Determines which tags will be shown in the GUIs. Feel free to add/remove tags as you see fit.
+                   |   # Allowed values are: (replace N with a number between 0 and 100)
+                   |   # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo", "Opportunist"
+                   |   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx>50%)", "ConserveAmmo", "Opportunist"]
+                   |  
 
 
                    |   #                                 #### CUSTOM AI ####
@@ -181,41 +181,32 @@ tasks {
 
 
                    |   #                                 #### UI SETTINGS ####
-                   |   # If set to true, the old hotkey commands and the Mode+Suffix style of WeaponModes still work
-                   |   # They won't be supported in the GUIs anymore, though, and any actions in the GUI will overwrite them
-                   |   # WARNING: Mixing and matching the new and old style is largely untested and might cause weird behavior
-                   |   #          If both types of data exist for a ship, priority will be given to the new system.
-                   |   #          If you prefer the old system, I'd recommend using an older version (0.13.n) instead
-                   |   , "enableLegacyCommands" : false
-                   |   # Switch this off if you want to reset fire modes every battle (GUI only works when enabled)
+                   |   
+                   |   # Switch this off if you want to reset modes every battle (GUI only works when enabled)
                    |   , "enablePersistentFireModes" : true # <---- EDIT HERE ----
-                   |   # If set to false, changes are only persistent if made in the GUI or manually saved
+                   |   # If set to false, changes are only persistent if made in the campaign-GUI
                    |   , "persistChangesInCombat" : true # <---- EDIT HERE ----
                    |   # Number of frames messages will be displayed before fading. -1 for infinite
-                   |   , "messageDisplayDuration" : 180 # <---- EDIT HERE ----
+                   |   , "messageDisplayDuration" : 250 # <---- EDIT HERE ----
                    |   # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
                    |   # Note: I believe the game calculates everything in 2560 x 1440 and then scales it to your actual resolution 
                    |   , "messagePositionX" : 300 # <---- EDIT HERE ----
                    |   , "messagePositionY" : 800 # <---- EDIT HERE ----
-                   |   # When on, all weapon groups will be displayed (same as infoHotkey) rather than just the cycled one.
-                   |   , "alwaysShowFullInfo" : false # <---- EDIT HERE ----
                    |   # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings
                    |   , "inCombatGuiHotkey" : "j" # <---- EDIT HERE ----
                    |   , "resetHotkey" : "/" # <---- EDIT HERE ----
-                   |   , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
-                   |   , "suffixHotkey" : "-" # <---- EDIT HERE ----
+
                    |   , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
                    |   , "GUIHotkey" : "j" # <---- EDIT HERE ----
                    |   , "helpHotkey" : "?" # <---- EDIT HERE ----
-                   |   , "saveHotkey" : "~" # <---- EDIT HERE ---- (only relevant if persistChangesInCombat==false)
+                   |   
                    |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
                    |   , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
 
                    |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
                    |   # This can't be enabled when enablePersistentFireModes is off
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
-                   |   # When enabled, fire modes where all weapons are invalid (e.g. PD mode for non-PD weapons) are skipped when cycling.
-                   |   , "skipInvalidModes" : true # <---- EDIT HERE ----
+
                    |   # Press the "J"-Key while on the system/hyperspace map with this enabled
                    |   , "enableGUI" : true # <---- EDIT HERE ----
 
@@ -285,20 +276,44 @@ tasks {
                    |   
                    |   ,"retreat_hull" : 0.5 # retreat if hull level < X
                    |   ,"shieldsOff_flux" : 0.5 # In ShieldsOff (Flux>50%) mode, turn off shields if flux level > X
+
+                   |   ,"conserveAmmo_ammo" : 0.5   
                    |   
-                   |   ,"holdFire50_flux" : 0.5
-                   |   ,"holdFire75_flux" : 0.75
-                   |   ,"holdFire90_flux" : 0.9
-                   |   
-                   |   ,"pd50_flux" : 0.5
-                   |   ,"pd90_ammo" : 0.5
-                   |   ,"conserveAmmo_ammo" : 0.5
-                   |   
-                   |   ,"panicFire_hull" : 0.5
                    |   
                    |   ,"retreat_shouldDirectRetreat" : false
                    |   # If false, the BigShips/SmallShips modes will still target frigates/capitals etc.
                    |   ,"strictBigSmallShipMode" : true 
+                   |   
+                   |   #                                 #### LEGACY STUFF ####             
+                   |   # Values down here are only relevant if you have enableLegacyCommands enabled
+                   |   # If set to true, the old hotkey commands and the Mode+Suffix style of WeaponModes still work
+                   |   # They won't be supported in the GUIs anymore, though, and any actions in the GUI will overwrite them
+                   |   # WARNING: Mixing and matching the new and old style is largely untested and might cause weird behavior
+                   |   #          If both types of data exist for a ship, priority will be given to the new system.
+                   |   #          If you prefer the old system, I'd recommend using an older version (0.13.n) instead
+                   |   , "enableLegacyCommands" : false
+                   |   # When enabled, fire modes where all weapons are invalid (e.g. PD mode for non-PD weapons) are skipped when cycling.
+                   |   , "skipInvalidModes" : true # <---- EDIT HERE ----
+                   |   ,"holdFire50_flux" : 0.5
+                   |   ,"holdFire75_flux" : 0.75
+                   |   ,"holdFire90_flux" : 0.9
+                   |   ,"panicFire_hull" : 0.5
+                   |   ,"pd50_flux" : 0.5
+                   |   ,"pd90_ammo" : 0.5
+                   |   
+                   |   , "saveHotkey" : "~" # <---- EDIT HERE ---- (only relevant if persistChangesInCombat==false)
+                   |   , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
+                   |   , "suffixHotkey" : "-" # <---- EDIT HERE ----
+                   |   # When on, all weapon groups will be displayed (same as infoHotkey) rather than just the cycled one.
+                   |   , "alwaysShowFullInfo" : false # <---- EDIT HERE ----
+                   |   #                                 #### CYCLE ORDER ####
+                   |   # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
+                   |   # Delete/add modes as you see fit. Note: "Default" will always be the first mode.
+                   |   # Allowed values: "PD", "PD (Flux>50%)", "PD (Ammo<90%)", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist", "TargetShields", "AvoidShields", "NoPD"
+                   |   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
+                   |   ,"cycleOrder" : ["PD", "PD (Flux>50%)", "Fighters", "Missiles", "NoFighters", "Opportunist", "TargetShields", "AvoidShields" ] # <---- EDIT HERE ----
+                   |   
+                   |   
                    | }
 
                 """.trimMargin()

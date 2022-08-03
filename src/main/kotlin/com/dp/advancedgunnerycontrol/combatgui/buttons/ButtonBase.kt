@@ -47,8 +47,9 @@ abstract class ButtonBase(val info: ButtonInfo)
         return false
     }
     protected fun isHover() : Boolean{
-        val mx = Mouse.getX().toFloat()
-        val my = Mouse.getY().toFloat()
+        val ssm = Global.getSettings().screenScaleMult
+        val mx = Mouse.getX().toFloat() / ssm
+        val my = Mouse.getY().toFloat() / ssm
         return mx >= info.x && mx <= info.x + info.w && my >= info.y && my <= info.y+info.h
     }
     private fun renderGLButton(){

@@ -117,7 +117,7 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
         weaponButtonGroups.forEachIndexed { index, buttonGroup ->
             val currentTags = fetchCurrentWeaponTags(index)
             tags.forEach {
-                buttonGroup.addButton(it, it, tagTooltips[it] ?: "", currentTags.contains(it))
+                buttonGroup.addButton(it, it, getTagTooltip(it), currentTags.contains(it))
             }
         }
         ShipModes.values().mapNotNull { shipModeToString[it] }.forEach {
@@ -131,15 +131,13 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
             val currentTags = fetchCurrentWeaponTags(index)
             buttonGroup.refreshAllButtons(currentTags)
             buttonGroup.enableAllButtons()
-            buttonGroup.getData().filterIsInstance<String>().forEach { tag ->
-                tagIncompatibility[tag]?.let { it.forEach { innerTag ->
-                    buttonGroup.disableButton(innerTag)
-                } }
-            }
-            buttonGroup.buttons.forEach{ btn ->
-                val str = btn.data as? String ?: ""
+            buttonGroup.buttons.forEach {
+                val str = it.data as? String ?: ""
+                if(isIncompatibleWithExistingTags(str, currentTags)){
+                    it.isDisabled = true
+                }
                 if(true != ship.weaponGroupsCopy[index]?.weaponsCopy?.all { w -> createTag(str, w )?.isValid() == true }){
-                    btn.isDisabled = true
+                    it.isDisabled = true
                 }
             }
         }

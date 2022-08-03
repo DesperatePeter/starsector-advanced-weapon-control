@@ -22,7 +22,7 @@ class TagButton(ship: FleetMemberAPI, group : Int, tag : String, button: ButtonA
             tags.forEach {
                 toReturn.add(TagButton(ship, group, it, tooltip.addAreaCheckbox(it, it,
                     Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), 160f, 18f, 3f)))
-                tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(tagTooltips[it] ?: ""), TooltipMakerAPI.TooltipLocation.BELOW)
+                tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(getTagTooltip(it)), TooltipMakerAPI.TooltipLocation.BELOW)
                 if(loadPersistentTags(ship.id, group, AGCGUI.storageIndex).contains(it)){
                     toReturn.last().check()
                 }
@@ -30,19 +30,18 @@ class TagButton(ship: FleetMemberAPI, group : Int, tag : String, button: ButtonA
             toReturn.forEach {
                 it.sameGroupButtons = toReturn
             }
+            toReturn.forEach {
+                it.updateDisabledButtons()
+            }
             return toReturn
         }
     }
 
     private fun updateDisabledButtons(){
         val tags = loadPersistentTags(ship.id, group, AGCGUI.storageIndex)
-        val tagsToDisable = mutableSetOf<String>()
-        tags.forEach {
-            tagIncompatibility[it]?.let { it1 -> tagsToDisable.addAll(it1) }
-        }
         sameGroupButtons.forEach {
             it.enable()
-            if(tagsToDisable.contains(it.associatedValue) || shouldTagBeDisabled(group, ship, it.associatedValue)){
+            if(isIncompatibleWithExistingTags(it.associatedValue, tags) || shouldTagBeDisabled(group, ship, it.associatedValue)){
                 it.disable()
             }
         }
@@ -51,14 +50,15 @@ class TagButton(ship: FleetMemberAPI, group : Int, tag : String, button: ButtonA
     override fun executeCallbackIfChecked() {
         if (!active && button.isChecked){
             check()
+            updateDisabledButtons()
         } else if(active && !button.isChecked){
             val tags = loadPersistentTags(ship.id, group, AGCGUI.storageIndex).toMutableList()
             tags.remove(associatedValue)
             persistTags(ship.id, group, AGCGUI.storageIndex, tags)
             uncheck()
+            updateDisabledButtons()
         }
         button.isChecked = active
-        updateDisabledButtons()
     }
     override fun onActivate() {
         val tags = loadPersistentTags(ship.id, group, AGCGUI.storageIndex).toMutableList()

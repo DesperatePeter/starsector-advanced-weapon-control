@@ -42,6 +42,8 @@
       "miningblaster" : "Hold(Flux>75%)",
       "plasma" : "Hold(Flux>90%)",
       "ionpulser" : "Hold(Flux>90%)"
-    }
+    },
+    "suggestedWeaponModes" : {},
+    "suggestedWeaponSuffixes" : {}
   }
 }
