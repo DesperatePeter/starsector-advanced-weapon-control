@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "D:/Spiele/Starsector"
-    val modVersion = "1.1.0"
+    val modVersion = "1.1.1"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -189,9 +189,13 @@ tasks {
                    |   # Number of frames messages will be displayed before fading. -1 for infinite
                    |   , "messageDisplayDuration" : 250 # <---- EDIT HERE ----
                    |   # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
-                   |   # Note: I believe the game calculates everything in 2560 x 1440 and then scales it to your actual resolution 
-                   |   , "messagePositionX" : 300 # <---- EDIT HERE ----
-                   |   , "messagePositionY" : 800 # <---- EDIT HERE ----
+                   |   # Values between 0 and 1, x = 0.0 means left side of the screen, y = 0.0 means bottom of the screen
+                   |   # Note: These values will automatically get adjusted by your scaling multiplier
+                   |   , "messagePositionX" : 0.2 # <---- EDIT HERE ----
+                   |   , "messagePositionY" : 0.4 # <---- EDIT HERE ----
+                   |   # X/Y Position where the anchor (top left corner of first weapon group button row) of the combat GUI will be placed
+                   |   , "combatUiAnchorX" : 0.025
+                   |   , "combatUiAnchorY" : 0.85
                    |   # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings
                    |   , "inCombatGuiHotkey" : "j" # <---- EDIT HERE ----
                    |   , "resetHotkey" : "/" # <---- EDIT HERE ----

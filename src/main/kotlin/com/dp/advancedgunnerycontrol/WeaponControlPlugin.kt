@@ -123,11 +123,19 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 }
             }
             ControlEventType.LOAD -> {
-                initAllShips()
+                if(Settings.enableLegacyCommands()) {
+                    initAllShips()
+                }else{
+                    printMessage("Command unavailable, enable legacy commands in Settings.editme")
+                }
             }
             ControlEventType.CYCLE_LOADOUT -> {
-                cycleLoadouts()
-                printMessage("Switched to loadout ${storageIndex + 1} / ${Settings.maxLoadouts()} <${Settings.loadoutNames()[storageIndex]}>")
+                if(Settings.enableLegacyCommands()) {
+                    cycleLoadouts()
+                    printMessage("Switched to loadout ${storageIndex + 1} / ${Settings.maxLoadouts()} <${Settings.loadoutNames()[storageIndex]}>")
+                }else{
+                    printMessage("Command unavailable, enable legacy commands in Settings.editme")
+                }
             }
             ControlEventType.SUFFIX -> {
                 if(Settings.enableLegacyCommands()){
@@ -298,7 +306,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         super.renderInUICoords(viewport)
         combatGui?.render()
         drawable?.apply {
-            draw(Settings.uiPositionX().toFloat(), Settings.uiPositionY().toFloat())
+            draw(Settings.uiMessagePositionX() * Global.getSettings().screenHeightPixels, Settings.uiMessagePositionY() * Global.getSettings().screenHeightPixels)
             textFrameTimer--
         }
         if ((textFrameTimer <= 0) && (Settings.uiDisplayFrames() >= 0)) {

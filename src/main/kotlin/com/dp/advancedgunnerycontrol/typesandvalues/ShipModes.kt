@@ -25,13 +25,13 @@ val shipModeToString = shipModeFromString.map { it.value to it.key }.toMap()
 val detailedShipModeDescriptions = mapOf(
     ShipModes.DEFAULT to "Overwrites all other ship modes and forces default ship AI. Use to quickly turn off all ship mode tags.",
     ShipModes.FORCE_AUTOFIRE to "Forces autofire for all weapon groups. Use this to make ships obey all modes literally (99% of the time)." +
-            " Use with caution and make sure to combine with HoldFire-suffixes to prevent the ship from fluxing out.",
+            "\nUse with caution and make sure to combine with HoldFire-suffixes to prevent the ship from fluxing out.",
     ShipModes.SHIELDS_OFF to "Force turn off the shield when ship flux exceeds ${(Settings.shieldsOffThreshold() * 100f).toInt()}%. " +
             "Make sure you have enough armor/PD to pull this off.",
     ShipModes.VENT to "Vent when ship flux exceeds ${(Settings.ventFluxThreshold() * 100f).toInt()}%. The ship will try to evaluate " +
             "the situation and only vent if it believes" +
-            " that it will survive doing so. The ship will feel safer if it has high armor/hull and enemies lack high DPS HE weapons" +
-            " and finisher missiles and/or if there are many allies nearby. This mode works best on big, heavily armored, ships.",
+            " that it will survive doing so.\nThe ship will feel safer if it has high armor/hull and enemies lack high DPS HE weapons" +
+            " and finisher missiles and/or if there are many allies nearby. Works best on big, heavily armored, ships.",
     ShipModes.VENT_AGGRESSIVE to "Similar to ${shipModeToString[ShipModes.VENT]}, but at " +
             "${(Settings.aggressiveVentFluxThreshold() * 100f).toInt()}% flux and with much less concern for" +
             " the ship's survival. It will also prevent the AI from backing off while venting. Use with caution!",

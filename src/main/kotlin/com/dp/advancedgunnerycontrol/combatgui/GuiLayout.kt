@@ -8,6 +8,7 @@ import com.dp.advancedgunnerycontrol.gui.groupAsString
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.utils.*
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipAPI
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
@@ -16,14 +17,17 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
     companion object{
         private const val xSpacing = 105f
         private const val ySpacing = 50f
-        private const val xTooltip = 300f
-        private const val yTooltip = 500f
+        private val xTooltip = Settings.uiMessagePositionX() * Global.getSettings().screenWidthPixels
+        private val yTooltip = Settings.uiMessagePositionY() * Global.getSettings().screenHeightPixels
+        private val xAnchor = Settings.uiAnchorX() * Global.getSettings().screenWidthPixels
+        private val yAnchor = Settings.uiAnchorY() * Global.getSettings().screenHeightPixels
         private var storageIndex = Values.storageIndex
         private val color = Color.GREEN
     }
 
     private fun createButtonInfo(xIndex: Int, txt: String, tooltipTxt: String) : ButtonInfo{
-        return ButtonInfo(Settings.uiPositionX().toFloat() + xIndex * xSpacing, Settings.uiPositionY().toFloat() + ySpacing,
+        return ButtonInfo(
+            xAnchor + xIndex * xSpacing, yAnchor + ySpacing,
             100f, 20f, 0.5f, txt, font, color, HoverTooltip(
                 xTooltip, yTooltip, tooltipTxt))
     }
@@ -38,8 +42,10 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
                 for (i in 0 until ship.weaponGroupsCopy.size){
                     applyTagsToWeaponGroup(ship, i, noTags)
                     saveTags(ship, i, storageIndex, noTags)
-                    refreshButtons()
                 }
+                saveShipModes(ship, storageIndex, noTags)
+                assignShipMode(noTags, ship)
+                refreshButtons()
             }
         }
         val cycleLoadoutButtonInfo = createButtonInfo(xIndex++, "Cycle LO",
@@ -105,12 +111,12 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
     private val actionButtons = createActionButtons()
     private val weaponButtonGroups = List(ship.variant.weaponGroups.size) { index ->
         DataButtonGroup(
-            Settings.uiPositionX().toFloat(), Settings.uiPositionY().toFloat() - index * ySpacing, 100f,
+            xAnchor, yAnchor - index * ySpacing, 100f,
             20f, 0.5f, font, color, 5f, createWeaponGroupAction(ship, index), xTooltip, yTooltip, createDescriptionText(index)
         )
     }
-    private val shipButtonGroup = DataButtonGroup(Settings.uiPositionX().toFloat(),
-        Settings.uiPositionY().toFloat() - weaponButtonGroups.size * ySpacing,
+    private val shipButtonGroup = DataButtonGroup(xAnchor,
+        yAnchor - weaponButtonGroups.size * ySpacing,
     100f, 20f, 0.5f, font, color, 5f, createShipAiBtnGroupAction(ship), xTooltip, yTooltip, "Ship AI Modes")
 
     init {
@@ -136,7 +142,7 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
                 if(isIncompatibleWithExistingTags(str, currentTags)){
                     it.isDisabled = true
                 }
-                if(true != ship.weaponGroupsCopy[index]?.weaponsCopy?.all { w -> createTag(str, w )?.isValid() == true }){
+                if(true != ship.weaponGroupsCopy[index]?.weaponsCopy?.any { w -> createTag(str, w )?.isValid() == true }){
                     it.isDisabled = true
                 }
             }

@@ -24,8 +24,10 @@ object Settings : SettingsDefinition() {
     val customAIFriendlyFireCaution = addSetting<Float>("customAIFriendlyFireCaution", 1.0f)
     val customAIFriendlyFireComplexity = addSetting<Int>("customAIFriendlyFireAlgorithmComplexity", 1)
     val uiDisplayFrames = addSetting<Int>("messageDisplayDuration", 150)
-    val uiPositionX = addSetting<Int>("messagePositionX", 900)
-    val uiPositionY = addSetting<Int>("messagePositionY", 150)
+    val uiMessagePositionX = addSetting<Float>("messagePositionX", 0.15f)
+    val uiMessagePositionY = addSetting<Float>("messagePositionY", 0.25f)
+    val uiAnchorX = addSetting<Float>("combatUiAnchorX", 0.1f)
+    val uiAnchorY = addSetting<Float>("combatUiAnchorY", 0.7f)
     val uiForceFullInfo = addSetting<Boolean>("alwaysShowFullInfo", false)
     val infoHotkey = addSetting<Char>("inCombatGuiHotkey", 'j')
     val resetHotkey = addSetting<Char>("resetHotkey", '/')
@@ -113,6 +115,10 @@ object Settings : SettingsDefinition() {
         enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set ( max(0, min(2, customAIFriendlyFireComplexity())))
         cycleOrderStrings.set(listOf("Default") + cycleOrderStrings())
+        uiAnchorX.set(uiAnchorX() / Global.getSettings().screenScaleMult)
+        uiAnchorY.set(uiAnchorY() / Global.getSettings().screenScaleMult)
+        uiMessagePositionX.set(uiMessagePositionX() / Global.getSettings().screenScaleMult)
+        uiMessagePositionY.set(uiMessagePositionY() / Global.getSettings().screenScaleMult)
         cycleOrderInternal = cycleOrderStrings().mapNotNull { FMValues.FIRE_MODE_TRANSLATIONS[it] }
         if(cycleOrderInternal.size != cycleOrderStrings().size){
             // update lest we print the original values on printSettings call

@@ -11,7 +11,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 
 val tags = Settings.tagList()
 
-val pdTags = listOf("PD", "NoPD")
+val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)")
 
 val ammoTags = listOf("ConserveAmmo")
 
@@ -23,10 +23,11 @@ fun extractRegexThreshold(regex: Regex, name: String) : Float{
 }
 
 fun shouldTagBeDisabled(groupIndex: Int, sh: FleetMemberAPI, tag: String) : Boolean{
-    if(pdTags.contains(tag) && !isElligibleForPD(groupIndex, sh)){
+    val modTag = tagNameToRegexName(tag)
+    if(pdTags.contains(modTag) && !isElligibleForPD(groupIndex, sh)){
         return true
     }
-    if(ammoTags.contains(tag) && !usesAmmo(groupIndex, sh)){
+    if(ammoTags.contains(modTag) && !usesAmmo(groupIndex, sh)){
         return true
     }
     return false
@@ -57,7 +58,7 @@ fun getTagTooltip(tag: String) : String{
 fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
     when{
         holdRegex.matches(name) -> return FluxTag(weapon, extractRegexThreshold(holdRegex, name))
-        pdFluxRegex.matches(name) -> return PDAtFluxThresholdTag(weapon, extractRegexThreshold(holdRegex, name))
+        pdFluxRegex.matches(name) -> return PDAtFluxThresholdTag(weapon, extractRegexThreshold(pdFluxRegex, name))
     }
     return when (name){
         "PD" -> PDTag(weapon)
@@ -103,5 +104,5 @@ fun isIncompatibleWithExistingTags(tag: String, existingTags: List<String>) : Bo
 }
 
 fun createTags(names: List<String>, weapon: WeaponAPI) : List<WeaponAITagBase>{
-    return names.mapNotNull { createTag(it, weapon) }
+    return names.mapNotNull { createTag(it, weapon) }.filter { it.isValid() }
 }
