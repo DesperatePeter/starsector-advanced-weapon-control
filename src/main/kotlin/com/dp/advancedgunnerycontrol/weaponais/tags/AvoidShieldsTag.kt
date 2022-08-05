@@ -8,7 +8,7 @@ import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
-class AvoidShieldsTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
+class AvoidShieldsTag(weapon: WeaponAPI, private val threshold: Float = Settings.avoidShieldsThreshold()) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
         return entity is ShipAPI
     }
@@ -21,7 +21,7 @@ class AvoidShieldsTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
         val tgtShip = (entity as? ShipAPI) ?: return false
         val ttt = computeTimeToTravel(weapon, predictedLocation)
-        return computeShieldFactor(tgtShip, weapon, ttt) < Settings.avoidShieldsThreshold()
+        return computeShieldFactor(tgtShip, weapon, ttt) < threshold
     }
 
     override fun isBaseAiOverridable(): Boolean = true

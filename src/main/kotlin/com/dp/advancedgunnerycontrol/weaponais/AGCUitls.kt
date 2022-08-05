@@ -110,7 +110,7 @@ private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
 /**
  * @return [0.01...~1.0] a small value if target is unshielded, has shields off or is at high flux
  */
-fun computeShieldFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float = 1f) : Float{ // todo facing
+fun computeShieldFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float = 1f) : Float{
     if(tgtShip.shield == null || (tgtShip.shield.type != ShieldAPI.ShieldType.FRONT && tgtShip.shield.type != ShieldAPI.ShieldType.OMNI)){
         return 0.01f
     }

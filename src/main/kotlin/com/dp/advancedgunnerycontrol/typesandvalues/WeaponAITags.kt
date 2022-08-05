@@ -39,6 +39,8 @@ val tagTooltips = mapOf(
     "Fighter" to "Restricts targeting to fighters.",
     "AvoidShields" to "Weapon will prioritize targets without shields, flanked shields or high flux/shields off.",
     "TargetShields" to "Weapon will prioritize shooting shields. Tip: Keep one kinetic weapon on default to keep up pressure.",
+    "TgtShields+" to "As TargetShields, but will always shoot when shields are up and not flanked. (experimental)",
+    "AvdShields+" to "As AvoidShields, but will never fire when shields are up and not flanked. (experimental)",
     "NoFighters" to "Weapon won't target fighters.",
     "ConserveAmmo" to "Weapon will be much more hesitant to fire when ammo below ${(Settings.conserveAmmo()*100f).toInt()}%.",
     "Opportunist" to "Weapon will be more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons."
@@ -66,6 +68,8 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         "Fighter" -> FighterTag(weapon)
         "AvoidShields" -> AvoidShieldsTag(weapon)
         "TargetShields" -> TargetShieldsTag(weapon)
+        "AvdShields+" -> AvoidShieldsTag(weapon, 0.01f)
+        "TgtShields+" -> TargetShieldsTag(weapon, 0.99f)
         "NoFighters" -> NoFightersTag(weapon)
         "ConserveAmmo" -> ConserveAmmoTag(weapon, Settings.conserveAmmo())
         "Opportunist" -> OpportunistTag(weapon)
@@ -88,8 +92,10 @@ val tagIncompatibility = mapOf(
     "PD" to listOf("Fighter", "Opportunist", "NoPD", "PD(Flx>N%)"),
     "Fighter" to listOf("PD", "NoFighters", "Opportunist", "NoPD", "PD(Flx>N%)"),
     "NoPD" to listOf("PD", "Fighter", "PD(Flx>N%)"),
-    "AvoidShields" to listOf("TargetShields"),
-    "TargetShields" to listOf("AvoidShields"),
+    "AvoidShields" to listOf("TargetShields", "TgtShields+", "AvdShields+"),
+    "TargetShields" to listOf("AvoidShields", "AvdShields+", "TgtShields+"),
+    "TgtShields+" to listOf("AvoidShields", "AvdShields+", "TargetShields"),
+    "AvdShields+" to listOf("TargetShields", "TgtShields+", "AvoidShields"),
     "NoFighters" to listOf("Fighter", "Opportunist"),
     "Opportunist" to listOf("Fighter", "PD", "NoFighters", "PD(Flx>N%)"),
     "PD(Flx>N%)" to listOf("Fighter", "Opportunist", "NoPD", "PD")
