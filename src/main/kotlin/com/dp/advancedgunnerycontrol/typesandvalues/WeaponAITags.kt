@@ -44,7 +44,7 @@ val tagTooltips = mapOf(
     "ConserveAmmo" to "Weapon will be much more hesitant to fire when ammo below ${(Settings.conserveAmmo()*100f).toInt()}%.",
     "Opportunist" to "Weapon will be more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons.",
     "AvoidArmor" to "Weapon will fire when the shot is likely to hit shields (as TargetShields) OR a section of hull " +
-            "\nwhere the armor is low enough to achieve at least 50% effectiveness vs armor." +
+            "\nwhere the armor is low enough to achieve at least 33% effectiveness vs armor." +
             "\nCombine with AvoidShields to also avoid shields. (experimental)"
 )
 

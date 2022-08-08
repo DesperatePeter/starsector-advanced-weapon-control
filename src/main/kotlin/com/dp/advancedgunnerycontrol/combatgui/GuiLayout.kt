@@ -62,7 +62,7 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
 
         }
 
-        val helpTooltip = createButtonInfo(xIndex++, "Help", Values.HELP_TEXT)
+
         val reloadTooltip = createButtonInfo(xIndex++, "Reload",
         "Reload all modes and apply them to deployed ships. Normally, you shouldn't have to use this button manually.")
         val reloadAction = object : ButtonAction(){
@@ -70,11 +70,24 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
                 reloadAllShips(storageIndex)
             }
         }
+        val saveTooltip = createButtonInfo(xIndex++, "Save", "Make all temporary changes to current loadout done in combat permanent." +
+                "\nNote: Only relevant if in-combat persistence has been disabled in the settings.")
+        val saveAction = object  : ButtonAction(){
+            override fun execute() {
+                persistTemporaryShipData(storageIndex, Global.getCombatEngine().ships ?: listOf())
+            }
+        }
+        val helpTooltip = createButtonInfo(xIndex++, "Help", Values.HELP_TEXT)
         val resetButton = ActionButton(resetButtonAction, resetButtonInfo)
         val cycleLoadoutButton = ActionButton(cycleLoadoutAction, cycleLoadoutButtonInfo)
         val helpButton = ActionButton(null, helpTooltip)
+        helpButton.isDisabled = true
         val reloadButton = ActionButton(reloadAction, reloadTooltip)
-        return listOf(resetButton, cycleLoadoutButton, helpButton, reloadButton)
+        val saveButton = ActionButton(saveAction, saveTooltip)
+        if(Settings.enableCombatChangePersistance()){
+            saveButton.isDisabled = true
+        }
+        return listOf(resetButton, cycleLoadoutButton, helpButton, reloadButton, saveButton)
     }
 
     private fun createWeaponGroupAction(ship: ShipAPI, index: Int): ButtonGroupAction {

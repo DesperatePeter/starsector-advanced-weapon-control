@@ -1,10 +1,7 @@
 package com.dp.advancedgunnerycontrol.utils
 
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.typesandvalues.assignShipMode
-import com.dp.advancedgunnerycontrol.typesandvalues.createTags
-import com.dp.advancedgunnerycontrol.typesandvalues.loadShipModes
+import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.weaponais.TagBasedAI
 import com.dp.advancedgunnerycontrol.weaponais.times_
 import com.dp.advancedgunnerycontrol.weaponais.vectorFromAngleDeg
@@ -42,21 +39,36 @@ fun reloadAllShips(storageIndex: Int) : MutableList<ShipAPI>{
  * returns all ships that did not have any tags/shipmodes
  */
 fun reloadShips(storageIndex: Int, ships: List<ShipAPI?>?) : MutableList<ShipAPI>{
-    val toReturn = mutableListOf<ShipAPI>()
+    val toReturn = mutableSetOf<ShipAPI>()
     ships?.filter { it?.owner == 0 }?.filterNotNull().let{
         it?.forEach { ship->
+            var atLeastOneTagExist = false
             for(i in 0 until ship.weaponGroupsCopy.size){
                 val tags = loadTags(ship, i, storageIndex)
+                atLeastOneTagExist = tags.isNotEmpty() || atLeastOneTagExist
                 applyTagsToWeaponGroup(ship, i, tags)
-                val shipModes = loadShipModes(ship, storageIndex)
-                assignShipMode(shipModes, ship)
-                if(tags.isEmpty() && shipModes.isEmpty()){
-                    toReturn.add(ship)
-                }
+            }
+            val shipModes = loadShipModes(ship, storageIndex)
+            assignShipMode(shipModes, ship)
+            if(atLeastOneTagExist && shipModes.isEmpty()){
+                toReturn.add(ship)
             }
         }
     }
-    return toReturn
+    return toReturn.toMutableList()
+}
+
+fun persistTemporaryShipData(storageIndex: Int, ships: List<ShipAPI?>?){
+    ships?.filter { it?.owner == 0 }?.filterNotNull().let {
+        it?.forEach { ship ->
+            for(i in 0 until ship.weaponGroupsCopy.size){
+                val tags = loadTags(ship, i, storageIndex)
+                persistTags(ship.id, i, storageIndex, tags)
+            }
+            val modes = loadShipModes(ship, storageIndex)
+            persistShipModes(ship.id, storageIndex, modes)
+        }
+    }
 }
 
 fun loadTags(ship: ShipAPI, index: Int, storageIndex: Int) : List<String>{

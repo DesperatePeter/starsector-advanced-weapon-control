@@ -11,7 +11,7 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
 class AvoidArmorTag(weapon: WeaponAPI, private val shieldThreshold: Float = Settings.targetShieldsThreshold(),
-                    private val armorThreshold: Float = 0.5f) : WeaponAITagBase(weapon) {
+                    private val armorThreshold: Float = 0.33f) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
         return entity is ShipAPI
     }
