@@ -6,7 +6,8 @@
    #                                 #### TAG LIST ####
    # Determines which tags will be shown in the GUIs. Feel free to add/remove tags as you see fit.
    # Allowed values are: (replace N with a number between 0 and 100)
-   # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo", "Opportunist"
+   # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)",
+   # "ConserveAmmo", "Opportunist", "TgtShields+", "AvdShields+"
    "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx>50%)", "ConserveAmmo", "Opportunist"]
   
 

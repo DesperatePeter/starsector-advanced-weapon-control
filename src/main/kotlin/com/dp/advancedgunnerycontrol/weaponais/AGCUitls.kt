@@ -10,7 +10,6 @@ import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.*
-
 // Math.toRadians only works on doubles, which is annoying as f***
 const val degToRad: Float = PI.toFloat() / 180f
 
@@ -150,6 +149,28 @@ fun getAverageArmor(armor: ArmorGridAPI) : Float{
         }
     }
     return sum * armor.maxArmorInCell
+}
+
+/**
+ * @param facing relative to the front of the ship, clockwise, in deg
+ * @return avg armor fraction of the closest three cells to facing
+ */
+fun computeArmorByFacing(ship: ShipAPI, facing: Float) : Float{
+    val arc = 30.0f
+    return ship.getAverageArmorInSlice(facing , arc)
+}
+
+fun computeArmorInImpactArea(weapon: WeaponAPI, ship: ShipAPI) : Float{
+    val impactAngle = 180f - abs(weapon.currAngle - ship.facing)
+    return computeArmorByFacing(ship, impactAngle)
+}
+
+fun computeWeaponEffectivenessVsArmor(weapon: WeaponAPI, armor: Float) : Float{
+    var effectiveDmg = if(weapon.isBeam) weapon.damage.damage * 2.0f else weapon.damage.damage
+    effectiveDmg *= if(weapon.damageType == DamageType.FRAGMENTATION) 0.25f
+        else if(weapon.damageType == DamageType.KINETIC) 0.5f
+        else if (weapon.damageType == DamageType.HIGH_EXPLOSIVE) 2.0f else 1.0f
+    return effectiveDmg / (effectiveDmg + armor)
 }
 
 fun getMaxArmor(armor: ArmorGridAPI) : Float{

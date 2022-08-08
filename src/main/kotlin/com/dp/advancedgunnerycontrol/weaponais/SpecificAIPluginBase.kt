@@ -76,7 +76,7 @@ abstract class SpecificAIPluginBase(
     override fun advance(p0: Float) {
         lastP0 = p0
         reset()
-        if (!advanceBaseAI(p0) && customAIActive) {
+        if (!advanceBaseAI(p0) && customAIActive && isBaseAIOverwritable()) {
             advanceWithCustomAI()
         }
     }
