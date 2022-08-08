@@ -4,6 +4,7 @@ import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.weaponais.computeShieldFactor
 import com.dp.advancedgunnerycontrol.weaponais.computeTimeToTravel
 import com.dp.advancedgunnerycontrol.weaponais.computeArmorInImpactArea
+import com.dp.advancedgunnerycontrol.weaponais.computeWeaponEffectivenessVsArmor
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
@@ -17,15 +18,16 @@ class AvoidArmorTag(weapon: WeaponAPI, private val shieldThreshold: Float = Sett
 
     override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         val tgtShip = (entity as? ShipAPI) ?: return 1f
-        val armorFactor = computeArmorInImpactArea(weapon,tgtShip)
-        return (armorFactor + 0.1f)
+        val armorInArc = computeArmorInImpactArea(weapon,tgtShip)
+        return (armorInArc + 0.1f) / 500f
     }
 
     override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
         val tgtShip = (entity as? ShipAPI) ?: return true
         val ttt = computeTimeToTravel(weapon, predictedLocation)
-        val armorFactor = computeArmorInImpactArea(weapon,tgtShip)
-        return computeShieldFactor(tgtShip, weapon, ttt) > shieldThreshold || armorFactor < armorThreshold
+        val armorInArc = computeArmorInImpactArea(weapon,tgtShip)
+        val armorEffectiveness = computeWeaponEffectivenessVsArmor(weapon, armorInArc)
+        return (computeShieldFactor(tgtShip, weapon, ttt) > shieldThreshold) || (armorEffectiveness > armorThreshold)
     }
 
     override fun isBaseAiOverridable(): Boolean = true

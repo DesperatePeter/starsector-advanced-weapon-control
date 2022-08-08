@@ -7,7 +7,7 @@ import com.fs.starfarer.api.combat.ShipAPI
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lwjgl.util.vector.Vector2f
 
-class SpecificAIPluginBaseMock (private val baseAI : WeaponBaseAIMock): SpecificAIPluginBase(baseAI) {
+class SpecificAIPluginBaseMock (baseAI : WeaponBaseAIMock): SpecificAIPluginBase(baseAI) {
     var _enemies: List<CombatEntityAPI> = emptyList()
     var _friendlies: List<ShipAPI> = emptyList()
     override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {

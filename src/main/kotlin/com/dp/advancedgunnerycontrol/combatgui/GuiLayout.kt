@@ -79,7 +79,7 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
 
     private fun createWeaponGroupAction(ship: ShipAPI, index: Int): ButtonGroupAction {
         return object : ButtonGroupAction() {
-            override fun execute(data: List<Any>) {
+            override fun execute(data: List<Any>, triggeringButtonData: Any?) {
                 val tagStrings = data.filterIsInstance<String>()
                 applyTagsToWeaponGroup(ship, index, tagStrings)
                 saveTags(ship, index, storageIndex, tagStrings)
@@ -90,8 +90,13 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
 
     private fun createShipAiBtnGroupAction(ship: ShipAPI) : ButtonGroupAction{
         return object  : ButtonGroupAction(){
-            override fun execute(data: List<Any>) {
-                val tags = data.filterIsInstance<String>()
+            override fun execute(data: List<Any>, triggeringButtonData: Any?) {
+                var tags = data.filterIsInstance<String>()
+                tags = if(defaultShipMode == triggeringButtonData){
+                    listOf(defaultShipMode)
+                }else{
+                    tags.filter { it != defaultShipMode }
+                }
                 assignShipMode(tags, ship)
                 saveShipModes(ship, storageIndex, tags)
             }
@@ -142,7 +147,7 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
                 if(isIncompatibleWithExistingTags(str, currentTags)){
                     it.isDisabled = true
                 }
-                if(true != ship.weaponGroupsCopy[index]?.weaponsCopy?.any { w -> createTag(str, w )?.isValid() == true }){
+                if(true != ship.weaponGroupsCopy.getOrNull(index)?.weaponsCopy?.any { w -> createTag(str, w )?.isValid() == true }){
                     it.isDisabled = true
                 }
             }

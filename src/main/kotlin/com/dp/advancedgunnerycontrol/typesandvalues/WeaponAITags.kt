@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
 import com.dp.advancedgunnerycontrol.WeaponControlPlugin
+import com.dp.advancedgunnerycontrol.gui.isBlacklisted
 import com.dp.advancedgunnerycontrol.gui.isElligibleForPD
 import com.dp.advancedgunnerycontrol.gui.usesAmmo
 import com.dp.advancedgunnerycontrol.settings.Settings
@@ -24,12 +25,9 @@ fun extractRegexThreshold(regex: Regex, name: String) : Float{
 
 fun shouldTagBeDisabled(groupIndex: Int, sh: FleetMemberAPI, tag: String) : Boolean{
     val modTag = tagNameToRegexName(tag)
-    if(pdTags.contains(modTag) && !isElligibleForPD(groupIndex, sh)){
-        return true
-    }
-    if(ammoTags.contains(modTag) && !usesAmmo(groupIndex, sh)){
-        return true
-    }
+    if(pdTags.contains(modTag) && !isElligibleForPD(groupIndex, sh)) return true
+    if(ammoTags.contains(modTag) && !usesAmmo(groupIndex, sh)) return true
+    if(isBlacklisted(groupIndex, sh)) return true
     return false
 }
 
@@ -38,12 +36,16 @@ val tagTooltips = mapOf(
     "NoPD" to "Forbids targeting missiles and prioritizes ships over fighters.",
     "Fighter" to "Restricts targeting to fighters.",
     "AvoidShields" to "Weapon will prioritize targets without shields, flanked shields or high flux/shields off.",
-    "TargetShields" to "Weapon will prioritize shooting shields. Tip: Keep one kinetic weapon on default to keep up pressure.",
+    "TargetShields" to "Weapon will prioritize shooting shields. Will stop firing against enemies with very high flux." +
+            "\nTip: Keep one kinetic weapon on default to keep up pressure.",
     "TgtShields+" to "As TargetShields, but will always shoot when shields are up and not flanked. (experimental)",
     "AvdShields+" to "As AvoidShields, but will never fire when shields are up and not flanked. (experimental)",
     "NoFighters" to "Weapon won't target fighters.",
     "ConserveAmmo" to "Weapon will be much more hesitant to fire when ammo below ${(Settings.conserveAmmo()*100f).toInt()}%.",
-    "Opportunist" to "Weapon will be more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons."
+    "Opportunist" to "Weapon will be more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons.",
+    "AvoidArmor" to "Weapon will fire when the shot is likely to hit shields (as TargetShields) OR a section of hull " +
+            "\nwhere the armor is low enough to achieve at least 50% effectiveness vs armor." +
+            "\nCombine with AvoidShields to also avoid shields. (experimental)"
 )
 
 fun getTagTooltip(tag: String) : String{
@@ -73,6 +75,7 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         "NoFighters" -> NoFightersTag(weapon)
         "ConserveAmmo" -> ConserveAmmoTag(weapon, Settings.conserveAmmo())
         "Opportunist" -> OpportunistTag(weapon)
+        "AvoidArmor" -> AvoidArmorTag(weapon)
         else -> {
             Global.getLogger(WeaponControlPlugin.Companion::class.java).error("Unknown weapon tag: $name!")
             null

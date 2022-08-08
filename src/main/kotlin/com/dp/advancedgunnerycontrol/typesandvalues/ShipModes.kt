@@ -2,6 +2,7 @@ package com.dp.advancedgunnerycontrol.typesandvalues
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.utils.InShipShipModeStorage
+import com.dp.advancedgunnerycontrol.utils.doesShipHaveLocalShipModes
 import com.dp.advancedgunnerycontrol.weaponais.shipais.*
 import com.fs.starfarer.api.combat.ShipAPI
 
@@ -74,18 +75,20 @@ fun persistShipModes(shipId: String, loadoutIndex: Int, tags: List<String>) {
     }
 }
 
-fun saveShipModesInShip(ship: ShipAPI, tags: List<String>) {
-    if (!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_MODES_TAG_KEY)) {
-        ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_MODES_TAG_KEY] = InShipShipModeStorage()
+fun saveShipModesInShip(ship: ShipAPI, tags: List<String>, storageIndex: Int) {
+    if (!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY)) {
+        ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY] = InShipShipModeStorage()
     }
-    (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipShipModeStorage)?.tags = tags.toMutableList()
+    (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipShipModeStorage)?.modes?.set(storageIndex,
+        tags.toMutableList()
+    )
 }
 
 fun saveShipModes(ship: ShipAPI, loadoutIndex: Int, tags: List<String>) {
     if (Settings.enableCombatChangePersistance()) {
         persistShipModes(ship.fleetMemberId, loadoutIndex, tags)
     } else {
-        saveShipModesInShip(ship, tags)
+        saveShipModesInShip(ship, tags, loadoutIndex)
     }
 }
 
@@ -93,14 +96,14 @@ fun loadPersistedShipModes(shipId: String, loadoutIndex: Int): List<String> {
     return Settings.shipModeStorage[loadoutIndex].modesByShip[shipId]?.values?.toList() ?: emptyList()
 }
 
-fun loadShipModesFromShip(ship: ShipAPI): List<String> {
-    return (ship.customData.get(Values.CUSTOM_SHIP_DATA_SHIP_MODES_TAG_KEY) as? InShipShipModeStorage)?.tags
+fun loadShipModesFromShip(ship: ShipAPI, storageIndex: Int): List<String> {
+    return (ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY] as? InShipShipModeStorage)?.modes?.get(storageIndex)
         ?: emptyList()
 }
 
 fun loadShipModes(ship: ShipAPI, loadoutIndex: Int): List<String> {
-    if (Settings.enableCombatChangePersistance()) {
+    if (Settings.enableCombatChangePersistance() || !doesShipHaveLocalShipModes(ship, loadoutIndex)) {
         return loadPersistedShipModes(ship.fleetMemberId, loadoutIndex)
     }
-    return loadShipModesFromShip(ship)
+    return loadShipModesFromShip(ship, loadoutIndex)
 }

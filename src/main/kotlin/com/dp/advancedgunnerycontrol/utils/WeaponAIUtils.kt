@@ -18,7 +18,13 @@ import kotlin.math.abs
 fun applyTagsToWeaponGroup(ship: ShipAPI, groupIndex: Int, tags: List<String>) : Boolean {
     val weaponGroup = ship.weaponGroupsCopy[groupIndex]
     val plugins = weaponGroup.aiPlugins
-
+    if(tags.isEmpty()){
+        for (i in 0 until plugins.size) {
+            if (plugins[i] is TagBasedAI){
+                plugins[i] = (plugins[i] as? TagBasedAI)?.baseAI ?: plugins[i]
+            }
+        }
+    }
     for (i in 0 until plugins.size) {
         if (plugins[i] !is TagBasedAI) {
             plugins[i] = TagBasedAI(plugins[i])
@@ -54,10 +60,10 @@ fun reloadShips(storageIndex: Int, ships: List<ShipAPI?>?) : MutableList<ShipAPI
 }
 
 fun loadTags(ship: ShipAPI, index: Int, storageIndex: Int) : List<String>{
-    if(Settings.enableCombatChangePersistance()){
+    if(Settings.enableCombatChangePersistance() || !doesShipHaveLocalTags(ship, storageIndex)){
         return loadPersistentTags(ship.fleetMemberId, index, storageIndex)
     }
-    return loadTagsFromShip(ship, index)
+    return loadTagsFromShip(ship, index, storageIndex)
 }
 
 /**
@@ -89,7 +95,7 @@ fun saveTags(ship: ShipAPI, groupIndex: Int, loadoutIndex: Int, tags: List<Strin
     if(Settings.enableCombatChangePersistance()){
         persistTags(ship.fleetMemberId?: "", groupIndex, loadoutIndex, tags)
     }
-    saveTagsInShip(ship, groupIndex, tags)
+    saveTagsInShip(ship, groupIndex, tags, loadoutIndex)
 }
 
 fun persistTags(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<String>){
@@ -99,17 +105,27 @@ fun persistTags(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<S
     Settings.tagStorage[loadoutIndex].modesByShip[shipId]?.set(groupIndex, tags.toSet().toList())
 }
 
-fun saveTagsInShip(ship: ShipAPI, groupIndex: Int, tags: List<String>){
+fun saveTagsInShip(ship: ShipAPI, groupIndex: Int, tags: List<String>, storageIndex: Int){
     if(!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY)){
         ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] = InShipTagStorage()
     }
-    (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipTagStorage)?.tagsByIndex?.set(groupIndex, tags.toSet().toList())
+    (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipTagStorage)?.tagsByIndex?.get(storageIndex)?.set(groupIndex, tags.toSet().toList())
 }
 
 fun loadPersistentTags(shipId: String, groupIndex: Int, loadoutIndex: Int) : List<String>{
     return Settings.tagStorage[loadoutIndex].modesByShip[shipId]?.get(groupIndex) ?: emptyList()
 }
 
-fun loadTagsFromShip(ship: ShipAPI, groupIndex: Int) : List<String>{
-    return (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipTagStorage)?.tagsByIndex?.get(groupIndex) ?: emptyList()
+fun loadTagsFromShip(ship: ShipAPI, groupIndex: Int, storageIndex: Int) : List<String>{
+    return (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipTagStorage)?.tagsByIndex?.get(storageIndex)?.get(groupIndex) ?: emptyList()
+}
+
+fun doesShipHaveLocalTags(ship: ShipAPI, storageIndex: Int) : Boolean{
+    return ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY)
+            && (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipTagStorage)?.tagsByIndex?.containsKey(storageIndex) ?: false
+}
+
+fun doesShipHaveLocalShipModes(ship: ShipAPI, storageIndex: Int) : Boolean{
+    return ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY)
+            && (ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY] as? InShipShipModeStorage)?.modes?.containsKey(storageIndex) ?: false
 }

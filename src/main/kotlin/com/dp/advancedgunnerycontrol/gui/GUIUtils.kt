@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.gui
 
+import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
@@ -39,6 +40,11 @@ fun isElligibleForPD(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
         (aiHints.contains(WeaponAPI.AIHints.PD_ALSO) || aiHints.contains(WeaponAPI.AIHints.PD) || aiHints.contains(WeaponAPI.AIHints.PD_ONLY)) ||
                 (hasIPDA && weapon.size == WeaponAPI.WeaponSize.SMALL && weapon.type != WeaponAPI.WeaponType.MISSILE)
     }.contains(true)
+}
+
+fun isBlacklisted(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
+    val group = sh.variant.weaponGroups[groupIndex]
+    return (group.slots.mapNotNull { sh.variant.getWeaponId(it) }.all { Settings.weaponBlacklist.contains(it) })
 }
 
 fun usesAmmo(groupIndex: Int, sh: FleetMemberAPI) : Boolean {

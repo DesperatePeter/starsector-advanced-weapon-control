@@ -16,7 +16,7 @@ import org.lwjgl.util.vector.Vector2f
 import kotlin.math.*
 
 abstract class SpecificAIPluginBase(
-    private val baseAI: AutofireAIPlugin,
+    val baseAI: AutofireAIPlugin,
     private val customAIActive: Boolean = Settings.enableCustomAI(),
     var suffix: SuffixBase = SuffixBase(baseAI.weapon)
 ) : AutofireAIPlugin {

@@ -42,8 +42,10 @@ class DataButtonGroup(
         return buttons.mapNotNull { it.getDataIfActive() }
     }
     fun advance(){
-        if(buttons.count { it.advance() } > 0){ // if at least one button was pressed
-            action.execute(buttons.mapNotNull { it.getDataIfActive() })
+        buttons.filter { it.advance() }.let {
+            if(it.isNotEmpty()){
+                action.execute(buttons.mapNotNull { btn -> btn.getDataIfActive() }, it.firstOrNull()?.getDataIfActive())
+            }
         }
     }
     fun render(){

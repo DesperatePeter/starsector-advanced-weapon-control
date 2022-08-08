@@ -128,7 +128,7 @@ fun computeShieldFacingFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float) :
     // Note: Angles in Starsector are always 0..360, 0 means east/right
     val shield = tgtShip.shield ?: return 0.01f
     if(shield.type == ShieldAPI.ShieldType.OMNI && shield.isOff){
-        return 0.5f; // Turned off omni shields means we don't know shit
+        return 0.5f // Turned off omni shields means we don't know shit
     }
     val sCov = 0.5f * min(shield.arc, shield.activeArc + (ttt/shield.unfoldTime)*shield.arc)
     val flankingAngle =abs( 180f - abs(weapon.currAngle - shield.facing))
@@ -156,7 +156,7 @@ fun getAverageArmor(armor: ArmorGridAPI) : Float{
  * @return avg armor fraction of the closest three cells to facing
  */
 fun computeArmorByFacing(ship: ShipAPI, facing: Float) : Float{
-    val arc = 30.0f
+    val arc = 10.0f
     return ship.getAverageArmorInSlice(facing , arc)
 }
 
@@ -167,9 +167,12 @@ fun computeArmorInImpactArea(weapon: WeaponAPI, ship: ShipAPI) : Float{
 
 fun computeWeaponEffectivenessVsArmor(weapon: WeaponAPI, armor: Float) : Float{
     var effectiveDmg = if(weapon.isBeam) weapon.damage.damage * 2.0f else weapon.damage.damage
-    effectiveDmg *= if(weapon.damageType == DamageType.FRAGMENTATION) 0.25f
-        else if(weapon.damageType == DamageType.KINETIC) 0.5f
-        else if (weapon.damageType == DamageType.HIGH_EXPLOSIVE) 2.0f else 1.0f
+    effectiveDmg *= when (weapon.damageType) {
+        DamageType.FRAGMENTATION -> 0.25f
+        DamageType.KINETIC -> 0.5f
+        DamageType.HIGH_EXPLOSIVE -> 2.0f
+        else -> 1.0f
+    }
     return effectiveDmg / (effectiveDmg + armor)
 }
 
