@@ -15,7 +15,7 @@ Also visit the forums post: <https://fractalsoftworks.com/forum/index.php?topic=
 
 ## TL;DR Instructions ##
 
-- Press the "J" key in combat to open up a GUI (select an ally via "R" key to modify their modes)
+- Press the "J" key in combat to open up a GUI (select an ally via "R" key beforehand to modify their modes)
 - Press the "J" key in the campaign map to open a GUI
 - By default, firing modes are automatically saved/loaded between combats (per ship)
 - (optional) edit Starsector/mods/AdvancedGunneryControl/Settings.editme to customize the mod behavior.
@@ -78,9 +78,9 @@ the default settings instead! Make sure to check the log (Starsector/starsector.
 There are three different AI settings:
 
 - If the custom AI is **disabled**, the weapon will use the baseAI to acquire a target. If the target doesn't match
-  the mode, the weapon won't fire. (base AI)
+  the tags, the weapon won't fire. (base AI)
 - (default) If the custom AI is **enabled**, the weapon will first try the base AI. If the target doesn't 
-  match the selected mode, the custom AI will take over. (custom AI)
+  match the selected tags, the custom AI will take over. (custom AI)
 - If you **force and enable** the custom AI, the weapon will immediately try to acquire a target via custom AI. (override AI)
 
 You should **disable** the custom AI, if:
@@ -93,7 +93,7 @@ You should **enable or force-enable** the custom AI, if:
 - You want to set weapons to prioritize targets they normally wouldn't (e.g. phase lances as anti-fighter weapons)
 - You dislike it when your weapons don't fire even if there is a reasonable target
 - You want to be able to customize the AI behaviour (in Settings.editme)
-- You want to use advanced modes/suffixes (Opportunist etc.)
+- You want to use advanced tags (Opportunist etc.)
 - You want to get the "full experience"
 - You want to help me improve my custom AI by sending me written reports/video snippets of glitchy weapon behaviour
 
@@ -122,6 +122,8 @@ a decision, it first asks the base plugin what it would like to do. If that beha
 the plugin will simply let the base AI do its thing. Otherwise, depending on whether customAI is enabled or not, it will
 tell the weapon to not fire, or try to come up with its own firing solution.
 
+If the tag list for a weapon group is empty, the base AI will not be replaced.
+
 Similarly, when setting ship AI modes, the mod will replace the base ship AI plugin with a custom plugin that will perform
 some actions and then let the base AI take back over.
 
@@ -144,7 +146,7 @@ into your mod's modSettings.json:
 ```
 
 Similarly, this mod has a feature for suggested tags for weapons. If you want to include suggested tags for your
-weapons to allow users to quickly setup their tags, include a key suggestedWeaponTags in your modSettings.json.
+weapons to allow users to quickly set up their tags, include a key suggestedWeaponTags in your modSettings.json.
 Have a look at this mod's modSettings.json for an example.
 
 This mod doesn't affect anything outside of combat, so it's very unlikely to cause problems on the campaign level.
@@ -198,6 +200,7 @@ This mod doesn't affect anything outside of combat, so it's very unlikely to cau
 - 1.0.0: Big rework: Replace in-combat hotkeys with a GUI, replace weapon modes and suffixes with a tag system
 - 1.1.0: Fix issues (combat GUI with screenScale, clicking noise, settings), add customizable thresholds and new tags
 - 1.1.1: Fix issues with combat UI scaling/positioning, fix issues with PD-tags
+- 1.2.0: Remove legacy mode, fix several issues related to weird weapon AI behavior, add additional tags, cleanup & polish
 
 ## Acknowledgements ##
 

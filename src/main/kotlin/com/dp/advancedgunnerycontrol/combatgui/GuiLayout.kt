@@ -23,6 +23,7 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
         private val yAnchor = Settings.uiAnchorY() * Global.getSettings().screenHeightPixels
         private var storageIndex = Values.storageIndex
         private val color = Color.GREEN
+
     }
 
     private fun createButtonInfo(xIndex: Int, txt: String, tooltipTxt: String) : ButtonInfo{
@@ -78,6 +79,21 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
             }
         }
         val helpTooltip = createButtonInfo(xIndex++, "Help", Values.HELP_TEXT)
+
+        val showTagsTooltip = createButtonInfo(xIndex++, "Show Tags", "Click me to update!" +
+                "\nThis will show all tags applied to weapon groups as a tooltip for this button." +
+                "\nUse this to check if there are tags enabled that don't have a corresponding button.")
+        val showTagsAction = object : ButtonAction(){
+            override fun execute() {
+                var newTooltip = "Click me to update!"
+                weaponButtonGroups.forEachIndexed { i, _ ->
+                    newTooltip += "\nGroup ${i+1}: "
+                    newTooltip += loadTags(ship, i, storageIndex).toString()
+                }
+                showTagsTooltip.tooltip.txt = newTooltip
+            }
+        }
+
         val resetButton = ActionButton(resetButtonAction, resetButtonInfo)
         val cycleLoadoutButton = ActionButton(cycleLoadoutAction, cycleLoadoutButtonInfo)
         val helpButton = ActionButton(null, helpTooltip)
@@ -87,7 +103,8 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
         if(Settings.enableCombatChangePersistance()){
             saveButton.isDisabled = true
         }
-        return listOf(resetButton, cycleLoadoutButton, helpButton, reloadButton, saveButton)
+        val showTagsButton = ActionButton(showTagsAction, showTagsTooltip)
+        return listOf(resetButton, cycleLoadoutButton, helpButton, reloadButton, saveButton, showTagsButton)
     }
 
     private fun createWeaponGroupAction(ship: ShipAPI, index: Int): ButtonGroupAction {
@@ -105,7 +122,7 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
         return object  : ButtonGroupAction(){
             override fun execute(data: List<Any>, triggeringButtonData: Any?) {
                 var tags = data.filterIsInstance<String>()
-                tags = if(defaultShipMode == triggeringButtonData){
+                tags = if((defaultShipMode == triggeringButtonData) || tags.isEmpty()){
                     listOf(defaultShipMode)
                 }else{
                     tags.filter { it != defaultShipMode }
@@ -125,7 +142,7 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
         return loadTags(ship, index, storageIndex)
     }
 
-
+    private val shipText = font.createText("${ship.name}, ${ship.fleetMember.variant.fullDesignationWithHullNameForShip}", color)
     private val actionButtons = createActionButtons()
     private val weaponButtonGroups = List(ship.variant.weaponGroups.size) { index ->
         DataButtonGroup(
@@ -165,8 +182,8 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
                 }
             }
         }
-        val currentShipModeTags = loadShipModes(ship, storageIndex)
-        shipButtonGroup.refreshAllButtons(currentShipModeTags)
+        if(loadShipModes(ship, storageIndex).isEmpty()) saveShipModes(ship, storageIndex, listOf(defaultShipMode))
+        shipButtonGroup.refreshAllButtons(loadShipModes(ship, storageIndex))
     }
 
     fun advance(){
@@ -179,5 +196,6 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
         weaponButtonGroups.forEach { it.render() }
         actionButtons.forEach { it.render() }
         shipButtonGroup.render()
+        shipText.draw(xAnchor, yAnchor + (2 * ySpacing))
     }
 }

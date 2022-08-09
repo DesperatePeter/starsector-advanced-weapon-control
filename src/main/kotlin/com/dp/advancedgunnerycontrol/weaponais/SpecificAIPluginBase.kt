@@ -6,7 +6,6 @@ package com.dp.advancedgunnerycontrol.weaponais
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
@@ -17,8 +16,7 @@ import kotlin.math.*
 
 abstract class SpecificAIPluginBase(
     val baseAI: AutofireAIPlugin,
-    private val customAIActive: Boolean = Settings.enableCustomAI(),
-    var suffix: SuffixBase = SuffixBase(baseAI.weapon)
+    private val customAIActive: Boolean = Settings.enableCustomAI()
 ) : AutofireAIPlugin {
     protected var targetEntity: CombatEntityAPI? = null
     private var lastTargetEntity: CombatEntityAPI? = null
@@ -192,10 +190,6 @@ abstract class SpecificAIPluginBase(
         return computeTimeToTravel(weapon, tgt, (1.5f - 0.5f * currentTgtLeadAcc))
     }
 
-//    private fun rotateVector(vec: Vector2f, omega: Float): Vector2f {
-//        return Vector2f(vec.x * cos(omega) - vec.y * sin(omega), vec.x * sin(omega) + vec.y * cos(omega))
-//    }
-
     override fun getTargetShip(): ShipAPI? {
         return targetEntity as? ShipAPI
     }
@@ -289,7 +283,7 @@ abstract class SpecificAIPluginBase(
             angularDistanceFromWeapon(it) + Values.distToAngularDistEvaluationFactor * linearDistanceFromWeapon(it) + 1.5f
         }.let {
             if (lastTargetEntity == entity) it * 0.5f else it // incentivize sticking to one target
-        } * suffix.modifyPriority(entity) *
+        } *
                 (if(entity as? ShipAPI == weapon.ship.shipTarget) 0.1f else 1.0f) * // heavily incentivize targeting the ship target
                 (if((entity as? ShipAPI)?.isFighter == false) 1.0f else 2.0f) // prioritize regular ships over other stuff
     }
@@ -304,8 +298,7 @@ abstract class SpecificAIPluginBase(
     }
 
     companion object {
-        protected val aimingToleranceFactor =
-            1.0f * Settings.customAITriggerHappiness()
+        protected val aimingToleranceFactor = 1.0f * Settings.customAITriggerHappiness()
         protected val aimingToleranceFlat = 10f * Settings.customAITriggerHappiness()
     }
 }

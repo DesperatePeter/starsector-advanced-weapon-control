@@ -18,4 +18,5 @@ abstract class WeaponAITagBase(protected val weapon: WeaponAPI) {
     open fun isValid() : Boolean {
         return !Settings.weaponBlacklist.contains(weapon.id)
     }
+    open fun forceFire(entity: CombatEntityAPI?, predictedLocation: Vector2f?) : Boolean = false
 }

@@ -5,11 +5,8 @@ import com.dp.advancedgunnerycontrol.settings.Settings
 object Values {
     const val SETTINGS_FILE_NAME = "Settings.editme"
     const val WEAPON_BLACKLIST_KEY = "weaponBlacklist"
-    const val SUGGESTED_WEAPON_MODES_KEY = "suggestedWeaponModes"
     const val SUGGESTED_TAGS_KEY = "suggestedWeaponTags"
-    const val SUGGESTED_WEAPON_SUFFIXES_KEY = "suggestedWeaponSuffixes"
     const val THIS_MOD_NAME = "AdvancedGunneryControl"
-    const val WEAPON_AI_MANAGER_KEY = "WeaponAIManagerAGC"
     const val CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY = "AGC_Tags"
     const val CUSTOM_SHIP_DATA_SHIP_MODES_KEY = "AGC_ShipTags"
     const val distToAngularDistEvaluationFactor = 1f / 400f
@@ -25,7 +22,7 @@ object Values {
             " a target is valid, the weapons will fire." +
             "\n---Loadouts---\nIf you want to be able to adapt your strategy based on the situation you face, you can define" +
             " multiple loadouts for your ships.\nYou can define different modes for your ships per loadout and cycle through them" +
-            " during combat. (Hotkey: ${Settings.cycleLoadout()})" +
+            " during combat." +
             "\nAs you can only cycle loadouts for all ships, make sure your loadouts fit a theme and are consistent between ships." +
             "\n---Tips---\n - If you want a weapon group to fire as much as possible, give it no tags." +
             " In my experience, no tags or just the Flx<90% tag is the right choice for most weapon groups" +

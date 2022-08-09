@@ -2,9 +2,7 @@ package com.dp.advancedgunnerycontrol.gui.actions
 
 import com.dp.advancedgunnerycontrol.gui.GUIAttributes
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.utils.FireModeStorage
 import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
-import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 

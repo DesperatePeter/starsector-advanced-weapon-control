@@ -1,13 +1,11 @@
 package com.dp.advancedgunnerycontrol.gui
 
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.typesandvalues.FMValues
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import kotlin.math.roundToInt
-import com.dp.advancedgunnerycontrol.typesandvalues.FireMode
 
 fun groupAsString(group : WeaponGroupSpec, sh: FleetMemberAPI) : String {
     val strings = group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
@@ -52,9 +50,4 @@ fun usesAmmo(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
     return group.slots.mapNotNull { Global.getSettings().getWeaponSpec(sh.variant.getWeaponId(it)) }.any {
         it.usesAmmo()
     }
-}
-
-fun shouldModeBeDisabled(groupIndex: Int, sh: FleetMemberAPI, mode: FireMode) : Boolean {
-    if(mode == FireMode.PD_AMMO && !usesAmmo(groupIndex, sh)) return true
-    return (FMValues.PDModes.contains(mode)) && !isElligibleForPD(groupIndex, sh)
 }

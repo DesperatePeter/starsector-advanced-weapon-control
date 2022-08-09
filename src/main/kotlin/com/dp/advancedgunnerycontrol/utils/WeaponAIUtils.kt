@@ -31,15 +31,11 @@ fun applyTagsToWeaponGroup(ship: ShipAPI, groupIndex: Int, tags: List<String>) :
     return plugins.all { (it as? TagBasedAI)?.tags?.all { t -> t.isValid() } ?: true }
 }
 
-fun reloadAllShips(storageIndex: Int) : MutableList<ShipAPI>{
-    return reloadShips(storageIndex, Global.getCombatEngine()?.ships)
+fun reloadAllShips(storageIndex: Int){
+    reloadShips(storageIndex, Global.getCombatEngine()?.ships)
 }
 
-/**
- * returns all ships that did not have any tags/shipmodes
- */
-fun reloadShips(storageIndex: Int, ships: List<ShipAPI?>?) : MutableList<ShipAPI>{
-    val toReturn = mutableSetOf<ShipAPI>()
+fun reloadShips(storageIndex: Int, ships: List<ShipAPI?>?) {
     ships?.filter { it?.owner == 0 }?.filterNotNull().let{
         it?.forEach { ship->
             var atLeastOneTagExist = false
@@ -50,12 +46,9 @@ fun reloadShips(storageIndex: Int, ships: List<ShipAPI?>?) : MutableList<ShipAPI
             }
             val shipModes = loadShipModes(ship, storageIndex)
             assignShipMode(shipModes, ship)
-            if(atLeastOneTagExist && shipModes.isEmpty()){
-                toReturn.add(ship)
-            }
         }
     }
-    return toReturn.toMutableList()
+
 }
 
 fun persistTemporaryShipData(storageIndex: Int, ships: List<ShipAPI?>?){

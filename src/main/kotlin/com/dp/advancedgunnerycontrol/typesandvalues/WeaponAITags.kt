@@ -18,6 +18,8 @@ val ammoTags = listOf("ConserveAmmo")
 
 val holdRegex = Regex("Hold\\(Flx>(\\d+)%\\)")
 val pdFluxRegex = Regex("PD\\(Flx>(\\d+)%\\)")
+val avoidArmorRegex = Regex("AvdArmor\\((\\d+)%\\)")
+val panicFireRegex = Regex("Panic\\(H<(\\d+)%\\)")
 
 fun extractRegexThreshold(regex: Regex, name: String) : Float{
     return (regex.matchEntire(name)?.groupValues?.get(1)?.toFloat()  ?: 0f) / 100f
@@ -43,9 +45,11 @@ val tagTooltips = mapOf(
     "NoFighters" to "Weapon won't target fighters.",
     "ConserveAmmo" to "Weapon will be much more hesitant to fire when ammo below ${(Settings.conserveAmmo()*100f).toInt()}%.",
     "Opportunist" to "Weapon will be more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons.",
-    "AvoidArmor" to "Weapon will fire when the shot is likely to hit shields (as TargetShields) OR a section of hull " +
-            "\nwhere the armor is low enough to achieve at least 33% effectiveness vs armor." +
-            "\nCombine with AvoidShields to also avoid shields. (experimental)"
+    "AvoidDebris" to "Weapon will not fire when the shot is blocked by debris/asteroids.",
+    "BigShips" to "Weapon will ignore missiles and prioritize big ships" +
+            if(Settings.strictBigSmall()) " and won't fire at anything smaller than destroyers." else "",
+    "SmallShips" to "Weapon will ignore missiles and prioritize small ships" +
+            if(Settings.strictBigSmall()) " and won't fire at anything bigger than destroyers." else "",
 )
 
 fun getTagTooltip(tag: String) : String{
@@ -55,6 +59,12 @@ fun getTagTooltip(tag: String) : String{
     return when{
         holdRegex.matches(tag) -> "Weapon will stop firing if ship flux exceeds ${(extractRegexThreshold(holdRegex, tag) *100f).toInt()}%."
         pdFluxRegex.matches(tag) -> "Weapon will act as PD mode while ship flux > ${(extractRegexThreshold(pdFluxRegex, tag) *100f).toInt()}%."
+        avoidArmorRegex.matches(tag) -> "Weapon will fire when the shot is likely to hit shields (as TargetShields) OR a section of hull " +
+                "\nwhere the armor is low enough to achieve at least ${(extractRegexThreshold(avoidArmorRegex, tag) *100f).toInt()}% " +
+                "effectiveness vs armor." +
+                "\nCombine with AvoidShields to also avoid shields. (experimental)"
+        panicFireRegex.matches(tag) -> "Weapon will blindly fire without considering if/what the shot will hit as long as the ship" +
+                " hull level is below ${(extractRegexThreshold(panicFireRegex, tag) *100f).toInt()}%."
         else -> ""
     }
 }
@@ -63,19 +73,23 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
     when{
         holdRegex.matches(name) -> return FluxTag(weapon, extractRegexThreshold(holdRegex, name))
         pdFluxRegex.matches(name) -> return PDAtFluxThresholdTag(weapon, extractRegexThreshold(pdFluxRegex, name))
+        avoidArmorRegex.matches(name) -> return AvoidArmorTag(weapon, extractRegexThreshold(avoidArmorRegex, name))
+        panicFireRegex.matches(name) -> return PanicFireTag(weapon, extractRegexThreshold(panicFireRegex, name))
     }
     return when (name){
-        "PD" -> PDTag(weapon)
-        "NoPD" -> NoPDTag(weapon)
-        "Fighter" -> FighterTag(weapon)
-        "AvoidShields" -> AvoidShieldsTag(weapon)
+        "PD"            -> PDTag(weapon)
+        "NoPD"          -> NoPDTag(weapon)
+        "Fighter"       -> FighterTag(weapon)
+        "AvoidShields"  -> AvoidShieldsTag(weapon)
         "TargetShields" -> TargetShieldsTag(weapon)
-        "AvdShields+" -> AvoidShieldsTag(weapon, 0.01f)
-        "TgtShields+" -> TargetShieldsTag(weapon, 0.99f)
-        "NoFighters" -> NoFightersTag(weapon)
-        "ConserveAmmo" -> ConserveAmmoTag(weapon, Settings.conserveAmmo())
-        "Opportunist" -> OpportunistTag(weapon)
-        "AvoidArmor" -> AvoidArmorTag(weapon)
+        "AvdShields+"   -> AvoidShieldsTag(weapon, 0.01f)
+        "TgtShields+"   -> TargetShieldsTag(weapon, 0.99f)
+        "NoFighters"    -> NoFightersTag(weapon)
+        "ConserveAmmo"  -> ConserveAmmoTag(weapon, Settings.conserveAmmo())
+        "Opportunist"   -> OpportunistTag(weapon)
+        "AvoidDebris"   -> AvoidDebrisTag(weapon)
+        "BigShips"      -> BigShipTag(weapon)
+        "SmallShips"    -> SmallShipTag(weapon)
         else -> {
             Global.getLogger(WeaponControlPlugin.Companion::class.java).error("Unknown weapon tag: $name!")
             null
@@ -87,13 +101,15 @@ fun tagNameToRegexName(tag: String) : String{
     return when{
         holdRegex.matches(tag) -> "Hold(Flx>N%)"
         pdFluxRegex.matches(tag) -> "PD(Flx>N%)"
+        avoidArmorRegex.matches(tag) -> "AvoidArmor"
+        panicFireRegex.matches(tag) -> "Panic"
         else -> tag
     }
 }
 
 val tagIncompatibility = mapOf(
-    "PD" to listOf("Fighter", "Opportunist", "NoPD", "PD(Flx>N%)"),
-    "Fighter" to listOf("PD", "NoFighters", "Opportunist", "NoPD", "PD(Flx>N%)"),
+    "PD" to listOf("Fighter", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips"),
+    "Fighter" to listOf("PD", "NoFighters", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips"),
     "NoPD" to listOf("PD", "Fighter", "PD(Flx>N%)"),
     "AvoidShields" to listOf("TargetShields", "TgtShields+", "AvdShields+"),
     "TargetShields" to listOf("AvoidShields", "AvdShields+", "TgtShields+"),
@@ -101,7 +117,9 @@ val tagIncompatibility = mapOf(
     "AvdShields+" to listOf("TargetShields", "TgtShields+", "AvoidShields"),
     "NoFighters" to listOf("Fighter", "Opportunist"),
     "Opportunist" to listOf("Fighter", "PD", "NoFighters", "PD(Flx>N%)"),
-    "PD(Flx>N%)" to listOf("Fighter", "Opportunist", "NoPD", "PD")
+    "PD(Flx>N%)" to listOf("Fighter", "Opportunist", "NoPD", "PD", "BigShips", "SmallShips"),
+    "SmallShips" to listOf("BigShips", "PD", "Fighter", "PD(Flx>N%)"),
+    "BigShips" to listOf("SmallShips", "PD", "Fighter", "PD(Flx>N%)")
 )
 
 fun isIncompatibleWithExistingTags(tag: String, existingTags: List<String>) : Boolean{

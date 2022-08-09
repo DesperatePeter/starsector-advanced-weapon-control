@@ -2,7 +2,6 @@ package com.dp.advancedgunnerycontrol.gui
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
-import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.dp.advancedgunnerycontrol.utils.loadPersistentTags
 import com.dp.advancedgunnerycontrol.utils.persistTags
 import com.fs.starfarer.api.fleet.FleetMemberAPI

@@ -2,8 +2,6 @@ package com.dp.advancedgunnerycontrol.gui.actions
 
 import com.dp.advancedgunnerycontrol.gui.GUIAttributes
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.utils.FireModeStorage
-import com.dp.advancedgunnerycontrol.utils.SuffixStorage
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
 class ApplySuggestedModeAction(attributes: GUIAttributes) : GUIAction(attributes) {

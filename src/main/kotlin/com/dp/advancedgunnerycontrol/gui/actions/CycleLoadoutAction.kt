@@ -13,7 +13,7 @@ class CycleLoadoutAction(attributes: GUIAttributes) : GUIAction(attributes) {
         return "You can have different mode loadouts for your fleet. Each loadout stores modes independently. " +
                 "This let's you adapt to the enemy loadout you are facing. For instance, if you are fighting against " +
                 "an enemy fleet with lots of strike craft, you might want to switch to a loadout where with some ships " +
-                "having weapon groups set to Fighter mode. During combat, cycle loadouts via [${Settings.cycleLoadout()}]." +
+                "having weapon groups set to Fighter mode. During combat, cycle loadouts via GUI-Button." +
                 "\nNote: Loadouts are cycled fleet-wide, not per ship."
     }
 
