@@ -148,10 +148,11 @@ If the tag list for a weapon group is empty, the base AI will not be replaced.
 Similarly, when setting ship AI modes, the mod will replace the base ship AI plugin with a custom plugin that will perform
 some actions and then let the base AI take back over.
 
-### Compatibility with other mods ###
+### Compatibility and Integration with other mods ###
 
 This mod should be compatible with other mods that provide custom AIs for their weapons, as long as they don't try to
 manipulate the weapon AI mid-combat. This mod will simply use the custom AI of that weapon as the base AI.
+This mod doesn't affect anything outside of combat, so it's very unlikely to cause problems on the campaign level.
 
 If you are a mod-author and want to explicitly tell my mod to not tweak the AI of your weapon(s), include the weapon id
 into your mod's modSettings.json:
@@ -168,9 +169,43 @@ into your mod's modSettings.json:
 
 Similarly, this mod has a feature for suggested tags for weapons. If you want to include suggested tags for your
 weapons to allow users to quickly set up their tags, include a key suggestedWeaponTags in your modSettings.json.
-Have a look at this mod's modSettings.json for an example.
+Have a look at this mod's modSettings.json for an example. Refer to the tag table above to decide on tags.
+If in doubt, the safe bet is always to simply omit a weapon and assign no tags.
 
-This mod doesn't affect anything outside of combat, so it's very unlikely to cause problems on the campaign level.
+#### Assigning tags to enemy ship weapons ####
+
+If you want enemy ships of your mod to have tags assigned to their weapons, you can tell my mod to do so by setting
+custom data to the ship. You can do that however you want to, the easiest solutions probably being a hullmod-script
+or a BaseEveryFrameCombatPlugin/BaseEveryFrameCombatScript.
+
+Use the setCustomData-method of the ShipAPI. Use the key "AGC_ApplyCustomOptions" and a Map<String, List<String>> as the value.
+My mod will parse that value, apply the desired tags to the applicable weapons (Note: Tags are applied on a per-weapon basis
+rather than on a per-weapon-group basis for enemy ships) and then remove the entry from the custom ship data.
+After it's finished, it will write the key "AGC_CustomOptionsHaveBeenApplied" to the custom data, so you can search
+for that key to see if tags have already been applied to a ship (though my mod doesn't check that key).
+
+The map must adhere to the following syntax:
+
+Its keys can be:
+- a weapon id -> will affect all weapons with exactly this id
+- "!MAGIC!Missile", "!MAGIC!Energy" or "!MAGIC!Ballistic" -> will affect all missiles/energy weapons/ballistics
+- a regex-string -> will affect all weapons with ids that match the regex
+
+The values must be lists of tag-names.
+All tags listed will be applied to all weapons that match the given key.
+
+For instance, if you want all missile weapons to receive the ForceAF and NoFighters tags, the following call should get the job done:
+
+```kotlin
+// Kotlin
+// assuming ship is an object of type ShipAPI
+ship.setCustomData("AGC_ApplyCustomOptions", mapOf("!MAGIC!Missile" to listOf("ForceAF", "NoFighters")))
+```
+
+```java
+// Java
+ship.setCustomData("AGC_ApplyCustomOptions", Collections.singletonMap("!MAGIC!Missile", Arrays.asList("ForceAF", "NoFighters")));
+```
 
 ## Known Issues ##
 
@@ -223,6 +258,7 @@ This mod doesn't affect anything outside of combat, so it's very unlikely to cau
 - 1.1.1: Fix issues with combat UI scaling/positioning, fix issues with PD-tags
 - 1.2.0: Remove legacy mode, fix several issues related to weird weapon AI behavior, add additional tags, cleanup & polish
 - 1.3.0: Add ForceAF tag and hotloading tags, tweaked several tags for less restrictive targeting, fix issues with base AI selection
+- 1.4.0: Add option for other mods to set tags for enemy ships via custom ship data
 
 ## Acknowledgements ##
 

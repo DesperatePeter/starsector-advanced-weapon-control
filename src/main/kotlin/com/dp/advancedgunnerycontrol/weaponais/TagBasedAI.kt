@@ -15,12 +15,16 @@ import java.lang.ref.WeakReference
 class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = mutableListOf()) :
     SpecificAIPluginBase(baseAI) {
 
-    var tags = tags
+    var tags = mutableListOf<WeaponAITagBase>()
         set(value) {
             unregisterTagsForEveryFrameAdvance(field)
             field = value
             registerTagsForEveryFrameAdvance(field)
         }
+
+    init {
+        this.tags = tags
+    }
 
     override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return computeBasePriority(entity, predictedLocation) *

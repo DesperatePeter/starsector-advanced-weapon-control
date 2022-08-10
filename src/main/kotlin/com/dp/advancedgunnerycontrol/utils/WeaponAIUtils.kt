@@ -6,6 +6,7 @@ import com.dp.advancedgunnerycontrol.weaponais.TagBasedAI
 import com.dp.advancedgunnerycontrol.weaponais.times_
 import com.dp.advancedgunnerycontrol.weaponais.vectorFromAngleDeg
 import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -30,6 +31,26 @@ fun applyTagsToWeaponGroup(ship: ShipAPI, groupIndex: Int, tags: List<String>) :
         (plugins[i] as? TagBasedAI)?.tags = createTags(tags, plugins[i].weapon).toMutableList()
     }
     return plugins.all { (it as? TagBasedAI)?.tags?.all { t -> t.isValid() } ?: true }
+}
+
+fun applyTagsToWeapon(weapon: WeaponAPI, tags: List<String>){
+    val weaponGroup = weapon.ship.getWeaponGroupFor(weapon)
+    val plugin = weaponGroup.getAutofirePlugin(weapon)
+
+    if(plugin !is TagBasedAI){
+        setAutofirePlugin(weapon, TagBasedAI(plugin, createTags(tags, weapon).toMutableList()))
+    }else{
+        val combinedTags = plugin.tags.toMutableSet()
+        combinedTags.addAll(createTags(tags, weapon))
+        plugin.tags = combinedTags.toMutableList()
+    }
+
+}
+
+fun setAutofirePlugin(weapon: WeaponAPI, plugin: AutofireAIPlugin){
+    val weaponGroup = weapon.ship.getWeaponGroupFor(weapon)
+    val index = weaponGroup.aiPlugins.indexOf(weaponGroup.getAutofirePlugin(weapon))
+    weaponGroup.aiPlugins[index] = plugin
 }
 
 fun reloadAllShips(storageIndex: Int){

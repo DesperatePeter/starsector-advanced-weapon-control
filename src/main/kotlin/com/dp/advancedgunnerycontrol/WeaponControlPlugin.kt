@@ -81,7 +81,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             if(it.customData.containsKey(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)){
                 val toApply = determineTagsByGroup(it)
                 toApply.forEach { (k, v) ->
-                    applyTagsToWeaponGroup(it, k, v)
+                    applyTagsToWeapon(k, v)
                 }
                 it.removeCustomData(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)
                 it.setCustomData(Values.CUSTOM_SHIP_DATA_OPTIONS_HAVE_BEEN_APPLIED_KEY, "DONE")
