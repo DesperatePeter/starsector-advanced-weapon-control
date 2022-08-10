@@ -5,6 +5,8 @@ import com.dp.advancedgunnerycontrol.utils.InShipShipModeStorage
 import com.dp.advancedgunnerycontrol.utils.doesShipHaveLocalShipModes
 import com.dp.advancedgunnerycontrol.weaponais.shipais.*
 import com.fs.starfarer.api.combat.ShipAPI
+import com.fs.starfarer.combat.ai.BasicShipAI
+import java.lang.ref.WeakReference
 
 enum class ShipModes {
     DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, VENT_AGGRESSIVE, RETREAT
@@ -55,17 +57,32 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenera
     }
 }
 
-fun assignShipMode(modes: List<String>, ship: ShipAPI) {
+fun assignShipMode(modes: List<String>, ship: ShipAPI, forceAssign: Boolean = false) {
     if (ship.shipAI == null) return
     ship.resetDefaultAI()
+    if(ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)){
+        ship.customData.remove(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)
+    }
     val shipModes = modes.mapNotNull { shipModeFromString[it] }
-    if (shipModes.contains(ShipModes.DEFAULT) || shipModes.isEmpty()) return
+    if (!forceAssign && (shipModes.contains(ShipModes.DEFAULT) || shipModes.isEmpty())) return
 
     val baseAI = ship.shipAI ?: return
 
     val commanders = shipModes.map { generateCommander(it, ship) }
+    val customAI = CustomShipAI(baseAI, ship, commanders)
+    ship.setCustomData(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY, WeakReference(customAI))
+    ship.shipAI = customAI
+}
 
-    ship.shipAI = CustomShipAI(baseAI, ship, commanders)
+fun doesShipHaveCustomAI(ship: ShipAPI) : Boolean{
+    if (!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)) return false
+    if (ship.shipAI is BasicShipAI) return false
+    return (ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY] as? WeakReference<*>)?.get() != null
+}
+
+fun getCustomShipAI(ship: ShipAPI) : CustomShipAI?{
+    if(!doesShipHaveCustomAI(ship)) return null
+    return ((ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY] as? WeakReference<*>)?.get() as? CustomShipAI)
 }
 
 fun persistShipModes(shipId: String, loadoutIndex: Int, tags: List<String>) {
@@ -77,7 +94,7 @@ fun persistShipModes(shipId: String, loadoutIndex: Int, tags: List<String>) {
 
 fun saveShipModesInShip(ship: ShipAPI, tags: List<String>, storageIndex: Int) {
     if (!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY)) {
-        ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY] = InShipShipModeStorage()
+        ship.setCustomData(Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY, InShipShipModeStorage())
     }
     (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipShipModeStorage)?.modes?.set(storageIndex,
         tags.toMutableList()

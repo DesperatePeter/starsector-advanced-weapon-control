@@ -11,7 +11,8 @@
     # tags via comma. You may use regexes to map multiple variants of the same weapon
     # to the same mode. Note that if both a direct match and regex match exist, the direct match will be used.
     # If multiple regex-matches exist, an arbitrary one will be chosen. Please be mindful of not adding regexes
-    # that might match to other weapons (e.g. ".*h.*" would be a very bad idea to add...),
+    # that might match to other weapons (e.g. ".*h.*" would be a very bad idea to add...).,
+    # Please refer to the README.md (in repo base folder) for a description of available tags and what to use them for.
     "suggestedWeaponTags" : {
       ".*needler" : "TargetShields,Hold(Flx>90%)",
       ".*flak" : "PD",

@@ -18,7 +18,7 @@ class TagButton(ship: FleetMemberAPI, group : Int, tag : String, button: ButtonA
         public fun createModeButtonGroup(ship: FleetMemberAPI, group: Int, tooltip: TooltipMakerAPI) : List<TagButton>{
             storage = Settings.tagStorage[AGCGUI.storageIndex]
             val toReturn = mutableListOf<TagButton>()
-            tags.forEach {
+            Settings.tagList().forEach {
                 toReturn.add(TagButton(ship, group, it, tooltip.addAreaCheckbox(it, it,
                     Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), 160f, 18f, 3f)))
                 tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(getTagTooltip(it)), TooltipMakerAPI.TooltipLocation.BELOW)

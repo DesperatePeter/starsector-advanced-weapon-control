@@ -29,6 +29,8 @@ object Settings : SettingsDefinition() {
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val maxLoadouts = addSetting<Int>("maxLoadouts", 3)
     val loadoutNames = addSetting<List<String>> ("loadoutNames", listOf())
+    val allowHotLoadingTags = addSetting<Boolean>("allowHotLoadingTags", true)
+    var originalTagList : List<String> = listOf()
 
 
     // mode/suffix params
@@ -66,6 +68,7 @@ object Settings : SettingsDefinition() {
         super.applySettings()
         shipModeStorage =  StorageBase.assembleStorageArray<String>("$" + Values.THIS_MOD_NAME + "shipModes")
         tagStorage = StorageBase.assembleStorageArray("$" + Values.THIS_MOD_NAME + "tags")
+        originalTagList = tagList()
         forceCustomAI.set(forceCustomAI() && enableCustomAI())
         enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set ( max(0, min(2, customAIFriendlyFireComplexity())))
@@ -73,5 +76,13 @@ object Settings : SettingsDefinition() {
         uiAnchorY.set(uiAnchorY() / Global.getSettings().screenScaleMult)
         uiMessagePositionX.set(uiMessagePositionX() / Global.getSettings().screenScaleMult)
         uiMessagePositionY.set(uiMessagePositionY() / Global.getSettings().screenScaleMult)
+    }
+
+    fun hotAddTags(tags: List<String>){
+        if(!allowHotLoadingTags()) return
+        tagList.set(originalTagList)
+        val combined = tagList().toMutableSet()
+        combined.addAll(tags)
+        tagList.set(combined.toList())
     }
 }

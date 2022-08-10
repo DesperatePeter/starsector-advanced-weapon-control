@@ -155,9 +155,10 @@ class GuiLayout(private val ship: ShipAPI, private val font: LazyFont) {
     100f, 20f, 0.5f, font, color, 5f, createShipAiBtnGroupAction(ship), xTooltip, yTooltip, "Ship AI Modes")
 
     init {
+        Settings.hotAddTags(loadAllTags(ship.fleetMember))
         weaponButtonGroups.forEachIndexed { index, buttonGroup ->
             val currentTags = fetchCurrentWeaponTags(index)
-            tags.forEach {
+            Settings.tagList().forEach {
                 buttonGroup.addButton(it, it, getTagTooltip(it), currentTags.contains(it))
             }
         }

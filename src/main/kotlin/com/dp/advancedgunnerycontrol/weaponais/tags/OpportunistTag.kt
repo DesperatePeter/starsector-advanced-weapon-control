@@ -12,6 +12,8 @@ class OpportunistTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
         return (entity as? ShipAPI)?.isFighter == false
     }
 
+    override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = false
+
     override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return if (isOpportuneTarget(entity, predictedLocation, weapon)) {
             1f

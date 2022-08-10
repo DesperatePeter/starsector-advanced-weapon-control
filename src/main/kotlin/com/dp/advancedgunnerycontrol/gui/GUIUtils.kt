@@ -40,7 +40,7 @@ fun isElligibleForPD(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
     }.contains(true)
 }
 
-fun isBlacklisted(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
+fun isEverythingBlacklisted(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
     val group = sh.variant.weaponGroups[groupIndex]
     return (group.slots.mapNotNull { sh.variant.getWeaponId(it) }.all { Settings.weaponBlacklist.contains(it) })
 }

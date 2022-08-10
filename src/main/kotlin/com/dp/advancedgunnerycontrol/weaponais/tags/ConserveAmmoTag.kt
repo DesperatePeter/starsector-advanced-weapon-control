@@ -11,7 +11,10 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
 class ConserveAmmoTag(weapon: WeaponAPI, private val ammoThreshold: Float) : WeaponAITagBase(weapon) {
-    override fun isValidTarget(entity: CombatEntityAPI): Boolean = true
+
+    override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
+        return ammoLevel(weapon) > ammoThreshold
+    }
 
     override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float = 1f
 

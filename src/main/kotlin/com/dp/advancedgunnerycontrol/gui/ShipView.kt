@@ -1,5 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui
 
+import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.utils.loadAllTags
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
@@ -59,6 +61,7 @@ class ShipView : CustomUIPanelPlugin {
         attributes.customPanel = attributes.visualPanel?.showCustomPanel(1210f, 650f, this)
         attributes.customPanel?.position?.inTMid(20f)
         attributes.ship?.let { sh ->
+            Settings.hotAddTags(loadAllTags(sh))
             val imgView = attributes.customPanel?.createUIElement(100f, 100f, false)
             imgView?.addImage(sh.hullSpec.spriteName, 80f, 80f, 5.0f)
             attributes.customPanel?.addUIElement(imgView)?.inTL(1f, 1f)

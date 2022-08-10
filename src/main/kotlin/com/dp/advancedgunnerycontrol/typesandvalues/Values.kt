@@ -9,6 +9,8 @@ object Values {
     const val THIS_MOD_NAME = "AdvancedGunneryControl"
     const val CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY = "AGC_Tags"
     const val CUSTOM_SHIP_DATA_SHIP_MODES_KEY = "AGC_ShipTags"
+    const val CUSTOM_SHIP_DATA_SHIP_AI_KEY = "AGC_ShipAI"
+    const val CUSTOM_ENGINE_TAGS_KEY = "AGC_AutoAdvanceTags"
     const val distToAngularDistEvaluationFactor = 1f / 400f
     var storageIndex = 0
     val HELP_TEXT = "---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +

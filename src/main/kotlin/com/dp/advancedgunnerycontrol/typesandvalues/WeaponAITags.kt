@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
 import com.dp.advancedgunnerycontrol.WeaponControlPlugin
-import com.dp.advancedgunnerycontrol.gui.isBlacklisted
+import com.dp.advancedgunnerycontrol.gui.isEverythingBlacklisted
 import com.dp.advancedgunnerycontrol.gui.isElligibleForPD
 import com.dp.advancedgunnerycontrol.gui.usesAmmo
 import com.dp.advancedgunnerycontrol.settings.Settings
@@ -9,8 +9,6 @@ import com.dp.advancedgunnerycontrol.weaponais.tags.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-
-val tags = Settings.tagList()
 
 val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)")
 
@@ -29,7 +27,7 @@ fun shouldTagBeDisabled(groupIndex: Int, sh: FleetMemberAPI, tag: String) : Bool
     val modTag = tagNameToRegexName(tag)
     if(pdTags.contains(modTag) && !isElligibleForPD(groupIndex, sh)) return true
     if(ammoTags.contains(modTag) && !usesAmmo(groupIndex, sh)) return true
-    if(isBlacklisted(groupIndex, sh)) return true
+    if(isEverythingBlacklisted(groupIndex, sh)) return true
     return false
 }
 
@@ -45,11 +43,15 @@ val tagTooltips = mapOf(
     "NoFighters" to "Weapon won't target fighters.",
     "ConserveAmmo" to "Weapon will be much more hesitant to fire when ammo below ${(Settings.conserveAmmo()*100f).toInt()}%.",
     "Opportunist" to "Weapon will be more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons.",
-    "AvoidDebris" to "Weapon will not fire when the shot is blocked by debris/asteroids.",
+    "AvoidDebris" to "Weapon will not fire when the shot is blocked by debris/asteroids." +
+            "\nNote: This only affects the custom AI and the Opportunist mode already includes this option.",
     "BigShips" to "Weapon will ignore missiles and prioritize big ships" +
             if(Settings.strictBigSmall()) " and won't fire at anything smaller than destroyers." else "",
     "SmallShips" to "Weapon will ignore missiles and prioritize small ships" +
             if(Settings.strictBigSmall()) " and won't fire at anything bigger than destroyers." else "",
+    "ForceAF" to "Will force AI-controlled ships to set this group to autofire, like the ForceAF ship mode does to all groups." +
+            "\nNote: This will modify the ShipAI, as the Starsector API doesn't allow to directly set a weapon group to autofire." +
+            "\n      The ShipAI might still try to select this weapon group, but will be forced to deselect it again."
 )
 
 fun getTagTooltip(tag: String) : String{
@@ -64,7 +66,8 @@ fun getTagTooltip(tag: String) : String{
                 "effectiveness vs armor." +
                 "\nCombine with AvoidShields to also avoid shields. (experimental)"
         panicFireRegex.matches(tag) -> "Weapon will blindly fire without considering if/what the shot will hit as long as the ship" +
-                " hull level is below ${(extractRegexThreshold(panicFireRegex, tag) *100f).toInt()}%."
+                " hull level is below ${(extractRegexThreshold(panicFireRegex, tag) *100f).toInt()}%." +
+                "\nFor AI-controlled ships, this will put the weapon group into ForceAF-mode once the hull threshold has been reached."
         else -> ""
     }
 }
@@ -90,6 +93,7 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         "AvoidDebris"   -> AvoidDebrisTag(weapon)
         "BigShips"      -> BigShipTag(weapon)
         "SmallShips"    -> SmallShipTag(weapon)
+        "ForceAF"       -> ForceAutofireTag(weapon)
         else -> {
             Global.getLogger(WeaponControlPlugin.Companion::class.java).error("Unknown weapon tag: $name!")
             null

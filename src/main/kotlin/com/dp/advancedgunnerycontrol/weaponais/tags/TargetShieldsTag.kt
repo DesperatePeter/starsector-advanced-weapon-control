@@ -9,10 +9,10 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
 class TargetShieldsTag(weapon: WeaponAPI, private val threshold: Float = Settings.targetShieldsThreshold()) : WeaponAITagBase(weapon) {
-    override fun isValidTarget(entity: CombatEntityAPI): Boolean {
-        return entity is ShipAPI
-    }
 
+    override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
+        return computeShieldFactor(entity, weapon) > threshold
+    }
     override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         val tgtShip = (entity as? ShipAPI) ?: return 1f
         return 1f/(computeShieldFactor(tgtShip, weapon) + 0.5f)

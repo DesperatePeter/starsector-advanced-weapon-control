@@ -8,6 +8,7 @@ import com.dp.advancedgunnerycontrol.weaponais.vectorFromAngleDeg
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
+import com.fs.starfarer.api.fleet.FleetMemberAPI
 import org.lazywizard.lazylib.ext.minus
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.abs
@@ -71,6 +72,16 @@ fun loadTags(ship: ShipAPI, index: Int, storageIndex: Int) : List<String>{
     return loadTagsFromShip(ship, index, storageIndex)
 }
 
+fun loadAllTags(ship: FleetMemberAPI) : List<String>{
+    val tags = mutableSetOf<String>()
+    for(si in 0 until Settings.maxLoadouts()){
+        for(i in 0 until ship.variant.weaponGroups.size){
+            tags.addAll(loadPersistentTags(ship.id, i, si))
+        }
+    }
+    return tags.toList()
+}
+
 /**
  * @return approximate angular distance of target from current weapon facing in rad
  * note: approximation works well for small values and is off by a factor of PI/2 for 180°
@@ -112,13 +123,17 @@ fun persistTags(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<S
 
 fun saveTagsInShip(ship: ShipAPI, groupIndex: Int, tags: List<String>, storageIndex: Int){
     if(!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY)){
-        ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] = InShipTagStorage()
+        ship.setCustomData(Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY, InShipTagStorage())
     }
     (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipTagStorage)?.tagsByIndex?.get(storageIndex)?.set(groupIndex, tags.toSet().toList())
 }
 
 fun loadPersistentTags(shipId: String, groupIndex: Int, loadoutIndex: Int) : List<String>{
     return Settings.tagStorage[loadoutIndex].modesByShip[shipId]?.get(groupIndex) ?: emptyList()
+}
+
+fun getWeaponGroupIndex(weapon: WeaponAPI) : Int {
+    return weapon.ship.weaponGroupsCopy.indexOf(weapon.ship.getWeaponGroupFor(weapon))
 }
 
 fun loadTagsFromShip(ship: ShipAPI, groupIndex: Int, storageIndex: Int) : List<String>{

@@ -9,7 +9,7 @@ import org.lwjgl.util.vector.Vector2f
 
 class PDAtFluxThresholdTag(weapon: WeaponAPI, private val threshold: Float) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
-        if(weapon.ship.fluxLevel <= threshold) return true
+        if(weapon.ship.fluxLevel <= threshold) return super.isValidTarget(entity)
         return (entity as? MissileAPI) != null || (entity as? ShipAPI)?.isFighter == true
     }
 

@@ -109,7 +109,7 @@ private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
 /**
  * @return [0.01...~1.0] a small value if target is unshielded, has shields off or is at high flux
  */
-fun computeShieldFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float = 1f) : Float{
+fun computeShieldFactor(tgtShip: CombatEntityAPI, weapon: WeaponAPI, ttt: Float = 1f) : Float{
     if(tgtShip.shield == null || (tgtShip.shield.type != ShieldAPI.ShieldType.FRONT && tgtShip.shield.type != ShieldAPI.ShieldType.OMNI)){
         return 0.01f
     }
@@ -117,14 +117,14 @@ fun computeShieldFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float = 1f) : 
     return computeFluxBasedShieldFactor(tgtShip) * computeShieldFacingFactor(tgtShip, weapon, ttt)
 }
 
-fun computeFluxBasedShieldFactor(tgtShip: ShipAPI) : Float{
-    return (1.0f - tgtShip.fluxLevel) * (if (tgtShip.shield?.isOn == true) 1.0f else 0.75f)
+fun computeFluxBasedShieldFactor(tgtShip: CombatEntityAPI) : Float{
+    return (1.0f - ((tgtShip as? ShipAPI)?.fluxLevel ?: 1f)) * (if (tgtShip.shield?.isOn == true) 1.0f else 0.75f)
 }
 
 /**
  * @return a factor between 0.01f (shot will bypass shields) and 1f (shot will hit shields). A value in between if it's unclear
  */
-fun computeShieldFacingFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float) : Float{
+fun computeShieldFacingFactor(tgtShip: CombatEntityAPI, weapon: WeaponAPI, ttt: Float) : Float{
     // Note: Angles in Starsector are always 0..360, 0 means east/right
     val shield = tgtShip.shield ?: return 0.01f
     if(shield.type == ShieldAPI.ShieldType.OMNI && shield.isOff){
@@ -160,7 +160,8 @@ fun computeArmorByFacing(ship: ShipAPI, facing: Float) : Float{
     return ship.getAverageArmorInSlice(facing , arc)
 }
 
-fun computeArmorInImpactArea(weapon: WeaponAPI, ship: ShipAPI) : Float{
+fun computeArmorInImpactArea(weapon: WeaponAPI, ship: CombatEntityAPI) : Float{
+    if (ship !is ShipAPI) return 1f
     val impactAngle = 180f - abs(weapon.currAngle - ship.facing)
     return computeArmorByFacing(ship, impactAngle)
 }
@@ -182,7 +183,8 @@ fun getMaxArmor(armor: ArmorGridAPI) : Float{
     return horizontalCells * verticalCells * armor.maxArmorInCell
 }
 
-private fun isDefenseless(target : ShipAPI, weapon: WeaponAPI) : Boolean {
+private fun isDefenseless(target : CombatEntityAPI, weapon: WeaponAPI) : Boolean {
+    if(target !is ShipAPI) return true
     if(target.shield == null && target.phaseCloak == null) return true
     target.fluxTracker?.let {
         if(it.isOverloadedOrVenting){

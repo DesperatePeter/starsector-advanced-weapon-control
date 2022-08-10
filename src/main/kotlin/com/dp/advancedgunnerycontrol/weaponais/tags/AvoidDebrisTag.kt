@@ -5,8 +5,6 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
 class AvoidDebrisTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
-    override fun isValidTarget(entity: CombatEntityAPI): Boolean = true
-
     override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float = 1.0f
 
     override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean = true

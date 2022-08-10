@@ -8,6 +8,7 @@ import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.utils.*
+import com.dp.advancedgunnerycontrol.weaponais.TagBasedAI
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
@@ -51,7 +52,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             initialShipInitRequired = !initAllShips()
         }
 
-         if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
+        if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
+
+        TagBasedAI.getTagsRegisteredForEveryFrameAdvancement().forEach { it.advance() }
 
         if (keyManager.parseInputEvents(events)) {
             processControlEvents()
