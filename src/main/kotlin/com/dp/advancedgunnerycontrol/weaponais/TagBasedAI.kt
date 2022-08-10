@@ -17,6 +17,7 @@ class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = 
 
     var tags = tags
         set(value) {
+            unregisterTagsForEveryFrameAdvance(field)
             field = value
             registerTagsForEveryFrameAdvance(field)
         }
@@ -63,6 +64,14 @@ class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = 
     }
 
     companion object{
+        fun unregisterTagsForEveryFrameAdvance(tags: List<WeaponAITagBase>){
+            Global.getCombatEngine()?.let { engine ->
+                if(!engine.customData.containsKey(Values.CUSTOM_ENGINE_TAGS_KEY)){
+                    return
+                }
+                (engine.customData[Values.CUSTOM_ENGINE_TAGS_KEY] as? InEngineTagStorage)?.tags?.removeAll{ tags.contains(it.get())}
+            }
+        }
         fun registerTagsForEveryFrameAdvance(tags: List<WeaponAITagBase>){
             Global.getCombatEngine()?.let { engine ->
                 if(!engine.customData.containsKey(Values.CUSTOM_ENGINE_TAGS_KEY)){

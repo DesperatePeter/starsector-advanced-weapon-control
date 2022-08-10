@@ -9,7 +9,7 @@
    # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo",
    # "Opportunist", "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)"
    # Newly added tags (mostly untested): "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)", "ForceAF"
-   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "AvdArmor(33%)", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx>50%)", "ConserveAmmo", "Opportunist", "ForceAF"]
+   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "AvdArmor(33%)", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)"]
    # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
    #       Use Reset to clear them.
    # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons
@@ -23,6 +23,7 @@
    # If you set this to false, they will use exclusively vanilla AI (base AI) and simply not fire in that situation.
    # Update: I made quite a lot of improvements to the customAI, so I feel like it's safe to use now.
    # Beware though that enabling (but not forcing) it will have a negative effect on game performance.
+   # Note that modes that rely on custom AI will be very janky when turning off custom AI
    # Allowed values: true/false
    ,"enableCustomAI" : true # <---- EDIT HERE ----
    
@@ -106,7 +107,7 @@
    # For modes that want to hit shields, reducing the threshold makes them more likely to fire
    # For modes that want to avoid shields, the opposite is true
    ,"targetShields_threshold" : 0.2
-   ,"avoidShields_threshold" : 0.5
+   ,"avoidShields_threshold" : 0.6
    
    # Opportunist AND conserveAmmo tag: (shield thresholds for opportunist mode, depending on damage type)
    ,"opportunist_kineticThreshold" : 0.5 

@@ -222,6 +222,7 @@ This mod doesn't affect anything outside of combat, so it's very unlikely to cau
 - 1.1.0: Fix issues (combat GUI with screenScale, clicking noise, settings), add customizable thresholds and new tags
 - 1.1.1: Fix issues with combat UI scaling/positioning, fix issues with PD-tags
 - 1.2.0: Remove legacy mode, fix several issues related to weird weapon AI behavior, add additional tags, cleanup & polish
+- 1.3.0: Add ForceAF tag and hotloading tags, tweaked several tags for less restrictive targeting, fix issues with base AI selection
 
 ## Acknowledgements ##
 

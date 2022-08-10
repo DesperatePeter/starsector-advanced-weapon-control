@@ -128,7 +128,7 @@ fun computeShieldFacingFactor(tgtShip: CombatEntityAPI, weapon: WeaponAPI, ttt: 
     // Note: Angles in Starsector are always 0..360, 0 means east/right
     val shield = tgtShip.shield ?: return 0.01f
     if(shield.type == ShieldAPI.ShieldType.OMNI && shield.isOff){
-        return 0.5f // Turned off omni shields means we don't know shit
+        return 0.9f // Turned off omni shields means we don't know shit
     }
     val sCov = 0.5f * min(shield.arc, shield.activeArc + (ttt/shield.unfoldTime)*shield.arc)
     val flankingAngle =abs( 180f - abs(weapon.currAngle - shield.facing))
@@ -206,29 +206,4 @@ fun vectorFromAngleDeg(degs: Float): Vector2f {
 // Why doesn't Vector2f support this naturally? Note: infix and _ rather than operator in case this ever gets added
 internal infix fun Vector2f.times_(d: Float): Vector2f {
     return Vector2f(d * x, d * y)
-}
-
-class Fraction() {
-    var numerator: Int = 0
-
-    // Note: 0 is used as a magic number for "invalid". I know, that's ugly, but it's easy (proper solution: validity-bool and overwrite denominator setter)
-    var denominator: Int = 0
-
-    constructor(numerator: Int, denominator: Int) : this() {
-        this.numerator = numerator
-        this.denominator = denominator
-    }
-
-    fun asFloat(): Float {
-        if (0 == denominator) return 0f // this class isn't important enough to risk Div0 exceptions
-        return numerator.toFloat() / denominator.toFloat()
-    }
-
-    fun asBool(): Boolean { // a denominator of 0 marks this as invalid
-        return 0 == denominator
-    }
-
-    fun asString(): String {
-        return "$numerator/$denominator"
-    }
 }
