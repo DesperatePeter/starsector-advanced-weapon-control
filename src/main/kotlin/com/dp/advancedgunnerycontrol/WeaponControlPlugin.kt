@@ -27,6 +27,8 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private val keyManager = KeyStatusManager()
 
     private var textFrameTimer: Int = 0
+    private var timeFrameTimer: Int = 1
+    private val optionApplicationFrameInterval = 100
     var storageIndex = 0
     private var isInitialized = false
     private var initialShipInitRequired = Settings.enableAutoSaveLoad()
@@ -52,6 +54,11 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             initialShipInitRequired = !initAllShips()
         }
 
+        if(timeFrameTimer++ >= optionApplicationFrameInterval){
+            timeFrameTimer = 0
+            applyOptionsToEnemies()
+        }
+
         if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
 
         TagBasedAI.getTagsRegisteredForEveryFrameAdvancement().forEach { it.advance() }
@@ -67,6 +74,19 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
         reloadAllShips(Values.storageIndex)
         return true
+    }
+
+    private fun applyOptionsToEnemies(){
+        engine.ships.filterNotNull().filter { it.owner == 1 }.forEach {
+            if(it.customData.containsKey(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)){
+                val toApply = determineTagsByGroup(it)
+                toApply.forEach { (k, v) ->
+                    applyTagsToWeaponGroup(it, k, v)
+                }
+                it.removeCustomData(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)
+                it.setCustomData(Values.CUSTOM_SHIP_DATA_OPTIONS_HAVE_BEEN_APPLIED_KEY, "DONE")
+            }
+        }
     }
 
     private fun initNewlyDeployedShips(deployedShips: List<String>?){

@@ -11,6 +11,8 @@ object Values {
     const val CUSTOM_SHIP_DATA_SHIP_MODES_KEY = "AGC_ShipTags"
     const val CUSTOM_SHIP_DATA_SHIP_AI_KEY = "AGC_ShipAI"
     const val CUSTOM_ENGINE_TAGS_KEY = "AGC_AutoAdvanceTags"
+    const val CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY = "AGC_ApplyCustomOptions"
+    const val CUSTOM_SHIP_DATA_OPTIONS_HAVE_BEEN_APPLIED_KEY = "AGC_CustomOptionsHaveBeenApplied"
     const val distToAngularDistEvaluationFactor = 1f / 400f
     var storageIndex = 0
     val HELP_TEXT = "---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +

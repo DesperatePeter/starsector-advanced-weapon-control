@@ -284,8 +284,8 @@ abstract class SpecificAIPluginBase(
         }.let {
             if (lastTargetEntity == entity) it * 0.5f else it // incentivize sticking to one target
         } *
-                (if(entity as? ShipAPI == weapon.ship.shipTarget) 0.1f else 1.0f) * // heavily incentivize targeting the ship target
-                (if((entity as? ShipAPI)?.isFighter == false) 1.0f else 2.0f) // prioritize regular ships over other stuff
+                (if(entity as? ShipAPI == weapon.ship.shipTarget) 0.05f else 1.0f) * // heavily incentivize targeting the ship target
+                (if((entity as? ShipAPI)?.isFighter == false) 1.0f else 1.2f) // prioritize regular ships over other stuff
     }
 
     override fun shouldFire(): Boolean {
