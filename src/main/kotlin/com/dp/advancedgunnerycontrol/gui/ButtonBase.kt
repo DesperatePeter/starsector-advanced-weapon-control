@@ -4,7 +4,9 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.ButtonAPI
 
 
-abstract class ButtonBase<T>(protected var ship: FleetMemberAPI, protected var group : Int, protected var associatedValue : T, var button: ButtonAPI) {
+abstract class ButtonBase<T>(protected var ship: FleetMemberAPI, protected var group : Int,
+                             var associatedValue : T, var button: ButtonAPI,
+                             protected var isRadio : Boolean = true) {
     protected var active = false
     protected var sameGroupButtons : List<ButtonBase<T>> = emptyList()
         set(value) {field = value.filter { it.associatedValue != this.associatedValue }}
@@ -26,13 +28,19 @@ abstract class ButtonBase<T>(protected var ship: FleetMemberAPI, protected var g
         button.isEnabled = false
     }
 
+    fun enable(){
+        button.isEnabled = true
+    }
+
     protected fun uncheck(){
         active = false
         button.isChecked = false
     }
 
     private fun callback(){
-        sameGroupButtons.forEach { it.uncheck() }
+        if(isRadio){
+            sameGroupButtons.forEach { it.uncheck() }
+        }
         onActivate()
     }
     abstract fun onActivate()

@@ -27,7 +27,7 @@ class ShipModeButton(ship: FleetMemberAPI, associatedIndex : Int, mode : ShipMod
                 toReturn.add(ShipModeButton(ship, index, it, tooltip.addAreaCheckbox(shipModeToString[it], it,
                     Misc.getBasePlayerColor(), Misc.getDarkPlayerColor(), Misc.getBrightPlayerColor(), 160f, 18f, 3f)))
                 tooltip.addTooltipToPrevious(AGCGUI.makeTooltip(detailedShipModeDescriptions[it] ?: ""), TooltipMakerAPI.TooltipLocation.BELOW)
-                if(ShipModes.HELP == it) toReturn.lastOrNull()?.disable()
+                // if(ShipModes.HELP == it) toReturn.lastOrNull()?.disable()
                 if(storage.modesByShip[ship.id]?.values?.contains(shipModeToString[it]) == true) {
                     toReturn.last().check()
                     isSomethingChecked = true

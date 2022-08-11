@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "D:/Spiele/Starsector"
-    val modVersion = "0.13.2"
+    val modVersion = "1.4.0"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -157,61 +157,63 @@ tasks {
                    | # NOTE: For bool values, everything but true will be interpreted as false
                    | #       Check starsector.log (in the Starsector folder) for details (ctrl+f for advancedgunnerycontrol)
                    | {
-                   |   #                                 #### CYCLE ORDER ####
-                   |   # Reorder the entries in this list to change the order in which you cycle through fire modes in game.
-                   |   # Delete/add modes as you see fit. Note: "Default" will always be the first mode.
-                   |   # Allowed values: "PD", "PD (Flux>50%)", "PD (Ammo<90%)", "Fighters", "Missiles", "NoFighters", "BigShips", "SmallShips", "Mining", "Opportunist", "TargetShields", "AvoidShields", "NoPD"
-                   |   # Example: "cycleOrder" : ["PD"] -> Will cycle between Default and PD Mode ( becomes ["Default", "PD"])
-                   |   "cycleOrder" : ["PD", "PD (Flux>50%)", "Fighters", "Missiles", "NoFighters", "Opportunist", "TargetShields", "AvoidShields" ] # <---- EDIT HERE ----
+                   |   #                                 #### TAG LIST ####
+                   |   # Determines which tags will be shown in the GUIs. Feel free to add/remove tags as you see fit.
+                   |   # Allowed values are: (replace N with a number between 0 and 100)
+                   |   # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo",
+                   |   # "Opportunist", "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)"
+                   |   # Newly added tags (mostly untested): "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)", "ForceAF"
+                   |   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "AvdArmor(33%)", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)"]
+                   |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
+                   |   #       Use Reset to clear them.
+                   |   # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons
+                   |   ,"allowHotLoadingTags" : true
+                   |  
 
 
                    |   #                                 #### CUSTOM AI ####
-                   |   # If you set this to true, if weapons in weapon groups in Fighters/Missiles mode would normally target something else,
+                   |   # If you set this to true, if the base AI would have weapons in weapon groups target something invalid for the selected tags,
                    |   # they will try to acquire a fitting target using custom targeting AI.
-                   |   # If you set this to false, they will use exclusively vanilla AI (base AI) simply not fire in that situation.
+                   |   # If you set this to false, they will use exclusively vanilla AI (base AI) and simply not fire in that situation.
                    |   # Update: I made quite a lot of improvements to the customAI, so I feel like it's safe to use now.
-                   |   # Beware though that enabling it will have a negative effect on game performance.
+                   |   # Beware though that enabling (but not forcing) it will have a negative effect on game performance.
+                   |   # Note that modes that rely on custom AI will be very janky when turning off custom AI
                    |   # Allowed values: true/false
                    |   ,"enableCustomAI" : true # <---- EDIT HERE ----
                    |   
-                   |   # Enabling this will always use the customAI (for applicable modes, refer to mode table)
+                   |   # Enabling this will always use the customAI (for applicable modes)
                    |   # Note that forcing & enabling custom AI should actually be beneficial for performance over just enabling it.
                    |   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
                    |   ,"forceCustomAI" : false # <---- EDIT HERE ----
 
 
                    |   #                                 #### UI SETTINGS ####
-                   |   # Switch this off if you want to reset fire modes every battle (GUI only works when enabled)
+                   |   
+                   |   # Switch this off if you want to reset modes every battle (campaign-GUI only works when enabled)
                    |   , "enablePersistentFireModes" : true # <---- EDIT HERE ----
-                   |   # If set to false, changes are only persistent if made in the GUI or manually saved
+                   |   # If set to false, changes are only persistent if made in the campaign-GUI or manually saved
                    |   , "persistChangesInCombat" : true # <---- EDIT HERE ----
                    |   # Number of frames messages will be displayed before fading. -1 for infinite
-                   |   , "messageDisplayDuration" : 180 # <---- EDIT HERE ----
-                   |   # X/Y Position (from bottom left) where messages will be displayed (refpoint: top left corner of message)
-                   |   # Note: I believe the game calculates everything in 2560 x 1440 and then scales it to your actual resolution 
-                   |   , "messagePositionX" : 900 # <---- EDIT HERE ----
-                   |   , "messagePositionY" : 150 # <---- EDIT HERE ----
-                   |   # When on, all weapon groups will be displayed (same as infoHotkey) rather than just the cycled one.
-                   |   , "alwaysShowFullInfo" : false # <---- EDIT HERE ----
+                   |   , "messageDisplayDuration" : 250 # <---- EDIT HERE ----
+                   |   # X/Y Position (from bottom left) where messages/tooltips will be displayed (refpoint: top left corner of message)
+                   |   # Values between 0 and 1, x = 0.0 means left side of the screen, y = 0.0 means bottom of the screen
+                   |   # Note: These values will automatically get adjusted by your scaling multiplier
+                   |   , "messagePositionX" : 0.2 # <---- EDIT HERE ----
+                   |   , "messagePositionY" : 0.4 # <---- EDIT HERE ----
+                   |   # X/Y Position where the anchor (top left corner of first weapon group button row) of the combat GUI will be placed
+                   |   , "combatUiAnchorX" : 0.025
+                   |   , "combatUiAnchorY" : 0.8
                    |   # A key that can be represented by a single character that's not bound to anything in combat in the Starsector settings
-                   |   , "saveLoadInfoHotkey" : "j" # <---- EDIT HERE ----
-                   |   , "resetHotkey" : "/" # <---- EDIT HERE ----
-                   |   , "loadAllShipsHotkey" : "*" # <---- EDIT HERE ----
-                   |   , "suffixHotkey" : "-" # <---- EDIT HERE ----
-                   |   , "cycleLoadoutHotkey" : "+" # <---- EDIT HERE ----
+                   |   , "inCombatGuiHotkey" : "j" # <---- EDIT HERE ----
+                   |   # Campaign GUI
                    |   , "GUIHotkey" : "j" # <---- EDIT HERE ----
-                   |   , "helpHotkey" : "?" # <---- EDIT HERE ----
-                   |   , "saveHotkey" : "~" # <---- EDIT HERE ---- (only relevant if persistChangesInCombat==false)
+                   |   
                    |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
                    |   , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
 
-                   |   # If you disable this, you will have to use the J-Key to save/load weapon modes (for each ship)
+                   |   # If you disable this, you will have to use the Load/Save-Buttons to save/load weapon modes
                    |   # This can't be enabled when enablePersistentFireModes is off
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
-                   |   # When enabled, fire modes where all weapons are invalid (e.g. PD mode for non-PD weapons) are skipped when cycling.
-                   |   , "skipInvalidModes" : true # <---- EDIT HERE ----
-                   |   # Press the "J"-Key while on the system/hyperspace map with this enabled
-                   |   , "enableGUI" : true # <---- EDIT HERE ----
 
 
                    |   #                                 #### CUSTOM AI CONFIGURATION  ####
@@ -247,21 +249,21 @@ tasks {
                    |   # 1.0 should be enough to not hit allies if they don't change their course, but it's nice to have a little buffer
                    |   ,"customAIFriendlyFireCaution" : 1.1 # <---- EDIT HERE (maybe) ----                   
                    | 
-                   |   #                                 #### MODE/SUFFIX CUSTOMIZATION ####
+                   |   #                                 #### TAG CUSTOMIZATION ####
                    |   # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)
                    |   # NOTE: Using invalid values might cause very odd behaviour and/or crashes!
                    |   
                    |   # Shield thresholds: When not flanking shields and shields are on, the shield factor is simply
                    |   # equal to (1 - fluxLevel) of the target. When flanking shields, shield factor == 0.
-                   |   # When shields are off, the shield factor is equal to (1 - fluxLevel)*0.75
+                   |   # When shields are off but the enemy ship could raise them in time, the shield factor is equal to (1 - fluxLevel)*0.75
                    |   # When omni-shields are off, it's considered as half-flanking (subject to change)
                    |   # For frontal shields, unfold time and projectile travel time are considered to determine flanking
                    |   # For modes that want to hit shields, reducing the threshold makes them more likely to fire
                    |   # For modes that want to avoid shields, the opposite is true
                    |   ,"targetShields_threshold" : 0.2
-                   |   ,"avoidShields_threshold" : 0.5
+                   |   ,"avoidShields_threshold" : 0.6
                    |   
-                   |   # Opportunist fire mode AND conserveAmmo suffix:                   |  
+                   |   # Opportunist AND conserveAmmo tag: (shield thresholds for opportunist mode, depending on damage type)
                    |   ,"opportunist_kineticThreshold" : 0.5 
                    |   ,"opportunist_HEThreshold" : 0.15 
                    |    # increasing this value will increase the likelihood of opportunist/conserveAmmo firing (positive non-zero number)
@@ -279,20 +281,13 @@ tasks {
                    |   
                    |   ,"retreat_hull" : 0.5 # retreat if hull level < X
                    |   ,"shieldsOff_flux" : 0.5 # In ShieldsOff (Flux>50%) mode, turn off shields if flux level > X
-                   |   
-                   |   ,"holdFire50_flux" : 0.5
-                   |   ,"holdFire75_flux" : 0.75
-                   |   ,"holdFire90_flux" : 0.9
-                   |   
-                   |   ,"pd50_flux" : 0.5
-                   |   ,"pd90_ammo" : 0.5
-                   |   ,"conserveAmmo_ammo" : 0.5
-                   |   
-                   |   ,"panicFire_hull" : 0.5
+
+                   |   ,"conserveAmmo_ammo" : 0.5 # Start conserving ammo when ammoLevel < X
                    |   
                    |   ,"retreat_shouldDirectRetreat" : false
-                   |   # If false, the BigShips/SmallShips modes will still target frigates/capitals etc.
-                   |   ,"strictBigSmallShipMode" : true 
+                   |   # If true, the BigShips/SmallShips tags will exclusively target Destroyers and bigger/smaller
+                   |   ,"strictBigSmallShipMode" : false
+                   |   
                    | }
 
                 """.trimMargin()

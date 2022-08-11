@@ -1,12 +1,12 @@
 package com.dp.advancedgunnerycontrol.weaponais
 
 // Notes:
-// Initially I was unaware that the player ship's current velocity affects, so some of the code here is a bit patchy
+// Initially I was unaware that the player ship's current velocity affects targeting, so some of the code here is a bit patchy
 // Most of the time a "angular distance", i.e. the sin, is used instead of angles in calculations, as sin(x) ~= x for small angles
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.weaponais.suffixes.SuffixBase
+import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
@@ -15,9 +15,8 @@ import org.lwjgl.util.vector.Vector2f
 import kotlin.math.*
 
 abstract class SpecificAIPluginBase(
-    private val baseAI: AutofireAIPlugin,
-    private val customAIActive: Boolean = Settings.enableCustomAI(),
-    var suffix: SuffixBase = SuffixBase(baseAI.weapon)
+    val baseAI: AutofireAIPlugin,
+    private val customAIActive: Boolean = Settings.enableCustomAI()
 ) : AutofireAIPlugin {
     protected var targetEntity: CombatEntityAPI? = null
     private var lastTargetEntity: CombatEntityAPI? = null
@@ -75,7 +74,7 @@ abstract class SpecificAIPluginBase(
     override fun advance(p0: Float) {
         lastP0 = p0
         reset()
-        if (!advanceBaseAI(p0) && customAIActive) {
+        if (!advanceBaseAI(p0) && customAIActive && isBaseAIOverwritable()) {
             advanceWithCustomAI()
         }
     }
@@ -188,12 +187,8 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun computeTimeToTravel(tgt: Vector2f): Float {
-        return linearDistanceFromWeapon(tgt) / (weapon.projectileSpeed * (1.5f - 0.5f * currentTgtLeadAcc))
+        return computeTimeToTravel(weapon, tgt, (1.5f - 0.5f * currentTgtLeadAcc))
     }
-
-//    private fun rotateVector(vec: Vector2f, omega: Float): Vector2f {
-//        return Vector2f(vec.x * cos(omega) - vec.y * sin(omega), vec.x * sin(omega) + vec.y * cos(omega))
-//    }
 
     override fun getTargetShip(): ShipAPI? {
         return targetEntity as? ShipAPI
@@ -288,9 +283,9 @@ abstract class SpecificAIPluginBase(
             angularDistanceFromWeapon(it) + Values.distToAngularDistEvaluationFactor * linearDistanceFromWeapon(it) + 1.5f
         }.let {
             if (lastTargetEntity == entity) it * 0.5f else it // incentivize sticking to one target
-        } * suffix.modifyPriority(entity) *
-                (if(entity as? ShipAPI == weapon.ship.shipTarget) 0.1f else 1.0f) * // heavily incentivize targeting the ship target
-                (if((entity as? ShipAPI)?.isFighter == false) 1.0f else 2.0f) // prioritize regular ships over other stuff
+        } *
+                (if(entity as? ShipAPI == weapon.ship.shipTarget) 0.05f else 1.0f) * // heavily incentivize targeting the ship target
+                (if((entity as? ShipAPI)?.isFighter == false) 1.0f else 1.2f) // prioritize regular ships over other stuff
     }
 
     override fun shouldFire(): Boolean {
@@ -303,8 +298,7 @@ abstract class SpecificAIPluginBase(
     }
 
     companion object {
-        protected val aimingToleranceFactor =
-            1.0f * Settings.customAITriggerHappiness()
+        protected val aimingToleranceFactor = 1.0f * Settings.customAITriggerHappiness()
         protected val aimingToleranceFlat = 10f * Settings.customAITriggerHappiness()
     }
 }

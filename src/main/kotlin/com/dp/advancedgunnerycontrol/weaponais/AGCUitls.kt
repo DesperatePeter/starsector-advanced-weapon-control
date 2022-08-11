@@ -10,7 +10,6 @@ import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.*
-
 // Math.toRadians only works on doubles, which is annoying as f***
 const val degToRad: Float = PI.toFloat() / 180f
 
@@ -110,7 +109,7 @@ private fun isOpportuneType(target : ShipAPI, weapon: WeaponAPI) : Boolean {
 /**
  * @return [0.01...~1.0] a small value if target is unshielded, has shields off or is at high flux
  */
-fun computeShieldFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float = 1f) : Float{ // todo facing
+fun computeShieldFactor(tgtShip: CombatEntityAPI, weapon: WeaponAPI, ttt: Float = 1f) : Float{
     if(tgtShip.shield == null || (tgtShip.shield.type != ShieldAPI.ShieldType.FRONT && tgtShip.shield.type != ShieldAPI.ShieldType.OMNI)){
         return 0.01f
     }
@@ -118,22 +117,26 @@ fun computeShieldFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float = 1f) : 
     return computeFluxBasedShieldFactor(tgtShip) * computeShieldFacingFactor(tgtShip, weapon, ttt)
 }
 
-fun computeFluxBasedShieldFactor(tgtShip: ShipAPI) : Float{
-    return (1.0f - tgtShip.fluxLevel) * (if (tgtShip.shield?.isOn == true) 1.0f else 0.75f)
+fun computeFluxBasedShieldFactor(tgtShip: CombatEntityAPI) : Float{
+    return (1.0f - ((tgtShip as? ShipAPI)?.fluxLevel ?: 1f)) * (if (tgtShip.shield?.isOn == true) 1.0f else 0.75f)
 }
 
 /**
  * @return a factor between 0.01f (shot will bypass shields) and 1f (shot will hit shields). A value in between if it's unclear
  */
-fun computeShieldFacingFactor(tgtShip: ShipAPI, weapon: WeaponAPI, ttt: Float) : Float{
+fun computeShieldFacingFactor(tgtShip: CombatEntityAPI, weapon: WeaponAPI, ttt: Float) : Float{
     // Note: Angles in Starsector are always 0..360, 0 means east/right
     val shield = tgtShip.shield ?: return 0.01f
     if(shield.type == ShieldAPI.ShieldType.OMNI && shield.isOff){
-        return 0.5f; // Turned off omni shields means we don't know shit
+        return 0.9f // Turned off omni shields means we don't know shit
     }
     val sCov = 0.5f * min(shield.arc, shield.activeArc + (ttt/shield.unfoldTime)*shield.arc)
     val flankingAngle =abs( 180f - abs(weapon.currAngle - shield.facing))
     return 1.0f - min(1.0f, max(0.01f, (flankingAngle - sCov)/15.0f)) // missing the shields by 15° or more means bypassing shot
+}
+
+fun computeTimeToTravel(weapon: WeaponAPI, tgt: Vector2f, leadingFactor: Float = 1f): Float {
+    return (weapon.location - tgt).length() / (weapon.projectileSpeed * leadingFactor)
 }
 
 fun getAverageArmor(armor: ArmorGridAPI) : Float{
@@ -148,13 +151,40 @@ fun getAverageArmor(armor: ArmorGridAPI) : Float{
     return sum * armor.maxArmorInCell
 }
 
+/**
+ * @param facing relative to the front of the ship, clockwise, in deg
+ * @return avg armor fraction of the closest three cells to facing
+ */
+fun computeArmorByFacing(ship: ShipAPI, facing: Float) : Float{
+    val arc = 10.0f
+    return ship.getAverageArmorInSlice(facing , arc)
+}
+
+fun computeArmorInImpactArea(weapon: WeaponAPI, ship: CombatEntityAPI) : Float{
+    if (ship !is ShipAPI) return 1f
+    val impactAngle = 180f - abs(weapon.currAngle - ship.facing)
+    return computeArmorByFacing(ship, impactAngle)
+}
+
+fun computeWeaponEffectivenessVsArmor(weapon: WeaponAPI, armor: Float) : Float{
+    var effectiveDmg = if(weapon.isBeam) weapon.damage.damage * 2.0f else weapon.damage.damage
+    effectiveDmg *= when (weapon.damageType) {
+        DamageType.FRAGMENTATION -> 0.25f
+        DamageType.KINETIC -> 0.5f
+        DamageType.HIGH_EXPLOSIVE -> 2.0f
+        else -> 1.0f
+    }
+    return effectiveDmg / (effectiveDmg + armor)
+}
+
 fun getMaxArmor(armor: ArmorGridAPI) : Float{
     val horizontalCells = armor.leftOf + armor.rightOf
     val verticalCells = armor.above + armor.below
     return horizontalCells * verticalCells * armor.maxArmorInCell
 }
 
-private fun isDefenseless(target : ShipAPI, weapon: WeaponAPI) : Boolean {
+private fun isDefenseless(target : CombatEntityAPI, weapon: WeaponAPI) : Boolean {
+    if(target !is ShipAPI) return true
     if(target.shield == null && target.phaseCloak == null) return true
     target.fluxTracker?.let {
         if(it.isOverloadedOrVenting){
@@ -176,29 +206,4 @@ fun vectorFromAngleDeg(degs: Float): Vector2f {
 // Why doesn't Vector2f support this naturally? Note: infix and _ rather than operator in case this ever gets added
 internal infix fun Vector2f.times_(d: Float): Vector2f {
     return Vector2f(d * x, d * y)
-}
-
-class Fraction() {
-    var numerator: Int = 0
-
-    // Note: 0 is used as a magic number for "invalid". I know, that's ugly, but it's easy (proper solution: validity-bool and overwrite denominator setter)
-    var denominator: Int = 0
-
-    constructor(numerator: Int, denominator: Int) : this() {
-        this.numerator = numerator
-        this.denominator = denominator
-    }
-
-    fun asFloat(): Float {
-        if (0 == denominator) return 0f // this class isn't important enough to risk Div0 exceptions
-        return numerator.toFloat() / denominator.toFloat()
-    }
-
-    fun asBool(): Boolean { // a denominator of 0 marks this as invalid
-        return 0 == denominator
-    }
-
-    fun asString(): String {
-        return "$numerator/$denominator"
-    }
 }

@@ -1,5 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui
 
+import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.utils.loadAllTags
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
@@ -41,15 +43,11 @@ class ShipView : CustomUIPanelPlugin {
         }
     }
 
-    fun addModeButtonGroup(group: Int, ship: FleetMemberAPI, tooltip: TooltipMakerAPI){
-        buttons.addAll(ModeButton.createModeButtonGroup(ship, group, tooltip))
+    private fun addTagButtonGroup(group: Int, ship: FleetMemberAPI, tooltip: TooltipMakerAPI){
+        buttons.addAll(TagButton.createModeButtonGroup(ship, group, tooltip))
     }
 
-    fun addSuffixButtons(group: Int, ship: FleetMemberAPI, tooltip: TooltipMakerAPI){
-        buttons.addAll(SuffixButton.createModeButtonGroup(ship, group, tooltip))
-    }
-
-    fun addShipModeButtonGroup(ship: FleetMemberAPI, panel: CustomPanelAPI, position: UIComponentAPI){
+    private fun addShipModeButtonGroup(ship: FleetMemberAPI, panel: CustomPanelAPI, position: UIComponentAPI){
         buttons.addAll(ShipModeButton.createModeButtonGroup(ship, panel, position))
     }
 
@@ -63,6 +61,7 @@ class ShipView : CustomUIPanelPlugin {
         attributes.customPanel = attributes.visualPanel?.showCustomPanel(1210f, 650f, this)
         attributes.customPanel?.position?.inTMid(20f)
         attributes.ship?.let { sh ->
+            Settings.hotAddTags(loadAllTags(sh))
             val imgView = attributes.customPanel?.createUIElement(100f, 100f, false)
             imgView?.addImage(sh.hullSpec.spriteName, 80f, 80f, 5.0f)
             attributes.customPanel?.addUIElement(imgView)?.inTL(1f, 1f)
@@ -79,9 +78,7 @@ class ShipView : CustomUIPanelPlugin {
                 val element = attributes.customPanel?.createUIElement(162f, 500f, false)
                 element?.let {
                     it.addTitle("Group ${i+1}")
-                    addModeButtonGroup(i, sh, it)
-                    it.addPara("Suffixes:", 5.0f)
-                    addSuffixButtons(i, sh, it)
+                    addTagButtonGroup(i, sh, it)
                     it.addImages(162f, 35f, 1f, 1f, *groupWeaponSpriteNames(sh.variant.weaponGroups[i], sh).toTypedArray())
                     it.addPara(groupAsString(sh.variant.weaponGroups[i], sh), 5.0f)
                     it.addPara("${groupFluxCost(sh.variant.weaponGroups[i], sh)} flux/s", 5.0f)

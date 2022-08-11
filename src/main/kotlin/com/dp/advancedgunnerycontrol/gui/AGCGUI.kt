@@ -2,6 +2,7 @@ package com.dp.advancedgunnerycontrol.gui
 
 import com.dp.advancedgunnerycontrol.gui.actions.*
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
 import com.fs.starfarer.api.campaign.rules.MemoryAPI
@@ -13,7 +14,7 @@ import kotlin.math.min
 
 class AGCGUI : InteractionDialogPlugin {
     companion object{
-        var storageIndex = 0 // FIXME: Move to Attributes
+        var storageIndex = Values.storageIndex //
 
         fun makeTooltip(description: String) : TooltipMakerAPI.TooltipCreator {
             return object : TooltipMakerAPI.TooltipCreator {

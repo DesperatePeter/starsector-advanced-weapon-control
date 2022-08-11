@@ -3,7 +3,7 @@ package com.dp.advancedgunnerycontrol.utils
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
 
-open class StorageBase<T> (private val persistentDataKey: String){
+open class StorageBase<T> (val persistentDataKey: String){
 
     companion object{
         fun <T> assembleStorageArray(baseKey : String, size : Int = Settings.maxLoadouts()) : List<StorageBase<T>>{
@@ -36,14 +36,13 @@ open class StorageBase<T> (private val persistentDataKey: String){
             Global.getSector().persistentData[persistentDataKey] = value
         }
 
-    fun purgeIfNecessary() {
-
+    inline fun <reified T> purgeIfNecessary() {
         val map = Global.getSector().persistentData[persistentDataKey] as? MutableMap<*, *>?
         if(map == null) {purge(); return}
         if (map.isEmpty()) {purge(); return}
         val subMap = (map.values.firstOrNull() as? MutableMap<*,*>)
         if (subMap == null) {purge(); return}
-        if (subMap.values.firstOrNull() !is String) {purge(); return}
+        if (subMap.values.firstOrNull() !is T) {purge(); return}
         if(!Settings.enablePersistentModes()) {purge(); return}
     }
 

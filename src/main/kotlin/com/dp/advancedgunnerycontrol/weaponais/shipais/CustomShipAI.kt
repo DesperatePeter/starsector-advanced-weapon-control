@@ -3,11 +3,24 @@ package com.dp.advancedgunnerycontrol.weaponais.shipais
 import com.fs.starfarer.api.combat.ShipAIConfig
 import com.fs.starfarer.api.combat.ShipAIPlugin
 import com.fs.starfarer.api.combat.ShipAPI
+import com.fs.starfarer.api.combat.ShipCommand
 import com.fs.starfarer.api.combat.ShipwideAIFlags
-
+import org.lwjgl.util.vector.Vector2f
 
 
 open class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: ShipAPI, protected val commanders : List<ShipCommandGenerator>) : ShipAIPlugin {
+
+    private var fleetingCommands : MutableList<ShipCommandWrapper> = mutableListOf()
+
+    fun addFleetingCommand(cmd: ShipCommandWrapper){
+        fleetingCommands.add(cmd)
+    }
+
+    fun containsFleetingCommand(cmd: ShipCommand, index: Int? = null, pos: Vector2f? = null) : Boolean {
+        return fleetingCommands.any { it.command == cmd
+                && (index?.equals(it.index) ?: true)
+                && (pos?.equals(it.position) ?: true)}
+    }
 
     override fun setDoNotFireDelay(p0: Float) {
         ship.shipAI = baseAI
@@ -40,6 +53,10 @@ open class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: 
             }
         }
         if(commanders.any { it.shouldReevaluate() }) forceCircumstanceEvaluation()
+        fleetingCommands.forEach {
+            ship.giveCommand(it.command, it.position, it.index)
+        }
+        fleetingCommands.clear()
     }
 
     override fun needsRefit(): Boolean {
