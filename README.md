@@ -259,6 +259,7 @@ ship.setCustomData("AGC_ApplyCustomOptions", Collections.singletonMap("!MAGIC!Mi
 - 1.2.0: Remove legacy mode, fix several issues related to weird weapon AI behavior, add additional tags, cleanup & polish
 - 1.3.0: Add ForceAF tag and hotloading tags, tweaked several tags for less restrictive targeting, fix issues with base AI selection
 - 1.4.0: Add option for other mods to set tags for enemy ships via custom ship data
+- 1.4.1: Fix AvoidArmor-tag; fix issue with ship modes getting stripped when transferring control (via occasionally reloading ship modes)
 
 ## Acknowledgements ##
 

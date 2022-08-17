@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "D:/Spiele/Starsector"
-    val modVersion = "1.4.0"
+    val modVersion = "1.4.1"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -287,6 +287,12 @@ tasks {
                    |   ,"retreat_shouldDirectRetreat" : false
                    |   # If true, the BigShips/SmallShips tags will exclusively target Destroyers and bigger/smaller
                    |   ,"strictBigSmallShipMode" : false
+                   |   # When set to true, the mod will periodically (~1/s) check if the custom ship AI has been stripped
+                   |   # from player-fleet ships. Stripping happens when transferring control or turning on/off autopilot
+                   |   # on the player-controlled ship
+                   |   ,"automaticallyReapplyPlayerShipModes" : true
+                   |   # Other mods can apply tags to ships in enemy fleets. Set this to false to opt out.
+                   |   ,"allowEnemyShipModeApplication" : true
                    |   
                    | }
 

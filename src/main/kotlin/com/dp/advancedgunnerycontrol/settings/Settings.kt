@@ -31,6 +31,8 @@ object Settings : SettingsDefinition() {
     val loadoutNames = addSetting<List<String>> ("loadoutNames", listOf())
     val allowHotLoadingTags = addSetting<Boolean>("allowHotLoadingTags", true)
     var originalTagList : List<String> = listOf()
+    val automaticallyReapplyPlayerShipModes = addSetting<Boolean>("automaticallyReapplyPlayerShipModes", true)
+    val allowEnemyShipModeApplication = addSetting<Boolean>("allowEnemyShipModeApplication", true)
 
 
     // mode/suffix params

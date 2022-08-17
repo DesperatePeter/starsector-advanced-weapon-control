@@ -2,7 +2,7 @@ package com.dp.advancedgunnerycontrol.weaponais.tags
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.assignShipMode
-import com.dp.advancedgunnerycontrol.typesandvalues.doesShipHaveCustomAI
+import com.dp.advancedgunnerycontrol.typesandvalues.hasCustomAI
 import com.dp.advancedgunnerycontrol.typesandvalues.getCustomShipAI
 import com.dp.advancedgunnerycontrol.weaponais.isPD
 import com.dp.advancedgunnerycontrol.weaponais.shipais.ShipCommandWrapper
@@ -40,7 +40,7 @@ abstract class WeaponAITagBase(protected val weapon: WeaponAPI) {
     companion object{
         fun forceAutofire(ship: ShipAPI, groupIndex: Int){
             if(ship.shipAI == null) return // mode is only applicable for AI-controlled ships
-            if( !doesShipHaveCustomAI(ship)){
+            if( !hasCustomAI(ship)){
                 assignShipMode(listOf(), ship, true)
             }
             val ai = getCustomShipAI(ship) ?: return

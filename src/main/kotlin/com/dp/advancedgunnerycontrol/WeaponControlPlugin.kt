@@ -28,8 +28,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private var textFrameTimer: Int = 0
     private var timeFrameTimer: Int = 1
-    private val optionApplicationFrameInterval = 100
-    var storageIndex = 0
+    private val optionApplicationFrameInterval = 50
     private var isInitialized = false
     private var initialShipInitRequired = Settings.enableAutoSaveLoad()
 
@@ -56,7 +55,8 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
         if(timeFrameTimer++ >= optionApplicationFrameInterval){
             timeFrameTimer = 0
-            applyOptionsToEnemies()
+            if(Settings.allowEnemyShipModeApplication()) applyOptionsToEnemies()
+            if(Settings.automaticallyReapplyPlayerShipModes()) reapplyShipModesAsNecessary()
         }
 
         if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
@@ -74,6 +74,15 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
         reloadAllShips(Values.storageIndex)
         return true
+    }
+
+    private fun reapplyShipModesAsNecessary(){
+        engine.ships.filterNotNull().filter { it.owner == 0 }.forEach { ship ->
+            if(loadShipModes(ship, Values.storageIndex).let { it.isNotEmpty() && !it.contains(defaultShipMode) }
+                && ship.shipAI != null && !hasCustomAI(ship)){
+                assignShipMode(loadShipModes(ship, Values.storageIndex), ship)
+            }
+        }
     }
 
     private fun applyOptionsToEnemies(){

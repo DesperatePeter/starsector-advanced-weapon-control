@@ -10,7 +10,7 @@ import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.*
-// Math.toRadians only works on doubles, which is annoying as f***
+// Math.toRadians only works on doubles, which is annoying....
 const val degToRad: Float = PI.toFloat() / 180f
 
 fun isPD(weapon: WeaponAPI): Boolean {
@@ -152,18 +152,34 @@ fun getAverageArmor(armor: ArmorGridAPI) : Float{
 }
 
 /**
- * @param facing relative to the front of the ship, clockwise, in deg
- * @return avg armor fraction of the closest three cells to facing
+ * effective ship radius measured in armor grid cells
  */
-fun computeArmorByFacing(ship: ShipAPI, facing: Float) : Float{
-    val arc = 10.0f
-    return ship.getAverageArmorInSlice(facing , arc)
+fun computeEffectiveCellRadius(ship: ShipAPI, impactAngleDeg: Float) : Float{
+    val angleOffset = abs(ship.facing - impactAngleDeg) * degToRad
+    val radius = ship.spriteAPI.height * abs(cos(angleOffset)) + ship.spriteAPI.width * abs(sin(angleOffset))
+    return radius / ship.armorGrid.cellSize
 }
 
-fun computeArmorInImpactArea(weapon: WeaponAPI, ship: CombatEntityAPI) : Float{
-    if (ship !is ShipAPI) return 1f
-    val impactAngle = 180f - abs(weapon.currAngle - ship.facing)
-    return computeArmorByFacing(ship, impactAngle)
+/**
+ * ratio of inner (i.e. unreachable) armor grid cells to total cells from given direction
+ */
+fun computeInnerCellRatio(ship: ShipAPI, impactAngleDeg: Float) : Float{
+    val cellRadius = computeEffectiveCellRadius(ship, impactAngleDeg)
+    val relevantArmorDepth = 3f
+    if(cellRadius <= relevantArmorDepth) return 0f
+    return  (cellRadius - relevantArmorDepth).pow(2) / cellRadius.pow(2)
+}
+
+fun computeOuterLayerArmorInImpactArea(weapon: WeaponAPI, ship: CombatEntityAPI, predictedLocation: Vector2f? = null) : Float{
+    if (ship !is ShipAPI) return 0f
+    val location = predictedLocation ?: ship.location
+    val arc = 10.0f
+    val impactAngle = degFromVector(location - weapon.location) - 180f
+    val armor = ship.getAverageArmorInSlice(impactAngle , arc)
+    val icr = computeInnerCellRatio(ship, impactAngle)
+    val maxArmor = ship.armorGrid.armorRating
+    val minArmor = maxArmor*icr
+    return max(0f, armor - minArmor) / (maxArmor - minArmor) * maxArmor
 }
 
 fun computeWeaponEffectivenessVsArmor(weapon: WeaponAPI, armor: Float) : Float{
@@ -199,8 +215,12 @@ fun isValidPDTarget(target: CombatEntityAPI?) : Boolean {
     return (target is MissileAPI || ((target as? ShipAPI)?.isFighter == true))
 }
 
-fun vectorFromAngleDeg(degs: Float): Vector2f {
-    return Vector2f(cos(degs * degToRad), sin(degs * degToRad))
+fun vectorFromAngleDeg(angle: Float): Vector2f {
+    return Vector2f(cos(angle * degToRad), sin(angle * degToRad))
+}
+
+fun degFromVector(vec: Vector2f) : Float {
+    return atan2(vec.y, vec.x) / degToRad
 }
 
 // Why doesn't Vector2f support this naturally? Note: infix and _ rather than operator in case this ever gets added

@@ -74,14 +74,14 @@ fun assignShipMode(modes: List<String>, ship: ShipAPI, forceAssign: Boolean = fa
     ship.shipAI = customAI
 }
 
-fun doesShipHaveCustomAI(ship: ShipAPI) : Boolean{
+fun hasCustomAI(ship: ShipAPI) : Boolean{
     if (!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)) return false
     if (ship.shipAI is BasicShipAI) return false
     return (ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY] as? WeakReference<*>)?.get() != null
 }
 
 fun getCustomShipAI(ship: ShipAPI) : CustomShipAI?{
-    if(!doesShipHaveCustomAI(ship)) return null
+    if(!hasCustomAI(ship)) return null
     return ((ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY] as? WeakReference<*>)?.get() as? CustomShipAI)
 }
 
