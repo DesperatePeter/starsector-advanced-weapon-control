@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "D:/Spiele/Starsector"
-    val modVersion = "1.4.1"
+    val modVersion = "1.5.0"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -52,6 +52,7 @@ dependencies {
     // Get kotlin sdk from LazyLib during runtime, only use it here during compile time
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersionInLazyLib")
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersionInLazyLib")
+    compileOnly(fileTree("$starsectorModDirectory/Console Commands/jars"){include("*.jar")})
 
     implementation(fileTree("$starsectorModDirectory/LazyLib/jars") { include("*.jar") })
     implementation(fileTree("$starsectorModDirectory/MagicLib/jars") { include("*.jar") })
@@ -161,9 +162,8 @@ tasks {
                    |   # Determines which tags will be shown in the GUIs. Feel free to add/remove tags as you see fit.
                    |   # Allowed values are: (replace N with a number between 0 and 100)
                    |   # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo",
-                   |   # "Opportunist", "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)"
-                   |   # Newly added tags (mostly untested): "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)", "ForceAF"
-                   |   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "AvdArmor(33%)", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)"]
+                   |   # "Opportunist", "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased"
+                   |   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "AvdArmor(33%)", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased"]
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
                    |   #       Use Reset to clear them.
                    |   # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons
@@ -234,6 +234,9 @@ tasks {
 
                    |   # Set this to true if you want the custom AI to perform better :P
                    |   ,"customAIAlwaysUsesBestTargetLeading" : false # <---- EDIT HERE (maybe) ----
+                   |   # For purposes of determining whether a shot will hit, assume collision radius to be multiplied
+                   |   # by this factor. This is to compensate for the fact that most ships aren't spherical.
+                   |   ,"collisionRadiusMultiplier" : 0.8 # <---- EDIT HERE (maybe) ---- 
 
                    |   #                                 #### FRIENDLY FIRE AI CONFIGURATION ####
                    |   # "magic number" to choose how complex the friendly fire calculation should be

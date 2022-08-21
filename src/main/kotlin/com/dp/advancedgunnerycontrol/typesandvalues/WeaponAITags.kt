@@ -51,7 +51,8 @@ val tagTooltips = mapOf(
             if(Settings.strictBigSmall()) " and won't fire at anything bigger than destroyers." else "",
     "ForceAF" to "Will force AI-controlled ships to set this group to autofire, like the ForceAF ship mode does to all groups." +
             "\nNote: This will modify the ShipAI, as the Starsector API doesn't allow to directly set a weapon group to autofire." +
-            "\n      The ShipAI might still try to select this weapon group, but will be forced to deselect it again."
+            "\n      The ShipAI might still try to select this weapon group, but will be forced to deselect it again.",
+    "AvoidPhased" to "Weapon will ignore phase-ships unless they are unable to avoid the shot by phasing (due to flux or cooldown)."
 )
 
 fun getTagTooltip(tag: String) : String{
@@ -72,6 +73,7 @@ fun getTagTooltip(tag: String) : String{
     }
 }
 
+var unknownTagWarnCounter = 0
 fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
     when{
         holdRegex.matches(name) -> return FluxTag(weapon, extractRegexThreshold(holdRegex, name))
@@ -94,8 +96,14 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         "BigShips"      -> BigShipTag(weapon)
         "SmallShips"    -> SmallShipTag(weapon)
         "ForceAF"       -> ForceAutofireTag(weapon)
+        "AvoidPhased"   -> PhaseTag(weapon)
         else -> {
-            Global.getLogger(WeaponControlPlugin.Companion::class.java).error("Unknown weapon tag: $name!")
+            unknownTagWarnCounter++
+            when{
+                unknownTagWarnCounter < 10 -> Global.getLogger(WeaponControlPlugin.Companion::class.java).warn("Unknown weapon tag: $name! Will be ignored.")
+                unknownTagWarnCounter == 10 -> Global.getLogger(WeaponControlPlugin.Companion::class.java).warn(
+                    "Unknown weapon tag: $name! Future warnings of this type will be skipped.")
+            }
             null
         }
     }

@@ -95,7 +95,7 @@ abstract class SpecificAIPluginBase(
 
         var potentialTargets = addPredictedLocationToTargets(
             getRelevantEntitiesWithinRange().filter { isHostile(it) }
-        ).filter { isInRange(it.second, it.first.collisionRadius) }
+        ).filter { isInRange(it.second, effectiveCollRadius(it.first)) }
 
         // TODO: It would be faster to get friendlies and foes in one go
         if (Settings.customAIFriendlyFireComplexity() >= 2) {
@@ -117,7 +117,8 @@ abstract class SpecificAIPluginBase(
         return addPredictedLocationToTargets(
             CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter { it != weapon.ship }.filter {
                 (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) && !it.isFighter
-            }).filter { isInRange(it.second, it.first.collisionRadius * Settings.customAIFriendlyFireCaution()) && isWithinArc(it.second, it.first.collisionRadius * Settings.customAIFriendlyFireCaution()) }
+            }).filter { isInRange(it.second, effectiveCollRadius(it.first) * Settings.customAIFriendlyFireCaution())
+                && isWithinArc(it.second, effectiveCollRadius(it.first) * Settings.customAIFriendlyFireCaution()) }
     }
 
     protected fun determineTargetLeadingAccuracy(currentTarget: CombatEntityAPI?, lastTarget: CombatEntityAPI?) {
@@ -200,7 +201,7 @@ abstract class SpecificAIPluginBase(
 
     protected fun isWithinArc(entity: CombatEntityAPI): Boolean {
         if (!isAimable(weapon) || weapon.spec.trackingStr != null) return true
-        return isWithinArc(entity.location, entity.collisionRadius)
+        return isWithinArc(entity.location, effectiveCollRadius(entity))
     }
 
     protected fun isWithinArc(position: Vector2f, radius: Float): Boolean {
@@ -228,11 +229,12 @@ abstract class SpecificAIPluginBase(
         return friendliesInDangerZone(friendlies, aimPoint).isNotEmpty()
     }
 
-    protected fun friendliesInDangerZone(friendlies: List<Pair<CombatEntityAPI, Vector2f>>, aimPoint: Vector2f? = null): List<Pair<CombatEntityAPI, Vector2f>> {
+    protected fun friendliesInDangerZone(friendlies: List<Pair<CombatEntityAPI, Vector2f>>, aimPoint: Vector2f? = null):
+            List<Pair<CombatEntityAPI, Vector2f>> {
 
         return friendlies.filter {
             val isCloserThanTgt = targetPoint?.let { tp ->  linearDistanceFromWeapon(it.second) < linearDistanceFromWeapon(tp)} ?: true
-            determineIfShotWillHit(it.second, it.first.collisionRadius * Settings.customAIFriendlyFireCaution(), aimPoint) &&
+            determineIfShotWillHit(it.second, effectiveCollRadius(it.first) * Settings.customAIFriendlyFireCaution(), aimPoint) &&
                     isCloserThanTgt
         }
     }
@@ -250,12 +252,16 @@ abstract class SpecificAIPluginBase(
             if (isFriendlyFire(getFriendlies())) return false
         }
         // Note: In a sequence, all calculations are done on the first element before moving to the next
-        potentialTargets.asSequence().filter { isInRange(it.second, it.first.collisionRadius) }.iterator().forEach {
-            val effectiveCollisionRadius = it.first.collisionRadius * aimingToleranceFactor + aimingToleranceFlat
+        potentialTargets.asSequence().filter { isInRange(it.second, effectiveCollRadius(it.first)) }.iterator().forEach {
+            val effectiveCollisionRadius = effectiveCollRadius(it.first) * aimingToleranceFactor + aimingToleranceFlat
             if(determineIfShotWillHit(it.second, effectiveCollisionRadius)) return true
         }
 
         return false
+    }
+
+    private fun effectiveCollRadius(entity: CombatEntityAPI) : Float{
+        return entity.collisionRadius * Settings.collisionRadiusMultiplier()
     }
 
     protected fun computePointCurrentlyAimedAt() : Vector2f {

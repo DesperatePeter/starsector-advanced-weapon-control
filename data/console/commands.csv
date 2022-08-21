@@ -1,0 +1,2 @@
+command,class,tags,syntax,help
+AGC_addTags,com.dp.advancedgunnerycontrol.utils.AGCHotloadTags,"campaign",AGC_addTags <tag1 tag2>,"Add all listed tags to available tags in GUIs for current session, similar to adding them in Settings.editme. Won't persist after restarting. If you add invalid tags, they will still show up but won't do anything."

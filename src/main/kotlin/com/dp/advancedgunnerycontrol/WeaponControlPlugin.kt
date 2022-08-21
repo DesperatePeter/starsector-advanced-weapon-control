@@ -133,6 +133,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     override fun init(engine: CombatEngineAPI?) {
         super.init(engine)
         if (null != engine) {
+            engine.customData[Values.CUSTOM_ENGINE_AGC_PRESENT_KEY] = "true"
             try {
                 font = LazyFont.loadFont("graphics/fonts/insignia15LTaa.fnt")
             } catch (e: FontException) {

@@ -1,7 +1,5 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
-import com.dp.advancedgunnerycontrol.settings.Settings
-
 object Values {
     const val SETTINGS_FILE_NAME = "Settings.editme"
     const val WEAPON_BLACKLIST_KEY = "weaponBlacklist"
@@ -13,9 +11,10 @@ object Values {
     const val CUSTOM_ENGINE_TAGS_KEY = "AGC_AutoAdvanceTags"
     const val CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY = "AGC_ApplyCustomOptions"
     const val CUSTOM_SHIP_DATA_OPTIONS_HAVE_BEEN_APPLIED_KEY = "AGC_CustomOptionsHaveBeenApplied"
+    const val CUSTOM_ENGINE_AGC_PRESENT_KEY = "AGC_Present"
     const val distToAngularDistEvaluationFactor = 1f / 400f
     var storageIndex = 0
-    val HELP_TEXT = "---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
+    const val HELP_TEXT = "---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
             " for the stated modifications." +
             "\nAs the name implies, Ship AI modes will only work for AI-controlled ships, not the player controlled ship." +
             "\n---Fire Mode Tags---\nFire mode tags will modify what the weapon group targets and whether" +
@@ -28,7 +27,9 @@ object Values {
             " multiple loadouts for your ships.\nYou can define different modes for your ships per loadout and cycle through them" +
             " during combat." +
             "\nAs you can only cycle loadouts for all ships, make sure your loadouts fit a theme and are consistent between ships." +
-            "\n---Tips---\n - If you want a weapon group to fire as much as possible, give it no tags." +
+            "\n---Tips---" +
+            "\n - Tags are mainly a flux management tool. If your ship is already flux-neutral, you probably won't need many tags." +
+            "\n - If you want a weapon group to fire as much as possible, give it no tags." +
             " In my experience, no tags or just the Flx<90% tag is the right choice for most weapon groups" +
             "\n - Consider leaving one loadout blank (all default) to give you a fallback option." +
             "\n - Be very careful with ship modes! Force disabling shields might sound cool until you run into a HIL." +

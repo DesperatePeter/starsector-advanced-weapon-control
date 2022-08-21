@@ -62,6 +62,7 @@ I would recommend leaving one loadout blank (i.e. everything default) for your e
 ## Tags ##
 
 Note: Not all tags are enabled by default, cf. Settings.editme to customize which tags are available
+If you have ConsoleCommands installed, you can also hotload new tags via AGC_addTags.
 Ship refers to a non-fighter ship in the table below
 Replace N with a number between 1 and 99 when the tag name contains N%
 
@@ -83,6 +84,7 @@ Replace N with a number between 1 and 99 when the tag name contains N%
 | Hold(Flx>N%)  | -                              | -                                                    | None         |              No              |                                                      Will stop firing when ship flux exceeds N%                                                      |                                         -                                         | high flux weapons                                                                        | Very                          |
 |    ForceAF    | -                              | -                                                    | None         |              -               | Forces ShipAI to set affected weapon group to autofire. Will install custom ShipAI! For weapons that use flux, definitely combine with Hold(Flx>N%)! |                                         -                                         | Weapons where the AI is too hesitant to fire. Combine with other tags.                   | Usually not                   |
 |  Panic(H<N%)  | -                              | -                                                    | None         |           Hull<N%            |                                          When Hull<N%, weapon always fires and ForceAF mode gets turned on                                           |                                         -                                         | Limited ammo missiles with tracking.                                                     | Usually not                   |
+|  AvoidPhased  | Anything                       | Non-phased                                           | None         | base AI targets phase ships  |   Will avoid phase ships, unless they are vulnerable (phased and almost fluxed out or not phased and phase cooldown lasts until predicted impact)    |                                         -                                         | When you are annoyed with weapons shooting at phase ships to no avail.                   | Usually not                   |
 
 ## Settings ##
 
@@ -207,6 +209,9 @@ ship.setCustomData("AGC_ApplyCustomOptions", mapOf("!MAGIC!Missile" to listOf("F
 ship.setCustomData("AGC_ApplyCustomOptions", Collections.singletonMap("!MAGIC!Missile", Arrays.asList("ForceAF", "NoFighters")));
 ```
 
+If you want to check whether AGC has been installed/loaded by the user:
+It will write the key "AGC_Present" to the CombatEngine custom data.
+
 ## Known Issues ##
 
 - Versions before 0.8.2 saved custom classes as persistent data, meaning it was not possible to remove the mod.
@@ -260,6 +265,7 @@ ship.setCustomData("AGC_ApplyCustomOptions", Collections.singletonMap("!MAGIC!Mi
 - 1.3.0: Add ForceAF tag and hotloading tags, tweaked several tags for less restrictive targeting, fix issues with base AI selection
 - 1.4.0: Add option for other mods to set tags for enemy ships via custom ship data
 - 1.4.1: Fix AvoidArmor-tag; fix issue with ship modes getting stripped when transferring control (via occasionally reloading ship modes)
+- 1.5.0: Add AvoidPhased-tag; Various small weapon AI tweaks; Add Console Command tag hotloading 
 
 ## Acknowledgements ##
 

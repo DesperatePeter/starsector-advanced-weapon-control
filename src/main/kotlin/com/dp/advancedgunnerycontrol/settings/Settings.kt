@@ -33,6 +33,7 @@ object Settings : SettingsDefinition() {
     var originalTagList : List<String> = listOf()
     val automaticallyReapplyPlayerShipModes = addSetting<Boolean>("automaticallyReapplyPlayerShipModes", true)
     val allowEnemyShipModeApplication = addSetting<Boolean>("allowEnemyShipModeApplication", true)
+    val collisionRadiusMultiplier = addSetting<Float>("collisionRadiusMultiplier", 0.8f)
 
 
     // mode/suffix params
@@ -80,11 +81,12 @@ object Settings : SettingsDefinition() {
         uiMessagePositionY.set(uiMessagePositionY() / Global.getSettings().screenScaleMult)
     }
 
-    fun hotAddTags(tags: List<String>){
+    fun hotAddTags(tags: List<String>, addForWholeSession: Boolean = true){
         if(!allowHotLoadingTags()) return
         tagList.set(originalTagList)
         val combined = tagList().toMutableSet()
         combined.addAll(tags)
+        if (addForWholeSession) originalTagList = combined.toList()
         tagList.set(combined.toList())
     }
 }
