@@ -136,7 +136,11 @@ fun computeShieldFacingFactor(tgtShip: CombatEntityAPI, weapon: WeaponAPI, ttt: 
 }
 
 fun computeTimeToTravel(weapon: WeaponAPI, tgt: Vector2f, leadingFactor: Float = 1f): Float {
-    return (weapon.location - tgt).length() / (weapon.projectileSpeed * leadingFactor)
+    return ((weapon.location - tgt).length() / (weapon.projectileSpeed * leadingFactor)) + computeRemainingChargeUpTime(weapon)
+}
+
+fun computeRemainingChargeUpTime(weapon: WeaponAPI): Float{
+    return max(weapon.spec.chargeTime, weapon.spec.beamChargeupTime) * (1f - weapon.chargeLevel)
 }
 
 fun getAverageArmor(armor: ArmorGridAPI) : Float{
