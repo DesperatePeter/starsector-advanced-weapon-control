@@ -2,7 +2,8 @@
 
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.combatgui.GuiLayout
+import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.AGCCombatGui
+import com.dp.advancedgunnerycontrol.combatgui.GuiBase
 import com.dp.advancedgunnerycontrol.keyboardinput.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.settings.Settings
@@ -32,7 +33,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var isInitialized = false
     private var initialShipInitRequired = Settings.enableAutoSaveLoad()
 
-    private var combatGui: GuiLayout? = null
+    private var combatGui: GuiBase? = null
 
     companion object {
         fun determineSelectedShip(engine: CombatEngineAPI): ShipAPI? {
@@ -115,7 +116,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 if (combatGui == null){
                     engine.isPaused = true
                     engine.viewport?.isExternalControl = true
-                    combatGui = determineSelectedShip(engine)?.let { font?.let { f -> GuiLayout(it, f) } }
+                    combatGui = determineSelectedShip(engine)?.let {  AGCCombatGui(it)  }
                 }else{
                     combatGui = null
                     engine.viewport?.isExternalControl = false

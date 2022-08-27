@@ -1,30 +1,25 @@
-package com.dp.advancedgunnerycontrol.combatgui
+package com.dp.advancedgunnerycontrol.combatgui.buttongroups
 
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonInfo
 import com.dp.advancedgunnerycontrol.combatgui.buttons.DataToggleButton
 import com.dp.advancedgunnerycontrol.combatgui.buttons.HoverTooltip
 import org.lazywizard.lazylib.ui.LazyFont
-import java.awt.Color
 
-class DataButtonGroup(
-    val x: Float, val y: Float, val w: Float, val h: Float,
-    val a: Float, val font: LazyFont?, val color: Color,
-    val padding: Float, val action: ButtonGroupAction,
-    val xTooltip: Float, val yTooltip: Float,
-    val descriptionText: String, val horizontal: Boolean = true
+abstract class DataButtonGroup(
+val font: LazyFont?, val descriptionText: String, val layout: ButtonGroupLayout
 ) {
     val buttons = mutableListOf<DataToggleButton>()
     private val descriptionOffset = 40f
-    private var currentX = x
-    private var currentY = y
+    private var currentX = layout.x
+    private var currentY = layout.y
     fun addButton(text: String, data: Any, tooltip: String, isActive : Boolean = true) {
-        val info = ButtonInfo(currentX, currentY, w, h, a, text, font, color, HoverTooltip(xTooltip, yTooltip, tooltip))
+        val info = ButtonInfo(currentX, currentY, layout.w, layout.h, layout.a, text, font, layout.color, HoverTooltip(layout.xTooltip, layout.yTooltip, tooltip))
         buttons.add(DataToggleButton(data, info))
         buttons.last().isActive = isActive
-        if(horizontal){
-            currentX += w + padding
+        if(layout.horizontal){
+            currentX += layout.w + layout.padding
         }else{
-            currentY -= h + padding
+            currentY -= layout.h + layout.padding
         }
     }
     fun disableButton(text: String){
@@ -38,18 +33,21 @@ class DataButtonGroup(
     fun enableAllButtons(){
         buttons.forEach { it.isDisabled = false }
     }
-    fun getData() : List<Any>{
+    fun getActiveButtonData() : List<Any>{
         return buttons.mapNotNull { it.getDataIfActive() }
     }
     fun advance(){
         buttons.filter { it.advance() }.let {
             if(it.isNotEmpty()){
-                action.execute(buttons.mapNotNull { btn -> btn.getDataIfActive() }, it.firstOrNull()?.getDataIfActive())
+                executeAction(buttons.mapNotNull { btn -> btn.getDataIfActive() }, it.firstOrNull()?.getDataIfActive())
             }
         }
     }
     fun render(){
         buttons.forEach { it.render() }
-        font?.createText(descriptionText, baseColor = color)?.draw(x, y + descriptionOffset)
+        font?.createText(descriptionText, baseColor = layout.color)?.draw(layout.x, layout.y + descriptionOffset)
     }
+    abstract fun createButtons()
+    abstract fun refresh()
+    abstract fun executeAction(data : List<Any>, triggeringButtonData: Any? = null)
 }

@@ -75,10 +75,10 @@ object Settings : SettingsDefinition() {
         forceCustomAI.set(forceCustomAI() && enableCustomAI())
         enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set ( max(0, min(2, customAIFriendlyFireComplexity())))
-        uiAnchorX.set(uiAnchorX() / Global.getSettings().screenScaleMult)
-        uiAnchorY.set(uiAnchorY() / Global.getSettings().screenScaleMult)
-        uiMessagePositionX.set(uiMessagePositionX() / Global.getSettings().screenScaleMult)
-        uiMessagePositionY.set(uiMessagePositionY() / Global.getSettings().screenScaleMult)
+//        uiAnchorX.set(uiAnchorX() / Global.getSettings().screenScaleMult)
+//        uiAnchorY.set(uiAnchorY() / Global.getSettings().screenScaleMult)
+//        uiMessagePositionX.set(uiMessagePositionX() / Global.getSettings().screenScaleMult)
+//        uiMessagePositionY.set(uiMessagePositionY() / Global.getSettings().screenScaleMult)
     }
 
     fun hotAddTags(tags: List<String>, addForWholeSession: Boolean = true){
