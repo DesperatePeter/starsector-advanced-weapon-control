@@ -6,7 +6,7 @@ import com.dp.advancedgunnerycontrol.utils.applyTagsToWeaponGroup
 import com.dp.advancedgunnerycontrol.utils.saveTags
 import com.fs.starfarer.api.combat.ShipAPI
 
-class WeaponGroupAction(private val ship: ShipAPI, private val index: Int) : ButtonGroupAction() {
+class WeaponGroupAction(private val ship: ShipAPI, private val index: Int) : ButtonGroupAction {
     override fun execute(data: List<Any>, triggeringButtonData: Any?) {
         val tagStrings = data.filterIsInstance<String>()
         applyTagsToWeaponGroup(ship, index, tagStrings)

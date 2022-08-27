@@ -5,7 +5,7 @@ import com.dp.advancedgunnerycontrol.combatgui.buttongroups.RefreshButtonsAction
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.fs.starfarer.api.combat.ShipAPI
 
-class RefreshShipAiButtons(private val ship: ShipAPI) : RefreshButtonsAction() {
+class RefreshShipAiButtons(private val ship: ShipAPI) : RefreshButtonsAction {
     override fun refreshButtons(group: DataButtonGroup) {
         if(loadShipModes(ship, Values.storageIndex).isEmpty()){
             saveShipModes(ship, Values.storageIndex, listOf(defaultShipMode))

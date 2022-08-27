@@ -1,8 +1,9 @@
 package com.dp.advancedgunnerycontrol.combatgui.buttons
 
-import org.lazywizard.lazylib.ui.LazyFont
-import java.awt.Color
-
+/**
+ * Simple button that does something (defined by button action) when clicked
+ * If possible, use GuiBase.addButton rather than using this directly
+ */
 class ActionButton(private val action : ButtonAction? = null, info: ButtonInfo
 ) : ButtonBase(info)
 {

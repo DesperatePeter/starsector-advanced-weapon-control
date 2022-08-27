@@ -1,8 +1,10 @@
 package com.dp.advancedgunnerycontrol.combatgui.buttongroups
 
-import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
 
+/**
+ * use for custom button groups
+ */
 data class ButtonGroupLayout(
     val x: Float, val y: Float, val w: Float, val h: Float,
     val a: Float, val color: Color,

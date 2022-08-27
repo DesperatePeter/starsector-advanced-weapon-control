@@ -1,86 +1,55 @@
 package com.dp.advancedgunnerycontrol.combatgui
 
-import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.*
 import com.dp.advancedgunnerycontrol.combatgui.buttongroups.*
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ActionButton
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonAction
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonInfo
 import com.dp.advancedgunnerycontrol.combatgui.buttons.HoverTooltip
-import com.dp.advancedgunnerycontrol.gui.groupAsString
-import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.typesandvalues.*
-import com.dp.advancedgunnerycontrol.typesandvalues.Values.storageIndex
-import com.dp.advancedgunnerycontrol.utils.*
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.combat.ShipAPI
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 
-abstract class GuiBase(private val ship: ShipAPI, private val guiLayout: GuiLayout) {
-
+/**
+ * The base class you need to extend/inherit from to create a GUI
+ * call the constructor of this class in your constructor (via super) and pass it a guiLayout object
+ * you can use the defaultGuiLayout by passing nothing if you want to get started quickly
+ * Override getTitleString to set a display title
+ * call addButton and/or addButtonGroup in your constructor to define what the GUI does
+ * Call this classes advance and render in a BaseEveryFrame(Combat)Script advance/render methods
+ * It makes sense to create a new GUI object when a hotkey is pressed
+ * To get started quickly, you can use the SampleGuiLauncher
+ */
+open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     private val xSpacing = guiLayout.buttonWidthPx + guiLayout.paddingPx
     private val ySpacing = guiLayout.buttonHeightPx + guiLayout.paddingPx + guiLayout.textSpacingBufferPx
     private val xTooltip = guiLayout.xTooltipRel * Global.getSettings().screenWidthPixels / Global.getSettings().screenScaleMult
     private val yTooltip = guiLayout.yTooltipRel * Global.getSettings().screenHeightPixels / Global.getSettings().screenScaleMult
     private val xAnchor = guiLayout.xAnchorRel * Global.getSettings().screenWidthPixels / Global.getSettings().screenScaleMult
     private val yAnchor = guiLayout.yAnchorRel * Global.getSettings().screenHeightPixels / Global.getSettings().screenScaleMult
+    private val xMessage = guiLayout.xMessageRel * Global.getSettings().screenWidthPixels / Global.getSettings().screenScaleMult
+    private val yMessage = guiLayout.yMessageRel * Global.getSettings().screenWidthPixels / Global.getSettings().screenScaleMult
     val color = guiLayout.color
 
-    private var font: LazyFont? = null
+    protected var font: LazyFont? = null
 
-    private fun createActionButtons(){
-        val resetButtonAction = object : ButtonAction() {
-            override fun execute() {
-                val noTags = listOf<String>()
-                for (i in 0 until ship.weaponGroupsCopy.size){
-                    applyTagsToWeaponGroup(ship, i, noTags)
-                    saveTags(ship, i, storageIndex, noTags)
-                }
-                saveShipModes(ship, storageIndex, noTags)
-                assignShipMode(noTags, ship)
-                refreshButtons()
-            }
-        }
-        addButton(resetButtonAction, "Reset", "Reset all tags for current ship and loadout")
-
-        var cycleLoadoutTooltipText = "Cycle loadout for all ships (${storageIndex + 1} / ${Settings.maxLoadouts()} " +
-                "<${Settings.loadoutNames().getOrNull(storageIndex) ?: "NoName"}>)"
-        val cycleLoadoutAction = object : ButtonAction() {
-            override fun execute() {
-                storageIndex = if (storageIndex < Settings.maxLoadouts() - 1) storageIndex + 1 else 0
-                cycleLoadoutTooltipText = "Cycle loadout for all ships (${storageIndex + 1} / ${Settings.maxLoadouts()} " +
-                        "<${Settings.loadoutNames().getOrNull(storageIndex) ?: "NoName"}>)"
-                refreshButtons()
-                reloadAllShips(storageIndex)
-            }
-        }
-        addButton(cycleLoadoutAction, "Cycle LO", cycleLoadoutTooltipText)
-
-        val reloadAction = object : ButtonAction(){
-            override fun execute() {
-                reloadAllShips(storageIndex)
-            }
-        }
-        addButton(reloadAction, "Reload", "Reload all modes and apply them to deployed ships. Normally, you shouldn't have to use this button manually.")
-
-        val saveAction = object  : ButtonAction(){
-            override fun execute() {
-                persistTemporaryShipData(storageIndex, Global.getCombatEngine().ships ?: listOf())
-            }
-        }
-        addButton(saveAction, "Save", "Make all temporary changes to current loadout done in combat permanent." +
-                "\nNote: Only relevant if in-combat persistence has been disabled in the settings.", Settings.enableCombatChangePersistance())
-
-        addButton(null, "Help", Values.HELP_TEXT, true)
-    }
-
-    private fun createWeaponGroupDescription(index: Int): String {
-        return "Group ${index + 1}: ${groupAsString(ship.fleetMember.variant.weaponGroups[index], ship.fleetMember)}"
-    }
-
-    abstract val title : LazyFont.DrawableString?
     private val standaloneButtons = mutableListOf<ActionButton>()
     private val buttonGroups = mutableListOf<DataButtonGroup>()
+
+    /**
+     * @return Text to be displayed as GUI title, can return null
+     * override this!
+     */
+    protected open fun getTitleString() : String?{
+        return ""
+    }
+
+    /**
+     * @return Text to be displayed as message, can return null
+     * override this!
+     */
+    protected open fun getMessageString() : String?{
+        return ""
+    }
 
     /**
      * adds a new button group to the GUI. This library will take care of positioning based on grid layout.
@@ -157,40 +126,42 @@ abstract class GuiBase(private val ship: ShipAPI, private val guiLayout: GuiLayo
                 xTooltip, yTooltip, tooltipTxt))
     }
 
-    private fun initializeUi(){
-        Settings.hotAddTags(loadAllTags(ship.fleetMember))
-        for (i in 0 until  ship.variant.weaponGroups.size){
-            addButtonGroup(WeaponGroupAction(ship, i), CreateWeaponButtons(), RefreshWeaponButtons(ship, i), createWeaponGroupDescription(i))
-        }
-        addButtonGroup(ShipAiAction(ship), CreateShipAiButtons(), RefreshShipAiButtons(ship), "Ship AI Modes")
-
-        createActionButtons()
-    }
-
     init {
         try {
             font = LazyFont.loadFont("graphics/fonts/insignia15LTaa.fnt")
         } catch (e: FontException) {
             Global.getLogger(this.javaClass).error("Failed to load font, won't de displaying messages", e)
         }
-        initializeUi()
-        refreshButtons()
     }
 
-    private fun refreshButtons(){
+    /**
+     * calls the refresh method of every button (group)
+     * gets automatically called in advance, feel free to call once at the end of your constructor call
+     */
+    protected open fun refreshButtons(){
         buttonGroups.forEach{
             it.refresh()
         }
     }
 
-    fun advance(){
+    /**
+     * call this every frame in your e.g. BaseEveryFrameCombatPlugin
+     * executes button logic
+     */
+    open fun advance(){
         buttonGroups.forEach { it.advance() }
         standaloneButtons.forEach { it.advance() }
         refreshButtons()
     }
-    fun render(){
+
+    /**
+     * call this every frame in your e.g. BaseEveryFrameCombatPlugin
+     * renders buttons, texts and tooltips
+     */
+    open fun render(){
         buttonGroups.forEach { it.render() }
         standaloneButtons.forEach { it.render() }
-        title?.draw(xAnchor, yAnchor + (2 * ySpacing))
+        getTitleString()?.let { font?.createText(it, color) }?.draw(xAnchor, yAnchor + (2 * ySpacing))
+        getMessageString()?.let { font?.createText(it, color) }?.draw(xMessage, yMessage)
     }
 }

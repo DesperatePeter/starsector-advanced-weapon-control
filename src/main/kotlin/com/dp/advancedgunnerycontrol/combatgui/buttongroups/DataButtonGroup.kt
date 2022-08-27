@@ -5,6 +5,17 @@ import com.dp.advancedgunnerycontrol.combatgui.buttons.DataToggleButton
 import com.dp.advancedgunnerycontrol.combatgui.buttons.HoverTooltip
 import org.lazywizard.lazylib.ui.LazyFont
 
+/**
+ * If possible, use GuiBase.addButtonGroup rather than using this class!
+ * base class defining a group of buttons with each button representing a possible date and the whole group
+ * representing a data set defined by the sum of data of all active buttons.
+ * buttons get activated/deactivated by the user by clicking on them
+ * when a button is clicked, executeAction gets called with the sum of data of all active buttons
+ * Extend this class by implementing createButtons, refresh and executeAction
+ * @param font LazyFont object
+ * @param descriptionText text to be rendered above the group
+ * @param layout defines where/how the group gets rendered
+ */
 abstract class DataButtonGroup(
 val font: LazyFont?, val descriptionText: String, val layout: ButtonGroupLayout
 ) {
@@ -47,6 +58,10 @@ val font: LazyFont?, val descriptionText: String, val layout: ButtonGroupLayout
         buttons.forEach { it.render() }
         font?.createText(descriptionText, baseColor = layout.color)?.draw(layout.x, layout.y + descriptionOffset)
     }
+
+    /**
+     * gets called on construction. Create
+     */
     abstract fun createButtons()
     abstract fun refresh()
     abstract fun executeAction(data : List<Any>, triggeringButtonData: Any? = null)

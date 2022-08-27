@@ -8,7 +8,7 @@ import com.dp.advancedgunnerycontrol.typesandvalues.isIncompatibleWithExistingTa
 import com.dp.advancedgunnerycontrol.utils.loadTags
 import com.fs.starfarer.api.combat.ShipAPI
 
-class RefreshWeaponButtons(private val ship: ShipAPI, private val index: Int) : RefreshButtonsAction() {
+class RefreshWeaponButtons(private val ship: ShipAPI, private val index: Int) : RefreshButtonsAction {
     override fun refreshButtons(group: DataButtonGroup) {
         val currentTags = loadTags(ship, index, Values.storageIndex)
         group.refreshAllButtons(currentTags)

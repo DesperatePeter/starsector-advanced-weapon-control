@@ -6,5 +6,6 @@ import java.awt.Color
 
 val AGCGridLayout = GuiLayout(
     Settings.uiAnchorX(), Settings.uiAnchorY(), 100f, 20f, 0.5f, Color.GREEN, 5f,
-    Settings.uiMessagePositionX(), Settings.uiMessagePositionY(), 25f
+    Settings.uiMessagePositionX(), Settings.uiMessagePositionY(), 25f, "graphics/fonts/insignia15LTaa.fnt",
+    0f, 0f
 )

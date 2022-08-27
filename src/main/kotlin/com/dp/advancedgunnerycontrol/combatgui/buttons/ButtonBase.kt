@@ -5,6 +5,9 @@ import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
 import java.awt.Color
 
+/**
+ * Only use this directly if you know what you are doing
+ */
 abstract class ButtonBase(val info: ButtonInfo)
 {
     var isActive = false

@@ -5,7 +5,7 @@ import com.dp.advancedgunnerycontrol.combatgui.buttongroups.DataButtonGroup
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.getTagTooltip
 
-class CreateWeaponButtons() : CreateButtonsAction() {
+class CreateWeaponButtons() : CreateButtonsAction {
     override fun createButtons(group: DataButtonGroup) {
         Settings.tagList().forEach {
             group.addButton(it, it, getTagTooltip(it))
