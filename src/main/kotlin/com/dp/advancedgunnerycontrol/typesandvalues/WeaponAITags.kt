@@ -18,6 +18,7 @@ val holdRegex = Regex("Hold\\(Flx>(\\d+)%\\)")
 val pdFluxRegex = Regex("PD\\(Flx>(\\d+)%\\)")
 val avoidArmorRegex = Regex("AvdArmor\\((\\d+)%\\)")
 val panicFireRegex = Regex("Panic\\(H<(\\d+)%\\)")
+val rangeRegex = Regex("Range<(\\d+)%")
 
 fun extractRegexThreshold(regex: Regex, name: String) : Float{
     return (regex.matchEntire(name)?.groupValues?.get(1)?.toFloat()  ?: 0f) / 100f
@@ -52,7 +53,8 @@ val tagTooltips = mapOf(
     "ForceAF" to "Will force AI-controlled ships to set this group to autofire, like the ForceAF ship mode does to all groups." +
             "\nNote: This will modify the ShipAI, as the Starsector API doesn't allow to directly set a weapon group to autofire." +
             "\n      The ShipAI might still try to select this weapon group, but will be forced to deselect it again.",
-    "AvoidPhased" to "Weapon will ignore phase-ships unless they are unable to avoid the shot by phasing (due to flux or cooldown)."
+    "AvoidPhased" to "Weapon will ignore phase-ships unless they are unable to avoid the shot by phasing (due to flux or cooldown).",
+    "ShipTarget" to "Weapon will only fire at the selected ship target (R-Key). I like to use this for regenerating missiles."
 )
 
 fun getTagTooltip(tag: String) : String{
@@ -69,6 +71,9 @@ fun getTagTooltip(tag: String) : String{
         panicFireRegex.matches(tag) -> "Weapon will blindly fire without considering if/what the shot will hit as long as the ship" +
                 " hull level is below ${(extractRegexThreshold(panicFireRegex, tag) *100f).toInt()}%." +
                 "\nFor AI-controlled ships, this will put the weapon group into ForceAF-mode once the hull threshold has been reached."
+        rangeRegex.matches(tag) -> "Weapon will only target and fire at targets if they are closer than ${(extractRegexThreshold(
+            rangeRegex, tag) * 100f).toInt()}% of weapon range." +
+                "\nThis is useful for weapons (especially missiles) with slow projectiles, such as e.g. sabots."
         else -> ""
     }
 }
@@ -80,6 +85,7 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         pdFluxRegex.matches(name) -> return PDAtFluxThresholdTag(weapon, extractRegexThreshold(pdFluxRegex, name))
         avoidArmorRegex.matches(name) -> return AvoidArmorTag(weapon, extractRegexThreshold(avoidArmorRegex, name))
         panicFireRegex.matches(name) -> return PanicFireTag(weapon, extractRegexThreshold(panicFireRegex, name))
+        rangeRegex.matches(name) -> return RangeTag(weapon, extractRegexThreshold(rangeRegex, name))
     }
     return when (name){
         "PD"            -> PDTag(weapon)
@@ -97,6 +103,7 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         "SmallShips"    -> SmallShipTag(weapon)
         "ForceAF"       -> ForceAutofireTag(weapon)
         "AvoidPhased"   -> PhaseTag(weapon)
+        "ShipTarget"    -> ShipTargetTag(weapon)
         else -> {
             unknownTagWarnCounter++
             when{
@@ -115,6 +122,7 @@ fun tagNameToRegexName(tag: String) : String{
         pdFluxRegex.matches(tag) -> "PD(Flx>N%)"
         avoidArmorRegex.matches(tag) -> "AvoidArmor"
         panicFireRegex.matches(tag) -> "Panic"
+        rangeRegex.matches(tag) -> "Range"
         else -> tag
     }
 }

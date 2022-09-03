@@ -88,7 +88,7 @@ fun persistTemporaryShipData(storageIndex: Int, ships: List<ShipAPI?>?){
 
 fun loadTags(ship: ShipAPI, index: Int, storageIndex: Int) : List<String>{
     if(Settings.enableCombatChangePersistance() || !doesShipHaveLocalTags(ship, storageIndex)){
-        return loadPersistentTags(ship.fleetMemberId, index, storageIndex)
+        return ship.fleetMemberId?.let { loadPersistentTags(it, index, storageIndex) } ?: emptyList()
     }
     return loadTagsFromShip(ship, index, storageIndex)
 }

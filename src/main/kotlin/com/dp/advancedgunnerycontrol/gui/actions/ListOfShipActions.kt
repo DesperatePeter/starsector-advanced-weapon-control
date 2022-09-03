@@ -10,6 +10,7 @@ fun generateShipActions(attributes: GUIAttributes): List<GUIAction> {
         NextShipAction(attributes),
         ResetAction(attributes),
         ApplySuggestedModeAction(attributes),
-        CopyToSameVariantAction(attributes)
+        CopyToSameVariantAction(attributes),
+        ReloadSettingsAction(attributes)
     )
 }

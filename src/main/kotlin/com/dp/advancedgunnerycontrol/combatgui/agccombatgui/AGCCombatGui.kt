@@ -14,7 +14,7 @@ import org.lazywizard.lazylib.ui.LazyFont
 
 class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     override fun getTitleString(): String {
-        return "${ship.name}, ${ship.fleetMember.variant.fullDesignationWithHullNameForShip}"
+        return "${ship.name}, ${ship.fleetMember?.variant?.fullDesignationWithHullNameForShip ?: "Unknown ship type"}"
     }
 
     init {
@@ -73,7 +73,8 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     }
 
     private fun initializeUi(){
-        Settings.hotAddTags(loadAllTags(ship.fleetMember))
+        ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it)) }
+
         for (i in 0 until  ship.variant.weaponGroups.size){
             addButtonGroup(WeaponGroupAction(ship, i), CreateWeaponButtons(), RefreshWeaponButtons(ship, i), createWeaponGroupDescription(i))
         }

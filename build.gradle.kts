@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "D:/Spiele/Starsector"
-    val modVersion = "1.5.0"
+    val modVersion = "1.6.0"
     val jarFileName = "AdvancedGunneryControl.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
@@ -161,9 +161,9 @@ tasks {
                    |   #                                 #### TAG LIST ####
                    |   # Determines which tags will be shown in the GUIs. Feel free to add/remove tags as you see fit.
                    |   # Allowed values are: (replace N with a number between 0 and 100)
-                   |   # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo",
-                   |   # "Opportunist", "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased"
-                   |   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "AvdArmor(33%)", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased"]
+                   |   # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo", "ShipTarget",
+                   |   # "Opportunist", "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%"
+                   |   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "AvdArmor(33%)", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget"]
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
                    |   #       Use Reset to clear them.
                    |   # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons
@@ -230,7 +230,7 @@ tasks {
                    |   # Any positive or negative float possible, reasonable values: between 0.7 ~ 2.0 or so
                    |   # 1.0 means "fire if shot will land within 1.0*(targetHitbox+10)"
                    |   # (the +10 serves to compensate for very small targets such as missiles and fighters)
-                   |   ,"customAITriggerHappiness" : 1.1 # <---- EDIT HERE (maybe) ----
+                   |   ,"customAITriggerHappiness" : 1.0 # <---- EDIT HERE (maybe) ----
 
                    |   # Set this to true if you want the custom AI to perform better :P
                    |   ,"customAIAlwaysUsesBestTargetLeading" : false # <---- EDIT HERE (maybe) ----
@@ -250,7 +250,7 @@ tasks {
 
                    |   # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
                    |   # 1.0 should be enough to not hit allies if they don't change their course, but it's nice to have a little buffer
-                   |   ,"customAIFriendlyFireCaution" : 1.1 # <---- EDIT HERE (maybe) ----                   
+                   |   ,"customAIFriendlyFireCaution" : 1.3 # <---- EDIT HERE (maybe) ----                   
                    | 
                    |   #                                 #### TAG CUSTOMIZATION ####
                    |   # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)
@@ -263,8 +263,8 @@ tasks {
                    |   # For frontal shields, unfold time and projectile travel time are considered to determine flanking
                    |   # For modes that want to hit shields, reducing the threshold makes them more likely to fire
                    |   # For modes that want to avoid shields, the opposite is true
-                   |   ,"targetShields_threshold" : 0.2
-                   |   ,"avoidShields_threshold" : 0.6
+                   |   ,"targetShields_threshold" : 0.15
+                   |   ,"avoidShields_threshold" : 0.3
                    |   
                    |   # Opportunist AND conserveAmmo tag: (shield thresholds for opportunist mode, depending on damage type)
                    |   ,"opportunist_kineticThreshold" : 0.5 

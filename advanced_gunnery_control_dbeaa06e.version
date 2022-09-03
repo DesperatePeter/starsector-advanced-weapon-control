@@ -6,8 +6,8 @@
     "modVersion":
     {
         "major":1,
-        "minor":5,
+        "minor":6,
         "patch":0
     },
-    "directDownloadURL": "https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases/download/1.5.0/AdvancedGunneryControl-1.5.0.zip"
+    "directDownloadURL": "https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases/download/1.6.0/AdvancedGunneryControl-1.6.0.zip"
 }
