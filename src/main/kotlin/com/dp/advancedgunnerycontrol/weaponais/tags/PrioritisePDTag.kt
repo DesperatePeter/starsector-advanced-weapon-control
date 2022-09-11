@@ -14,12 +14,10 @@ class PrioritisePDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
         return (entity as? MissileAPI) != null || (entity as? ShipAPI)?.let { isSmall(it) } ?: false
     }
-
-    /*
+/*
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
         return entity is ShipAPI || entity is MissileAPI
-    }
-    */
+    }*/
 
     override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return if ((entity as? MissileAPI) != null) {
@@ -30,6 +28,6 @@ class PrioritisePDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     }
 
     override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean = true
-    override fun isBaseAiOverridable(): Boolean = false
+    override fun isBaseAiOverridable(): Boolean = true
     override fun avoidDebris(): Boolean = false
 }
