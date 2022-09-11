@@ -10,7 +10,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
-val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)")
+val pdTags = listOf("PD", "NoPD", "PD(Flx>N%), PrioritisePD")
 
 val ammoTags = listOf("ConserveAmmo")
 
@@ -34,6 +34,7 @@ fun shouldTagBeDisabled(groupIndex: Int, sh: FleetMemberAPI, tag: String) : Bool
 
 val tagTooltips = mapOf(
     "PD" to "Restricts targeting to fighters and missiles.",
+    "PrioritisePD" to "Prioritises PD (missile > fighter > small ship > big ship)",
     "NoPD" to "Forbids targeting missiles and prioritizes ships over fighters.",
     "Fighter" to "Restricts targeting to fighters.",
     "AvoidShields" to "Weapon will prioritize targets without shields, flanked shields or high flux/shields off.",
@@ -89,6 +90,7 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
     }
     return when (name){
         "PD"            -> PDTag(weapon)
+        "PrioritisePD"  -> PrioritisePDTag(weapon)
         "NoPD"          -> NoPDTag(weapon)
         "Fighter"       -> FighterTag(weapon)
         "AvoidShields"  -> AvoidShieldsTag(weapon)
@@ -129,17 +131,18 @@ fun tagNameToRegexName(tag: String) : String{
 
 val tagIncompatibility = mapOf(
     "PD" to listOf("Fighter", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips"),
-    "Fighter" to listOf("PD", "NoFighters", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips"),
-    "NoPD" to listOf("PD", "Fighter", "PD(Flx>N%)"),
+    "PrioritisePD" to listOf("Opportunist", "NoPD", "BigShips", "SmallShips"),
+    "Fighter" to listOf("PD", "PrioritisePD", "NoFighters", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips"),
+    "NoPD" to listOf("PD", "Fighter", "PD(Flx>N%)", "PrioritisePD"),
     "AvoidShields" to listOf("TargetShields", "TgtShields+", "AvdShields+"),
     "TargetShields" to listOf("AvoidShields", "AvdShields+", "TgtShields+"),
     "TgtShields+" to listOf("AvoidShields", "AvdShields+", "TargetShields"),
     "AvdShields+" to listOf("TargetShields", "TgtShields+", "AvoidShields"),
     "NoFighters" to listOf("Fighter", "Opportunist"),
-    "Opportunist" to listOf("Fighter", "PD", "NoFighters", "PD(Flx>N%)"),
+    "Opportunist" to listOf("Fighter", "PD", "PrioritisePD", "NoFighters", "PD(Flx>N%)"),
     "PD(Flx>N%)" to listOf("Fighter", "Opportunist", "NoPD", "PD", "BigShips", "SmallShips"),
-    "SmallShips" to listOf("BigShips", "PD", "Fighter", "PD(Flx>N%)"),
-    "BigShips" to listOf("SmallShips", "PD", "Fighter", "PD(Flx>N%)")
+    "SmallShips" to listOf("BigShips", "PD", "PrioritisePD", "Fighter", "PD(Flx>N%)"),
+    "BigShips" to listOf("SmallShips", "PD", "PrioritisePD", "Fighter", "PD(Flx>N%)")
 )
 
 fun isIncompatibleWithExistingTags(tag: String, existingTags: List<String>) : Boolean{
