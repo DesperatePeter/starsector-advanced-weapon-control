@@ -1,3 +1,5 @@
+import org.jetbrains.dokka.DokkaConfiguration
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Variables {
@@ -5,6 +7,8 @@ object Variables {
     val starsectorDirectory = "D:/Spiele/Starsector"
     val modVersion = "1.6.0"
     val jarFileName = "AdvancedGunneryControl.jar"
+    val sourceJarFileName = "AdvancedGunneryControl-sources.jar"
+    val javadocJarFileName = "AdvancedGunneryControl-javadoc.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
     val modName = "AdvancedGunneryControl"
@@ -32,6 +36,7 @@ val modInModsFolder = File("$starsectorModDirectory/${Variables.modFolderName}")
 plugins {
     kotlin("jvm") version "1.5.0"
     java
+    id("org.jetbrains.dokka") version "1.6.21"
 }
 
 version = Variables.modVersion
@@ -74,12 +79,44 @@ dependencies {
     })
 }
 
+java{
+    withSourcesJar()
+    withJavadocJar()
+}
 
 tasks {
     named<Jar>("jar")
     {
+        dependsOn(dokkaJavadoc)
+        from(sourceSets.main.get().output)
         destinationDirectory.set(file("$rootDir/jars"))
         archiveFileName.set(Variables.jarFileName)
+    }
+    named<org.gradle.jvm.tasks.Jar>("kotlinSourcesJar") {
+        from(sourceSets.main.get().allSource)
+        destinationDirectory.set(file("$rootDir/jars"))
+        archiveFileName.set(Variables.sourceJarFileName)
+        archiveClassifier.set("sources")
+    }
+    named<DokkaTask>("dokkaJavadoc"){
+        dokkaSourceSets{
+            named("main"){
+                documentedVisibilities.set(
+                    setOf(
+                        DokkaConfiguration.Visibility.PUBLIC,
+                        DokkaConfiguration.Visibility.PROTECTED
+                    )
+                )
+                sourceRoots.from(sourceSets.main.get().allSource)
+            }
+        }
+    }
+    named<Jar>("javadocJar"){
+        dependsOn(dokkaJavadoc)
+        from(dokkaJavadoc.get().outputs)
+        archiveClassifier.set("javadoc")
+        destinationDirectory.set(file("$rootDir/jars"))
+        archiveFileName.set(Variables.javadocJarFileName)
     }
 
     register("create-metadata-files") {
@@ -306,6 +343,9 @@ tasks {
     // If enabled, will copy your mod to the /mods directory when run (and whenever gradle syncs).
     // Disabled by default, as it is not needed if your mod directory is symlinked into your /mods folder.
     register<Copy>("install-mod") {
+
+        dependsOn(jar)
+        dependsOn(kotlinSourcesJar)
         val enabled = false;
 
         if (!enabled) return@register

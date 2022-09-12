@@ -11,13 +11,19 @@ import org.lazywizard.lazylib.ui.LazyFont
 
 /**
  * The base class you need to extend/inherit from to create a GUI
+ *
  * call the constructor of this class in your constructor (via super) and pass it a guiLayout object
  * you can use the defaultGuiLayout by passing nothing if you want to get started quickly
- * Override getTitleString to set a display title
- * call addButton and/or addButtonGroup in your constructor to define what the GUI does
- * Call this classes advance and render in a BaseEveryFrame(Combat)Script advance/render methods
+ *
+ * Override [getTitleString] to set a display title
+ *
+ * call [GuiBase.addButton] and/or [addButtonGroup] in your constructor to define what the GUI does
+ *
+ * Call this classes [advance] and [render] in a BaseEveryFrame(Combat)Script advance/render methods
+ *
  * It makes sense to create a new GUI object when a hotkey is pressed
- * To get started quickly, you can use the SampleGuiLauncher
+ *
+ * To get started quickly, you can use the [SampleGuiLauncher]
  */
 open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     private val xSpacing = guiLayout.buttonWidthPx + guiLayout.paddingPx
@@ -36,8 +42,8 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     private val buttonGroups = mutableListOf<DataButtonGroup>()
 
     /**
+     * override this returning a string representing your GUI title
      * @return Text to be displayed as GUI title, can return null
-     * override this!
      */
     protected open fun getTitleString() : String?{
         return ""

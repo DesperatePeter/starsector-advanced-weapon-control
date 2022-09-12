@@ -1,0 +1,26 @@
+$dokka.format:javadoc-v1
+$dokka.linkExtension:html
+$dokka.location:com.dp.advancedgunnerycontrol.gui/AGCGUI.Companion///PointingToDeclaration/com/dp/advancedgunnerycontrol/gui/AGCGUI.Companion.html
+$dokka.location:com.dp.advancedgunnerycontrol.gui/ShipModeButton.Companion///PointingToDeclaration/com/dp/advancedgunnerycontrol/gui/ShipModeButton.Companion.html
+$dokka.location:com.dp.advancedgunnerycontrol.gui/TagButton.Companion///PointingToDeclaration/com/dp/advancedgunnerycontrol/gui/TagButton.Companion.html
+$dokka.location:com.dp.advancedgunnerycontrol.utils/StorageBase.Companion///PointingToDeclaration/com/dp/advancedgunnerycontrol/utils/StorageBase.Companion.html
+$dokka.location:com.dp.advancedgunnerycontrol.weaponais.shipais/VentShipAI.Companion///PointingToDeclaration/com/dp/advancedgunnerycontrol/weaponais/shipais/VentShipAI.Companion.html
+$dokka.location:com.dp.advancedgunnerycontrol.weaponais.tags/WeaponAITagBase.Companion///PointingToDeclaration/com/dp/advancedgunnerycontrol/weaponais/tags/WeaponAITagBase.Companion.html
+$dokka.location:com.dp.advancedgunnerycontrol.weaponais/SpecificAIPluginBase.Companion///PointingToDeclaration/com/dp/advancedgunnerycontrol/weaponais/SpecificAIPluginBase.Companion.html
+$dokka.location:com.dp.advancedgunnerycontrol.weaponais/TagBasedAI.Companion///PointingToDeclaration/com/dp/advancedgunnerycontrol/weaponais/TagBasedAI.Companion.html
+$dokka.location:com.dp.advancedgunnerycontrol/WeaponControlPlugin.Companion///PointingToDeclaration/com/dp/advancedgunnerycontrol/WeaponControlPlugin.Companion.html
+com.dp.advancedgunnerycontrol
+com.dp.advancedgunnerycontrol.combatgui
+com.dp.advancedgunnerycontrol.combatgui.agccombatgui
+com.dp.advancedgunnerycontrol.combatgui.buttongroups
+com.dp.advancedgunnerycontrol.combatgui.buttons
+com.dp.advancedgunnerycontrol.gui
+com.dp.advancedgunnerycontrol.gui.actions
+com.dp.advancedgunnerycontrol.keyboardinput
+com.dp.advancedgunnerycontrol.settings
+com.dp.advancedgunnerycontrol.typesandvalues
+com.dp.advancedgunnerycontrol.utils
+com.dp.advancedgunnerycontrol.weaponais
+com.dp.advancedgunnerycontrol.weaponais.shipais
+com.dp.advancedgunnerycontrol.weaponais.tags
+
