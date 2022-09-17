@@ -10,7 +10,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
-val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)", "PrioritisePD")
+val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)")
 
 val ammoTags = listOf("ConserveAmmo")
 
