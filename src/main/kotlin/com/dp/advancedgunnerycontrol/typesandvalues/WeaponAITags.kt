@@ -10,8 +10,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
-val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)", "PrioritisePD")
-
+val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)")
 val ammoTags = listOf("ConserveAmmo")
 
 val holdRegex = Regex("Hold\\(Flx>(\\d+)%\\)")
@@ -34,7 +33,7 @@ fun shouldTagBeDisabled(groupIndex: Int, sh: FleetMemberAPI, tag: String) : Bool
 
 val tagTooltips = mapOf(
     "PD" to "Restricts targeting to fighters and missiles.",
-    "PrioritisePD" to "Prioritises PD (missile > fighter > small ship > big ship)",
+    "PrioritisePD" to "Weapon will always prioritise from small to large (Missiles > fighters > small ships > big ships)",
     "NoPD" to "Forbids targeting missiles and prioritizes ships over fighters.",
     "Fighter" to "Restricts targeting to fighters.",
     "AvoidShields" to "Weapon will prioritize targets without shields, flanked shields or high flux/shields off.",
@@ -50,7 +49,7 @@ val tagTooltips = mapOf(
             "\nNote: This only affects the custom AI and the Opportunist mode already includes this option.",
     "BigShips" to "Weapon will ignore missiles and prioritize big ships" +
             if(Settings.strictBigSmall()) " and won't fire at anything smaller than destroyers." else "",
-    "SmallShips" to "Weapon will ignore missiles and prioritize small ships" +
+    "SmallShips" to "Weapon will ignore missiles and prioritize small ships (including fighters)" +
             if(Settings.strictBigSmall()) " and won't fire at anything bigger than destroyers." else "",
     "ForceAF" to "Will force AI-controlled ships to set this group to autofire, like the ForceAF ship mode does to all groups." +
             "\nNote: This will modify the ShipAI, as the Starsector API doesn't allow to directly set a weapon group to autofire." +
@@ -133,7 +132,7 @@ fun tagNameToRegexName(tag: String) : String{
 
 val tagIncompatibility = mapOf(
     "PD" to listOf("Fighter", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips"),
-    "PrioritisePD" to listOf("Opportunist", "NoPD", "BigShips", "SmallShips"),
+    "PrioritisePD" to listOf("Opportunist", "NoPD", "BigShips", "SmallShips", "Fighter"),
     "Fighter" to listOf("PD", "PrioritisePD", "NoFighters", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips"),
     "NoPD" to listOf("PD", "Fighter", "PD(Flx>N%)", "PrioritisePD", "ConservePDAmmo"),
     "AvoidShields" to listOf("TargetShields", "TgtShields+", "AvdShields+"),
