@@ -11,7 +11,6 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
 val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)")
-
 val ammoTags = listOf("ConserveAmmo")
 
 val holdRegex = Regex("Hold\\(Flx>(\\d+)%\\)")
@@ -44,6 +43,7 @@ val tagTooltips = mapOf(
     "AvdShields+" to "As AvoidShields, but will never fire when shields are up and not flanked. (experimental)",
     "NoFighters" to "Weapon won't target fighters.",
     "ConserveAmmo" to "Weapon will be much more hesitant to fire when ammo below ${(Settings.conserveAmmo()*100f).toInt()}%.",
+    "ConservePDAmmo" to "Weapon will only fire on missiles or fighters when ammo is below ${(Settings.conserveAmmo()*100f).toInt()}%.",
     "Opportunist" to "Weapon will be more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons.",
     "AvoidDebris" to "Weapon will not fire when the shot is blocked by debris/asteroids." +
             "\nNote: This only affects the custom AI and the Opportunist mode already includes this option.",
@@ -89,23 +89,24 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         rangeRegex.matches(name) -> return RangeTag(weapon, extractRegexThreshold(rangeRegex, name))
     }
     return when (name){
-        "PD"            -> PDTag(weapon)
-        "PrioritisePD"  -> PrioritisePDTag(weapon)
-        "NoPD"          -> NoPDTag(weapon)
-        "Fighter"       -> FighterTag(weapon)
-        "AvoidShields"  -> AvoidShieldsTag(weapon)
-        "TargetShields" -> TargetShieldsTag(weapon)
-        "AvdShields+"   -> AvoidShieldsTag(weapon, 0.01f)
-        "TgtShields+"   -> TargetShieldsTag(weapon, 0.99f)
-        "NoFighters"    -> NoFightersTag(weapon)
-        "ConserveAmmo"  -> ConserveAmmoTag(weapon, Settings.conserveAmmo())
-        "Opportunist"   -> OpportunistTag(weapon)
-        "AvoidDebris"   -> AvoidDebrisTag(weapon)
-        "BigShips"      -> BigShipTag(weapon)
-        "SmallShips"    -> SmallShipTag(weapon)
-        "ForceAF"       -> ForceAutofireTag(weapon)
-        "AvoidPhased"   -> PhaseTag(weapon)
-        "ShipTarget"    -> ShipTargetTag(weapon)
+        "PD"                -> PDTag(weapon)
+        "PrioritisePD"      -> PrioritisePDTag(weapon)
+        "NoPD"              -> NoPDTag(weapon)
+        "Fighter"           -> FighterTag(weapon)
+        "AvoidShields"      -> AvoidShieldsTag(weapon)
+        "TargetShields"     -> TargetShieldsTag(weapon)
+        "AvdShields+"       -> AvoidShieldsTag(weapon, 0.01f)
+        "TgtShields+"       -> TargetShieldsTag(weapon, 0.99f)
+        "NoFighters"        -> NoFightersTag(weapon)
+        "ConserveAmmo"      -> ConserveAmmoTag(weapon, Settings.conserveAmmo())
+        "ConservePDAmmoTag" -> ConservePDAmmoTag(weapon, Settings.conserveAmmo())
+        "Opportunist"       -> OpportunistTag(weapon)
+        "AvoidDebris"       -> AvoidDebrisTag(weapon)
+        "BigShips"          -> BigShipTag(weapon)
+        "SmallShips"        -> SmallShipTag(weapon)
+        "ForceAF"           -> ForceAutofireTag(weapon)
+        "AvoidPhased"       -> PhaseTag(weapon)
+        "ShipTarget"        -> ShipTargetTag(weapon)
         else -> {
             unknownTagWarnCounter++
             when{
@@ -133,13 +134,13 @@ val tagIncompatibility = mapOf(
     "PD" to listOf("Fighter", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips"),
     "PrioritisePD" to listOf("Opportunist", "NoPD", "BigShips", "SmallShips", "Fighter"),
     "Fighter" to listOf("PD", "PrioritisePD", "NoFighters", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips"),
-    "NoPD" to listOf("PD", "Fighter", "PD(Flx>N%)", "PrioritisePD"),
+    "NoPD" to listOf("PD", "Fighter", "PD(Flx>N%)", "PrioritisePD", "ConservePDAmmo"),
     "AvoidShields" to listOf("TargetShields", "TgtShields+", "AvdShields+"),
     "TargetShields" to listOf("AvoidShields", "AvdShields+", "TgtShields+"),
     "TgtShields+" to listOf("AvoidShields", "AvdShields+", "TargetShields"),
     "AvdShields+" to listOf("TargetShields", "TgtShields+", "AvoidShields"),
     "NoFighters" to listOf("Fighter", "Opportunist"),
-    "Opportunist" to listOf("Fighter", "PD", "PrioritisePD", "NoFighters", "PD(Flx>N%)"),
+    "Opportunist" to listOf("Fighter", "PD", "PrioritisePD", "ConservePDAmmo", "NoFighters", "PD(Flx>N%)"),
     "PD(Flx>N%)" to listOf("Fighter", "Opportunist", "NoPD", "PD", "BigShips", "SmallShips"),
     "SmallShips" to listOf("BigShips", "PD", "PrioritisePD", "Fighter", "PD(Flx>N%)"),
     "BigShips" to listOf("SmallShips", "PD", "PrioritisePD", "Fighter", "PD(Flx>N%)")
