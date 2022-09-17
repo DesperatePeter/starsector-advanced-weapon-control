@@ -8,7 +8,7 @@
    # Allowed values are: (replace N with a number between 0 and 100)
    # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo", "ShipTarget",
    # "Opportunist", "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%"
-   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "AvdArmor(33%)", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget"]
+   "tagList" : ["PD", "PD(Flx>50%)", "NoPD", "Fighter", "NoFighters", "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget"]
    # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
    #       Use Reset to clear them.
    # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons
@@ -95,7 +95,7 @@
 
    # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
    # 1.0 should be enough to not hit allies if they don't change their course, but it's nice to have a little buffer
-   ,"customAIFriendlyFireCaution" : 1.3 # <---- EDIT HERE (maybe) ----                   
+   ,"customAIFriendlyFireCaution" : 1.25 # <---- EDIT HERE (maybe) ----                   
  
    #                                 #### TAG CUSTOMIZATION ####
    # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)
@@ -108,7 +108,7 @@
    # For frontal shields, unfold time and projectile travel time are considered to determine flanking
    # For modes that want to hit shields, reducing the threshold makes them more likely to fire
    # For modes that want to avoid shields, the opposite is true
-   ,"targetShields_threshold" : 0.15
+   ,"targetShields_threshold" : 0.1
    ,"avoidShields_threshold" : 0.3
    
    # Opportunist AND conserveAmmo tag: (shield thresholds for opportunist mode, depending on damage type)

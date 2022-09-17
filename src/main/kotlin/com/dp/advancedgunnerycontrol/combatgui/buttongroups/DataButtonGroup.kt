@@ -7,10 +7,17 @@ import org.lazywizard.lazylib.ui.LazyFont
 
 /**
  * If possible, use GuiBase.addButtonGroup rather than using this class!
+ *
  * base class defining a group of buttons with each button representing a possible date and the whole group
  * representing a data set defined by the sum of data of all active buttons.
+ *
  * buttons get activated/deactivated by the user by clicking on them
  * when a button is clicked, executeAction gets called with the sum of data of all active buttons
+ *
+ * If, for instance, we have two buttons with corresponding data 1 and respectively, and the user
+ * activates the first button, `[1]` will be passed as data to the groupAction and 1 as triggeringButtonData.
+ * If the user then clicks the second button `[1, 2]`, will be passed as data and 2 as triggeringButtonData.
+ *
  * Extend this class by implementing createButtons, refresh and executeAction
  * @param font LazyFont object
  * @param descriptionText text to be rendered above the group

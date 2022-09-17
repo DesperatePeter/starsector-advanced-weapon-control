@@ -15,7 +15,7 @@ class DataToggleButton(val data : Any, info: ButtonInfo
     }
 
     /**
-     * @return data set in ctr if active, null otherwise
+     * returns data set in ctr if active, null otherwise
      */
     fun getDataIfActive() : Any?{
         return if (isActive) data else null

@@ -11,13 +11,19 @@ import org.lazywizard.lazylib.ui.LazyFont
 
 /**
  * The base class you need to extend/inherit from to create a GUI
+ *
  * call the constructor of this class in your constructor (via super) and pass it a guiLayout object
  * you can use the defaultGuiLayout by passing nothing if you want to get started quickly
- * Override getTitleString to set a display title
- * call addButton and/or addButtonGroup in your constructor to define what the GUI does
- * Call this classes advance and render in a BaseEveryFrame(Combat)Script advance/render methods
+ *
+ * Override [getTitleString] to set a display title
+ *
+ * call [GuiBase.addButton] and/or [addButtonGroup] in your constructor to define what the GUI does
+ *
+ * Call this classes [advance] and [render] in a BaseEveryFrame(Combat)Script advance/render methods
+ *
  * It makes sense to create a new GUI object when a hotkey is pressed
- * To get started quickly, you can use the SampleGuiLauncher
+ *
+ * To get started quickly, you can use the [SampleGuiLauncher]
  */
 open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     private val xSpacing = guiLayout.buttonWidthPx + guiLayout.paddingPx
@@ -36,16 +42,14 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     private val buttonGroups = mutableListOf<DataButtonGroup>()
 
     /**
-     * @return Text to be displayed as GUI title, can return null
-     * override this!
+     * override this returning a string representing your GUI title
      */
     protected open fun getTitleString() : String?{
         return ""
     }
 
     /**
-     * @return Text to be displayed as message, can return null
-     * override this!
+     * override this to display a message, feel free to return null
      */
     protected open fun getMessageString() : String?{
         return ""
@@ -107,8 +111,9 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     }
 
     /**
-     * @return layout that would be assigned to button group when using addButtonGroup
-     * @note Only relevant if you plan on using addCustomButtonGroup
+     * returns layout that would be assigned to button group when using addButtonGroup
+     *
+     * Note: Only relevant if you plan on using addCustomButtonGroup
      */
     protected fun createButtonGroupLayout(index: Int) : ButtonGroupLayout{
         return ButtonGroupLayout(xAnchor, yAnchor - index * ySpacing, guiLayout.buttonWidthPx, guiLayout.buttonHeightPx,
@@ -116,8 +121,9 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     }
 
     /**
-     * @return button info that would be assigned to button when using addButton
-     * @note Only relevant if you plan on using addCustomButton
+     * returns button info that would be assigned to button when using addButton
+     *
+     * Note: Only relevant if you plan on using addCustomButton
      */
     protected fun createButtonInfo(xIndex: Int, txt: String, tooltipTxt: String) : ButtonInfo{
         return ButtonInfo(
@@ -136,7 +142,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
 
     /**
      * calls the refresh method of every button (group)
-     * gets automatically called in advance, feel free to call once at the end of your constructor call
+     * gets automatically called in [advance], feel free to call once at the end of your constructor call
      */
     protected open fun refreshButtons(){
         buttonGroups.forEach{
