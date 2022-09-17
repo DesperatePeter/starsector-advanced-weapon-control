@@ -282,6 +282,7 @@ You can find a usage example of the library here: <https://github.com/DesperateP
 - 1.6.0: Weapon charge time is now taken into consideration when computing projectile travel time. Add Range<N% and ShipTarget tags. 
          Split combat-GUI into lib and AGC-implementation. Fix issue causing crash when opening combat GUI with no flagship deployed.
          Tuned default settings.
+- 1.6.1: Fix TargetShields+, turn jar into a pom-style library to allow for displaying javadoc in IDE
 
 ## Acknowledgements ##
 
