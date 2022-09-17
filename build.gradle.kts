@@ -1,17 +1,23 @@
+import org.jetbrains.dokka.DokkaConfiguration
+import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "D:/Spiele/Starsector"
-    val modVersion = "1.6.0"
-    val jarFileName = "AdvancedGunneryControl.jar"
+    val modVersion = "1.6.1"
+    val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
+    val jarFileName = "$jarFileNameBase.jar"
+    val sourceJarFileName = "$jarFileNameBase-sources.jar"
+    val javadocJarFileName = "$jarFileNameBase-javadoc.jar"
 
     val modId = "advanced_gunnery_control_dbeaa06e"
     val modName = "AdvancedGunneryControl"
     val author = "DesperatePeter"
     const val description = "A Starsector mod that adds more autofire modes for weapon groups. On the campaign map, press J to open a GUI. In combat, with NUMLOCK enabled, press the NUMPAD keys to cycle weapon modes."
     val gameVersion = "0.95.1a-RC6"
-    val jars = arrayOf("jars/$jarFileName")
+    val jarsDir = "jars/agc/AdvancedGunneryControl/$modVersion"
+    val jars = arrayOf("$jarsDir/$jarFileName")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
     val isUtilityMod = true
     val masterVersionFile = "https://raw.githubusercontent.com/DesperatePeter/starsector-advanced-weapon-control/master/$modId.version"
@@ -32,6 +38,7 @@ val modInModsFolder = File("$starsectorModDirectory/${Variables.modFolderName}")
 plugins {
     kotlin("jvm") version "1.5.0"
     java
+    id("org.jetbrains.dokka") version "1.6.21"
 }
 
 version = Variables.modVersion
@@ -74,12 +81,44 @@ dependencies {
     })
 }
 
+java{
+    withSourcesJar()
+    withJavadocJar()
+}
 
 tasks {
     named<Jar>("jar")
     {
-        destinationDirectory.set(file("$rootDir/jars"))
+        dependsOn(dokkaJavadoc)
+        from(sourceSets.main.get().output)
+        destinationDirectory.set(file(Variables.jarsDir))
         archiveFileName.set(Variables.jarFileName)
+    }
+    named<org.gradle.jvm.tasks.Jar>("kotlinSourcesJar") {
+        from(sourceSets.main.get().allSource)
+        destinationDirectory.set(file(Variables.jarsDir))
+        archiveFileName.set(Variables.sourceJarFileName)
+        archiveClassifier.set("sources")
+    }
+    named<DokkaTask>("dokkaJavadoc"){
+        dokkaSourceSets{
+            named("main"){
+                documentedVisibilities.set(
+                    setOf(
+                        DokkaConfiguration.Visibility.PUBLIC,
+                        DokkaConfiguration.Visibility.PROTECTED
+                    )
+                )
+                sourceRoots.from(sourceSets.main.get().allSource)
+            }
+        }
+    }
+    named<Jar>("javadocJar"){
+        dependsOn(dokkaJavadoc)
+        from(dokkaJavadoc.get().outputs)
+        archiveClassifier.set("javadoc")
+        destinationDirectory.set(file(Variables.jarsDir))
+        archiveFileName.set(Variables.javadocJarFileName)
     }
 
     register("create-metadata-files") {
@@ -146,6 +185,24 @@ tasks {
 
         File(projectDir, ".github/workflows/mod-folder-name.txt")
             .writeText(Variables.modFolderName)
+
+        mkdir(Variables.jarsDir)
+
+        doLast {
+            File(Variables.jarsDir, "${Variables.jarFileNameBase}.pom")
+                .writeText(
+                    """
+                    <project>
+                        <modelVersion>4.0.0</modelVersion>
+
+                        <groupId>agc</groupId>
+                        <artifactId>AdvancedGunneryControl</artifactId>
+                        <version>${Variables.modVersion}</version>
+                    </project>
+                """.trimIndent()
+                )
+        }
+
     }
 
     register("write-settings-file") {
@@ -163,7 +220,7 @@ tasks {
                    |   # Allowed values are: (replace N with a number between 0 and 100)
                    |   # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo", "ShipTarget",
                    |   # "Opportunist", "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%"
-                   |   "tagList" : ["PD", "NoPD", "PD(Flx>50%)", "Fighter", "AvoidShields", "AvdArmor(33%)", "TargetShields", "NoFighters", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget"]
+                   |   "tagList" : ["PD", "PD(Flx>50%)", "NoPD", "Fighter", "NoFighters", "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget"]
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
                    |   #       Use Reset to clear them.
                    |   # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons
@@ -250,7 +307,7 @@ tasks {
 
                    |   # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
                    |   # 1.0 should be enough to not hit allies if they don't change their course, but it's nice to have a little buffer
-                   |   ,"customAIFriendlyFireCaution" : 1.3 # <---- EDIT HERE (maybe) ----                   
+                   |   ,"customAIFriendlyFireCaution" : 1.25 # <---- EDIT HERE (maybe) ----                   
                    | 
                    |   #                                 #### TAG CUSTOMIZATION ####
                    |   # NOTE: Unless stated otherwise, numbers in this section should be positive values between (exclusively) 0 and 1 and represent fractions (i.e. 0.01 to 0.99)
@@ -263,7 +320,7 @@ tasks {
                    |   # For frontal shields, unfold time and projectile travel time are considered to determine flanking
                    |   # For modes that want to hit shields, reducing the threshold makes them more likely to fire
                    |   # For modes that want to avoid shields, the opposite is true
-                   |   ,"targetShields_threshold" : 0.15
+                   |   ,"targetShields_threshold" : 0.1
                    |   ,"avoidShields_threshold" : 0.3
                    |   
                    |   # Opportunist AND conserveAmmo tag: (shield thresholds for opportunist mode, depending on damage type)
@@ -303,9 +360,16 @@ tasks {
             )
     }
 
+    register("create-everything"){
+        dependsOn(jar, kotlinSourcesJar, "write-settings-file", "create-metadata-files", "javadocJar")
+    }
+
     // If enabled, will copy your mod to the /mods directory when run (and whenever gradle syncs).
     // Disabled by default, as it is not needed if your mod directory is symlinked into your /mods folder.
     register<Copy>("install-mod") {
+
+        dependsOn(jar)
+        dependsOn(kotlinSourcesJar)
         val enabled = false;
 
         if (!enabled) return@register

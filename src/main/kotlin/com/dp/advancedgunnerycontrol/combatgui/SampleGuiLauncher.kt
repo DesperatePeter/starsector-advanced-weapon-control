@@ -7,14 +7,14 @@ import com.fs.starfarer.api.input.InputEventAPI
 
 /**
  * Class that, when added to engine via addPlugin, will open/close GUI when specified hotkey is pressed.
- * Extend this class by defining the constructGui-method to construct a GuiObject that extends GuiBase.
+ * Extend this class by overriding [constructGui] to construct a GuiObject that extends GuiBase.
  * @param hotkey lowercase char representation of hotkey to press to open/close the GUI. Make sure that key is not being used by starsector!
  */
 abstract class SampleGuiLauncher(private val hotkey: Char) : BaseEveryFrameCombatPlugin() {
     private var gui: GuiBase? = null
 
     /**
-     * return a new GUI object from this function
+     * override this to return a new GUI object from this function, e.g. "return new MyGui()"
      */
     abstract fun constructGui() : GuiBase
 
