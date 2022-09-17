@@ -20,6 +20,9 @@ class TargetShieldsTag(weapon: WeaponAPI, private val threshold: Float = Setting
 
     override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
         val tgtShip = (entity as? ShipAPI) ?: return false
+        if (Settings.ignoreFighterShields() && tgtShip.isFighter) {
+            return true
+        }
         val ttt = computeTimeToTravel(weapon, predictedLocation)
         return computeShieldFactor(tgtShip, weapon, ttt) > threshold
     }
