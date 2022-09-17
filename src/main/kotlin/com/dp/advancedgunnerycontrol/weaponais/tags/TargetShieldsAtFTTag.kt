@@ -8,10 +8,11 @@ import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
-class TargetShieldsFT(
+// Allows targeting of anything when flux < fluxThreshold, otherwise target shields. Always prioritises by target shield factor
+class TargetShieldsAtFTTag(
     weapon: WeaponAPI,
     private val shieldThreshold: Float = Settings.targetShieldsThreshold(),
-    private val fluxThreshold: Float = Settings.TargetShieldsFT()
+    private val fluxThreshold: Float = Settings.TargetShieldsAtFT()
 ) : WeaponAITagBase(weapon) {
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {

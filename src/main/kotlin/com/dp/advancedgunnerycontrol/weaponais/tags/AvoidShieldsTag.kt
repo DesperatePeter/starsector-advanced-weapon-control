@@ -10,16 +10,19 @@ import org.lwjgl.util.vector.Vector2f
 
 class AvoidShieldsTag(weapon: WeaponAPI, private val threshold: Float = Settings.avoidShieldsThreshold()) : WeaponAITagBase(weapon) {
 
-    override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = computeShieldFactor(entity, weapon) < threshold || (entity as? ShipAPI)?.isFighter == true
+    override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = computeShieldFactor(entity, weapon) < threshold
 
     override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return computeShieldFactor(entity, weapon) + 0.1f
     }
 
     override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
-        val tgtShip = (entity as? ShipAPI) ?: return true
+        val tgtShip = (entity as? ShipAPI) ?: return false
+        if (Settings.ignoreFighterShields() && tgtShip.isFighter) {
+            return true
+        }
         val ttt = computeTimeToTravel(weapon, predictedLocation)
-        return computeShieldFactor(tgtShip, weapon, ttt) < threshold || entity.isFighter
+        return computeShieldFactor(tgtShip, weapon, ttt) < threshold
     }
 
     override fun isBaseAiOverridable(): Boolean = true

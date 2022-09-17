@@ -8,10 +8,11 @@ import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
-class AvoidShieldsFT(
+// Allows targeting of anything when flux < fluxThreshold, otherwise avoids shields. Always prioritises by target shield factor
+class AvoidShieldsAtFTTag(
     weapon: WeaponAPI,
     private val shieldThreshold: Float = Settings.avoidShieldsThreshold(),
-    private val fluxThreshold: Float = Settings.AvoidShieldsFT()
+    private val fluxThreshold: Float = Settings.AvoidShieldsAtFT()
 ) : WeaponAITagBase(weapon) {
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
