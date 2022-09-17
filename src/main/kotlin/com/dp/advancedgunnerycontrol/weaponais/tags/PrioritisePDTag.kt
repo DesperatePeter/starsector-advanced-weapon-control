@@ -13,7 +13,7 @@ import org.lwjgl.util.vector.Vector2f
 class PrioritisePDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
-        return  ((entity as? ShipAPI)?.let { isSmall(it) } ?: false) || (isPD(weapon) && (entity as? MissileAPI) != null)
+        return  (entity as? ShipAPI)?.let { isSmall(it) } ?: false || (isPD(weapon) && (entity as? MissileAPI) != null)
     }
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = false
 
