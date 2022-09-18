@@ -46,11 +46,16 @@ object Settings : SettingsDefinition() {
     val retreatHullThreshold = addSetting<Float> ("retreat_hull", 0.5f)
     val shieldsOffThreshold = addSetting<Float> ("shieldsOff_flux", 0.5f)
     val conserveAmmo = addSetting<Float> ("conserveAmmo_ammo", 0.5f)
+    val conservePDAmmo = addSetting<Float> ("conservePDAmmo_ammo", 0.9f)
     val directRetreat = addSetting<Boolean> ("retreat_shouldDirectRetreat", false)
     val opportunistModifier = addSetting<Float> ("opportunist_triggerHappinessModifier", 1.0f)
     val strictBigSmall = addSetting<Boolean>("strictBigSmallShipMode", true)
     val targetShieldsThreshold = addSetting<Float> ("targetShields_threshold", 0.2f)
     val avoidShieldsThreshold = addSetting<Float> ("avoidShields_threshold", 0.5f)
+    val ignoreFighterShields = addSetting<Boolean> ("ignoreFighterShields", false)
+    val targetShieldsAtFT = addSetting<Float> ("targetShieldsAtFT_flux", 0.2f)
+    val avoidShieldsAtFT = addSetting<Float> ("avoidShieldsAtFT_flux", 0.2f)
+
 
     var weaponBlacklist = listOf<String>()
         private set

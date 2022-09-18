@@ -218,16 +218,18 @@ tasks {
                    |   #                                 #### TAG LIST ####
                    |   # Determines which tags will be shown in the GUIs. Feel free to add/remove tags as you see fit.
                    |   # Allowed values are: (replace N with a number between 0 and 100)
-                   |   # "PD", "NoPD", "PD(Flx>N%)", "Fighter", "AvoidShields", "TargetShields", "NoFighters", "Hold(Flx>N%)", "ConserveAmmo", "ShipTarget",
-                   |   # "Opportunist", "TgtShields+", "AvdShields+", "AvdArmor(N%)", "AvoidDebris", "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%"
+                   |   # "PD", "NoPD", "PD(Flx>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
+                   |   # "AvdShields+", "TgtShields+", "AvoidShieldsAtFT", "TargetShieldsAtFT", "AvdArmor(N%)", "AvoidDebris", 
+                   |   # "Opportunist", "Hold(Flx>N%)", "ConserveAmmo", "ConservePDAmmo", "ShipTarget",
+                   |   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%"
+                   |   
                    |   "tagList" : ["PD", "PD(Flx>50%)", "NoPD", "Fighter", "NoFighters", "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget"]
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
                    |   #       Use Reset to clear them.
+                   |   
                    |   # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons
                    |   ,"allowHotLoadingTags" : true
                    |  
-
-
                    |   #                                 #### CUSTOM AI ####
                    |   # If you set this to true, if the base AI would have weapons in weapon groups target something invalid for the selected tags,
                    |   # they will try to acquire a fitting target using custom targeting AI.
@@ -242,8 +244,7 @@ tasks {
                    |   # Note that forcing & enabling custom AI should actually be beneficial for performance over just enabling it.
                    |   # Note that setting enableCustomAI to false and this to true is not a brilliant idea and will be overridden :P
                    |   ,"forceCustomAI" : false # <---- EDIT HERE ----
-
-
+                   |   
                    |   #                                 #### UI SETTINGS ####
                    |   
                    |   # Switch this off if you want to reset modes every battle (campaign-GUI only works when enabled)
@@ -267,15 +268,14 @@ tasks {
                    |   
                    |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
                    |   , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
-
+                   |   
                    |   # If you disable this, you will have to use the Load/Save-Buttons to save/load weapon modes
                    |   # This can't be enabled when enablePersistentFireModes is off
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
-
-
+                   |   
                    |   #                                 #### CUSTOM AI CONFIGURATION  ####
                    |   # NOTE: All the stuff here is mainly here to facilitate testing. But feel free to play around with the settings here!
-
+                   |   
                    |   # Define the number of calculation steps the AI should perform per time frame to compute firing solutions.
                    |   # higher values -> slightly better AI but worse performance (0 means just aim at current target position).
                    |   # performance cost increases linearly, firing solution accuracy approx. logarithmically (recommended: 1-2)
@@ -283,18 +283,18 @@ tasks {
                    |   # accuracy a little bit.
                    |   # I believe that 1 is the value used in Vanilla
                    |   ,"customAIRecursionLevel" : 1 # <---- EDIT HERE (maybe)----                   
-
+                   |   
                    |   # Any positive or negative float possible, reasonable values: between 0.7 ~ 2.0 or so
                    |   # 1.0 means "fire if shot will land within 1.0*(targetHitbox+10)"
                    |   # (the +10 serves to compensate for very small targets such as missiles and fighters)
                    |   ,"customAITriggerHappiness" : 1.0 # <---- EDIT HERE (maybe) ----
-
+                   |   
                    |   # Set this to true if you want the custom AI to perform better :P
                    |   ,"customAIAlwaysUsesBestTargetLeading" : false # <---- EDIT HERE (maybe) ----
                    |   # For purposes of determining whether a shot will hit, assume collision radius to be multiplied
                    |   # by this factor. This is to compensate for the fact that most ships aren't spherical.
                    |   ,"collisionRadiusMultiplier" : 0.8 # <---- EDIT HERE (maybe) ---- 
-
+                   |   
                    |   #                                 #### FRIENDLY FIRE AI CONFIGURATION ####
                    |   # "magic number" to choose how complex the friendly fire calculation should be
                    |   # The number entered here roughly corresponds to the big O notation (i.e. runtime of friendly fire algorithm ~ n^i,
@@ -304,7 +304,7 @@ tasks {
                    |   #     - 1 : Weapons won't consider friendly fire for target selection, only for deciding whether to fire or not
                    |   #     - 2 : Weapon will only select targets that don't risk friendly fire (potentially high performance cost)
                    |   ,"customAIFriendlyFireAlgorithmComplexity" : 1 # <---- EDIT HERE (maybe) ----
-
+                   |   
                    |   # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
                    |   # 1.0 should be enough to not hit allies if they don't change their course, but it's nice to have a little buffer
                    |   ,"customAIFriendlyFireCaution" : 1.25 # <---- EDIT HERE (maybe) ----                   
@@ -320,12 +320,14 @@ tasks {
                    |   # For frontal shields, unfold time and projectile travel time are considered to determine flanking
                    |   # For modes that want to hit shields, reducing the threshold makes them more likely to fire
                    |   # For modes that want to avoid shields, the opposite is true
-                   |   ,"targetShields_threshold" : 0.1
-                   |   ,"avoidShields_threshold" : 0.3
+                   |   
+                   |   ,"targetShields_threshold" : 0.1     # i.e. Attack if target flux < 90% (simplified, see above)
+                   |   ,"avoidShields_threshold" : 0.3      # i.e. Attack if target flux > 70% (simplified, see above)
                    |   
                    |   # Opportunist AND conserveAmmo tag: (shield thresholds for opportunist mode, depending on damage type)
-                   |   ,"opportunist_kineticThreshold" : 0.5 
-                   |   ,"opportunist_HEThreshold" : 0.15 
+                   |   ,"opportunist_kineticThreshold" : 0.5    # i.e. Attack if target flux < 50% (simplified, see above)
+                   |   ,"opportunist_HEThreshold" : 0.15        # i.e. Attack if target flux > 85% (simplified, see above)
+                   |   
                    |    # increasing this value will increase the likelihood of opportunist/conserveAmmo firing (positive non-zero number)
                    |    # Note: Relatively small changes to this value will have a considerable impact. So I'd recommend values between 0.9 and 1.2 or so
                    |   ,"opportunist_triggerHappinessModifier" : 1.0
@@ -340,19 +342,34 @@ tasks {
                    |   ,"aggressiveVent_safetyFactor" : 0.25 # (positive non-zero number)
                    |   
                    |   ,"retreat_hull" : 0.5 # retreat if hull level < X
-                   |   ,"shieldsOff_flux" : 0.5 # In ShieldsOff (Flux>50%) mode, turn off shields if flux level > X
-
-                   |   ,"conserveAmmo_ammo" : 0.5 # Start conserving ammo when ammoLevel < X
-                   |   
                    |   ,"retreat_shouldDirectRetreat" : false
+                   |   
+                   |   ,"shieldsOff_flux" : 0.5 # In ShieldsOff (Flux>50%) mode, turn off shields if flux level > X
+                   |   
+                   |   ,"conserveAmmo_ammo" : 0.5 # Start conserving ammo when ammoLevel < X
+                   |   ,"conservePDAmmo" : 0.8 # Only allow firing at fighters and missiles when ammo < X
+                   |   
                    |   # If true, the BigShips/SmallShips tags will exclusively target Destroyers and bigger/smaller
                    |   ,"strictBigSmallShipMode" : false
+                   |   
                    |   # When set to true, the mod will periodically (~1/s) check if the custom ship AI has been stripped
                    |   # from player-fleet ships. Stripping happens when transferring control or turning on/off autopilot
                    |   # on the player-controlled ship
                    |   ,"automaticallyReapplyPlayerShipModes" : true
+                   |   
                    |   # Other mods can apply tags to ships in enemy fleets. Set this to false to opt out.
                    |   ,"allowEnemyShipModeApplication" : true
+                   |   
+                   |   # Target/avoid shield tags allow targetting of fighters, regardless of their shield factor
+                   |   # (Note that these modes will still prioritise targets based on shield factor)
+                   |   ,"ignoreFighterShields" : true
+                   |   
+                   |   # Sets the flux threshold for "TargetShieldsAtFT" tag below which all targets are viable, regardless of their shield factor
+                   |   ,"targetShieldsAtFT" : 0.2
+                   |   
+                   |   # Sets the flux threshold for "AvoidShieldsAtFT" tag below which all targets are viable, regardless of their shield factor
+                   |   ,"avoidShieldsAtFT" : 0.2
+                   |   
                    |   
                    | }
 
