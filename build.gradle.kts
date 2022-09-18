@@ -365,10 +365,10 @@ tasks {
                    |   ,"ignoreFighterShields" : true
                    |   
                    |   # Sets the flux threshold for "TargetShieldsAtFT" tag below which all targets are viable, regardless of their shield factor
-                   |   ,"TargetShieldsAtFT" : 0.2
+                   |   ,"targetShieldsAtFT" : 0.2
                    |   
                    |   # Sets the flux threshold for "AvoidShieldsAtFT" tag below which all targets are viable, regardless of their shield factor
-                   |   ,"AvoidShieldsAtFT" : 0.2
+                   |   ,"avoidShieldsAtFT" : 0.2
                    |   
                    |   
                    | }

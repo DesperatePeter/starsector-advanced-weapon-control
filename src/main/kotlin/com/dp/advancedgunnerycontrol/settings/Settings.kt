@@ -53,8 +53,8 @@ object Settings : SettingsDefinition() {
     val targetShieldsThreshold = addSetting<Float> ("targetShields_threshold", 0.2f)
     val avoidShieldsThreshold = addSetting<Float> ("avoidShields_threshold", 0.5f)
     val ignoreFighterShields = addSetting<Boolean> ("ignoreFighterShields", false)
-    val TargetShieldsAtFT = addSetting<Float> ("targetShieldsAtFT_flux", 0.2f)
-    val AvoidShieldsAtFT = addSetting<Float> ("AvoidShieldsAtFT_flux", 0.2f)
+    val targetShieldsAtFT = addSetting<Float> ("targetShieldsAtFT_flux", 0.2f)
+    val avoidShieldsAtFT = addSetting<Float> ("avoidShieldsAtFT_flux", 0.2f)
 
 
     var weaponBlacklist = listOf<String>()

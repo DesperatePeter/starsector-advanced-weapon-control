@@ -5,6 +5,7 @@ import com.dp.advancedgunnerycontrol.gui.isEverythingBlacklisted
 import com.dp.advancedgunnerycontrol.gui.isElligibleForPD
 import com.dp.advancedgunnerycontrol.gui.usesAmmo
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.weaponais.mapBooleanToSpecificString
 import com.dp.advancedgunnerycontrol.weaponais.tags.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
@@ -36,14 +37,14 @@ val tagTooltips = mapOf(
     "PrioritisePD" to "Weapon will always prioritise from small to large (Missiles > fighters > small ships > big ships)",
     "NoPD" to "Forbids targeting missiles and prioritizes ships over fighters.",
     "Fighter" to "Restricts targeting to fighters.",
-    "AvoidShields" to "Weapon will prioritize targets without shields, flanked shields or high flux/shields off.",
-    "TargetShields" to "Weapon will prioritize shooting shields. Will stop firing against enemies with very high flux." +
+    "AvoidShields" to "Weapon will prioritize targets without shields, flanked shields or high flux/shields off. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
+    "TargetShields" to "Weapon will prioritize shooting shields. Will stop firing against enemies with very high flux. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)" +
             "\nTip: Keep one kinetic weapon on default to keep up pressure.",
-    "TgtShields+" to "As TargetShields, but will always shoot when shields are up and not flanked. (experimental)",
-    "AvdShields+" to "As AvoidShields, but will never fire when shields are up and not flanked. (experimental)",
+    "TgtShields+" to "As TargetShields, but will always shoot when shields are up and not flanked. (experimental). Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
+    "AvdShields+" to "As AvoidShields, but will never fire when shields are up and not flanked. (experimental). Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
     "NoFighters" to "Weapon won't target fighters.",
     "ConserveAmmo" to "Weapon will be much more hesitant to fire when ammo below ${(Settings.conserveAmmo()*100f).toInt()}%.",
-    "ConservePDAmmo" to "Weapon will only fire at maximum ROF when the target is of type PD and ammo is below ${(Settings.conserveAmmo()*100f).toInt()}%.",
+    "ConservePDAmmo" to "Weapon will only fire at maximum ROF when the target is of type PD and ammo is below ${(Settings.conservePDAmmo()*100f).toInt()}%.",
     "Opportunist" to "Weapon will be more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons.",
     "AvoidDebris" to "Weapon will not fire when the shot is blocked by debris/asteroids." +
             "\nNote: This only affects the custom AI and the Opportunist mode already includes this option.",
@@ -56,8 +57,8 @@ val tagTooltips = mapOf(
             "\n      The ShipAI might still try to select this weapon group, but will be forced to deselect it again.",
     "AvoidPhased" to "Weapon will ignore phase-ships unless they are unable to avoid the shot by phasing (due to flux or cooldown).",
     "ShipTarget" to "Weapon will only fire at the selected ship target (R-Key). I like to use this for regenerating missiles.",
-    "TargetShieldsAtFT" to "As TargetShields but will allow targeting of anything when flux is below ${(Settings.TargetShieldsAtFT()*100f).toInt()}%.",
-    "AvoidShieldsAtFT" to "As AvoidShields but will allow targeting of anything when flux is below ${(Settings.AvoidShieldsAtFT()*100f).toInt()}%.",
+    "TargetShieldsAtFT" to "As TargetShields but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT()*100f).toInt()}%. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
+    "AvoidShieldsAtFT" to "As AvoidShields but will allow targeting of anything when flux is below ${(Settings.avoidShieldsAtFT()*100f).toInt()}%. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
 )
 
 fun getTagTooltip(tag: String) : String{

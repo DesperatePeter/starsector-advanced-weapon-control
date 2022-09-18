@@ -17,7 +17,7 @@ class AvoidShieldsTag(weapon: WeaponAPI, private val threshold: Float = Settings
     }
 
     override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
-        val tgtShip = (entity as? ShipAPI) ?: return false
+        val tgtShip = (entity as? ShipAPI) ?: return true
         if (Settings.ignoreFighterShields() && tgtShip.isFighter) {
             return true
         }

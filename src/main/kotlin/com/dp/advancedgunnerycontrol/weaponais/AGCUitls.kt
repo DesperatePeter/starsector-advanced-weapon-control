@@ -227,6 +227,14 @@ fun degFromVector(vec: Vector2f) : Float {
     return atan2(vec.y, vec.x) / degToRad
 }
 
+fun mapBooleanToSpecificString(boolValue: Boolean, trueString: String, falseString: String): String {
+    return if (boolValue) {
+        trueString
+    } else {
+        falseString
+    }
+}
+
 // Why doesn't Vector2f support this naturally? Note: infix and _ rather than operator in case this ever gets added
 internal infix fun Vector2f.times_(d: Float): Vector2f {
     return Vector2f(d * x, d * y)

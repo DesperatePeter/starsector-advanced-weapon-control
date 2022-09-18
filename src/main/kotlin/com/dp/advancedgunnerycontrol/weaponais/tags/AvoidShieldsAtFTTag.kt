@@ -12,7 +12,7 @@ import org.lwjgl.util.vector.Vector2f
 class AvoidShieldsAtFTTag(
     weapon: WeaponAPI,
     private val shieldThreshold: Float = Settings.avoidShieldsThreshold(),
-    private val fluxThreshold: Float = Settings.AvoidShieldsAtFT()
+    private val fluxThreshold: Float = Settings.avoidShieldsAtFT()
 ) : WeaponAITagBase(weapon) {
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {

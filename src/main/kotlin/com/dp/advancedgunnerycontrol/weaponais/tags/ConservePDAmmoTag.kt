@@ -21,7 +21,7 @@ class ConservePDAmmoTag(weapon: WeaponAPI, private val ammoThreshold: Float) : W
         return true
     }
 
-    override fun isBaseAiOverridable(): Boolean = true
+    override fun isBaseAiOverridable(): Boolean = false
 
     override fun avoidDebris(): Boolean = false
 

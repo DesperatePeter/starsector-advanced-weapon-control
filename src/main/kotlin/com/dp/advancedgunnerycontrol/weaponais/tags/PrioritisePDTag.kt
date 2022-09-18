@@ -10,12 +10,13 @@ import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
 
+// Prioritises missiles > fighters > small ships > big ships
 class PrioritisePDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
-        return  (entity as? ShipAPI)?.let { isSmall(it) } ?: false || (isPD(weapon) && (entity as? MissileAPI) != null)
+        return  (entity as? ShipAPI)?.let { isSmall(it) } ?: false || (isPD(weapon) && entity is MissileAPI)
     }
-    override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = false
+    override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = entity is MissileAPI
 
     override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
         return if ((entity as? MissileAPI) != null) {
