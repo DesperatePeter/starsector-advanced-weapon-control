@@ -38,8 +38,8 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
 
     protected var font: LazyFont? = null
 
-    private val standaloneButtons = mutableListOf<ActionButton>()
-    private val buttonGroups = mutableListOf<DataButtonGroup>()
+    protected val standaloneButtons = mutableListOf<ActionButton>()
+    protected val buttonGroups = mutableListOf<DataButtonGroup>()
 
     /**
      * override this returning a string representing your GUI title
@@ -158,6 +158,18 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
         buttonGroups.forEach { it.advance() }
         standaloneButtons.forEach { it.advance() }
         refreshButtons()
+    }
+
+    /**
+     * delete all buttons from button groups and re-create them with the given CreateButtonsAction
+     */
+    open fun reRenderButtonGroups(){
+        buttonGroups.forEach {
+            it.buttons.clear()
+            it.resetGrid()
+            it.createButtons()
+            it.refresh()
+        }
     }
 
     /**

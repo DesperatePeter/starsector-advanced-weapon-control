@@ -24,7 +24,7 @@ import org.lazywizard.lazylib.ui.LazyFont
  * @param layout defines where/how the group gets rendered
  */
 abstract class DataButtonGroup(
-val font: LazyFont?, val descriptionText: String, val layout: ButtonGroupLayout
+    val font: LazyFont?, var descriptionText: String, val layout: ButtonGroupLayout
 ) {
     val buttons = mutableListOf<DataToggleButton>()
     private val descriptionOffset = 40f
@@ -39,6 +39,10 @@ val font: LazyFont?, val descriptionText: String, val layout: ButtonGroupLayout
         }else{
             currentY -= layout.h + layout.padding
         }
+    }
+    fun resetGrid(){
+        currentX = layout.x
+        currentY = layout.y
     }
     fun disableButton(text: String){
         buttons.find { it.info.txt == text }?.let { it.isDisabled = true }

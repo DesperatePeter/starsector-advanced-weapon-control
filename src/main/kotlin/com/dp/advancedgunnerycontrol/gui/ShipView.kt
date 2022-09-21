@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui
 
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.typesandvalues.TagListView
 import com.dp.advancedgunnerycontrol.utils.loadAllTags
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -8,9 +9,10 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.*
 import org.lwjgl.opengl.GL11
 
-class ShipView : CustomUIPanelPlugin {
+class ShipView(private val tagView : TagListView) : CustomUIPanelPlugin {
     private var pos : PositionAPI? = null
     private val buttons : MutableList<ButtonBase<*>> = mutableListOf()
+
     override fun positionChanged(pos: PositionAPI?) {
         pos?.let {
             this.pos = it
@@ -44,7 +46,7 @@ class ShipView : CustomUIPanelPlugin {
     }
 
     private fun addTagButtonGroup(group: Int, ship: FleetMemberAPI, tooltip: TooltipMakerAPI){
-        buttons.addAll(TagButton.createModeButtonGroup(ship, group, tooltip))
+        buttons.addAll(TagButton.createModeButtonGroup(ship, group, tooltip, tagView))
     }
 
     private fun addShipModeButtonGroup(ship: FleetMemberAPI, panel: CustomPanelAPI, position: UIComponentAPI){
@@ -53,6 +55,11 @@ class ShipView : CustomUIPanelPlugin {
 
     override fun advance(t: Float) {
         buttons.forEach { it.executeCallbackIfChecked() }
+        tagView.advance()
+    }
+
+    fun shouldRegenerate(): Boolean{
+        return tagView.hasViewChanged()
     }
 
     override fun processInput(events: MutableList<InputEventAPI>?) {}
@@ -67,6 +74,7 @@ class ShipView : CustomUIPanelPlugin {
             attributes.customPanel?.addUIElement(imgView)?.inTL(1f, 1f)
             val shipModeHeader = attributes.customPanel?.createUIElement(1200f, 50f, false)
             shipModeHeader?.addTitle("Ship AI Modes (${sh.shipName}, ${sh.variant?.fullDesignationWithHullNameForShip}):")
+            shipModeHeader?.addPara("Tag Scrollbar: ${tagView.asciiScrollBar()}", 5.0f)
             attributes.customPanel?.addUIElement(shipModeHeader)?.rightOfBottom(imgView, 1f)
             attributes.customPanel?.let {
                 if (imgView != null) {

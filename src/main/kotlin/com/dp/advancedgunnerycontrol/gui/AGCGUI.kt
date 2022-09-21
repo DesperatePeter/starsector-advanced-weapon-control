@@ -2,6 +2,7 @@ package com.dp.advancedgunnerycontrol.gui
 
 import com.dp.advancedgunnerycontrol.gui.actions.*
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.typesandvalues.TagListView
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.*
@@ -28,6 +29,7 @@ class AGCGUI : InteractionDialogPlugin {
     }
 
     private var attributes = GUIAttributes()
+    private var shipView : ShipView? = null
 
     private fun addAction(action: GUIAction){
         attributes.options?.addOption(action.getName(), action, action.getTooltip())
@@ -63,8 +65,8 @@ class AGCGUI : InteractionDialogPlugin {
     }
 
     private fun showModeGUI(){
-        val shipView = ShipView()
-        shipView.showShipModes(attributes)
+        shipView = ShipView(attributes.tagView)
+        shipView?.showShipModes(attributes)
     }
 
     private fun displayFleetOptions(){
@@ -100,7 +102,11 @@ class AGCGUI : InteractionDialogPlugin {
     }
 
     override fun optionMousedOver(optionString: String?, optionData: Any?) { }
-    override fun advance(p0: Float) { }
+    override fun advance(p0: Float) {
+        if (shipView?.shouldRegenerate() == true){
+            showModeGUI()
+        }
+    }
     override fun backFromEngagement(p0: EngagementResultAPI?) { }
     override fun getContext(): Any? = null
     override fun getMemoryMap(): MutableMap<String, MemoryAPI>? = null

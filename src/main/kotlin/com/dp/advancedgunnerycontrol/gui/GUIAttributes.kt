@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.gui
 
+import com.dp.advancedgunnerycontrol.typesandvalues.TagListView
 import com.fs.starfarer.api.campaign.InteractionDialogAPI
 import com.fs.starfarer.api.campaign.OptionPanelAPI
 import com.fs.starfarer.api.campaign.TextPanelAPI
@@ -15,6 +16,7 @@ class GUIAttributes {
     var options : OptionPanelAPI? = null
     var visualPanel : VisualPanelAPI? = null
     var customPanel : CustomPanelAPI? = null
+    var tagView = TagListView()
 
     fun init(input: InteractionDialogAPI?) {
         input?.let {

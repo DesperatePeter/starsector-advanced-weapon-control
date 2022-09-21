@@ -11,7 +11,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
-val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)")
+val pdTags = listOf("PD", "NoPD", "PD(Flx>N%)", "NoMissiles")
 val ammoTags = listOf("ConserveAmmo", "ConservePDAmmoTag")
 
 val holdRegex = Regex("Hold\\(Flx>(\\d+)%\\)")
@@ -59,6 +59,7 @@ val tagTooltips = mapOf(
     "ShipTarget" to "Weapon will only fire at the selected ship target (R-Key). I like to use this for regenerating missiles.",
     "TargetShieldsAtFT" to "As TargetShields but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT()*100f).toInt()}%. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
     "AvoidShieldsAtFT" to "As AvoidShields but will allow targeting of anything when flux is below ${(Settings.avoidShieldsAtFT()*100f).toInt()}%. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
+    "NoMissiles" to "Weapon won't target missiles."
 )
 
 fun getTagTooltip(tag: String) : String{
@@ -92,26 +93,27 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         rangeRegex.matches(name) -> return RangeTag(weapon, extractRegexThreshold(rangeRegex, name))
     }
     return when (name){
-        "PD"            -> PDTag(weapon)
-        "PrioritisePD"  -> PrioritisePDTag(weapon)
-        "NoPD"                -> NoPDTag(weapon)
-        "Fighter"             -> FighterTag(weapon)
-        "AvoidShields"        -> AvoidShieldsTag(weapon)
-        "TargetShields"       -> TargetShieldsTag(weapon)
-        "AvdShields+"         -> AvoidShieldsTag(weapon, 0.02f)
-        "TgtShields+"         -> TargetShieldsTag(weapon, 0.01f)
-        "NoFighters"          -> NoFightersTag(weapon)
-        "ConserveAmmo"        -> ConserveAmmoTag(weapon, Settings.conserveAmmo())
-        "ConservePDAmmo"      -> ConservePDAmmoTag(weapon, Settings.conservePDAmmo())
-        "Opportunist"         -> OpportunistTag(weapon)
-        "AvoidDebris"         -> AvoidDebrisTag(weapon)
-        "BigShips"            -> BigShipTag(weapon)
-        "SmallShips"          -> SmallShipTag(weapon)
-        "ForceAF"             -> ForceAutofireTag(weapon)
-        "AvoidPhased"         -> PhaseTag(weapon)
-        "ShipTarget"          -> ShipTargetTag(weapon)
-        "TargetShieldsAtFT"   -> TargetShieldsAtFTTag(weapon)
-        "AvoidShieldsAtFT"    -> AvoidShieldsAtFTTag(weapon)
+        "PD"                -> PDTag(weapon)
+        "PrioritisePD"      -> PrioritisePDTag(weapon)
+        "NoPD"              -> NoPDTag(weapon)
+        "Fighter"           -> FighterTag(weapon)
+        "AvoidShields"      -> AvoidShieldsTag(weapon)
+        "TargetShields"     -> TargetShieldsTag(weapon)
+        "AvdShields+"       -> AvoidShieldsTag(weapon, 0.02f)
+        "TgtShields+"       -> TargetShieldsTag(weapon, 0.01f)
+        "NoFighters"        -> NoFightersTag(weapon)
+        "ConserveAmmo"      -> ConserveAmmoTag(weapon, Settings.conserveAmmo())
+        "ConservePDAmmo"    -> ConservePDAmmoTag(weapon, Settings.conservePDAmmo())
+        "Opportunist"       -> OpportunistTag(weapon)
+        "AvoidDebris"       -> AvoidDebrisTag(weapon)
+        "BigShips"          -> BigShipTag(weapon)
+        "SmallShips"        -> SmallShipTag(weapon)
+        "ForceAF"           -> ForceAutofireTag(weapon)
+        "AvoidPhased"       -> PhaseTag(weapon)
+        "ShipTarget"        -> ShipTargetTag(weapon)
+        "TargetShieldsAtFT" -> TargetShieldsAtFTTag(weapon)
+        "AvoidShieldsAtFT"  -> AvoidShieldsAtFTTag(weapon)
+        "NoMissiles"        -> NoMissilesTag(weapon)
         else -> {
             unknownTagWarnCounter++
             when{
@@ -136,8 +138,8 @@ fun tagNameToRegexName(tag: String) : String{
 }
 
 val tagIncompatibility = mapOf(
-    "PD" to listOf("Fighter", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips", "ConservePDAmmo"),
-    "PrioritisePD" to listOf("Opportunist", "NoPD", "BigShips", "SmallShips", "Fighter"),
+    "PD" to listOf("Fighter", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips", "ConservePDAmmo", "PrioritisePD"),
+    "PrioritisePD" to listOf("Opportunist", "NoPD", "BigShips", "SmallShips", "Fighter", "PD"),
     "Fighter" to listOf("PD", "NoFighters", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips", "PrioritisePD", "ConservePDAmmo",),
     "NoPD" to listOf("PD", "Fighter", "PD(Flx>N%)", "PrioritisePD", "ConservePDAmmo"),
     "AvoidShields" to listOf("TargetShields", "TgtShields+", "AvdShields+", "AvoidShieldsAtFT", "TargetShieldsAtFT"),
@@ -148,11 +150,11 @@ val tagIncompatibility = mapOf(
     "TargetShieldsAtFT" to listOf("AvoidShields", "AvdShields+", "TargetShields", "TgtShields+", "AvoidShieldsAtFT"),
     "NoFighters" to listOf("Fighter", "Opportunist"),
     "ConservePDAmmo" to listOf("PD", "Fighter", "NoPD"),
-    "Opportunist" to listOf("Fighter", "PD", "NoFighters", "PD(Flx>N%)", "PrioritisePD", "ConservePDAmmo",),
+    "Opportunist" to listOf("Fighter", "PD", "NoFighters", "PD(Flx>N%)", "PrioritisePD", "ConservePDAmmo", "NoMissiles"),
     "PD(Flx>N%)" to listOf("Fighter", "Opportunist", "NoPD", "PD", "BigShips", "SmallShips"),
     "SmallShips" to listOf("BigShips", "PD", "Fighter", "PD(Flx>N%)", "PrioritisePD"),
     "BigShips" to listOf("SmallShips", "PD", "Fighter", "PD(Flx>N%)", "PrioritisePD"),
-
+    "NoMissiles" to listOf("Opportunist")
     )
 
 fun isIncompatibleWithExistingTags(tag: String, existingTags: List<String>) : Boolean{

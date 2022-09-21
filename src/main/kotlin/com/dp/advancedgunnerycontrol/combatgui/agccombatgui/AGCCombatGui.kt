@@ -4,6 +4,7 @@ import com.dp.advancedgunnerycontrol.combatgui.GuiBase
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonAction
 import com.dp.advancedgunnerycontrol.gui.groupAsString
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.typesandvalues.TagListView
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.typesandvalues.assignShipMode
 import com.dp.advancedgunnerycontrol.typesandvalues.saveShipModes
@@ -14,8 +15,11 @@ import org.lazywizard.lazylib.ui.LazyFont
 
 class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     override fun getTitleString(): String {
-        return "${ship.name}, ${ship.fleetMember?.variant?.fullDesignationWithHullNameForShip ?: "Unknown ship type"}"
+        return "${ship.name}, ${ship.fleetMember?.variant?.fullDesignationWithHullNameForShip ?: "Unknown ship type"}" +
+                " | Tag Scrollbar: " + tagListView.asciiScrollBar()
     }
+
+    private val tagListView = TagListView()
 
     init {
         initializeUi()
@@ -68,6 +72,14 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
         addButton(null, "Help", Values.HELP_TEXT, true)
     }
 
+    override fun advance() {
+        super.advance()
+        tagListView.advance()
+        if(tagListView.hasViewChanged()){
+            super.reRenderButtonGroups()
+        }
+    }
+
     private fun createWeaponGroupDescription(index: Int): String {
         return "Group ${index + 1}: ${groupAsString(ship.fleetMember.variant.weaponGroups[index], ship.fleetMember)}"
     }
@@ -76,7 +88,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
         ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it)) }
 
         for (i in 0 until  ship.variant.weaponGroups.size){
-            addButtonGroup(WeaponGroupAction(ship, i), CreateWeaponButtons(), RefreshWeaponButtons(ship, i), createWeaponGroupDescription(i))
+            addButtonGroup(WeaponGroupAction(ship, i), CreateWeaponButtons(tagListView), RefreshWeaponButtons(ship, i), createWeaponGroupDescription(i))
         }
         addButtonGroup(ShipAiAction(ship), CreateShipAiButtons(), RefreshShipAiButtons(ship), "Ship AI Modes")
         createActionButtons()

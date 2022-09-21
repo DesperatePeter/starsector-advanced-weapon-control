@@ -218,12 +218,18 @@ tasks {
                    |   #                                 #### TAG LIST ####
                    |   # Determines which tags will be shown in the GUIs. Feel free to add/remove tags as you see fit.
                    |   # Allowed values are: (replace N with a number between 0 and 100)
-                   |   # "PD", "NoPD", "PD(Flx>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
+                   |   # "PD", "NoPD", "NoMissiles", "PD(Flx>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
                    |   # "AvdShields+", "TgtShields+", "AvoidShieldsAtFT", "TargetShieldsAtFT", "AvdArmor(N%)", "AvoidDebris", 
                    |   # "Opportunist", "Hold(Flx>N%)", "ConserveAmmo", "ConservePDAmmo", "ShipTarget",
                    |   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%"
                    |   
-                   |   "tagList" : ["PD", "PD(Flx>50%)", "NoPD", "Fighter", "NoFighters", "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "Hold(Flx>75%)", "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget"]
+                   |   "tagList" : [
+                   |                "PD", "PD(Flx>50%)", "PrioritisePD", "NoMissiles", "NoFighters",
+                   |                "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "Hold(Flx>75%)",
+                   |                "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget", "Range<60%", 
+                   |                "AvdShields+", "TgtShields+", "AvoidShieldsAtFT", "TargetShieldsAtFT",
+                   |                "ConserveAmmo", "ConservePDAmmo", "BigShips", "SmallShips"
+                   |                ]
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
                    |   #       Use Reset to clear them.
                    |   
