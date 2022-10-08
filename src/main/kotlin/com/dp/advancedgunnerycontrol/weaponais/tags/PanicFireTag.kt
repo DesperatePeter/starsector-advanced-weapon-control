@@ -16,8 +16,8 @@ class PanicFireTag(weapon: WeaponAPI, private val threshold: Float) : WeaponAITa
 
     override fun avoidDebris(): Boolean = false
 
-    override fun forceFire(entity: CombatEntityAPI?, predictedLocation: Vector2f?): Boolean {
-        return weapon.ship.hullLevel < threshold
+    override fun forceFire(entity: CombatEntityAPI?, predictedLocation: Vector2f?, baseDecision: Boolean): Boolean {
+        return weapon.ship.hullLevel < threshold && entity != null
     }
 
     override val advanceWhenTurnedOff: Boolean = true

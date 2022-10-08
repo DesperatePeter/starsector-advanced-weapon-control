@@ -32,7 +32,7 @@ abstract class WeaponAITagBase(protected val weapon: WeaponAPI) {
     open fun isValid() : Boolean {
         return !Settings.weaponBlacklist.contains(weapon.id)
     }
-    open fun forceFire(entity: CombatEntityAPI?, predictedLocation: Vector2f?) : Boolean = false
+    open fun forceFire(entity: CombatEntityAPI?, predictedLocation: Vector2f?, baseDecision: Boolean) : Boolean = false
     open fun advance(){}
     // Note: if true, advance will be called every frame, even if the weapon group is not set to autofire!
     open val advanceWhenTurnedOff : Boolean = false

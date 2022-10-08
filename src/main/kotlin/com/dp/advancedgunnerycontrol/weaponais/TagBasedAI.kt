@@ -51,8 +51,9 @@ class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = 
     override fun isValid(): Boolean = true
 
     override fun shouldFire(): Boolean {
-        if(tags.any { it.forceFire(targetEntity, targetPoint) }) return true
-        if (!super.shouldFire()) return false
+        val baseDecision = super.shouldFire()
+        if(tags.any { it.forceFire(targetEntity, targetPoint, baseDecision) }) return true
+        if (!baseDecision) return false
         val tgt = targetEntity ?: return false
         val loc = targetPoint ?: return false
         return tags.all { it.shouldFire(tgt, loc) }

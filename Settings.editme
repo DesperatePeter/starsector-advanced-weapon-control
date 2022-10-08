@@ -6,17 +6,18 @@
    #                                 #### TAG LIST ####
    # Determines which tags will be shown in the GUIs. Feel free to add/remove tags as you see fit.
    # Allowed values are: (replace N with a number between 0 and 100)
-   # "PD", "NoPD", "NoMissiles", "PD(Flx>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
-   # "AvdShields+", "TgtShields+", "AvoidShieldsAtFT", "TargetShieldsAtFT", "AvdArmor(N%)", "AvoidDebris", 
-   # "Opportunist", "Hold(Flx>N%)", "ConserveAmmo", "ConservePDAmmo", "ShipTarget",
-   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%"
+   # "PD", "NoPD", "NoMissiles", "PD(Flux>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
+   # "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "AvdArmor(N%)", "AvoidDebris", 
+   # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "ConservePDAmmo", "ShipTarget",
+   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)"
+   
+   # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g. F, Fx, Flx
    
    "tagList" : [
-                "PD", "PD(Flx>50%)", "PrioritisePD", "NoMissiles", "NoFighters",
-                "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "Hold(Flx>75%)",
+                "PD", "PD(Fx>50%)", "PrioritisePD", "NoMissiles", "NoFighters",
+                "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Fx>90%)", "Hold(Fx>75%)",
                 "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget", "Range<60%", 
-                "AvdShields+", "TgtShields+", "AvoidShieldsAtFT", "TargetShieldsAtFT",
-                "ConserveAmmo", "ConservePDAmmo", "BigShips", "SmallShips"
+                "ForceF(Fx<50%)"
                 ]
    # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
    #       Use Reset to clear them.
@@ -158,10 +159,10 @@
    # (Note that these modes will still prioritise targets based on shield factor)
    ,"ignoreFighterShields" : true
    
-   # Sets the flux threshold for "TargetShieldsAtFT" tag below which all targets are viable, regardless of their shield factor
+   # Sets the flux threshold for "TgtShieldsFT" tag below which all targets are viable, regardless of their shield factor
    ,"targetShieldsAtFT" : 0.2
    
-   # Sets the flux threshold for "AvoidShieldsAtFT" tag below which all targets are viable, regardless of their shield factor
+   # Sets the flux threshold for "AvdShieldsFT" tag below which all targets are viable, regardless of their shield factor
    ,"avoidShieldsAtFT" : 0.2
    
    

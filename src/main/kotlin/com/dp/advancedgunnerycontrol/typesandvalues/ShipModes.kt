@@ -9,7 +9,7 @@ import com.fs.starfarer.combat.ai.BasicShipAI
 import java.lang.ref.WeakReference
 
 enum class ShipModes {
-    DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, VENT_AGGRESSIVE, RETREAT
+    DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, VENT_AGGRESSIVE, RETREAT, NO_SYSTEM
 }
 
 const val defaultShipMode = "DEFAULT"
@@ -20,7 +20,8 @@ val shipModeFromString = mapOf(
     "LowShields" to ShipModes.SHIELDS_OFF,
     "Vent(Flx>75%)" to ShipModes.VENT,
     "VntA(Flx>25%)" to ShipModes.VENT_AGGRESSIVE,
-    "Run(HP<50%)" to ShipModes.RETREAT
+    "Run(HP<50%)" to ShipModes.RETREAT,
+    "NoSystem" to ShipModes.NO_SYSTEM
 )
 
 val shipModeToString = shipModeFromString.map { it.value to it.key }.toMap()
@@ -38,7 +39,8 @@ val detailedShipModeDescriptions = mapOf(
     ShipModes.VENT_AGGRESSIVE to "Similar to ${shipModeToString[ShipModes.VENT]}, but at " +
             "${(Settings.aggressiveVentFluxThreshold() * 100f).toInt()}% flux and with much less concern for" +
             " the ship's survival. It will also prevent the AI from backing off while venting. Use with caution!",
-    ShipModes.RETREAT to "Order a retreat command to the ship if hull < ${(Settings.retreatHullThreshold() * 100f).toInt()}%. This WILL use a CP."
+    ShipModes.RETREAT to "Order a retreat command to the ship if hull < ${(Settings.retreatHullThreshold() * 100f).toInt()}%. This WILL use a CP.",
+    ShipModes.NO_SYSTEM to "Ship will not use its ship system."
 ).withDefault { it.toString() }
 
 private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenerator {
@@ -53,6 +55,7 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenera
             true
         )
         ShipModes.RETREAT -> RetreatShipAI(ship, Settings.retreatHullThreshold())
+        ShipModes.NO_SYSTEM -> NoSystemAI(ship)
         else -> ShipCommandGenerator(ship)
     }
 }
