@@ -55,7 +55,8 @@ val tagTooltips = mapOf(
     "NoFighters" to "Forbids targeting fighters.",
     "ConserveAmmo" to "Weapon will be much more hesitant to fire when ammo below ${(Settings.conserveAmmo()*100f).toInt()}%." +
             "\nNo targeting restrictions.",
-    "CnsrvPDAmmo" to "Weapon will only fire at maximum ROF when the target is of type PD and ammo is below ${(Settings.conservePDAmmo()*100f).toInt()}%." +
+    "CnsrvPDAmmo" to "When ammo is below ${(Settings.conservePDAmmo()*100f).toInt()}%, weapon will only fire when the target is a fighter/missile." +
+            "\nFor non-PD weapons, only fighters will be fired upon." +
             "\nNo targeting restrictions.",
     "Opportunist" to "Weapon will be much more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons.",
     "AvoidDebris" to "Weapon will not fire when the shot is blocked by debris/asteroids." +

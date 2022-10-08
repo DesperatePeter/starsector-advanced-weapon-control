@@ -38,6 +38,7 @@ class TagListView {
         return toReturn
     }
     fun view(): List<String>{
-        return Settings.tagList().subList(startingIndex, endIndex())
+        // Note: sublist excludes the endIndex, i.e. goes until endIndex -1 ==> endIndex() + 1
+        return Settings.tagList().subList(startingIndex, endIndex() + 1)
     }
 }

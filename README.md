@@ -285,8 +285,12 @@ You can find a usage example of the library here: <https://github.com/DesperateP
          Split combat-GUI into lib and AGC-implementation. Fix issue causing crash when opening combat GUI with no flagship deployed.
          Tuned default settings.
 - 1.6.1: Fix TargetShields+, turn jar into a pom-style library to allow for displaying javadoc in IDE
+- 1.7.0: Tag scrollbar, add new tags, add option to ignore fighter shields (special thanks to Seanra for contributing most of the new stuff!)
 
 ## Acknowledgements ##
+
+Special thanks to Seanra for contributing the option to ignore fighter shields and the PrioritisePD, TgtShieldsFT, AvdShieldsFT
+and ConservePDAmmo tags!
 
 Many thanks to Wisp(borne) for answering my endless questions about Kotlin and Starsector modding and for providing
 an awesome repository template.

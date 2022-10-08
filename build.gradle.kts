@@ -5,7 +5,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = "D:/Spiele/Starsector"
-    val modVersion = "1.6.1"
+    val modVersion = "1.7.0"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -220,16 +220,20 @@ tasks {
                    |   # Allowed values are: (replace N with a number between 0 and 100)
                    |   # "PD", "NoPD", "NoMissiles", "PD(Flux>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
                    |   # "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "AvdArmor(N%)", "AvoidDebris", 
-                   |   # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "ConservePDAmmo", "ShipTarget",
+                   |   # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "CnsrvPDAmmo", "ShipTarget",
                    |   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)"
                    |   
-                   |   # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g. F, Fx, Flx
+                   |   # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
                    |   
                    |   "tagList" : [
-                   |                "PD", "PD(Fx>50%)", "PrioritisePD", "NoMissiles", "NoFighters",
-                   |                "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Fx>90%)", "Hold(Fx>75%)",
-                   |                "Opportunist", "ForceAF", "Panic(H<25%)", "AvoidPhased", "ShipTarget", "Range<60%", 
-                   |                "ForceF(Fx<50%)"
+                   |                "PD", "PD(Flx>50%)",
+                   |                "AvoidShields", "TargetShields", "AvdArmor(33%)", 
+                   |                "Hold(Flx>90%)", "Hold(Flx>75%)",
+                   |                "AvoidPhased", "ShipTarget", 
+                   |                "ForceAF", "ForceF(F<50%)",
+                   |                "PrioritisePD", "NoMissiles", "NoFighters",
+                   |                "Opportunist", "Panic(H<25%)", "Range<60%",
+                   |                "ConserveAmmo", "CnsrvPDAmmo"
                    |                ]
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
                    |   #       Use Reset to clear them.
@@ -354,7 +358,7 @@ tasks {
                    |   ,"shieldsOff_flux" : 0.5 # In ShieldsOff (Flux>50%) mode, turn off shields if flux level > X
                    |   
                    |   ,"conserveAmmo_ammo" : 0.5 # Start conserving ammo when ammoLevel < X
-                   |   ,"conservePDAmmo" : 0.8 # Only allow firing at fighters and missiles when ammo < X
+                   |   ,"conservePDAmmo_ammo" : 0.8 # Only allow firing at fighters and missiles when ammo < X
                    |   
                    |   # If true, the BigShips/SmallShips tags will exclusively target Destroyers and bigger/smaller
                    |   ,"strictBigSmallShipMode" : false
@@ -372,10 +376,10 @@ tasks {
                    |   ,"ignoreFighterShields" : true
                    |   
                    |   # Sets the flux threshold for "TgtShieldsFT" tag below which all targets are viable, regardless of their shield factor
-                   |   ,"targetShieldsAtFT" : 0.2
+                   |   ,"targetShieldsAtFT_flux" : 0.2
                    |   
                    |   # Sets the flux threshold for "AvdShieldsFT" tag below which all targets are viable, regardless of their shield factor
-                   |   ,"avoidShieldsAtFT" : 0.2
+                   |   ,"avoidShieldsAtFT_flux" : 0.2
                    |   
                    |   
                    | }
