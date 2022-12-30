@@ -23,7 +23,8 @@ fun isPD(weapon: WeaponAPI): Boolean {
 }
 
 fun isAimable(weapon: WeaponAPI): Boolean {
-    return !weapon.hasAIHint(WeaponAPI.AIHints.DO_NOT_AIM)
+    return weapon.spec?.trackingStr?.toLowerCase() in setOf(null, "", "none") &&
+            !(weapon.hasAIHint(WeaponAPI.AIHints.DO_NOT_AIM))
 }
 
 fun isInvalid(aiPlugin: AutofireAIPlugin): Boolean {

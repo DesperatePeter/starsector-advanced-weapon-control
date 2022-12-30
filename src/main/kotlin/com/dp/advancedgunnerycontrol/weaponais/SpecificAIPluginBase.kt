@@ -200,7 +200,7 @@ abstract class SpecificAIPluginBase(
     }
 
     protected fun isWithinArc(entity: CombatEntityAPI): Boolean {
-        if (!isAimable(weapon) || weapon.spec.trackingStr != null) return true
+        if (!isAimable(weapon)) return true
         return isWithinArc(entity.location, effectiveCollRadius(entity))
     }
 
@@ -244,7 +244,7 @@ abstract class SpecificAIPluginBase(
     }
 
     protected open fun computeIfShouldFire(potentialTargets: List<Pair<CombatEntityAPI, Vector2f>>): Boolean {
-        if (!isAimable(weapon) || weapon.spec.trackingStr != null) {
+        if (!isAimable(weapon)) {
             return potentialTargets.isNotEmpty()
         }
 
