@@ -286,11 +286,15 @@ You can find a usage example of the library here: <https://github.com/DesperateP
          Tuned default settings.
 - 1.6.1: Fix TargetShields+, turn jar into a pom-style library to allow for displaying javadoc in IDE
 - 1.7.0: Tag scrollbar, add new tags, add option to ignore fighter shields (special thanks to Seanra for contributing most of the new stuff!)
+- 1.7.1: Fix an issue with weapons that need to be aimed firing without aiming (special thanks to Genir!), fix an issue with PrioritizePD not ignoring flares with IPDAI.
+  (Hopefully) fix potential memory leak caused by in-combat-GUI.
 
 ## Acknowledgements ##
 
 Special thanks to Seanra for contributing the option to ignore fighter shields and the PrioritisePD, TgtShieldsFT, AvdShieldsFT
 and ConservePDAmmo tags!
+
+Special thanks to Genir for fixing an issue where weapons that should be aimed were incorrectly assumed to be non-aimable.
 
 Many thanks to Wisp(borne) for answering my endless questions about Kotlin and Starsector modding and for providing
 an awesome repository template.
