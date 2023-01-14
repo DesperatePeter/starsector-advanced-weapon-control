@@ -58,12 +58,14 @@ abstract class DataButtonGroup(
     fun getActiveButtonData() : List<Any>{
         return buttons.mapNotNull { it.getDataIfActive() }
     }
-    fun advance(){
+    fun advance(): Boolean{
         buttons.filter { it.advance() }.let {
             if(it.isNotEmpty()){
                 executeAction(buttons.mapNotNull { btn -> btn.getDataIfActive() }, it.firstOrNull()?.getDataIfActive())
+                return true
             }
         }
+        return false
     }
     fun render(){
         buttons.forEach { it.render() }

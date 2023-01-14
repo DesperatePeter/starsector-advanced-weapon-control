@@ -155,9 +155,12 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      * executes button logic
      */
     open fun advance(){
-        buttonGroups.forEach { it.advance() }
-        standaloneButtons.forEach { it.advance() }
-        refreshButtons()
+        var wasAction = false
+        buttonGroups.forEach { wasAction = it.advance() || wasAction }
+        standaloneButtons.forEach { wasAction = it.advance() || wasAction }
+        if(wasAction){
+            refreshButtons()
+        }
     }
 
     /**

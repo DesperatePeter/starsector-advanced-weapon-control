@@ -216,7 +216,10 @@ private fun isDefenseless(target : CombatEntityAPI, weapon: WeaponAPI) : Boolean
     return false
 }
 
-fun isValidPDTarget(target: CombatEntityAPI?) : Boolean {
+fun isValidPDTargetForWeapon(target: CombatEntityAPI?, weapon: WeaponAPI) : Boolean {
+    if(weapon.hasAIHint(WeaponAPI.AIHints.IGNORES_FLARES) && (target as? MissileAPI)?.isFlare == true){
+        return false
+    }
     return (target is MissileAPI || ((target as? ShipAPI)?.isFighter == true))
 }
 

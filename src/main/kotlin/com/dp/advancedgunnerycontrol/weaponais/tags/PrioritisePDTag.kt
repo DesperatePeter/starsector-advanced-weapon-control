@@ -1,9 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
-import com.dp.advancedgunnerycontrol.weaponais.bigness
-import com.dp.advancedgunnerycontrol.weaponais.isBig
-import com.dp.advancedgunnerycontrol.weaponais.isPD
-import com.dp.advancedgunnerycontrol.weaponais.isSmall
+import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.MissileAPI
 import com.fs.starfarer.api.combat.ShipAPI
@@ -14,15 +11,15 @@ import org.lwjgl.util.vector.Vector2f
 class PrioritisePDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
-        return  (entity as? ShipAPI)?.let { isSmall(it) } ?: false || (isPD(weapon) && entity is MissileAPI)
+        return  (entity as? ShipAPI)?.let { isSmall(it) } ?: false || (isPD(weapon) && isValidPDTargetForWeapon(entity, weapon))
     }
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = entity is MissileAPI
 
     override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        return if ((entity as? MissileAPI) != null) {
+        return if (isValidPDTargetForWeapon(entity, weapon)) {
             0.02f
         } else {
-            bigness(entity as ShipAPI)
+            (entity as? ShipAPI)?.let { bigness(it) } ?: 10f
         }
     }
 
