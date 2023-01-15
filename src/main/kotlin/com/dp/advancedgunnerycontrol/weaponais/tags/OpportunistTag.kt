@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
-import com.dp.advancedgunnerycontrol.utils.determineIfShotWillHit
-import com.dp.advancedgunnerycontrol.utils.effectiveCollRadius
+import com.dp.advancedgunnerycontrol.weaponais.determineIfShotWillHit
+import com.dp.advancedgunnerycontrol.weaponais.effectiveCollRadius
 import com.dp.advancedgunnerycontrol.weaponais.isAimable
 import com.dp.advancedgunnerycontrol.weaponais.isOpportuneTarget
 import com.fs.starfarer.api.combat.CombatEntityAPI
