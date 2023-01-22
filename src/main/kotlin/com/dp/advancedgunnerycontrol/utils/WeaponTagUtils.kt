@@ -3,16 +3,11 @@ package com.dp.advancedgunnerycontrol.utils
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.weaponais.TagBasedAI
-import com.dp.advancedgunnerycontrol.weaponais.times_
-import com.dp.advancedgunnerycontrol.weaponais.vectorFromAngleDeg
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
-import org.lazywizard.lazylib.ext.minus
-import org.lwjgl.util.vector.Vector2f
-import kotlin.math.abs
 
 fun applyTagsToWeaponGroup(ship: ShipAPI, groupIndex: Int, tags: List<String>) : Boolean {
     val weaponGroup = ship.weaponGroupsCopy[groupIndex]
@@ -101,31 +96,6 @@ fun loadAllTags(ship: FleetMemberAPI) : List<String>{
         }
     }
     return tags.toList()
-}
-
-/**
- * @return approximate angular distance of target from current weapon facing in rad
- * note: approximation works well for small values and is off by a factor of PI/2 for 180°
- * @param entity: Relative coordinates (velocity-compensated)
- */
-fun angularDistanceFromWeapon(entity: Vector2f, weapon: WeaponAPI): Float {
-    val weaponDirection = vectorFromAngleDeg(weapon.currAngle)
-    val distance = entity - weapon.location
-    val entityDirection = distance times_ (1f / distance.length())
-    return (weaponDirection - entityDirection).length()
-}
-fun linearDistanceFromWeapon(entity: Vector2f, weapon: WeaponAPI): Float {
-    return (weapon.location - entity).length()
-}
-/**
- * @param entity: In relative coordinates
- * @param collRadius: Include any tolerances in here
- * @param aimPoint: Point the weapon is aiming at, deduced from current weapon facing if not provided
- */
-fun determineIfShotWillHit(entity: Vector2f, collRadius: Float, weapon: WeaponAPI, aimPoint: Vector2f? = null) : Boolean{
-    val apd = aimPoint?.let { angularDistanceFromWeapon(it, weapon) } ?: 0f
-    val lateralOffset = abs(angularDistanceFromWeapon(entity, weapon) - apd) * linearDistanceFromWeapon(entity, weapon)
-    return lateralOffset < collRadius
 }
 
 fun saveTags(ship: ShipAPI, groupIndex: Int, loadoutIndex: Int, tags: List<String>){

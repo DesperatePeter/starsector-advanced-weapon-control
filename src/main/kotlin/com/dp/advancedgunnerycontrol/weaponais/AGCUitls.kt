@@ -6,6 +6,7 @@ import com.dp.advancedgunnerycontrol.WeaponControlPlugin
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
+import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
@@ -90,7 +91,7 @@ fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weap
     if(target.maxSpeed > weapon.projectileSpeed * trackingFactor) return false
     val ttt = (weapon.location - p).length() / weapon.projectileSpeed
     val ammoLessModifier = if(!weapon.usesAmmo()) 1.0f else if (weapon.ammoTracker.reloadSize > 0f) 0.5f else 0.1f
-    if(((p - weapon.location).length() - target.collisionRadius * ammoLessModifier + ttt * target.maxSpeed * 0.1f / ammoLessModifier) >
+    if(((p - weapon.location).length() - effectiveCollRadius(target) * ammoLessModifier + ttt * target.maxSpeed * 0.1f / ammoLessModifier) >
         weapon.range * 0.95f * Settings.opportunistModifier()) return false
     return true
 }
@@ -242,4 +243,42 @@ fun mapBooleanToSpecificString(boolValue: Boolean, trueString: String, falseStri
 // Why doesn't Vector2f support this naturally? Note: infix and _ rather than operator in case this ever gets added
 internal infix fun Vector2f.times_(d: Float): Vector2f {
     return Vector2f(d * x, d * y)
+}
+
+
+/**
+ * @return approximate angular distance of target from current weapon facing in rad
+ * note: approximation works well for small values and is off by a factor of PI/2 for 180°
+ * @param entity: Relative coordinates (velocity-compensated)
+ */
+fun angularDistanceFromWeapon(entity: Vector2f, weapon: WeaponAPI): Float {
+    val weaponDirection = vectorFromAngleDeg(weapon.currAngle)
+    val distance = entity - weapon.location
+    val entityDirection = distance times_ (1f / distance.length())
+    return (weaponDirection - entityDirection).length()
+}
+
+fun linearDistanceFromWeapon(entity: Vector2f, weapon: WeaponAPI): Float {
+    return (weapon.location - entity).length()
+}
+/**
+ * @param entity: In relative coordinates
+ * @param collRadius: Include any tolerances in here
+ * @param aimPoint: Point the weapon is aiming at, deduced from current weapon facing if not provided
+ *
+ * The calculation is done by finding the minimum point of function f(x)=distSquared(aimPoint * x, entity).
+ * f(x) describes the distance between the target and the projectile along the projectile path.
+ * We know f(x) is a positive quadratic function, so it has one minimum.
+ * Then we simply check if the minimum distance is inside the entity collision radius.
+ *
+ */
+fun determineIfShotWillHit(entity: Vector2f, collRadius: Float, weapon: WeaponAPI, aimPoint: Vector2f? = null) : Boolean{
+    val p = aimPoint?.minus(weapon.location) ?: vectorFromAngleDeg(weapon.currAngle)
+    val e = entity - weapon.location
+    val minimum = (e.x * p.x + e.y * p.y) / (p.x * p.x + p.y * p.y)
+    return minimum > 0 && MathUtils.getDistanceSquared(p.times_(minimum), e) < collRadius * collRadius
+}
+
+fun effectiveCollRadius(entity: CombatEntityAPI) : Float{
+    return entity.collisionRadius * Settings.collisionRadiusMultiplier()
 }
