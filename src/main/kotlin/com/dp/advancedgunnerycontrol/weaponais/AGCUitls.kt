@@ -265,12 +265,18 @@ fun linearDistanceFromWeapon(entity: Vector2f, weapon: WeaponAPI): Float {
  * @param entity: In relative coordinates
  * @param collRadius: Include any tolerances in here
  * @param aimPoint: Point the weapon is aiming at, deduced from current weapon facing if not provided
+ *
+ * The calculation is done by finding the minimum point of function f(x)=distSquared(aimPoint * x, entity).
+ * f(x) describes the distance between the target and the projectile along the projectile path.
+ * We know f(x) is a positive quadratic function, so it has one minimum.
+ * Then we simply check if the minimum distance is inside the entity collision radius.
+ *
  */
 fun determineIfShotWillHit(entity: Vector2f, collRadius: Float, weapon: WeaponAPI, aimPoint: Vector2f? = null) : Boolean{
     val p = aimPoint?.minus(weapon.location) ?: vectorFromAngleDeg(weapon.currAngle)
     val e = entity - weapon.location
-    val x = (e.x * p.x + e.y * p.y) / (p.x * p.x + p.y * p.y)
-    return x > 0 && MathUtils.getDistanceSquared(p.times_(x), e) < collRadius * collRadius
+    val minimum = (e.x * p.x + e.y * p.y) / (p.x * p.x + p.y * p.y)
+    return minimum > 0 && MathUtils.getDistanceSquared(p.times_(minimum), e) < collRadius * collRadius
 }
 
 fun effectiveCollRadius(entity: CombatEntityAPI) : Float{
