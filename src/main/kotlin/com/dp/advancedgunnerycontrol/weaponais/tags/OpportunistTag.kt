@@ -1,9 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
-import com.dp.advancedgunnerycontrol.weaponais.determineIfShotWillHit
-import com.dp.advancedgunnerycontrol.weaponais.effectiveCollRadius
-import com.dp.advancedgunnerycontrol.weaponais.isAimable
-import com.dp.advancedgunnerycontrol.weaponais.isOpportuneTarget
+import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
@@ -16,19 +13,19 @@ class OpportunistTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = false
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        return if (isOpportuneTarget(entity, predictedLocation, weapon)) {
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
+        return if (isOpportuneTarget(solution, weapon)) {
             1f
         }else{
             10000.0f
         }
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
-        if(isAimable(weapon) && !determineIfShotWillHit(predictedLocation, effectiveCollRadius(entity), weapon)){
+    override fun shouldFire(solution: FiringSolution): Boolean {
+        if(isAimable(weapon) && !determineIfShotWillHit(solution.targetPoint, effectiveCollRadius(solution.targetEntity), weapon)){
             return false
         }
-        return isOpportuneTarget(entity, predictedLocation, weapon)
+        return isOpportuneTarget(solution, weapon)
     }
 
     override fun isBaseAiOverridable(): Boolean = true

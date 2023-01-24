@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
+import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import org.lwjgl.util.vector.Vector2f
@@ -7,12 +8,12 @@ import org.lwjgl.util.vector.Vector2f
 class ShipTargetTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean = entityMatchesShipTarget(entity)
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        if (entityMatchesShipTarget(entity)) return 0.1f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
+        if (entityMatchesShipTarget(solution.targetEntity)) return 0.1f
         return 100f
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean = entityMatchesShipTarget(entity)
+    override fun shouldFire(solution: FiringSolution): Boolean = entityMatchesShipTarget(solution.targetEntity)
 
     override fun isBaseAiOverridable(): Boolean = true
 

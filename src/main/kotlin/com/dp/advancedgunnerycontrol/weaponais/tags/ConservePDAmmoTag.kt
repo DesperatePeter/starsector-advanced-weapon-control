@@ -10,13 +10,13 @@ class ConservePDAmmoTag(weapon: WeaponAPI, private val ammoThreshold: Float) : W
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = (ammoLevel(weapon) >= ammoThreshold)
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        return if(ammoLevel(weapon) < ammoThreshold && isValidPDTargetForWeapon(entity, weapon)) 0.01f else 1f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
+        return if(ammoLevel(weapon) < ammoThreshold && isValidPDTargetForWeapon(solution.targetEntity, weapon)) 0.01f else 1f
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
+    override fun shouldFire(solution: FiringSolution): Boolean {
         if(ammoLevel(weapon) < ammoThreshold)  {
-            return isValidPDTargetForWeapon(entity, weapon)
+            return isValidPDTargetForWeapon(solution.targetEntity, weapon)
         }
         return true
     }

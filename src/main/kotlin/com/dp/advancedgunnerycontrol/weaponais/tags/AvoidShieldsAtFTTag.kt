@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.dp.advancedgunnerycontrol.weaponais.computeShieldFactor
 import com.dp.advancedgunnerycontrol.weaponais.computeTimeToTravel
 import com.fs.starfarer.api.combat.CombatEntityAPI
@@ -22,19 +23,19 @@ class AvoidShieldsAtFTTag(
             computeShieldFactor(entity, weapon) < shieldThreshold
         }
     }
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        return computeShieldFactor(entity, weapon) + 0.1f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
+        return computeShieldFactor(solution.targetEntity, weapon) + 0.1f
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
+    override fun shouldFire(solution: FiringSolution): Boolean {
         return if (weapon.ship.fluxLevel <= fluxThreshold) {
             true
-        } else if (entity is ShipAPI) {
-            if (Settings.ignoreFighterShields() && entity.isFighter) {
+        } else if (solution.targetEntity is ShipAPI) {
+            if (Settings.ignoreFighterShields() && solution.targetEntity.isFighter) {
                 true
             } else {
-                val ttt = computeTimeToTravel(weapon, predictedLocation)
-                computeShieldFactor(entity, weapon, ttt)  < shieldThreshold
+                val ttt = computeTimeToTravel(weapon, solution.targetPoint)
+                computeShieldFactor(solution.targetEntity, weapon, ttt)  < shieldThreshold
             }
         } else {
             false

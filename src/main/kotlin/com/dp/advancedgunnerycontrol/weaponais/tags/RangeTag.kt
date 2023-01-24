@@ -1,17 +1,18 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
+import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import org.lazywizard.lazylib.ext.minus
 import org.lwjgl.util.vector.Vector2f
 
 class RangeTag(weapon: WeaponAPI, private val threshold: Float) : WeaponAITagBase(weapon) {
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        return if(isInRange(predictedLocation)) 1.0f else 100f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
+        return if(isInRange(solution.targetPoint)) 1.0f else 100f
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
-        return isInRange(predictedLocation)
+    override fun shouldFire(solution: FiringSolution): Boolean {
+        return isInRange(solution.targetPoint)
     }
 
     override fun isBaseAiOverridable(): Boolean = true

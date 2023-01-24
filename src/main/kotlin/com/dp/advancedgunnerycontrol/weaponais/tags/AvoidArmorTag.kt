@@ -14,14 +14,14 @@ class AvoidArmorTag(weapon: WeaponAPI, private val armorThreshold: Float = 0.33f
         return computeArmorEffectiveness(entity)  > (armorThreshold * 2f)
     }
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        return 1f / (computeArmorEffectiveness(entity, predictedLocation) + 0.1f)
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
+        return 1f / (computeArmorEffectiveness(solution.targetEntity, solution.targetPoint) + 0.1f)
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
-        val ttt = computeTimeToTravel(weapon, predictedLocation)
-        val armorEffectiveness = computeArmorEffectiveness(entity, predictedLocation)
-        return (computeShieldFactor(entity, weapon, ttt) > shieldThreshold) || (armorEffectiveness > armorThreshold)
+    override fun shouldFire(solution: FiringSolution): Boolean {
+        val ttt = computeTimeToTravel(weapon, solution.targetPoint)
+        val armorEffectiveness = computeArmorEffectiveness(solution.targetEntity, solution.targetPoint)
+        return (computeShieldFactor(solution.targetEntity, weapon, ttt) > shieldThreshold) || (armorEffectiveness > armorThreshold)
     }
 
     override fun isBaseAiOverridable(): Boolean = true
