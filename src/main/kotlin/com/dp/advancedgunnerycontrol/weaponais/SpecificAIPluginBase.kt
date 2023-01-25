@@ -214,8 +214,11 @@ abstract class SpecificAIPluginBase(
     protected open fun shouldConsiderNeutralsAsFriendlies(): Boolean = true
 
     // if aimPoint == null, the current weapon facing will be used
-    protected fun isFriendlyFire(friendlies: List<Pair<CombatEntityAPI, Vector2f>>, aimPoint: Vector2f? = null): Boolean {
-        return isAimable(weapon) && friendliesInDangerZone(friendlies, aimPoint).isNotEmpty()
+    protected fun isFriendlyFire(friendlies: List<Pair<CombatEntityAPI, Vector2f>>, aimPoint: Vector2f? = null): Boolean = when {
+        weapon.spec.weaponId == "guardian" -> false // Paladin PD can shoot over friendlies
+        !isAimable(weapon) -> false                 // Guided missiles can shoot over friendlies
+        friendliesInDangerZone(friendlies, aimPoint).isEmpty() -> false
+        else -> true
     }
 
     protected fun friendliesInDangerZone(friendlies: List<Pair<CombatEntityAPI, Vector2f>>, aimPoint: Vector2f? = null):
