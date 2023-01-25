@@ -6,7 +6,6 @@ import com.dp.advancedgunnerycontrol.weaponais.isBig
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class BigShipTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
@@ -19,13 +18,13 @@ class BigShipTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     }
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
-        val tgtShip = (solution.targetEntity as? ShipAPI) ?: return 10000f
+        val tgtShip = (solution.target as? ShipAPI) ?: return 10000f
         if(!isBig(tgtShip)) return 10000f
         return 1f/bigness(tgtShip)
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {
-        val tgtShip = (solution.targetEntity as? ShipAPI) ?: return false
+        val tgtShip = (solution.target as? ShipAPI) ?: return false
         return isBig(tgtShip)
     }
 

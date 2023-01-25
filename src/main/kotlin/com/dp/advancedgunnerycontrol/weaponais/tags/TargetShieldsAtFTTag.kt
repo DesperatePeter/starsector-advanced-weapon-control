@@ -7,7 +7,6 @@ import com.dp.advancedgunnerycontrol.weaponais.computeTimeToTravel
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 // Allows targeting of anything when flux < fluxThreshold, otherwise target shields. Always prioritises by target shield factor
 class TargetShieldsAtFTTag(
@@ -24,19 +23,19 @@ class TargetShieldsAtFTTag(
         }
     }
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
-        val tgtShip = (solution.targetEntity as? ShipAPI) ?: return 1f
+        val tgtShip = (solution.target as? ShipAPI) ?: return 1f
         return 1f/(computeShieldFactor(tgtShip, weapon) + 0.5f)
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {
         return if (weapon.ship.fluxLevel <= fluxThreshold) {
             true
-        } else if (solution.targetEntity is ShipAPI) {
-            if (Settings.ignoreFighterShields() && solution.targetEntity.isFighter) {
+        } else if (solution.target is ShipAPI) {
+            if (Settings.ignoreFighterShields() && solution.target.isFighter) {
                 true
             } else {
-                val ttt = computeTimeToTravel(weapon, solution.targetPoint)
-                computeShieldFactor(solution.targetEntity, weapon, ttt) > shieldThreshold
+                val ttt = computeTimeToTravel(weapon, solution.aimPoint)
+                computeShieldFactor(solution.target, weapon, ttt) > shieldThreshold
             }
         } else {
             false

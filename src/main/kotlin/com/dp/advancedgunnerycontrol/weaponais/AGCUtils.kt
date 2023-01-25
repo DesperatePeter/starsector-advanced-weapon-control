@@ -15,8 +15,12 @@ import kotlin.math.*
 const val degToRad: Float = PI.toFloat() / 180f
 
 data class FiringSolution(
-    val targetEntity: CombatEntityAPI,
-    val targetPoint: Vector2f
+    val target: CombatEntityAPI,
+
+    // Point at which the weapon should aim to hit
+    // the target dead center, under the assumption
+    // that target velocity is constant.
+    val aimPoint: Vector2f
 )
 
 fun isPD(weapon: WeaponAPI): Boolean {
@@ -79,8 +83,8 @@ fun getNeutralPosition(weapon: WeaponAPI) : Vector2f{
 }
 
 fun isOpportuneTarget(solution: FiringSolution?, weapon: WeaponAPI) : Boolean{
-    val target = solution?.targetEntity as? ShipAPI ?: return false
-    val p = solution.targetPoint
+    val target = solution?.target as? ShipAPI ?: return false
+    val p = solution.aimPoint
     if(!isOpportuneType(target, weapon)) return false
     var trackingFactor = when (weapon.spec?.trackingStr?.toLowerCase()){
         "none" -> 1.0f

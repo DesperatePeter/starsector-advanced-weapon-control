@@ -5,7 +5,6 @@ import com.dp.advancedgunnerycontrol.weaponais.computeTimeToTravel
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class PhaseTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
@@ -27,11 +26,11 @@ class PhaseTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun avoidDebris(): Boolean = false
 
     private fun mayBePhasedWhenShotConnects(solution: FiringSolution) : Boolean{
-        if (solution.targetEntity !is ShipAPI) return false
-        if (solution.targetEntity.phaseCloak == null) return false
-        val pc = solution.targetEntity.phaseCloak
-        val ft = solution.targetEntity.fluxTracker
-        val ttt = computeTimeToTravel(weapon, solution.targetPoint)
+        if (solution.target !is ShipAPI) return false
+        if (solution.target.phaseCloak == null) return false
+        val pc = solution.target.phaseCloak
+        val ft = solution.target.fluxTracker
+        val ttt = computeTimeToTravel(weapon, solution.aimPoint)
         if (!pc.isActive && (
                     (pc.cooldownRemaining > ttt)
                     || (ft.overloadTimeRemaining > ttt)

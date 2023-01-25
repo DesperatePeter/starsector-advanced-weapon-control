@@ -5,7 +5,6 @@ import com.dp.advancedgunnerycontrol.weaponais.isPD
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class NoPDTag (weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
@@ -17,7 +16,7 @@ class NoPDTag (weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     }
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
-        val sh = solution.targetEntity as? ShipAPI ?: return 10000f
+        val sh = solution.target as? ShipAPI ?: return 10000f
         return if (sh.isFighter) 2.5f else 1f
     }
 

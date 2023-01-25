@@ -4,7 +4,6 @@ import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class OpportunistTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
@@ -22,7 +21,7 @@ class OpportunistTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {
-        if(isAimable(weapon) && !determineIfShotWillHit(solution.targetPoint, effectiveCollRadius(solution.targetEntity), weapon)){
+        if(isAimable(weapon) && !determineIfShotWillHit(solution.aimPoint, effectiveCollRadius(solution.target), weapon)){
             return false
         }
         return isOpportuneTarget(solution, weapon)

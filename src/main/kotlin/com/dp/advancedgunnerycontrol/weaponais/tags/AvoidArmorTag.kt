@@ -15,13 +15,13 @@ class AvoidArmorTag(weapon: WeaponAPI, private val armorThreshold: Float = 0.33f
     }
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
-        return 1f / (computeArmorEffectiveness(solution.targetEntity, solution.targetPoint) + 0.1f)
+        return 1f / (computeArmorEffectiveness(solution.target, solution.aimPoint) + 0.1f)
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {
-        val ttt = computeTimeToTravel(weapon, solution.targetPoint)
-        val armorEffectiveness = computeArmorEffectiveness(solution.targetEntity, solution.targetPoint)
-        return (computeShieldFactor(solution.targetEntity, weapon, ttt) > shieldThreshold) || (armorEffectiveness > armorThreshold)
+        val ttt = computeTimeToTravel(weapon, solution.aimPoint)
+        val armorEffectiveness = computeArmorEffectiveness(solution.target, solution.aimPoint)
+        return (computeShieldFactor(solution.target, weapon, ttt) > shieldThreshold) || (armorEffectiveness > armorThreshold)
     }
 
     override fun isBaseAiOverridable(): Boolean = true

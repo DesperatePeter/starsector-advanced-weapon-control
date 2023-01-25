@@ -7,7 +7,6 @@ import com.dp.advancedgunnerycontrol.weaponais.computeTimeToTravel
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class TargetShieldsTag(weapon: WeaponAPI, private val threshold: Float = Settings.targetShieldsThreshold()) : WeaponAITagBase(weapon) {
 
@@ -15,16 +14,16 @@ class TargetShieldsTag(weapon: WeaponAPI, private val threshold: Float = Setting
         return computeShieldFactor(entity, weapon) > threshold
     }
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
-        val tgtShip = (solution.targetEntity as? ShipAPI) ?: return 1f
+        val tgtShip = (solution.target as? ShipAPI) ?: return 1f
         return 1f/(computeShieldFactor(tgtShip, weapon) + 0.5f)
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {
-        val tgtShip = (solution.targetEntity as? ShipAPI) ?: return false
+        val tgtShip = (solution.target as? ShipAPI) ?: return false
         if (Settings.ignoreFighterShields() && tgtShip.isFighter) {
             return true
         }
-        val ttt = computeTimeToTravel(weapon, solution.targetPoint)
+        val ttt = computeTimeToTravel(weapon, solution.aimPoint)
         return computeShieldFactor(tgtShip, weapon, ttt) > threshold
     }
 
