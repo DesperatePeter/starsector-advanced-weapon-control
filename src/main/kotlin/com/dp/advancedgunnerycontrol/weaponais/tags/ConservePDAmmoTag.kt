@@ -3,20 +3,19 @@ package com.dp.advancedgunnerycontrol.weaponais.tags
 import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 // Only fire at full ROF if target is missile or fighter and ammo < ammoThreshold
 class ConservePDAmmoTag(weapon: WeaponAPI, private val ammoThreshold: Float) : WeaponAITagBase(weapon) {
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = (ammoLevel(weapon) >= ammoThreshold)
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        return if(ammoLevel(weapon) < ammoThreshold && isValidPDTargetForWeapon(entity, weapon)) 0.01f else 1f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
+        return if(ammoLevel(weapon) < ammoThreshold && isValidPDTargetForWeapon(solution.target, weapon)) 0.01f else 1f
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
+    override fun shouldFire(solution: FiringSolution): Boolean {
         if(ammoLevel(weapon) < ammoThreshold)  {
-            return isValidPDTargetForWeapon(entity, weapon)
+            return isValidPDTargetForWeapon(solution.target, weapon)
         }
         return true
     }

@@ -1,12 +1,11 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
+import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.dp.advancedgunnerycontrol.weaponais.bigness
-import com.dp.advancedgunnerycontrol.weaponais.isBig
 import com.dp.advancedgunnerycontrol.weaponais.isSmall
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class SmallShipTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
@@ -18,14 +17,14 @@ class SmallShipTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
         return entity.isFrigate || entity.isFighter
     }
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        val tgtShip = (entity as? ShipAPI) ?: return 10000f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
+        val tgtShip = (solution.target as? ShipAPI) ?: return 10000f
         if(!isSmall(tgtShip)) return 10000f
         return bigness(tgtShip)
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
-        val tgtShip = (entity as? ShipAPI) ?: return false
+    override fun shouldFire(solution: FiringSolution): Boolean {
+        val tgtShip = (solution.target as? ShipAPI) ?: return false
         return isSmall(tgtShip)
     }
 

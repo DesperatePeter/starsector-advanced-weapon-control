@@ -1,10 +1,7 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.weaponais.ammoLevel
-import com.dp.advancedgunnerycontrol.weaponais.computeShieldFactor
-import com.dp.advancedgunnerycontrol.weaponais.computeTimeToTravel
-import com.dp.advancedgunnerycontrol.weaponais.isOpportuneTarget
+import com.dp.advancedgunnerycontrol.weaponais.*
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
@@ -16,11 +13,11 @@ class ConserveAmmoTag(weapon: WeaponAPI, private val ammoThreshold: Float) : Wea
         return ammoLevel(weapon) > ammoThreshold
     }
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float = 1f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float = 1f
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
+    override fun shouldFire(solution: FiringSolution): Boolean {
         if(ammoLevel(weapon) < ammoThreshold) {
-            return isOpportuneTarget(entity, entity.location, weapon)
+            return isOpportuneTarget(solution, weapon)
         }
         return true
     }

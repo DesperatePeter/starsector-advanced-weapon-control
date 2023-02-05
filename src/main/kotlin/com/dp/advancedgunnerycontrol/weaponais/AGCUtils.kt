@@ -14,6 +14,15 @@ import kotlin.math.*
 // Math.toRadians only works on doubles, which is annoying....
 const val degToRad: Float = PI.toFloat() / 180f
 
+data class FiringSolution(
+    val target: CombatEntityAPI,
+
+    // Point at which the weapon should aim to hit
+    // the target dead center, under the assumption
+    // that target velocity is constant.
+    val aimPoint: Vector2f
+)
+
 fun isPD(weapon: WeaponAPI): Boolean {
     if (weapon.hasAIHint(WeaponAPI.AIHints.PD_ALSO) || weapon.hasAIHint(WeaponAPI.AIHints.PD)
         || weapon.hasAIHint(WeaponAPI.AIHints.PD_ONLY)
@@ -73,9 +82,9 @@ fun getNeutralPosition(weapon: WeaponAPI) : Vector2f{
     return weapon.location + (vectorFromAngleDeg(weapon.ship.facing) times_ 100f)
 }
 
-fun isOpportuneTarget(tgt : CombatEntityAPI?, predictedLocation: Vector2f?, weapon: WeaponAPI) : Boolean{
-    val target = tgt as? ShipAPI ?: return false
-    val p = predictedLocation ?: return false
+fun isOpportuneTarget(solution: FiringSolution?, weapon: WeaponAPI) : Boolean{
+    val target = solution?.target as? ShipAPI ?: return false
+    val p = solution.aimPoint
     if(!isOpportuneType(target, weapon)) return false
     var trackingFactor = when (weapon.spec?.trackingStr?.toLowerCase()){
         "none" -> 1.0f

@@ -26,9 +26,9 @@ class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = 
         this.tags = tags
     }
 
-    override fun computeTargetPriority(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        return computeBasePriority(entity, predictedLocation) *
-                (tags.map { it.computeTargetPriorityModifier(entity, predictedLocation) }.reduceOrNull(Float::times)
+    override fun computeTargetPriority(solution: FiringSolution): Float {
+        return computeBasePriority(solution) *
+                (tags.map { it.computeTargetPriorityModifier(solution) }.reduceOrNull(Float::times)
                     ?: 1.0f)
     }
 
@@ -52,11 +52,10 @@ class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = 
 
     override fun shouldFire(): Boolean {
         val baseDecision = super.shouldFire()
-        if(tags.any { it.forceFire(targetEntity, targetPoint, baseDecision) }) return true
+        if(tags.any { it.forceFire(solution, baseDecision) }) return true
         if (!baseDecision) return false
-        val tgt = targetEntity ?: return false
-        val loc = targetPoint ?: return false
-        return tags.all { it.shouldFire(tgt, loc) }
+        val sol = solution ?: return false
+        return tags.all { it.shouldFire(sol) }
     }
 
     override fun shouldConsiderNeutralsAsFriendlies(): Boolean {

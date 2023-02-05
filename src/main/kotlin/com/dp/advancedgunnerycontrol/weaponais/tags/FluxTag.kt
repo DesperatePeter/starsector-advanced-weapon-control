@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
+import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
@@ -12,9 +13,9 @@ class FluxTag(weapon: WeaponAPI, private val threshold: Float) : WeaponAITagBase
         return (weapon.ship?.fluxLevel ?: 0f) <= threshold
     }
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float = 1.0f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float = 1.0f
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean{
+    override fun shouldFire(solution: FiringSolution): Boolean{
         return (weapon.ship?.fluxLevel ?: 0f) <= threshold
     }
 

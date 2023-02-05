@@ -1,10 +1,10 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
+import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.dp.advancedgunnerycontrol.weaponais.computeTimeToTravel
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class PhaseTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
@@ -13,24 +13,24 @@ class PhaseTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
         return entity.phaseCloak == null
     }
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float{
-        if(mayBePhasedWhenShotConnects(entity, predictedLocation)) return 1000f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float{
+        if(mayBePhasedWhenShotConnects(solution)) return 1000f
         return 1f
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean
-    = !mayBePhasedWhenShotConnects(entity, predictedLocation)
+    override fun shouldFire(solution: FiringSolution): Boolean
+    = !mayBePhasedWhenShotConnects(solution)
 
     override fun isBaseAiOverridable(): Boolean = true
 
     override fun avoidDebris(): Boolean = false
 
-    private fun mayBePhasedWhenShotConnects(entity: CombatEntityAPI, predictedLocation: Vector2f) : Boolean{
-        if (entity !is ShipAPI) return false
-        if (entity.phaseCloak == null) return false
-        val pc = entity.phaseCloak
-        val ft = entity.fluxTracker
-        val ttt = computeTimeToTravel(weapon, predictedLocation)
+    private fun mayBePhasedWhenShotConnects(solution: FiringSolution) : Boolean{
+        if (solution.target !is ShipAPI) return false
+        if (solution.target.phaseCloak == null) return false
+        val pc = solution.target.phaseCloak
+        val ft = solution.target.fluxTracker
+        val ttt = computeTimeToTravel(weapon, solution.aimPoint)
         if (!pc.isActive && (
                     (pc.cooldownRemaining > ttt)
                     || (ft.overloadTimeRemaining > ttt)
