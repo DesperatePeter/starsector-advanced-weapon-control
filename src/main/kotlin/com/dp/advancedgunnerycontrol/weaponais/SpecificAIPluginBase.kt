@@ -83,8 +83,8 @@ abstract class SpecificAIPluginBase(
         val ship = baseAI.targetShip
         val missile = baseAI.targetMissile
         val targetEntity = ship as? CombatEntityAPI ?: missile as? CombatEntityAPI
-        if (targetEntity != null && baseAI.target != null && isBaseAITargetValid(ship, missile)) {
-            solution = FiringSolution(targetEntity, baseAI.target)
+        if (targetEntity != null && isBaseAITargetValid(ship, missile)) {
+            solution = FiringSolution(targetEntity, baseAI.target ?: computePointToAimAt(targetEntity))
             weaponShouldFire = baseAI.shouldFire()
             return true
         }
