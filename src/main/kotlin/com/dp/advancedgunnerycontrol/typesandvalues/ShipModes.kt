@@ -3,6 +3,7 @@ package com.dp.advancedgunnerycontrol.typesandvalues
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.utils.InShipShipModeStorage
 import com.dp.advancedgunnerycontrol.utils.doesShipHaveLocalShipModes
+import com.dp.advancedgunnerycontrol.utils.generateUniversalFleetMemberId
 import com.dp.advancedgunnerycontrol.weaponais.shipais.*
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.combat.ai.BasicShipAI
@@ -109,7 +110,8 @@ fun saveShipModesInShip(ship: ShipAPI, tags: List<String>, storageIndex: Int) {
 
 fun saveShipModes(ship: ShipAPI, loadoutIndex: Int, tags: List<String>) {
     if (Settings.enableCombatChangePersistance()) {
-        persistShipModes(ship.fleetMemberId, loadoutIndex, tags)
+        val shipId = generateUniversalFleetMemberId(ship)
+        persistShipModes(shipId, loadoutIndex, tags)
     } else {
         saveShipModesInShip(ship, tags, loadoutIndex)
     }
@@ -126,7 +128,8 @@ fun loadShipModesFromShip(ship: ShipAPI, storageIndex: Int): List<String> {
 
 fun loadShipModes(ship: ShipAPI, loadoutIndex: Int): List<String> {
     if (Settings.enableCombatChangePersistance() || !doesShipHaveLocalShipModes(ship, loadoutIndex)) {
-        return loadPersistedShipModes(ship.fleetMemberId, loadoutIndex)
+        val shipId = generateUniversalFleetMemberId(ship)
+        return loadPersistedShipModes(shipId, loadoutIndex)
     }
     return loadShipModesFromShip(ship, loadoutIndex)
 }

@@ -74,7 +74,8 @@ val tagTooltips = mapOf(
     "TgtShieldsFT" to "As TargetShields but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT()*100f).toInt()}%. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
     "AvdShieldsFT" to "As AvoidShields but will allow targeting of anything when flux is below ${(Settings.avoidShieldsAtFT()*100f).toInt()}%. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
     "NoMissiles" to "Weapon won't target missiles.",
-    "Overloaded" to "Weapon will only target and fire at overloaded ships."
+    "Overloaded" to "Weapon will only target and fire at overloaded ships.",
+    "ShieldsOff" to "Simplified version of AvoidShields. Will only fire at targets that have no shields or have shields turned off."
 )
 
 fun getTagTooltip(tag: String) : String{
@@ -134,6 +135,7 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         "AvdShieldsFT"  -> AvoidShieldsAtFTTag(weapon)
         "NoMissiles"        -> NoMissilesTag(weapon)
         "Overloaded"        -> OverloadTag(weapon)
+        "ShieldsOff"        -> ShieldsOff(weapon)
         else -> {
             unknownTagWarnCounter++
             when{
@@ -163,12 +165,13 @@ val tagIncompatibility = mapOf(
     "PrioritisePD" to listOf("Opportunist", "NoPD", "BigShips", "SmallShips", "Fighter", "PD"),
     "Fighter" to listOf("PD", "NoFighters", "Opportunist", "NoPD", "PD(Flx>N%)", "BigShips", "SmallShips", "PrioritisePD", "CnsrvPDAmmo",),
     "NoPD" to listOf("PD", "Fighter", "PD(Flx>N%)", "PrioritisePD", "CnsrvPDAmmo"),
-    "AvoidShields" to listOf("TargetShields", "TgtShields+", "AvdShields+", "AvdShieldsFT", "TgtShieldsFT"),
-    "TargetShields" to listOf("AvoidShields", "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT"),
-    "TgtShields+" to listOf("AvoidShields", "AvdShields+", "TargetShields", "AvdShieldsFT", "TgtShieldsFT"),
-    "AvdShields+" to listOf("TargetShields", "TgtShields+", "AvoidShields", "AvdShieldsFT", "TgtShieldsFT"),
-    "AvdShieldsFT" to listOf("AvoidShields", "AvdShields+", "TargetShields", "TgtShields+", "TgtShieldsFT"),
-    "TgtShieldsFT" to listOf("AvoidShields", "AvdShields+", "TargetShields", "TgtShields+", "AvdShieldsFT"),
+    "ShieldsOff" to listOf("AvoidShields", "TargetShields", "TgtShields+", "AvdShields+", "AvdShieldsFT", "TgtShieldsFT"),
+    "AvoidShields" to listOf("TargetShields", "TgtShields+", "AvdShields+", "AvdShieldsFT", "TgtShieldsFT", "ShieldsOff"),
+    "TargetShields" to listOf("AvoidShields", "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "ShieldsOff"),
+    "TgtShields+" to listOf("AvoidShields", "AvdShields+", "TargetShields", "AvdShieldsFT", "TgtShieldsFT", "ShieldsOff"),
+    "AvdShields+" to listOf("TargetShields", "TgtShields+", "AvoidShields", "AvdShieldsFT", "TgtShieldsFT", "ShieldsOff"),
+    "AvdShieldsFT" to listOf("AvoidShields", "AvdShields+", "TargetShields", "TgtShields+", "TgtShieldsFT", "ShieldsOff"),
+    "TgtShieldsFT" to listOf("AvoidShields", "AvdShields+", "TargetShields", "TgtShields+", "AvdShieldsFT", "ShieldsOff"),
     "NoFighters" to listOf("Fighter", "Opportunist"),
     "CnsrvPDAmmo" to listOf("PD", "Fighter", "NoPD"),
     "Opportunist" to listOf("Fighter", "PD", "NoFighters", "PD(Flx>N%)", "PrioritisePD", "CnsrvPDAmmo", "NoMissiles"),

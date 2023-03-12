@@ -83,16 +83,23 @@ fun persistTemporaryShipData(storageIndex: Int, ships: List<ShipAPI?>?){
 
 fun loadTags(ship: ShipAPI, index: Int, storageIndex: Int) : List<String>{
     if(Settings.enableCombatChangePersistance() || !doesShipHaveLocalTags(ship, storageIndex)){
-        return ship.fleetMemberId?.let { loadPersistentTags(it, index, storageIndex) } ?: emptyList()
+        val shipId = generateUniversalFleetMemberId(ship)
+        return loadPersistentTags(shipId, index, storageIndex)  ?: emptyList()
     }
     return loadTagsFromShip(ship, index, storageIndex)
 }
 
-fun loadAllTags(ship: FleetMemberAPI) : List<String>{
+/**
+ * loads all tag types that have been used for a given ship.
+ * the returned list won't contain duplicates
+ * this is used to hot-load tags when viewing a ship in GUI
+ */
+fun loadAllTags(ship: FleetMemberAPI, universalId: String? = null) : List<String>{
     val tags = mutableSetOf<String>()
+    val shipId = universalId?: ship.id ?: ""
     for(si in 0 until Settings.maxLoadouts()){
         for(i in 0 until ship.variant.weaponGroups.size){
-            tags.addAll(loadPersistentTags(ship.id, i, si))
+            tags.addAll(loadPersistentTags(shipId, i, si))
         }
     }
     return tags.toList()
@@ -100,12 +107,29 @@ fun loadAllTags(ship: FleetMemberAPI) : List<String>{
 
 fun saveTags(ship: ShipAPI, groupIndex: Int, loadoutIndex: Int, tags: List<String>){
     if(Settings.enableCombatChangePersistance()){
-        persistTags(ship.fleetMemberId?: "", groupIndex, loadoutIndex, tags)
+        val shipId = generateUniversalFleetMemberId(ship)
+        persistTags(shipId, groupIndex, loadoutIndex, tags)
     }
     saveTagsInShip(ship, groupIndex, tags, loadoutIndex)
 }
 
+/**
+ * generate unique & persistent fleetMemberId
+ * return fleetMemberId-equivalent for modules of big ships
+ * return fleetMemberId for regular ships
+ * return empty string if something goes wrong
+ */
+fun generateUniversalFleetMemberId(ship: ShipAPI) : String{
+    if(!ship.isStationModule) return ship.fleetMemberId ?: ""
+    val parentShip = ship.parentStation ?: return ""
+    val parentId = parentShip.fleetMemberId ?: return ""
+    val index = parentShip.childModulesCopy?.indexOf(ship) ?: -1
+    if (index < 0) return ""
+    return parentId + index.toString()
+}
+
 fun persistTags(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<String>){
+    if (shipId == "") return
     if(!Settings.tagStorage[loadoutIndex].modesByShip.containsKey(shipId)){
         Settings.tagStorage[loadoutIndex].modesByShip[shipId] = mutableMapOf()
     }
