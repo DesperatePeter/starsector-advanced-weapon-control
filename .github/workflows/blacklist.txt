@@ -11,3 +11,5 @@ DO_NOT_USE
 ^.github/
 banner.png$
 prepareRelease.py
+lib
+src
