@@ -1,10 +1,11 @@
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.jetbrains.dokka.DokkaConfiguration
 import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
-    val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "D:/Spiele/Starsector"
+    val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
     val modVersion = "1.7.1"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
@@ -31,7 +32,7 @@ object Variables {
 //////////////////////
 
 // Note: On Linux, use "${Variables.starsectorDirectory}" as core directory
-val starsectorCoreDirectory = "${Variables.starsectorDirectory}/starsector-core"
+val starsectorCoreDirectory = if(Os.isFamily(Os.FAMILY_WINDOWS)) "${Variables.starsectorDirectory}/starsector-core" else Variables.starsectorDirectory
 val starsectorModDirectory = "${Variables.starsectorDirectory}/mods"
 val modInModsFolder = File("$starsectorModDirectory/${Variables.modFolderName}")
 
@@ -221,7 +222,7 @@ tasks {
                    |   # "PD", "NoPD", "NoMissiles", "PD(Flux>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
                    |   # "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "AvdArmor(N%)", "AvoidDebris", 
                    |   # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "CnsrvPDAmmo", "ShipTarget",
-                   |   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)"
+                   |   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded"
                    |   
                    |   # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
                    |   

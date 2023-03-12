@@ -73,7 +73,8 @@ val tagTooltips = mapOf(
     "ShipTarget" to "Weapon will only target the selected ship target (R-Key). I like to use this for regenerating missiles.",
     "TgtShieldsFT" to "As TargetShields but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT()*100f).toInt()}%. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
     "AvdShieldsFT" to "As AvoidShields but will allow targeting of anything when flux is below ${(Settings.avoidShieldsAtFT()*100f).toInt()}%. Shields of fighters will ${mapBooleanToSpecificString(Settings.ignoreFighterShields(), "", "not")} be ignored (configurable in settings)",
-    "NoMissiles" to "Weapon won't target missiles."
+    "NoMissiles" to "Weapon won't target missiles.",
+    "Overloaded" to "Weapon will only target and fire at overloaded ships."
 )
 
 fun getTagTooltip(tag: String) : String{
@@ -132,6 +133,7 @@ fun createTag(name: String, weapon: WeaponAPI) : WeaponAITagBase?{
         "TgtShieldsFT" -> TargetShieldsAtFTTag(weapon)
         "AvdShieldsFT"  -> AvoidShieldsAtFTTag(weapon)
         "NoMissiles"        -> NoMissilesTag(weapon)
+        "Overloaded"        -> OverloadTag(weapon)
         else -> {
             unknownTagWarnCounter++
             when{
