@@ -116,7 +116,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             ControlEventType.INFO -> {
                 if (combatGui == null){
                     engine.isPaused = true
-                    engine.viewport?.isExternalControl = true
+                    engine.viewport?.isExternalControl = false
                     combatGui = determineSelectedShip(engine)?.let {  AGCCombatGui(it)  }
                 }else{
                     combatGui = null
