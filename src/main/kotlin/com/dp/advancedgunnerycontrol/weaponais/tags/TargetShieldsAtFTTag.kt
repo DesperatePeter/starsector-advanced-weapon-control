@@ -1,12 +1,12 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.dp.advancedgunnerycontrol.weaponais.computeShieldFactor
 import com.dp.advancedgunnerycontrol.weaponais.computeTimeToTravel
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 // Allows targeting of anything when flux < fluxThreshold, otherwise target shields. Always prioritises by target shield factor
 class TargetShieldsAtFTTag(
@@ -22,20 +22,20 @@ class TargetShieldsAtFTTag(
             computeShieldFactor(entity, weapon) > shieldThreshold
         }
     }
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float {
-        val tgtShip = (entity as? ShipAPI) ?: return 1f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
+        val tgtShip = (solution.target as? ShipAPI) ?: return 1f
         return 1f/(computeShieldFactor(tgtShip, weapon) + 0.5f)
     }
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean {
+    override fun shouldFire(solution: FiringSolution): Boolean {
         return if (weapon.ship.fluxLevel <= fluxThreshold) {
             true
-        } else if (entity is ShipAPI) {
-            if (Settings.ignoreFighterShields() && entity.isFighter) {
+        } else if (solution.target is ShipAPI) {
+            if (Settings.ignoreFighterShields() && solution.target.isFighter) {
                 true
             } else {
-                val ttt = computeTimeToTravel(weapon, predictedLocation)
-                computeShieldFactor(entity, weapon, ttt) > shieldThreshold
+                val ttt = computeTimeToTravel(weapon, solution.aimPoint)
+                computeShieldFactor(solution.target, weapon, ttt) > shieldThreshold
             }
         } else {
             false

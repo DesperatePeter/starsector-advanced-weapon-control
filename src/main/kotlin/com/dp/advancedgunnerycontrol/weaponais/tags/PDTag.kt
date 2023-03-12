@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
+import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.dp.advancedgunnerycontrol.weaponais.isPD
 import com.dp.advancedgunnerycontrol.weaponais.isValidPDTargetForWeapon
 import com.fs.starfarer.api.combat.CombatEntityAPI
@@ -13,9 +14,9 @@ class PDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
         return isValidPDTargetForWeapon(entity, weapon)
     }
 
-    override fun computeTargetPriorityModifier(entity: CombatEntityAPI, predictedLocation: Vector2f): Float = 1.0f
+    override fun computeTargetPriorityModifier(solution: FiringSolution): Float = 1.0f
 
-    override fun shouldFire(entity: CombatEntityAPI, predictedLocation: Vector2f): Boolean = true
+    override fun shouldFire(solution: FiringSolution): Boolean = true
 
     override fun isBaseAiOverridable(): Boolean = false
 
