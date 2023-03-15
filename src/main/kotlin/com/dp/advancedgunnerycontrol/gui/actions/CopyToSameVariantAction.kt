@@ -28,13 +28,13 @@ class CopyToSameVariantAction(attributes: GUIAttributes) : GUIAction(attributes)
     private fun applyModesToSameVariantShips(ship: FleetMemberAPI, storageIndex: Int) {
         Global.getSector().playerFleet.membersWithFightersCopy.filter { !it.isFighterWing && it != ship }
             .filterNotNull().forEach {
-            val shouldCopy =
-                (it.variant.hullVariantId + it.variant.displayName == ship.variant.hullVariantId + ship.variant.displayName)
-                        || (isWholeFleetKeyHeld() && (it.hullId == ship.hullId))
-            if (shouldCopy) {
-                copyModesToShip(ship, it, storageIndex)
+                val shouldCopy =
+                    (it.variant.hullVariantId + it.variant.displayName == ship.variant.hullVariantId + ship.variant.displayName)
+                            || (isWholeFleetKeyHeld() && (it.hullId == ship.hullId))
+                if (shouldCopy) {
+                    copyModesToShip(ship, it, storageIndex)
+                }
             }
-        }
     }
 
     private fun copyModesToShip(from: FleetMemberAPI, to: FleetMemberAPI, storageIndex: Int) {
