@@ -1,25 +1,27 @@
 package com.dp.advancedgunnerycontrol.weaponais.shipais
 
-import com.fs.starfarer.api.combat.ShipAIConfig
-import com.fs.starfarer.api.combat.ShipAIPlugin
-import com.fs.starfarer.api.combat.ShipAPI
-import com.fs.starfarer.api.combat.ShipCommand
-import com.fs.starfarer.api.combat.ShipwideAIFlags
+import com.fs.starfarer.api.combat.*
 import org.lwjgl.util.vector.Vector2f
 
 
-open class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: ShipAPI, protected val commanders : List<ShipCommandGenerator>) : ShipAIPlugin {
+open class CustomShipAI(
+    protected val baseAI: ShipAIPlugin,
+    protected val ship: ShipAPI,
+    protected val commanders: List<ShipCommandGenerator>
+) : ShipAIPlugin {
 
-    private var fleetingCommands : MutableList<ShipCommandWrapper> = mutableListOf()
+    private var fleetingCommands: MutableList<ShipCommandWrapper> = mutableListOf()
 
-    fun addFleetingCommand(cmd: ShipCommandWrapper){
+    fun addFleetingCommand(cmd: ShipCommandWrapper) {
         fleetingCommands.add(cmd)
     }
 
-    fun containsFleetingCommand(cmd: ShipCommand, index: Int? = null, pos: Vector2f? = null) : Boolean {
-        return fleetingCommands.any { it.command == cmd
-                && (index?.equals(it.index) ?: true)
-                && (pos?.equals(it.position) ?: true)}
+    fun containsFleetingCommand(cmd: ShipCommand, index: Int? = null, pos: Vector2f? = null): Boolean {
+        return fleetingCommands.any {
+            it.command == cmd
+                    && (index?.equals(it.index) ?: true)
+                    && (pos?.equals(it.position) ?: true)
+        }
     }
 
     override fun setDoNotFireDelay(p0: Float) {
@@ -41,7 +43,7 @@ open class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: 
         ship.shipAI = this
     }
 
-    protected fun advanceImpl(p0: Float){
+    protected fun advanceImpl(p0: Float) {
         commanders.forEach { cmdr ->
             cmdr.generateCommands().forEach {
                 ship.giveCommand(it.command, it.position, it.index)
@@ -52,7 +54,7 @@ open class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: 
                 ship.blockCommandForOneFrame(it)
             }
         }
-        if(commanders.any { it.shouldReevaluate() }) forceCircumstanceEvaluation()
+        if (commanders.any { it.shouldReevaluate() }) forceCircumstanceEvaluation()
         fleetingCommands.forEach {
             ship.giveCommand(it.command, it.position, it.index)
         }
@@ -65,6 +67,7 @@ open class CustomShipAI(protected val baseAI: ShipAIPlugin, protected val ship: 
         ship.shipAI = this
         return result
     }
+
     override fun getAIFlags(): ShipwideAIFlags? = baseAI.aiFlags
 
     override fun cancelCurrentManeuver() {

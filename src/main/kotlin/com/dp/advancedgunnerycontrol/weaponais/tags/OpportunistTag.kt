@@ -15,15 +15,16 @@ class OpportunistTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
         return if (isOpportuneTarget(solution, weapon)) {
             1f
-        }else{
+        } else {
             10000.0f
         }
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {
-        if(isAimable(weapon) && !determineIfShotWillHit(solution.aimPoint, effectiveCollRadius(solution.target), weapon)){
-            return false
-        }
+        if (isAimable(weapon) &&
+            !determineIfShotWillHit(solution.aimPoint, effectiveCollRadius(solution.target), weapon)
+        ) return false
+
         return isOpportuneTarget(solution, weapon)
     }
 

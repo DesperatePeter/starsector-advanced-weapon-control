@@ -3,18 +3,19 @@ package com.dp.advancedgunnerycontrol.weaponais.shipais
 import com.dp.advancedgunnerycontrol.weaponais.getAverageArmor
 import com.dp.advancedgunnerycontrol.weaponais.getMaxArmor
 import com.fs.starfarer.api.combat.DamageType
-import com.fs.starfarer.api.combat.ShipAIPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipCommand
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
+import java.util.*
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class VentShipAI(ship: ShipAPI, private val fluxThreshold : Float = 0.5f,
-                 private val safetyFactor : Float = 1.5f, private val aggressive : Boolean = false)
-    : ShipCommandGenerator(ship) {
+class VentShipAI(
+    ship: ShipAPI, private val fluxThreshold: Float = 0.5f,
+    private val safetyFactor: Float = 1.5f, private val aggressive: Boolean = false
+) : ShipCommandGenerator(ship) {
     private var isSafe = false
     private var frameTracker = 0
     private var wasVenting = false
@@ -33,10 +34,11 @@ class VentShipAI(ship: ShipAPI, private val fluxThreshold : Float = 0.5f,
                 .partition { it.owner == 1 }
         val nearbyEnemies = nearbyEnemiesAndAllies.first
         val nearbyAllies = nearbyEnemiesAndAllies.second
-        val enemyMissiles = CombatUtils.getMissilesWithinRange(ship.location, scanningRange).filterNotNull().filter { it.owner == 1 }
+        val enemyMissiles =
+            CombatUtils.getMissilesWithinRange(ship.location, scanningRange).filterNotNull().filter { it.owner == 1 }
         val armorGrid = ship.armorGrid ?: return false
         val armor = getAverageArmor(armorGrid)
-        val armorIntegrity = (armor / getMaxArmor(armorGrid)) *  ship.hullLevel
+        val armorIntegrity = (armor / getMaxArmor(armorGrid)) * ship.hullLevel
         val health = armorIntegrity * armor + ship.hitpoints
 
         var danger = 0f
@@ -44,9 +46,9 @@ class VentShipAI(ship: ShipAPI, private val fluxThreshold : Float = 0.5f,
             enemy.allWeapons.forEach { weapon ->
                 val dangerFactor = computeDangerFactor(weapon.damageType, armorIntegrity) *
                         min(1f, (weapon.range / (ship.location - weapon.location).length()).pow(2)) *
-                        (if(weapon.usesAmmo() && weapon.ammo == 0) 0f else 1f) *
-                        (if(weapon.spec?.primaryRoleStr?.toLowerCase() == "finisher") 2f else 1f)
-                danger += (weapon.derivedStats?.dps?: 0f) * dangerFactor
+                        (if (weapon.usesAmmo() && weapon.ammo == 0) 0f else 1f) *
+                        (if (weapon.spec?.primaryRoleStr?.lowercase(Locale.getDefault()) == "finisher") 2f else 1f)
+                danger += (weapon.derivedStats?.dps ?: 0f) * dangerFactor
             }
         }
 
@@ -56,10 +58,10 @@ class VentShipAI(ship: ShipAPI, private val fluxThreshold : Float = 0.5f,
 
         danger /= sqrt(0.01f + nearbyAllies.size.toFloat())
 
-        return health / safetyFactor > danger * (ship.fluxTracker?.timeToVent?: 1f)
+        return health / safetyFactor > danger * (ship.fluxTracker?.timeToVent ?: 1f)
     }
 
-    private fun computeDangerFactor(type: DamageType, armorIntegrity: Float) : Float{
+    private fun computeDangerFactor(type: DamageType, armorIntegrity: Float): Float {
         return when (type) {
             DamageType.KINETIC -> armorIntegrity.pow(2) * 0.5f + (1f - armorIntegrity.pow(2)) * 0.9f
             DamageType.HIGH_EXPLOSIVE -> armorIntegrity.pow(2) * 2f + (1f - armorIntegrity.pow(2)) * 1.2f
@@ -72,30 +74,30 @@ class VentShipAI(ship: ShipAPI, private val fluxThreshold : Float = 0.5f,
     override fun generateCommands(): List<ShipCommandWrapper> {
         shouldReevaluate = false
         blockCommands = listOf()
-        if(ship.fluxTracker?.isVenting == true){
+        if (ship.fluxTracker?.isVenting == true) {
             wasVenting = true
-            if(aggressive) {
+            if (aggressive) {
                 blockCommands = listOf(ShipCommand.ACCELERATE_BACKWARDS)
                 return listOf(ShipCommandWrapper(ShipCommand.ACCELERATE, ship.shipTarget?.location))
             }
             return emptyList()
         }
 
-        if(wasVenting){
+        if (wasVenting) {
             wasVenting = false
             shouldReevaluate = true
         }
 
         if (ship.fluxLevel >= fluxThreshold) {
             frameTracker--
-            if(frameTracker <= 0){
+            if (frameTracker <= 0) {
                 frameTracker = checkFrequency
                 isSafe = isSafeToVent()
             }
-            if(isSafe) {
+            if (isSafe) {
                 return listOf(ShipCommandWrapper(ShipCommand.VENT_FLUX))
             }
-        }else{
+        } else {
             frameTracker = 0
         }
         return emptyList()

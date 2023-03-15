@@ -30,44 +30,61 @@ abstract class DataButtonGroup(
     private val descriptionOffset = 40f
     private var currentX = layout.x
     private var currentY = layout.y
-    fun addButton(text: String, data: Any, tooltip: String, isActive : Boolean = true) {
-        val info = ButtonInfo(currentX, currentY, layout.w, layout.h, layout.a, text, font, layout.color, HoverTooltip(layout.xTooltip, layout.yTooltip, tooltip))
+    fun addButton(text: String, data: Any, tooltip: String, isActive: Boolean = true) {
+        val info = ButtonInfo(
+            currentX,
+            currentY,
+            layout.w,
+            layout.h,
+            layout.a,
+            text,
+            font,
+            layout.color,
+            HoverTooltip(layout.xTooltip, layout.yTooltip, tooltip)
+        )
         buttons.add(DataToggleButton(data, info))
         buttons.last().isActive = isActive
-        if(layout.horizontal){
+        if (layout.horizontal) {
             currentX += layout.w + layout.padding
-        }else{
+        } else {
             currentY -= layout.h + layout.padding
         }
     }
-    fun resetGrid(){
+
+    fun resetGrid() {
         currentX = layout.x
         currentY = layout.y
     }
-    fun disableButton(text: String){
+
+    fun disableButton(text: String) {
         buttons.find { it.info.txt == text }?.let { it.isDisabled = true }
     }
-    fun refreshAllButtons(data : List<Any>){
+
+    fun refreshAllButtons(data: List<Any>) {
         buttons.forEach {
             it.isActive = data.contains(it.data)
         }
     }
-    fun enableAllButtons(){
+
+    fun enableAllButtons() {
         buttons.forEach { it.isDisabled = false }
     }
-    fun getActiveButtonData() : List<Any>{
+
+    fun getActiveButtonData(): List<Any> {
         return buttons.mapNotNull { it.getDataIfActive() }
     }
-    fun advance(): Boolean{
+
+    fun advance(): Boolean {
         buttons.filter { it.advance() }.let {
-            if(it.isNotEmpty()){
+            if (it.isNotEmpty()) {
                 executeAction(buttons.mapNotNull { btn -> btn.getDataIfActive() }, it.firstOrNull()?.getDataIfActive())
                 return true
             }
         }
         return false
     }
-    fun render(){
+
+    fun render() {
         buttons.forEach { it.render() }
         font?.createText(descriptionText, baseColor = layout.color)?.draw(layout.x, layout.y + descriptionOffset)
     }
@@ -77,5 +94,5 @@ abstract class DataButtonGroup(
      */
     abstract fun createButtons()
     abstract fun refresh()
-    abstract fun executeAction(data : List<Any>, triggeringButtonData: Any? = null)
+    abstract fun executeAction(data: List<Any>, triggeringButtonData: Any? = null)
 }

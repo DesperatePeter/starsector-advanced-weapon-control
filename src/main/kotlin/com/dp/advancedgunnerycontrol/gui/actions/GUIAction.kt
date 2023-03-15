@@ -10,11 +10,11 @@ import org.lwjgl.input.Keyboard
 abstract class GUIAction(protected var attributes: GUIAttributes) {
     abstract fun execute()
 
-    abstract fun getTooltip() : String
+    abstract fun getTooltip(): String
 
-    abstract fun getName() : String
+    abstract fun getName(): String
 
-    open fun getShortcut() : Int? = null
+    open fun getShortcut(): Int? = null
 
     protected val wholeFleetKey = "[Shift]"
     protected val allLoadoutsKey = "[Ctrl]"
@@ -23,30 +23,32 @@ abstract class GUIAction(protected var attributes: GUIAttributes) {
     protected val modifiersBoilerplateText = "Affects current ship and current loadout." +
             "\n$loadoutBoilerplateText" + "\n$fleetBoilerplateText"
 
-    protected fun affectedShips() : List<FleetMemberAPI>{
-        return if (isWholeFleetKeyHeld()){
+    protected fun affectedShips(): List<FleetMemberAPI> {
+        return if (isWholeFleetKeyHeld()) {
             Global.getSector().playerFleet.membersWithFightersCopy.filterNot { m -> m.isFighterWing }.filterNotNull()
-        } else{
+        } else {
             attributes.ship?.let { listOf(it) } ?: emptyList()
         }
     }
 
-    protected fun affectedLoadouts() : List<Int>{
-        return if(isAllLoadoutsKeyHeld()){
+    protected fun affectedLoadouts(): List<Int> {
+        return if (isAllLoadoutsKeyHeld()) {
             (0 until Settings.maxLoadouts()).toList()
-        }else{
+        } else {
             listOf(AGCGUI.storageIndex)
         }
     }
 
-    protected fun isAllLoadoutsKeyHeld() : Boolean{
+    protected fun isAllLoadoutsKeyHeld(): Boolean {
         return Keyboard.isKeyDown(Keyboard.KEY_RCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)
     }
-    protected fun isWholeFleetKeyHeld() : Boolean{
+
+    protected fun isWholeFleetKeyHeld(): Boolean {
         return Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)
     }
-    protected fun lastIndex() : Int{
-        if (AGCGUI.storageIndex == 0) return Settings.maxLoadouts() -1
-        return AGCGUI.storageIndex -1
+
+    protected fun lastIndex(): Int {
+        if (AGCGUI.storageIndex == 0) return Settings.maxLoadouts() - 1
+        return AGCGUI.storageIndex - 1
     }
 }

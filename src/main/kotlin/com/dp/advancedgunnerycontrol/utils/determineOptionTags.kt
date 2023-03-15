@@ -15,23 +15,25 @@ val magicKeyToType = mapOf(
     BALLISTIC_MAGIC_KEY to WeaponType.BALLISTIC
 )
 
-fun determineTagsByGroup(ship: ShipAPI) : Map<WeaponAPI, List<String>>{
-    if(!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)) return emptyMap()
+fun determineTagsByGroup(ship: ShipAPI): Map<WeaponAPI, List<String>> {
+    if (!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)) return emptyMap()
     val opts = (ship.customData[Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY] as? Map<*, *>)
-        ?.filter { mapPair -> mapPair.key is String && (mapPair.value as? List<*>)?.all { it is String } == true } ?: return emptyMap()
+        ?.filter { mapPair -> mapPair.key is String && (mapPair.value as? List<*>)?.all { it is String } == true }
+        ?: return emptyMap()
 
     val toReturn = mutableMapOf<WeaponAPI, MutableSet<String>>()
     opts.forEach { m ->
-        when{
+        when {
             magicKeyToType.containsKey(m.key) -> {
                 ship.allWeapons.filter { it.type == magicKeyToType[m.key] }.forEach { w ->
                     val tags = (m.value as? List<*>)?.filterIsInstance<String>() ?: listOf()
                     toReturn.getOrPut(w) { mutableSetOf() }.addAll(tags)
                 }
             }
+
             m.key is String -> {
                 val k = m.key as? String ?: ""
-                ship.allWeapons.filter { it.id == k || Regex(k).matches(it.id)}.forEach { w ->
+                ship.allWeapons.filter { it.id == k || Regex(k).matches(it.id) }.forEach { w ->
                     val tags = (m.value as? List<*>)?.filterIsInstance<String>() ?: listOf()
                     toReturn.getOrPut(w) { mutableSetOf() }.addAll(tags)
                 }

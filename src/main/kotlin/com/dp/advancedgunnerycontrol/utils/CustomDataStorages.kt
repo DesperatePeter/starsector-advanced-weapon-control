@@ -5,14 +5,14 @@ import java.lang.ref.WeakReference
 
 class InShipTagStorage {
     // Map<storageIndex, Map<WeaponGroupIndex, List<Tags>>>
-    var tagsByIndex : MutableMap<Int, MutableMap<Int, List<String>>> = mutableMapOf()
+    var tagsByIndex: MutableMap<Int, MutableMap<Int, List<String>>> = mutableMapOf()
 }
 
 class InShipShipModeStorage {
     // Map<storageIndex, List<ShipModes>>
-    var modes: MutableMap<Int,MutableList<String>> = mutableMapOf()
+    var modes: MutableMap<Int, MutableList<String>> = mutableMapOf()
 }
 
 class InEngineTagStorage {
-    var tags : MutableSet<WeakReference<WeaponAITagBase>> = mutableSetOf()
+    var tags: MutableSet<WeakReference<WeaponAITagBase>> = mutableSetOf()
 }

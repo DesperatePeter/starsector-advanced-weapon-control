@@ -7,7 +7,7 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import kotlin.math.roundToInt
 
-fun groupAsString(group : WeaponGroupSpec, sh: FleetMemberAPI) : String {
+fun groupAsString(group: WeaponGroupSpec, sh: FleetMemberAPI): String {
     val strings = group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
         Global.getSettings().getWeaponSpec(it).weaponName
     }
@@ -17,35 +17,37 @@ fun groupAsString(group : WeaponGroupSpec, sh: FleetMemberAPI) : String {
     return set.map { ("${occ[it] ?: "0"} x $it") }.toString()
 }
 
-fun groupFluxCost(group: WeaponGroupSpec, sh: FleetMemberAPI) : Int {
+fun groupFluxCost(group: WeaponGroupSpec, sh: FleetMemberAPI): Int {
     return group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
         Global.getSettings().getWeaponSpec(it).derivedStats.fluxPerSecond
     }.sum().roundToInt()
 }
 
-fun groupWeaponSpriteNames(group: WeaponGroupSpec, sh: FleetMemberAPI) : List<String> {
+fun groupWeaponSpriteNames(group: WeaponGroupSpec, sh: FleetMemberAPI): List<String> {
     return group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
         Global.getSettings().getWeaponSpec(it).turretSpriteName
     }.toSet().toList()
 }
 
-fun isElligibleForPD(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
+fun isElligibleForPD(groupIndex: Int, sh: FleetMemberAPI): Boolean {
     val group = sh.variant.weaponGroups[groupIndex]
     val hasIPDA = sh.variant.hasHullMod("pointdefenseai")
     return group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
         val weapon = Global.getSettings().getWeaponSpec(it)
         val aiHints = weapon.aiHints
-        (aiHints.contains(WeaponAPI.AIHints.PD_ALSO) || aiHints.contains(WeaponAPI.AIHints.PD) || aiHints.contains(WeaponAPI.AIHints.PD_ONLY)) ||
-                (hasIPDA && weapon.size == WeaponAPI.WeaponSize.SMALL && weapon.type != WeaponAPI.WeaponType.MISSILE)
+        (hasIPDA && weapon.size == WeaponAPI.WeaponSize.SMALL && weapon.type != WeaponAPI.WeaponType.MISSILE) ||
+                aiHints.contains(WeaponAPI.AIHints.PD_ALSO) ||
+                aiHints.contains(WeaponAPI.AIHints.PD) ||
+                aiHints.contains(WeaponAPI.AIHints.PD_ONLY)
     }.contains(true)
 }
 
-fun isEverythingBlacklisted(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
+fun isEverythingBlacklisted(groupIndex: Int, sh: FleetMemberAPI): Boolean {
     val group = sh.variant.weaponGroups[groupIndex]
     return (group.slots.mapNotNull { sh.variant.getWeaponId(it) }.all { Settings.weaponBlacklist.contains(it) })
 }
 
-fun usesAmmo(groupIndex: Int, sh: FleetMemberAPI) : Boolean {
+fun usesAmmo(groupIndex: Int, sh: FleetMemberAPI): Boolean {
     val group = sh.variant.weaponGroups[groupIndex]
     return group.slots.mapNotNull { Global.getSettings().getWeaponSpec(sh.variant.getWeaponId(it)) }.any {
         it.usesAmmo()

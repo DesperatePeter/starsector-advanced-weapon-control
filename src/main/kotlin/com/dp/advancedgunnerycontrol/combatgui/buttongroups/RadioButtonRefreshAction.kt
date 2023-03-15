@@ -6,9 +6,9 @@ package com.dp.advancedgunnerycontrol.combatgui.buttongroups
  * Attention: only works if all buttons have unique non-null data!
  */
 class RadioButtonRefreshAction : RefreshButtonsAction {
-    private var lastData : Any? = null
+    private var lastData: Any? = null
     override fun refreshButtons(group: DataButtonGroup) {
-        if(group.getActiveButtonData().isEmpty() && lastData != null){
+        if (group.getActiveButtonData().isEmpty() && lastData != null) {
             group.buttons.firstOrNull { it.data == lastData }?.isActive = true
         }
         val data = group.getActiveButtonData().firstOrNull { it != lastData } ?: return

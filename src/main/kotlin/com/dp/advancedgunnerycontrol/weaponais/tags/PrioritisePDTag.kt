@@ -10,8 +10,10 @@ import com.fs.starfarer.api.combat.WeaponAPI
 class PrioritisePDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
-        return  (entity as? ShipAPI)?.let { isSmall(it) } ?: false || (isPD(weapon) && isValidPDTargetForWeapon(entity, weapon))
+        return (entity as? ShipAPI)?.let { isSmall(it) } ?: false || (isPD(weapon) &&
+                isValidPDTargetForWeapon(entity, weapon))
     }
+
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = entity is MissileAPI
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {

@@ -57,6 +57,7 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenera
             Settings.aggressiveVentSafetyFactor(),
             true
         )
+
         ShipModes.RETREAT -> RetreatShipAI(ship, Settings.retreatHullThreshold())
         ShipModes.NO_SYSTEM -> NoSystemAI(ship)
         ShipModes.SHIELDS_UP -> ShieldsUpAI(ship, 0.9f)
@@ -67,7 +68,7 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenera
 fun assignShipMode(modes: List<String>, ship: ShipAPI, forceAssign: Boolean = false) {
     if (ship.shipAI == null) return
     ship.resetDefaultAI()
-    if(ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)){
+    if (ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)) {
         ship.customData.remove(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)
     }
     val shipModes = modes.mapNotNull { shipModeFromString[it] }
@@ -81,14 +82,14 @@ fun assignShipMode(modes: List<String>, ship: ShipAPI, forceAssign: Boolean = fa
     ship.shipAI = customAI
 }
 
-fun hasCustomAI(ship: ShipAPI) : Boolean{
+fun hasCustomAI(ship: ShipAPI): Boolean {
     if (!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)) return false
     if (ship.shipAI is BasicShipAI) return false
     return (ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY] as? WeakReference<*>)?.get() != null
 }
 
-fun getCustomShipAI(ship: ShipAPI) : CustomShipAI?{
-    if(!hasCustomAI(ship)) return null
+fun getCustomShipAI(ship: ShipAPI): CustomShipAI? {
+    if (!hasCustomAI(ship)) return null
     return ((ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY] as? WeakReference<*>)?.get() as? CustomShipAI)
 }
 
@@ -103,7 +104,8 @@ fun saveShipModesInShip(ship: ShipAPI, tags: List<String>, storageIndex: Int) {
     if (!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY)) {
         ship.setCustomData(Values.CUSTOM_SHIP_DATA_SHIP_MODES_KEY, InShipShipModeStorage())
     }
-    (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipShipModeStorage)?.modes?.set(storageIndex,
+    (ship.customData[Values.CUSTOM_SHIP_DATA_WEAPONS_TAG_KEY] as? InShipShipModeStorage)?.modes?.set(
+        storageIndex,
         tags.toMutableList()
     )
 }

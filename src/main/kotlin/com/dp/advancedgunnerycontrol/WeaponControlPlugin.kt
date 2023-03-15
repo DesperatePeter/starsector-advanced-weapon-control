@@ -2,8 +2,8 @@
 
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.AGCCombatGui
 import com.dp.advancedgunnerycontrol.combatgui.GuiBase
+import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.AGCCombatGui
 import com.dp.advancedgunnerycontrol.keyboardinput.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
 import com.dp.advancedgunnerycontrol.settings.Settings
@@ -13,7 +13,6 @@ import com.dp.advancedgunnerycontrol.weaponais.TagBasedAI
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
-import com.fs.starfarer.api.combat.listeners.AdvanceableListener
 import com.fs.starfarer.api.input.InputEventAPI
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
@@ -51,14 +50,14 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         if (!isInitialized) return
         combatGui?.advance()
 
-        if(initialShipInitRequired){
+        if (initialShipInitRequired) {
             initialShipInitRequired = !initAllShips()
         }
 
-        if(timeFrameTimer++ >= optionApplicationFrameInterval){
+        if (timeFrameTimer++ >= optionApplicationFrameInterval) {
             timeFrameTimer = 0
-            if(Settings.allowEnemyShipModeApplication()) applyOptionsToEnemies()
-            if(Settings.automaticallyReapplyPlayerShipModes()) reapplyShipModesAsNecessary()
+            if (Settings.allowEnemyShipModeApplication()) applyOptionsToEnemies()
+            if (Settings.automaticallyReapplyPlayerShipModes()) reapplyShipModesAsNecessary()
         }
 
         if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
@@ -70,26 +69,26 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
-    private fun initAllShips() : Boolean{
-        if(engine.ships.none { it.owner == 0 }){
+    private fun initAllShips(): Boolean {
+        if (engine.ships.none { it.owner == 0 }) {
             return false
         }
         reloadAllShips(Values.storageIndex)
         return true
     }
 
-    private fun reapplyShipModesAsNecessary(){
+    private fun reapplyShipModesAsNecessary() {
         engine.ships.filterNotNull().filter { it.owner == 0 }.forEach { ship ->
-            if(loadShipModes(ship, Values.storageIndex).let { it.isNotEmpty() && !it.contains(defaultShipMode) }
-                && ship.shipAI != null && !hasCustomAI(ship)){
+            if (loadShipModes(ship, Values.storageIndex).let { it.isNotEmpty() && !it.contains(defaultShipMode) }
+                && ship.shipAI != null && !hasCustomAI(ship)) {
                 assignShipMode(loadShipModes(ship, Values.storageIndex), ship)
             }
         }
     }
 
-    private fun applyOptionsToEnemies(){
+    private fun applyOptionsToEnemies() {
         engine.ships.filterNotNull().filter { it.owner == 1 }.forEach {
-            if(it.customData.containsKey(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)){
+            if (it.customData.containsKey(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)) {
                 val toApply = determineTagsByGroup(it)
                 toApply.forEach { (k, v) ->
                     applyTagsToWeapon(k, v)
@@ -100,13 +99,13 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
-    private fun initNewlyDeployedShips(deployedShips: List<String>?){
+    private fun initNewlyDeployedShips(deployedShips: List<String>?) {
         deployedShips?.let { fleetShips ->
             if (fleetShips.isEmpty()) return
             // at least when deploying multiple ships, this should be faster than searching each time
             val ships = engine.ships.associateBy { it.fleetMemberId }
                 .filter { it.value?.owner == 0 }.filter { fleetShips.contains(it.key) }
-            if(ships.isEmpty()) return
+            if (ships.isEmpty()) return
             reloadShips(Values.storageIndex, ships.values.toList())
         }
     }
@@ -114,15 +113,16 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private fun processControlEvents() {
         when (keyManager.mkeyStatus.mcontrolEvent) {
             ControlEventType.INFO -> {
-                if (combatGui == null){
+                if (combatGui == null) {
                     engine.isPaused = true
                     engine.viewport?.isExternalControl = true
-                    combatGui = determineSelectedShip(engine)?.let {  AGCCombatGui(it)  }
-                }else{
+                    combatGui = determineSelectedShip(engine)?.let { AGCCombatGui(it) }
+                } else {
                     combatGui = null
                     engine.viewport?.isExternalControl = false
                 }
             }
+
             else -> printMessage("Unrecognized Command")
         }
     }
@@ -142,7 +142,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 Global.getLogger(this.javaClass).error("Failed to load font, won't de displaying messages", e)
             }
             // don't init during title screen
-            if(Global.getCurrentState() != GameState.TITLE) {
+            if (Global.getCurrentState() != GameState.TITLE) {
                 this.engine = engine
                 deployChecker = DeploymentChecker(engine)
                 isInitialized = true
@@ -154,7 +154,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         super.renderInUICoords(viewport)
         combatGui?.render()
         drawable?.apply {
-            draw(Settings.uiMessagePositionX() * Global.getSettings().screenHeightPixels, Settings.uiMessagePositionY() * Global.getSettings().screenHeightPixels)
+            draw(
+                Settings.uiMessagePositionX() * Global.getSettings().screenHeightPixels,
+                Settings.uiMessagePositionY() * Global.getSettings().screenHeightPixels
+            )
             textFrameTimer--
         }
         if ((textFrameTimer <= 0) && (Settings.uiDisplayFrames() >= 0)) {

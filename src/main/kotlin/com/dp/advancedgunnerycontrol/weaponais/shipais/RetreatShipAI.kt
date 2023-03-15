@@ -2,18 +2,20 @@ package com.dp.advancedgunnerycontrol.weaponais.shipais
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.combat.*
+import com.fs.starfarer.api.combat.CombatAssignmentType
+import com.fs.starfarer.api.combat.CombatFleetManagerAPI
+import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.mission.FleetSide
 
-class RetreatShipAI (ship: ShipAPI, private val hullThreshold : Float) : ShipCommandGenerator(ship) {
-    private var fleetManagerAPI : CombatFleetManagerAPI? = null
+class RetreatShipAI(ship: ShipAPI, private val hullThreshold: Float) : ShipCommandGenerator(ship) {
+    private var fleetManagerAPI: CombatFleetManagerAPI? = null
 
     init {
         fleetManagerAPI = Global.getCombatEngine()?.getFleetManager(FleetSide.PLAYER)
     }
 
     override fun generateCommands(): List<ShipCommandWrapper> {
-        if(ship.hullLevel <= hullThreshold){
+        if (ship.hullLevel <= hullThreshold) {
             val taskMan = fleetManagerAPI?.getTaskManager(false) ?: return emptyList()
             fleetManagerAPI?.let {
                 if (taskMan.getAssignmentFor(ship)?.type == CombatAssignmentType.RETREAT) return emptyList()

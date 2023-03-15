@@ -2,7 +2,6 @@ package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
 import com.dp.advancedgunnerycontrol.combatgui.GuiLayout
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.fs.starfarer.api.Global
 import java.awt.Color
 
 val AGCGridLayout = GuiLayout(

@@ -16,18 +16,18 @@ abstract class SampleGuiLauncher(private val hotkey: Char) : BaseEveryFrameComba
     /**
      * override this to return a new GUI object from this function, e.g. "return new MyGui()"
      */
-    abstract fun constructGui() : GuiBase
+    abstract fun constructGui(): GuiBase
 
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         super.advance(amount, events)
         gui?.advance()
-        if(wasHotkeyPressed(events)){
-            if(null == gui){
+        if (wasHotkeyPressed(events)) {
+            if (null == gui) {
                 gui = constructGui()
                 val engine = Global.getCombatEngine() ?: return
                 engine.isPaused = true
                 engine.viewport?.isExternalControl = true
-            }else{
+            } else {
                 gui = null
                 Global.getCombatEngine()?.viewport?.isExternalControl = false
             }
@@ -39,8 +39,8 @@ abstract class SampleGuiLauncher(private val hotkey: Char) : BaseEveryFrameComba
         gui?.render()
     }
 
-    private fun wasHotkeyPressed(events: MutableList<InputEventAPI>?) : Boolean{
+    private fun wasHotkeyPressed(events: MutableList<InputEventAPI>?): Boolean {
         events ?: return false
-        return events.any { !it.isConsumed && it.isKeyDownEvent && it.eventChar.lowercaseChar() == hotkey}
+        return events.any { !it.isConsumed && it.isKeyDownEvent && it.eventChar.lowercaseChar() == hotkey }
     }
 }

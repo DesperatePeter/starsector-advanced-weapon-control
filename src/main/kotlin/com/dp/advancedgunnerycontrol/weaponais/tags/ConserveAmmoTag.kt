@@ -1,11 +1,10 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
-import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.weaponais.*
+import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
+import com.dp.advancedgunnerycontrol.weaponais.ammoLevel
+import com.dp.advancedgunnerycontrol.weaponais.isOpportuneTarget
 import com.fs.starfarer.api.combat.CombatEntityAPI
-import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class ConserveAmmoTag(weapon: WeaponAPI, private val ammoThreshold: Float) : WeaponAITagBase(weapon) {
 
@@ -16,7 +15,7 @@ class ConserveAmmoTag(weapon: WeaponAPI, private val ammoThreshold: Float) : Wea
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float = 1f
 
     override fun shouldFire(solution: FiringSolution): Boolean {
-        if(ammoLevel(weapon) < ammoThreshold) {
+        if (ammoLevel(weapon) < ammoThreshold) {
             return isOpportuneTarget(solution, weapon)
         }
         return true
