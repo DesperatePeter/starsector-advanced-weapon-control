@@ -10,9 +10,9 @@ import com.fs.starfarer.api.combat.ShipAPI
 class ShipAiAction(private val ship: ShipAPI) : ButtonGroupAction {
     override fun execute(data: List<Any>, triggeringButtonData: Any?) {
         var tags = data.filterIsInstance<String>()
-        tags = if((defaultShipMode == triggeringButtonData) || tags.isEmpty()){
+        tags = if ((defaultShipMode == triggeringButtonData) || tags.isEmpty()) {
             listOf(defaultShipMode)
-        }else{
+        } else {
             tags.filter { it != defaultShipMode }
         }
         assignShipMode(tags, ship)

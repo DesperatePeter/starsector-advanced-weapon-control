@@ -25,20 +25,23 @@ class CopyToSameVariantAction(attributes: GUIAttributes) : GUIAction(attributes)
 
     override fun getName(): String = "Copy to other ships of same variant"
 
-    private fun applyModesToSameVariantShips(ship: FleetMemberAPI, storageIndex: Int){
-        Global.getSector().playerFleet.membersWithFightersCopy.filter{!it.isFighterWing && it != ship}.filterNotNull().forEach {
-            val shouldCopy = (it.variant.hullVariantId + it.variant.displayName == ship.variant.hullVariantId + ship.variant.displayName)
-                    || (isWholeFleetKeyHeld() && (it.hullId == ship.hullId))
-            if (shouldCopy){
-                copyModesToShip(ship, it, storageIndex)
+    private fun applyModesToSameVariantShips(ship: FleetMemberAPI, storageIndex: Int) {
+        Global.getSector().playerFleet.membersWithFightersCopy.filter { !it.isFighterWing && it != ship }
+            .filterNotNull().forEach {
+                val shouldCopy =
+                    (it.variant.hullVariantId + it.variant.displayName == ship.variant.hullVariantId + ship.variant.displayName)
+                            || (isWholeFleetKeyHeld() && (it.hullId == ship.hullId))
+                if (shouldCopy) {
+                    copyModesToShip(ship, it, storageIndex)
+                }
             }
-        }
     }
-    private fun copyModesToShip(from: FleetMemberAPI, to: FleetMemberAPI, storageIndex: Int){
+
+    private fun copyModesToShip(from: FleetMemberAPI, to: FleetMemberAPI, storageIndex: Int) {
         ShipModeStorage[storageIndex].modesByShip[from.id]?.let { v ->
             ShipModeStorage[storageIndex].modesByShip[to.id] = v.toMutableMap()
         }
-        Settings.tagStorage[storageIndex].modesByShip[from.id]?.let { v->
+        Settings.tagStorage[storageIndex].modesByShip[from.id]?.let { v ->
             Settings.tagStorage[storageIndex].modesByShip[to.id] = v.toMutableMap()
         }
     }

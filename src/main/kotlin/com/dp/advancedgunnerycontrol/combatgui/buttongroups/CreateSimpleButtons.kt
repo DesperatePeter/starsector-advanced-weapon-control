@@ -7,7 +7,11 @@ package com.dp.advancedgunnerycontrol.combatgui.buttongroups
  * @param data list of data that buttons shall contain. If null or too short, button names will be used as data.
  * @param tooltips list of tooltips to use for buttons. If null or too short, no tooltip will be used.
  */
-class CreateSimpleButtons(private val names: List<String>, private val data: List<Any>?, private val tooltips: List<String>?) : CreateButtonsAction {
+class CreateSimpleButtons(
+    private val names: List<String>,
+    private val data: List<Any>?,
+    private val tooltips: List<String>?
+) : CreateButtonsAction {
     override fun createButtons(group: DataButtonGroup) {
         names.forEachIndexed { index, s ->
             val d = data?.getOrNull(index) ?: s

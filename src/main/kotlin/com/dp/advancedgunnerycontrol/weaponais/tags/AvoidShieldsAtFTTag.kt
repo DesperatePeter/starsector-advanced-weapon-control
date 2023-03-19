@@ -22,6 +22,7 @@ class AvoidShieldsAtFTTag(
             computeShieldFactor(entity, weapon) < shieldThreshold
         }
     }
+
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
         return computeShieldFactor(solution.target, weapon) + 0.1f
     }
@@ -34,7 +35,7 @@ class AvoidShieldsAtFTTag(
                 true
             } else {
                 val ttt = computeTimeToTravel(weapon, solution.aimPoint)
-                computeShieldFactor(solution.target, weapon, ttt)  < shieldThreshold
+                computeShieldFactor(solution.target, weapon, ttt) < shieldThreshold
             }
         } else {
             false

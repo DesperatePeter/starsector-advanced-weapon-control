@@ -4,7 +4,6 @@ import com.dp.advancedgunnerycontrol.utils.getWeaponGroupIndex
 import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class ForceAutofireTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     private val groupIndex = getWeaponGroupIndex(weapon)

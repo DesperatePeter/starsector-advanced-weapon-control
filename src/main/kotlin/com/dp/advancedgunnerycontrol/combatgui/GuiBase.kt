@@ -26,14 +26,16 @@ import org.lazywizard.lazylib.ui.LazyFont
  * To get started quickly, you can use the [SampleGuiLauncher]
  */
 open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
+    private val gSettings = Global.getSettings()
+
     private val xSpacing = guiLayout.buttonWidthPx + guiLayout.paddingPx
     private val ySpacing = guiLayout.buttonHeightPx + guiLayout.paddingPx + guiLayout.textSpacingBufferPx
-    private val xTooltip = guiLayout.xTooltipRel * Global.getSettings().screenWidthPixels / Global.getSettings().screenScaleMult
-    private val yTooltip = guiLayout.yTooltipRel * Global.getSettings().screenHeightPixels / Global.getSettings().screenScaleMult
-    private val xAnchor = guiLayout.xAnchorRel * Global.getSettings().screenWidthPixels / Global.getSettings().screenScaleMult
-    private val yAnchor = guiLayout.yAnchorRel * Global.getSettings().screenHeightPixels / Global.getSettings().screenScaleMult
-    private val xMessage = guiLayout.xMessageRel * Global.getSettings().screenWidthPixels / Global.getSettings().screenScaleMult
-    private val yMessage = guiLayout.yMessageRel * Global.getSettings().screenWidthPixels / Global.getSettings().screenScaleMult
+    private val xTooltip = guiLayout.xTooltipRel * gSettings.screenWidthPixels / gSettings.screenScaleMult
+    private val yTooltip = guiLayout.yTooltipRel * gSettings.screenHeightPixels / gSettings.screenScaleMult
+    private val xAnchor = guiLayout.xAnchorRel * gSettings.screenWidthPixels / gSettings.screenScaleMult
+    private val yAnchor = guiLayout.yAnchorRel * gSettings.screenHeightPixels / gSettings.screenScaleMult
+    private val xMessage = guiLayout.xMessageRel * gSettings.screenWidthPixels / gSettings.screenScaleMult
+    private val yMessage = guiLayout.yMessageRel * gSettings.screenWidthPixels / gSettings.screenScaleMult
     val color = guiLayout.color
 
     protected var font: LazyFont? = null
@@ -44,14 +46,14 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     /**
      * override this returning a string representing your GUI title
      */
-    protected open fun getTitleString() : String?{
+    protected open fun getTitleString(): String? {
         return ""
     }
 
     /**
      * override this to display a message, feel free to return null
      */
-    protected open fun getMessageString() : String?{
+    protected open fun getMessageString(): String? {
         return ""
     }
 
@@ -63,8 +65,13 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      * @param refresh will be called every frame, feel free to pass null
      * @note ButtonGroups represent a set of data and the data of all active buttons will be passed to the action
      */
-    protected fun addButtonGroup(action: ButtonGroupAction, create: CreateButtonsAction, refresh: RefreshButtonsAction?, descriptionText: String){
-        val group = object : DataButtonGroup(font, descriptionText, createButtonGroupLayout(buttonGroups.size)){
+    protected fun addButtonGroup(
+        action: ButtonGroupAction,
+        create: CreateButtonsAction,
+        refresh: RefreshButtonsAction?,
+        descriptionText: String
+    ) {
+        val group = object : DataButtonGroup(font, descriptionText, createButtonGroupLayout(buttonGroups.size)) {
             override fun createButtons() {
                 create.createButtons(this)
             }
@@ -75,7 +82,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
 
             override fun executeAction(data: List<Any>, triggeringButtonData: Any?) {
                 action.execute(data, triggeringButtonData)
-           }
+            }
         }
         group.createButtons()
         buttonGroups.add(group)
@@ -85,7 +92,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      * add a custom button group where you have to take care of positioning
      * actions will be automatically executed when appropriate
      */
-    protected fun addCustomButtonGroup(buttonGroup: DataButtonGroup){
+    protected fun addCustomButtonGroup(buttonGroup: DataButtonGroup) {
         buttonGroup.createButtons()
         buttonGroups.add(buttonGroup)
     }
@@ -96,7 +103,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      * @param txt display text
      * @param tooltipTxt will be displayed when user hovers over button
      */
-    protected fun addButton(action: ButtonAction?, txt: String, tooltipTxt: String, isDisabled: Boolean = false){
+    protected fun addButton(action: ButtonAction?, txt: String, tooltipTxt: String, isDisabled: Boolean = false) {
         val btnInfo = createButtonInfo(standaloneButtons.size, txt, tooltipTxt)
         val btn = ActionButton(action, btnInfo)
         btn.isDisabled = isDisabled
@@ -106,7 +113,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     /**
      * add a custom button where you have to take care of positioning
      */
-    protected fun addCustomButton(button: ActionButton){
+    protected fun addCustomButton(button: ActionButton) {
         standaloneButtons.add(button)
     }
 
@@ -115,9 +122,11 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      *
      * Note: Only relevant if you plan on using addCustomButtonGroup
      */
-    protected fun createButtonGroupLayout(index: Int) : ButtonGroupLayout{
-        return ButtonGroupLayout(xAnchor, yAnchor - index * ySpacing, guiLayout.buttonWidthPx, guiLayout.buttonHeightPx,
-        guiLayout.a, guiLayout.color, guiLayout.paddingPx, xTooltip, yTooltip)
+    protected fun createButtonGroupLayout(index: Int): ButtonGroupLayout {
+        return ButtonGroupLayout(
+            xAnchor, yAnchor - index * ySpacing, guiLayout.buttonWidthPx, guiLayout.buttonHeightPx,
+            guiLayout.a, guiLayout.color, guiLayout.paddingPx, xTooltip, yTooltip
+        )
     }
 
     /**
@@ -125,11 +134,13 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      *
      * Note: Only relevant if you plan on using addCustomButton
      */
-    protected fun createButtonInfo(xIndex: Int, txt: String, tooltipTxt: String) : ButtonInfo{
+    protected fun createButtonInfo(xIndex: Int, txt: String, tooltipTxt: String): ButtonInfo {
         return ButtonInfo(
             xAnchor + xIndex * xSpacing, yAnchor + ySpacing,
             guiLayout.buttonWidthPx, guiLayout.buttonHeightPx, guiLayout.a, txt, font, color, HoverTooltip(
-                xTooltip, yTooltip, tooltipTxt))
+                xTooltip, yTooltip, tooltipTxt
+            )
+        )
     }
 
     init {
@@ -144,8 +155,8 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      * calls the refresh method of every button (group)
      * gets automatically called in [advance], feel free to call once at the end of your constructor call
      */
-    protected open fun refreshButtons(){
-        buttonGroups.forEach{
+    protected open fun refreshButtons() {
+        buttonGroups.forEach {
             it.refresh()
         }
     }
@@ -154,11 +165,11 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      * call this every frame in your e.g. BaseEveryFrameCombatPlugin
      * executes button logic
      */
-    open fun advance(){
+    open fun advance() {
         var wasAction = false
         buttonGroups.forEach { wasAction = it.advance() || wasAction }
         standaloneButtons.forEach { wasAction = it.advance() || wasAction }
-        if(wasAction){
+        if (wasAction) {
             refreshButtons()
         }
     }
@@ -166,7 +177,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     /**
      * delete all buttons from button groups and re-create them with the given CreateButtonsAction
      */
-    open fun reRenderButtonGroups(){
+    open fun reRenderButtonGroups() {
         buttonGroups.forEach {
             it.buttons.clear()
             it.resetGrid()
@@ -179,7 +190,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      * call this every frame in your e.g. BaseEveryFrameCombatPlugin
      * renders buttons, texts and tooltips
      */
-    open fun render(){
+    open fun render() {
         buttonGroups.forEach { it.render() }
         standaloneButtons.forEach { it.render() }
         getTitleString()?.let { font?.createText(it, color) }?.draw(xAnchor, yAnchor + (2 * ySpacing))

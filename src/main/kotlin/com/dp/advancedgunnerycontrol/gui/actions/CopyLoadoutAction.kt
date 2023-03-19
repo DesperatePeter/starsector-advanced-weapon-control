@@ -7,16 +7,16 @@ import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
 
 class CopyLoadoutAction(attributes: GUIAttributes) : GUIAction(attributes) {
     override fun execute() {
-        affectedShips().map { it.id }.forEach { shipId->
+        affectedShips().map { it.id }.forEach { shipId ->
             ShipModeStorage[AGCGUI.storageIndex].modesByShip[shipId] =
                 (ShipModeStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
             Settings.tagStorage[AGCGUI.storageIndex].modesByShip[shipId] =
-                ( Settings.tagStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
+                (Settings.tagStorage[lastIndex()].modesByShip[shipId]?.toMutableMap() ?: mutableMapOf())
         }
     }
 
     override fun getTooltip(): String {
-        return "Copy loadout #${lastIndex()+1} into current loadout." +
+        return "Copy loadout #${lastIndex() + 1} into current loadout." +
                 "\n$fleetBoilerplateText"
     }
 

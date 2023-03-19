@@ -13,13 +13,13 @@ class SmallShipTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     }
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
-        if(entity !is ShipAPI) return false
+        if (entity !is ShipAPI) return false
         return entity.isFrigate || entity.isFighter
     }
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
         val tgtShip = (solution.target as? ShipAPI) ?: return 10000f
-        if(!isSmall(tgtShip)) return 10000f
+        if (!isSmall(tgtShip)) return 10000f
         return bigness(tgtShip)
     }
 

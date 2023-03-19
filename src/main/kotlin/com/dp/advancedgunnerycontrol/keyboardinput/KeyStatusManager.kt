@@ -12,7 +12,7 @@ class KeyStatusManager {
     private fun parseInputEvent(event: InputEventAPI): Boolean {
         if (event.isConsumed || !event.isKeyDownEvent) return false
 
-        when(event.eventChar.toLowerCase()){
+        when (event.eventChar.lowercaseChar()) {
             Settings.infoHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.INFO
             else -> return false
         }

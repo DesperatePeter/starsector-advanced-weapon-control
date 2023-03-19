@@ -18,6 +18,7 @@ class CycleLoadoutAction(attributes: GUIAttributes) : GUIAction(attributes) {
     }
 
     override fun getName(): String = "Cycle loadout [Current" +
-            " ${storageIndex + 1} / ${Settings.maxLoadouts()}] <${Settings.loadoutNames().getOrNull(storageIndex) ?:
-            "NoName"}>"
+            " ${storageIndex + 1} / ${Settings.maxLoadouts()}] <${
+                Settings.loadoutNames().getOrNull(storageIndex) ?: "NoName"
+            }>"
 }

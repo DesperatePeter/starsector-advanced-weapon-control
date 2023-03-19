@@ -6,7 +6,7 @@ import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 
-class NoPDTag (weapon: WeaponAPI) : WeaponAITagBase(weapon) {
+class NoPDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
         return (entity as? ShipAPI)?.isFighter == false
     }

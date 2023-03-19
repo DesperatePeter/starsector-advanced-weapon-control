@@ -9,7 +9,6 @@ import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.MissileAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import org.lazywizard.lazylib.combat.CombatUtils
-import org.lwjgl.util.vector.Vector2f
 import java.lang.ref.WeakReference
 
 class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = mutableListOf()) :
@@ -52,7 +51,7 @@ class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = 
 
     override fun shouldFire(): Boolean {
         val baseDecision = super.shouldFire()
-        if(tags.any { it.forceFire(solution, baseDecision) }) return true
+        if (tags.any { it.forceFire(solution, baseDecision) }) return true
         if (!baseDecision) return false
         val sol = solution ?: return false
         return tags.all { it.shouldFire(sol) }
@@ -64,21 +63,24 @@ class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = 
 
     override fun advance(p0: Float) {
         super.advance(p0)
-        tags.forEach { if(!it.advanceWhenTurnedOff) it.advance() }
+        tags.forEach { if (!it.advanceWhenTurnedOff) it.advance() }
     }
 
-    companion object{
-        fun unregisterTagsForEveryFrameAdvance(tags: List<WeaponAITagBase>){
+    companion object {
+        fun unregisterTagsForEveryFrameAdvance(tags: List<WeaponAITagBase>) {
             Global.getCombatEngine()?.let { engine ->
-                if(!engine.customData.containsKey(Values.CUSTOM_ENGINE_TAGS_KEY)){
+                if (!engine.customData.containsKey(Values.CUSTOM_ENGINE_TAGS_KEY)) {
                     return
                 }
-                (engine.customData[Values.CUSTOM_ENGINE_TAGS_KEY] as? InEngineTagStorage)?.tags?.removeAll{ tags.contains(it.get())}
+                (engine.customData[Values.CUSTOM_ENGINE_TAGS_KEY] as? InEngineTagStorage)?.tags?.removeAll {
+                    tags.contains(it.get())
+                }
             }
         }
-        fun registerTagsForEveryFrameAdvance(tags: List<WeaponAITagBase>){
+
+        fun registerTagsForEveryFrameAdvance(tags: List<WeaponAITagBase>) {
             Global.getCombatEngine()?.let { engine ->
-                if(!engine.customData.containsKey(Values.CUSTOM_ENGINE_TAGS_KEY)){
+                if (!engine.customData.containsKey(Values.CUSTOM_ENGINE_TAGS_KEY)) {
                     engine.customData[Values.CUSTOM_ENGINE_TAGS_KEY] = InEngineTagStorage()
                 }
                 (engine.customData[Values.CUSTOM_ENGINE_TAGS_KEY] as? InEngineTagStorage)?.tags?.addAll(tags.filter {
@@ -88,7 +90,8 @@ class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = 
                 })
             }
         }
-        fun getTagsRegisteredForEveryFrameAdvancement() : List<WeaponAITagBase>{
+
+        fun getTagsRegisteredForEveryFrameAdvancement(): List<WeaponAITagBase> {
             (Global.getCombatEngine()?.customData?.get(Values.CUSTOM_ENGINE_TAGS_KEY) as? InEngineTagStorage)?.let { store ->
                 return store.tags.mapNotNull { it.get() }
             }

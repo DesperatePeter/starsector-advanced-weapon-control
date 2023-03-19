@@ -6,12 +6,15 @@ import com.dp.advancedgunnerycontrol.utils.loadAllTags
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
-import com.fs.starfarer.api.ui.*
+import com.fs.starfarer.api.ui.CustomPanelAPI
+import com.fs.starfarer.api.ui.PositionAPI
+import com.fs.starfarer.api.ui.TooltipMakerAPI
+import com.fs.starfarer.api.ui.UIComponentAPI
 import org.lwjgl.opengl.GL11
 
-class ShipView(private val tagView : TagListView) : CustomUIPanelPlugin {
-    private var pos : PositionAPI? = null
-    private val buttons : MutableList<ButtonBase<*>> = mutableListOf()
+class ShipView(private val tagView: TagListView) : CustomUIPanelPlugin {
+    private var pos: PositionAPI? = null
+    private val buttons: MutableList<ButtonBase<*>> = mutableListOf()
 
     override fun positionChanged(pos: PositionAPI?) {
         pos?.let {
@@ -45,11 +48,11 @@ class ShipView(private val tagView : TagListView) : CustomUIPanelPlugin {
         }
     }
 
-    private fun addTagButtonGroup(group: Int, ship: FleetMemberAPI, tooltip: TooltipMakerAPI){
+    private fun addTagButtonGroup(group: Int, ship: FleetMemberAPI, tooltip: TooltipMakerAPI) {
         buttons.addAll(TagButton.createModeButtonGroup(ship, group, tooltip, tagView))
     }
 
-    private fun addShipModeButtonGroup(ship: FleetMemberAPI, panel: CustomPanelAPI, position: UIComponentAPI){
+    private fun addShipModeButtonGroup(ship: FleetMemberAPI, panel: CustomPanelAPI, position: UIComponentAPI) {
         buttons.addAll(ShipModeButton.createModeButtonGroup(ship, panel, position))
     }
 
@@ -58,13 +61,13 @@ class ShipView(private val tagView : TagListView) : CustomUIPanelPlugin {
         tagView.advance()
     }
 
-    fun shouldRegenerate(): Boolean{
+    fun shouldRegenerate(): Boolean {
         return tagView.hasViewChanged()
     }
 
     override fun processInput(events: MutableList<InputEventAPI>?) {}
 
-    fun showShipModes(attributes: GUIAttributes){
+    fun showShipModes(attributes: GUIAttributes) {
         attributes.customPanel = attributes.visualPanel?.showCustomPanel(1210f, 650f, this)
         attributes.customPanel?.position?.inTMid(20f)
         attributes.ship?.let { sh ->
@@ -82,21 +85,27 @@ class ShipView(private val tagView : TagListView) : CustomUIPanelPlugin {
                 }
             }
             val elements = mutableListOf<UIComponentAPI>()
-            for(i in 0 until sh.variant.weaponGroups.size){
+            for (i in 0 until sh.variant.weaponGroups.size) {
                 val element = attributes.customPanel?.createUIElement(162f, 500f, false)
                 element?.let {
-                    it.addTitle("Group ${i+1}")
+                    it.addTitle("Group ${i + 1}")
                     addTagButtonGroup(i, sh, it)
-                    it.addImages(162f, 35f, 1f, 1f, *groupWeaponSpriteNames(sh.variant.weaponGroups[i], sh).toTypedArray())
+                    it.addImages(
+                        162f,
+                        35f,
+                        1f,
+                        1f,
+                        *groupWeaponSpriteNames(sh.variant.weaponGroups[i], sh).toTypedArray()
+                    )
                     it.addPara(groupAsString(sh.variant.weaponGroups[i], sh), 5.0f)
                     it.addPara("${groupFluxCost(sh.variant.weaponGroups[i], sh)} flux/s", 5.0f)
                     // without this call, we get a "can only anchor to siblings" exception
                     attributes.customPanel?.addComponent(it)
                     val pos = attributes.customPanel?.addUIElement(it)
                     pos?.let { p ->
-                        if (elements.isNotEmpty()){
+                        if (elements.isNotEmpty()) {
                             p.rightOfTop(elements.last(), 10f)
-                        }else{
+                        } else {
                             p.belowLeft(imgView, 35f)
                         }
                     }

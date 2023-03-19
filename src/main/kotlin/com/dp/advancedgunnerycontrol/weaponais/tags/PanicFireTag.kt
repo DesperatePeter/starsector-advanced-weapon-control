@@ -2,9 +2,7 @@ package com.dp.advancedgunnerycontrol.weaponais.tags
 
 import com.dp.advancedgunnerycontrol.utils.getWeaponGroupIndex
 import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
-import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class PanicFireTag(weapon: WeaponAPI, private val threshold: Float) : WeaponAITagBase(weapon) {
     private val groupIndex = getWeaponGroupIndex(weapon)
@@ -24,7 +22,7 @@ class PanicFireTag(weapon: WeaponAPI, private val threshold: Float) : WeaponAITa
     override val advanceWhenTurnedOff: Boolean = true
 
     override fun advance() {
-        if(weapon.ship.hullLevel < threshold){
+        if (weapon.ship.hullLevel < threshold) {
             forceAutofire(weapon.ship, groupIndex)
         }
     }

@@ -8,16 +8,16 @@ class NextShipAction(attributes: GUIAttributes) : GUIAction(attributes) {
     override fun execute() {
         val shipList = Global.getSector().playerFleet.membersWithFightersCopy.filterNot { m -> m.isFighterWing }
         val index = shipList.indexOf(attributes.ship)
-        if(isWholeFleetKeyHeld()){
-            attributes.ship = if(index == 0){
+        if (isWholeFleetKeyHeld()) {
+            attributes.ship = if (index == 0) {
                 shipList.last()
-            }else{
+            } else {
                 shipList[index - 1]
             }
-        }else{
-            attributes.ship = if(index >= shipList.size - 1){
+        } else {
+            attributes.ship = if (index >= shipList.size - 1) {
                 shipList.first()
-            }else{
+            } else {
                 shipList[index + 1]
             }
         }

@@ -18,8 +18,8 @@ class ShipTargetTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
     override fun avoidDebris(): Boolean = false
 
-    private fun entityMatchesShipTarget(entity: CombatEntityAPI) : Boolean{
+    private fun entityMatchesShipTarget(entity: CombatEntityAPI): Boolean {
         val shipTgt = weapon.ship?.shipTarget
-        return  shipTgt == entity
+        return shipTgt == entity
     }
 }

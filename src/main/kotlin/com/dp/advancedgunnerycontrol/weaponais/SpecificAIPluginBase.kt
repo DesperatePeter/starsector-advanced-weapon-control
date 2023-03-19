@@ -6,13 +6,13 @@ package com.dp.advancedgunnerycontrol.weaponais
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.utils.*
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.combat.CombatUtils
-import org.lazywizard.lazylib.ext.plus
 import org.lazywizard.lazylib.ext.minus
+import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
-import kotlin.math.*
+import kotlin.math.PI
+import kotlin.math.min
 
 abstract class SpecificAIPluginBase(
     val baseAI: AutofireAIPlugin,
@@ -113,8 +113,10 @@ abstract class SpecificAIPluginBase(
         return calculateFiringSolutions(
             CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter { it != weapon.ship }.filter {
                 (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) && !it.isFighter
-            }).filter { isInRange(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution())
-                && isWithinArc(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution()) }
+            }).filter {
+            isInRange(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution())
+                    && isWithinArc(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution())
+        }
     }
 
     protected fun determineTargetLeadingAccuracy(currentTarget: CombatEntityAPI?, lastTarget: CombatEntityAPI?) {
@@ -220,9 +222,18 @@ abstract class SpecificAIPluginBase(
             List<FiringSolution> {
 
         return friendlies.filter {
-            val isCloserThanTgt = solution?.aimPoint?.let { tp -> linearDistanceFromWeapon(it.aimPoint, weapon) < linearDistanceFromWeapon(tp, weapon)} ?: true
-            determineIfShotWillHit(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution(), weapon, aimPoint) &&
-                    isCloserThanTgt
+            val isCloserThanTgt = solution?.aimPoint?.let { tp ->
+                linearDistanceFromWeapon(
+                    it.aimPoint,
+                    weapon
+                ) < linearDistanceFromWeapon(tp, weapon)
+            } ?: true
+            determineIfShotWillHit(
+                it.aimPoint,
+                effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution(),
+                weapon,
+                aimPoint
+            ) && isCloserThanTgt
         }
     }
 
@@ -235,16 +246,18 @@ abstract class SpecificAIPluginBase(
             if (isFriendlyFire(getFriendlies())) return false
         }
         // Note: In a sequence, all calculations are done on the first element before moving to the next
-        potentialTargets.asSequence().filter { isInRange(it.aimPoint, effectiveCollRadius(it.target)) }.iterator().forEach {
-            val effectiveCollisionRadius = effectiveCollRadius(it.target) * aimingToleranceFactor + aimingToleranceFlat
-            if(determineIfShotWillHit(it.aimPoint, effectiveCollisionRadius, weapon)) return true
-        }
+        potentialTargets.asSequence().filter { isInRange(it.aimPoint, effectiveCollRadius(it.target)) }.iterator()
+            .forEach {
+                val effectiveCollisionRadius =
+                    effectiveCollRadius(it.target) * aimingToleranceFactor + aimingToleranceFlat
+                if (determineIfShotWillHit(it.aimPoint, effectiveCollisionRadius, weapon)) return true
+            }
 
         return false
     }
 
-    protected fun computePointCurrentlyAimedAt() : Vector2f {
-        val ship = weapon.ship ?: return Vector2f(0f,0f)
+    protected fun computePointCurrentlyAimedAt(): Vector2f {
+        val ship = weapon.ship ?: return Vector2f(0f, 0f)
         return (vectorFromAngleDeg(weapon.currAngle) times_ weapon.range) + ship.location
     }
 
@@ -254,12 +267,15 @@ abstract class SpecificAIPluginBase(
      */
     protected fun computeBasePriority(solution: FiringSolution): Float {
         return solution.aimPoint.let {
-            angularDistanceFromWeapon(it, weapon) + Values.distToAngularDistEvaluationFactor * linearDistanceFromWeapon(it, weapon) + 1.5f
+            angularDistanceFromWeapon(it, weapon) + Values.distToAngularDistEvaluationFactor * linearDistanceFromWeapon(
+                it,
+                weapon
+            ) + 1.5f
         }.let {
             if (lastTargetEntity == solution.target) it * 0.5f else it // incentivize sticking to one target
         } *
-                (if(solution.target as? ShipAPI == weapon.ship.shipTarget) 0.05f else 1.0f) * // heavily incentivize targeting the ship target
-                (if((solution.target as? ShipAPI)?.isFighter == false) 1.0f else 1.2f) // prioritize regular ships over other stuff
+                (if (solution.target as? ShipAPI == weapon.ship.shipTarget) 0.05f else 1.0f) * // heavily incentivize targeting the ship target
+                (if ((solution.target as? ShipAPI)?.isFighter == false) 1.0f else 1.2f) // prioritize regular ships over other stuff
     }
 
     override fun shouldFire(): Boolean {

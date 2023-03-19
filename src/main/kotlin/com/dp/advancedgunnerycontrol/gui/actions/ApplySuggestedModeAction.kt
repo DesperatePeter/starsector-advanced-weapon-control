@@ -27,17 +27,17 @@ class ApplySuggestedModeAction(attributes: GUIAttributes) : GUIAction(attributes
 
     override fun getName(): String = "Load suggested modes"
 
-    private fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int){
+    private fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int) {
         val groups = ship.variant.weaponGroups
         val tagStore = Settings.tagStorage[storageIndex]
-        if(tagStore.modesByShip[ship.id] == null){
+        if (tagStore.modesByShip[ship.id] == null) {
             tagStore.modesByShip[ship.id] = mutableMapOf()
         }
         groups.forEachIndexed { index, group ->
             val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
-            val tagKey : String = if(Settings.suggestedTags.containsKey(weaponID)){
+            val tagKey: String = if (Settings.suggestedTags.containsKey(weaponID)) {
                 weaponID
-            }else {
+            } else {
                 Settings.suggestedTags.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
             }
             tagStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedTags[tagKey] ?: emptyList() }
