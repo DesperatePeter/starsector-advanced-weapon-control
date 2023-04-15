@@ -11,7 +11,7 @@ open class SettingsDefinition {
 
     private val settinglist = mutableListOf<Setting<*>>()
 
-    protected fun <T> addSetting(key: String, defaultValue :T) : Setting<T>{
+    protected fun <T> addSetting(key: String, defaultValue: T): Setting<T> {
         Setting<T>(key, defaultValue).let {
             settinglist.add(it)
             return it

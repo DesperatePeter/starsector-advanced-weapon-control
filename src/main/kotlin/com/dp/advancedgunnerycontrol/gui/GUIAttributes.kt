@@ -10,12 +10,12 @@ import com.fs.starfarer.api.ui.CustomPanelAPI
 
 class GUIAttributes {
     var level = Level.TOP
-    var ship : FleetMemberAPI? = null
+    var ship: FleetMemberAPI? = null
     var dialog: InteractionDialogAPI? = null
-    var text : TextPanelAPI? = null
-    var options : OptionPanelAPI? = null
-    var visualPanel : VisualPanelAPI? = null
-    var customPanel : CustomPanelAPI? = null
+    var text: TextPanelAPI? = null
+    var options: OptionPanelAPI? = null
+    var visualPanel: VisualPanelAPI? = null
+    var customPanel: CustomPanelAPI? = null
     var tagView = TagListView()
 
     fun init(input: InteractionDialogAPI?) {

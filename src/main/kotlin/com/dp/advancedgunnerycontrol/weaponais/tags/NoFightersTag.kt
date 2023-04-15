@@ -4,7 +4,6 @@ import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class NoFightersTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {

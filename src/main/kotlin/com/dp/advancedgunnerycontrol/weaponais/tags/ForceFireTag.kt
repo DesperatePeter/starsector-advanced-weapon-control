@@ -1,9 +1,7 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
 import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
-import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import org.lwjgl.util.vector.Vector2f
 
 class ForceFireTag(weapon: WeaponAPI, private val fluxThreshold: Float) : WeaponAITagBase(weapon) {
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float = 1f

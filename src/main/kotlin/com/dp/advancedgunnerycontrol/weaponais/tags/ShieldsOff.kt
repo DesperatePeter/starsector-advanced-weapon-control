@@ -5,10 +5,10 @@ import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 
-class ShieldsOff (weapon: WeaponAPI) : WeaponAITagBase(weapon) {
+class ShieldsOff(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
-        if(!super.isValidTarget(entity)) return false
-        if((entity as? ShipAPI)?.shield == null) return true
+        if (!super.isValidTarget(entity)) return false
+        if ((entity as? ShipAPI)?.shield == null) return true
         return (entity as? ShipAPI)?.shield?.isOff ?: false
     }
 

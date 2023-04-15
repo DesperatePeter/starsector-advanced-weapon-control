@@ -4,7 +4,7 @@ import com.dp.advancedgunnerycontrol.gui.GUIAttributes
 import com.dp.advancedgunnerycontrol.gui.Level
 import org.lwjgl.input.Keyboard
 
-class BackAction (attributes: GUIAttributes) : GUIAction(attributes) {
+class BackAction(attributes: GUIAttributes) : GUIAction(attributes) {
     override fun execute() {
         attributes.level = Level.TOP
     }

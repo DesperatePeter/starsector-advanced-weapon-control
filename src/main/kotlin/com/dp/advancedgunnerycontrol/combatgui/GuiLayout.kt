@@ -21,5 +21,5 @@ import java.awt.Color
 data class GuiLayout(
     val xAnchorRel: Float, val yAnchorRel: Float, val buttonWidthPx: Float, val buttonHeightPx: Float,
     val a: Float, val color: Color, val paddingPx: Float, val xTooltipRel: Float, val yTooltipRel: Float,
-    val textSpacingBufferPx: Float, val fontPath : String, val xMessageRel: Float, val yMessageRel: Float
+    val textSpacingBufferPx: Float, val fontPath: String, val xMessageRel: Float, val yMessageRel: Float
 )

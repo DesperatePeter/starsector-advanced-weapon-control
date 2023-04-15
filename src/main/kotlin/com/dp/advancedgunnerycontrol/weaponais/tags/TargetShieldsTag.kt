@@ -8,14 +8,16 @@ import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 
-class TargetShieldsTag(weapon: WeaponAPI, private val threshold: Float = Settings.targetShieldsThreshold()) : WeaponAITagBase(weapon) {
+class TargetShieldsTag(weapon: WeaponAPI, private val threshold: Float = Settings.targetShieldsThreshold()) :
+    WeaponAITagBase(weapon) {
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
         return computeShieldFactor(entity, weapon) > threshold
     }
+
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
         val tgtShip = (solution.target as? ShipAPI) ?: return 1f
-        return 1f/(computeShieldFactor(tgtShip, weapon) + 0.5f)
+        return 1f / (computeShieldFactor(tgtShip, weapon) + 0.5f)
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {

@@ -22,9 +22,10 @@ class TargetShieldsAtFTTag(
             computeShieldFactor(entity, weapon) > shieldThreshold
         }
     }
+
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
         val tgtShip = (solution.target as? ShipAPI) ?: return 1f
-        return 1f/(computeShieldFactor(tgtShip, weapon) + 0.5f)
+        return 1f / (computeShieldFactor(tgtShip, weapon) + 0.5f)
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {

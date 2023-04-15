@@ -13,14 +13,14 @@ class BigShipTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     }
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
-        if(entity !is ShipAPI) return false
+        if (entity !is ShipAPI) return false
         return entity.isCapital || entity.isCruiser
     }
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
         val tgtShip = (solution.target as? ShipAPI) ?: return 10000f
-        if(!isBig(tgtShip)) return 10000f
-        return 1f/bigness(tgtShip)
+        if (!isBig(tgtShip)) return 10000f
+        return 1f / bigness(tgtShip)
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {
