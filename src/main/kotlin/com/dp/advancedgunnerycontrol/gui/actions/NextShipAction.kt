@@ -28,7 +28,7 @@ class NextShipAction(attributes: GUIAttributes) : GUIAction(attributes) {
         return "Select the next ship in your fleet. Hold $wholeFleetKey to select previous ship instead"
     }
 
-    override fun getName(): String = "Next Ship"
+    override fun getName(): String = if(isWholeFleetKeyHeld()) "Previous Ship" else "Next Ship"
 
     override fun getShortcut(): Int = Keyboard.KEY_TAB
 }

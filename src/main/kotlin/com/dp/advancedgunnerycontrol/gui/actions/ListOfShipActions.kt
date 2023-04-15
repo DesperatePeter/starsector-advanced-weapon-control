@@ -1,9 +1,10 @@
 package com.dp.advancedgunnerycontrol.gui.actions
 
 import com.dp.advancedgunnerycontrol.gui.GUIAttributes
+import com.dp.advancedgunnerycontrol.settings.Settings
 
 fun generateShipActions(attributes: GUIAttributes): List<GUIAction> {
-    return listOf(
+    if(Settings.isAdvancedMode) return listOf(
         BackAction(attributes),
         CycleLoadoutAction(attributes),
         CopyLoadoutAction(attributes),
@@ -11,6 +12,12 @@ fun generateShipActions(attributes: GUIAttributes): List<GUIAction> {
         ResetAction(attributes),
         ApplySuggestedModeAction(attributes),
         CopyToSameVariantAction(attributes),
-        ReloadSettingsAction(attributes)
+        ReloadSettingsAction(attributes),
+        SimpleAdvancedAction(attributes)
+    )
+    return listOf(
+        BackAction(attributes),
+        NextShipAction(attributes),
+        SimpleAdvancedAction(attributes)
     )
 }

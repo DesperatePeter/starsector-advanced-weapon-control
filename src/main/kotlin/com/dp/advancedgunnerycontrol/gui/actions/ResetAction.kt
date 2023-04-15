@@ -19,7 +19,7 @@ class ResetAction(attributes: GUIAttributes) : GUIAction(attributes) {
         return "Resets all fire modes, fire modes and suffixes.\n$modifiersBoilerplateText "
     }
 
-    override fun getName(): String = "Reset"
+    override fun getName(): String = "Reset" + nameSuffix()
 
     override fun getShortcut(): Int = Keyboard.KEY_DELETE
 }

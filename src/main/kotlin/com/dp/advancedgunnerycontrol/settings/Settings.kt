@@ -7,12 +7,8 @@ import kotlin.math.max
 import kotlin.math.min
 
 object Settings : SettingsDefinition() {
-    val tagList = addSetting<List<String>>(
-        "tagList", listOf(
-            "PD", "Fighter", "AvoidShields", "TargetShields", "NoFighters",
-            "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx>50%)", "ConserveAmmo", "Opportunist"
-        )
-    )
+    private val tagList = addSetting<List<String>>("tagList", listOf())
+    private val simpleTagList = addSetting<List<String>>("simpleTagList", listOf())
     val enableCustomAI = addSetting<Boolean>("enableCustomAI", true)
     val customAIRecursionLevel = addSetting<Int>("customAIRecursionLevel", 1)
     val forceCustomAI = addSetting<Boolean>("forceCustomAI", false)
@@ -58,7 +54,7 @@ object Settings : SettingsDefinition() {
     val ignoreFighterShields = addSetting<Boolean>("ignoreFighterShields", false)
     val targetShieldsAtFT = addSetting<Float>("targetShieldsAtFT_flux", 0.2f)
     val avoidShieldsAtFT = addSetting<Float>("avoidShieldsAtFT_flux", 0.2f)
-
+    var isAdvancedMode : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "isAdvancedMode", false)
 
     var weaponBlacklist = listOf<String>()
         private set
@@ -68,6 +64,13 @@ object Settings : SettingsDefinition() {
 
     var shipModeStorage: List<StorageBase<String>> = listOf()
     var tagStorage: List<StorageBase<List<String>>> = listOf()
+
+    fun getCurrentWeaponTagList() : List<String>{
+        if(isAdvancedMode){
+            return tagList()
+        }
+        return simpleTagList()
+    }
 
     override fun readSettings() {
         super.readSettings()
@@ -84,10 +87,6 @@ object Settings : SettingsDefinition() {
         forceCustomAI.set(forceCustomAI() && enableCustomAI())
         enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set(max(0, min(2, customAIFriendlyFireComplexity())))
-//        uiAnchorX.set(uiAnchorX() / Global.getSettings().screenScaleMult)
-//        uiAnchorY.set(uiAnchorY() / Global.getSettings().screenScaleMult)
-//        uiMessagePositionX.set(uiMessagePositionX() / Global.getSettings().screenScaleMult)
-//        uiMessagePositionY.set(uiMessagePositionY() / Global.getSettings().screenScaleMult)
     }
 
     fun hotAddTags(tags: List<String>, addForWholeSession: Boolean = true) {

@@ -23,7 +23,7 @@ class CopyToSameVariantAction(attributes: GUIAttributes) : GUIAction(attributes)
                 "\nHold $wholeFleetKey to instead copy to all ships of the same hull type."
     }
 
-    override fun getName(): String = "Copy to other ships of same variant"
+    override fun getName(): String = "Copy to other ships of same variant" + nameSuffix(wholeFleet = false) + if(isWholeFleetKeyHeld()) " (same hull type)" else ""
 
     private fun applyModesToSameVariantShips(ship: FleetMemberAPI, storageIndex: Int) {
         Global.getSector().playerFleet.membersWithFightersCopy.filter { !it.isFighterWing && it != ship }

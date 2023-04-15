@@ -72,16 +72,32 @@ class ShipView(private val tagView: TagListView) : CustomUIPanelPlugin {
         attributes.customPanel?.position?.inTMid(20f)
         attributes.ship?.let { sh ->
             Settings.hotAddTags(loadAllTags(sh))
-            val imgView = attributes.customPanel?.createUIElement(100f, 100f, false)
+            val imgView = attributes.customPanel?.createUIElement(1200f, 120f, false)
+            imgView?.addTitle("${sh.shipName}, ${sh.variant?.fullDesignationWithHullNameForShip}")
+            imgView?.addPara("Tag Scrollbar: ${tagView.asciiScrollBar()}", 5.0f)
             imgView?.addImage(sh.hullSpec.spriteName, 80f, 80f, 5.0f)
             attributes.customPanel?.addUIElement(imgView)?.inTL(1f, 1f)
-            val shipModeHeader = attributes.customPanel?.createUIElement(1200f, 50f, false)
-            shipModeHeader?.addTitle("Ship AI Modes (${sh.shipName}, ${sh.variant?.fullDesignationWithHullNameForShip}):")
-            shipModeHeader?.addPara("Tag Scrollbar: ${tagView.asciiScrollBar()}", 5.0f)
-            attributes.customPanel?.addUIElement(shipModeHeader)?.rightOfBottom(imgView, 1f)
-            attributes.customPanel?.let {
-                if (imgView != null) {
-                    addShipModeButtonGroup(sh, it, imgView)
+            var lastElement = imgView
+
+            if(Settings.isAdvancedMode){
+//                imgView?.addPara("Ship AI Modes", 5f)
+//                val shipModeHeader = attributes.customPanel?.createUIElement(1200f, 50f, false)
+//
+//                attributes.customPanel?.addUIElement(shipModeHeader)?.leftOfBottom(imgView, 1f)
+//                attributes.customPanel?.let {
+//                    if (imgView != null) {
+//                        addShipModeButtonGroup(sh, it, imgView)
+//                    }
+//                }
+
+                val shipModeCard = attributes.customPanel?.createUIElement(1200f, 10f, false)
+                shipModeCard?.addTitle("Ship AI Modes")
+                attributes.customPanel?.addUIElement(shipModeCard)?.belowLeft(imgView, 1f)
+                attributes.customPanel?.let {
+                    if (shipModeCard != null) {
+                        addShipModeButtonGroup(sh, it, shipModeCard)
+                        lastElement = shipModeCard
+                    }
                 }
             }
             val elements = mutableListOf<UIComponentAPI>()
@@ -106,7 +122,7 @@ class ShipView(private val tagView: TagListView) : CustomUIPanelPlugin {
                         if (elements.isNotEmpty()) {
                             p.rightOfTop(elements.last(), 10f)
                         } else {
-                            p.belowLeft(imgView, 35f)
+                            p.belowLeft(lastElement, 35f)
                         }
                     }
                     elements.add(it)

@@ -29,7 +29,7 @@ class ShipModeButton(ship: FleetMemberAPI, associatedIndex: Int, mode: ShipModes
             var isSomethingChecked = false
             val elementList = mutableListOf<TooltipMakerAPI>()
             ShipModes.values().forEachIndexed { index, it ->
-                val tooltip = panel.createUIElement(160f, 30f, false)
+                val tooltip = panel.createUIElement(130f, 30f, false)
                 toReturn.add(
                     ShipModeButton(
                         ship, index, it, tooltip.addAreaCheckbox(
@@ -38,7 +38,7 @@ class ShipModeButton(ship: FleetMemberAPI, associatedIndex: Int, mode: ShipModes
                             Misc.getBasePlayerColor(),
                             Misc.getDarkPlayerColor(),
                             Misc.getBrightPlayerColor(),
-                            160f,
+                            130f,
                             18f,
                             3f
                         )

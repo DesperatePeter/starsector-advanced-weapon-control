@@ -33,6 +33,7 @@ class AGCGUI : InteractionDialogPlugin {
 
     private var attributes = GUIAttributes()
     private var shipView: ShipView? = null
+    private var lastModifierKeys = GUIAction.modifierKeys()
 
     private fun addAction(action: GUIAction) {
         attributes.options?.addOption(action.getName(), action, action.getTooltip())
@@ -116,6 +117,10 @@ class AGCGUI : InteractionDialogPlugin {
     override fun advance(p0: Float) {
         if (shipView?.shouldRegenerate() == true) {
             showModeGUI()
+        }
+        if(lastModifierKeys != GUIAction.modifierKeys()){
+            displayOptions()
+            lastModifierKeys = GUIAction.modifierKeys()
         }
     }
 

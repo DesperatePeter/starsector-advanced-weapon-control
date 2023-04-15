@@ -25,7 +25,7 @@ class ApplySuggestedModeAction(attributes: GUIAttributes) : GUIAction(attributes
                 "\n$modifiersBoilerplateText"
     }
 
-    override fun getName(): String = "Load suggested modes"
+    override fun getName(): String =  "Load suggested modes" + nameSuffix()
 
     private fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int) {
         val groups = ship.variant.weaponGroups

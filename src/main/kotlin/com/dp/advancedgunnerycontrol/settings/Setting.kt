@@ -8,6 +8,7 @@ import org.lazywizard.lazylib.ext.json.getFloat
 // Note: I can't seem to find any info on template/generics-specialization or SFINAE in Kotlin,
 // so instead I implemented a "when value is type XYZ" switch
 // This whole thing feels unsatisfying...
+// Note: Probably should have used delegate
 open class Setting<T>(private val key: String, defaultValue: T) {
     var value: T = defaultValue
 
