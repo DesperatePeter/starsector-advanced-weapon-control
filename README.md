@@ -297,6 +297,7 @@ Special thanks to Seanra for contributing the option to ignore fighter shields a
 and ConservePDAmmo tags!
 
 Special thanks to Genir for fixing an issue where weapons that should be aimed were incorrectly assumed to be non-aimable.
+And many more thanks to Genir for his efforts of refactoring, improving code quality and performance!
 
 Many thanks to Wisp(borne) for answering my endless questions about Kotlin and Starsector modding and for providing
 an awesome repository template.
