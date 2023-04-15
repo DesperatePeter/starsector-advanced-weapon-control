@@ -83,6 +83,10 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
             override fun executeAction(data: List<Any>, triggeringButtonData: Any?) {
                 action.execute(data, triggeringButtonData)
             }
+
+            override fun onHover() {
+                action.onHover()
+            }
         }
         group.createButtons()
         buttonGroups.add(group)

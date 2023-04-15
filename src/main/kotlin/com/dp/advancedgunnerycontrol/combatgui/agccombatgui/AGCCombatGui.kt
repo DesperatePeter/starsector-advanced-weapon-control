@@ -12,6 +12,7 @@ import com.dp.advancedgunnerycontrol.typesandvalues.saveShipModes
 import com.dp.advancedgunnerycontrol.utils.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipAPI
+import kotlin.math.max
 import kotlin.reflect.KProperty
 
 class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
@@ -19,6 +20,9 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
         return "${ship.name}, ${ship.fleetMember?.variant?.fullDesignationWithHullNameForShip ?: "Unknown ship type"}" +
                 " | Tag Scrollbar: " + tagListView.asciiScrollBar()
     }
+
+    private val viewScaleMult = Global.getSector()?.viewport?.viewMult ?: 1.0f
+    private val highlights = mutableListOf<Highlight>()
 
     private val tagListView = TagListView()
     private val shipAiModesText : String by object {
@@ -32,6 +36,12 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     init {
         initializeUi()
         refreshButtons()
+    }
+
+    override fun render() {
+        super.render()
+        renderHighlights(highlights, Global.getCombatEngine()?.viewport?.viewMult ?: 1.0f)
+        highlights.forEach { it.a = max(0.0f, it.a - 0.008f) }
     }
 
     private fun createActionButtons() {
@@ -141,7 +151,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
 
         for (i in 0 until ship.variant.weaponGroups.size) {
             addButtonGroup(
-                WeaponGroupAction(ship, i),
+                WeaponGroupAction(ship, i, highlights, viewScaleMult),
                 CreateWeaponButtons(tagListView),
                 RefreshWeaponButtons(ship, i),
                 createWeaponGroupDescription(i)

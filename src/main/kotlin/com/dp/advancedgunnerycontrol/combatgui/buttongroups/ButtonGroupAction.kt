@@ -9,4 +9,5 @@ interface ButtonGroupAction {
      * @param triggeringButtonData data of the button that was clicked (null if button was deselected)
      */
     fun execute(data: List<Any>, triggeringButtonData: Any?)
+    fun onHover(){}
 }

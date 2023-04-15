@@ -81,6 +81,9 @@ abstract class DataButtonGroup(
                 return true
             }
         }
+        if(buttons.any { it.isHover() }){
+            onHover()
+        }
         return false
     }
 
@@ -95,4 +98,6 @@ abstract class DataButtonGroup(
     abstract fun createButtons()
     abstract fun refresh()
     abstract fun executeAction(data: List<Any>, triggeringButtonData: Any? = null)
+
+    open fun onHover(){}
 }

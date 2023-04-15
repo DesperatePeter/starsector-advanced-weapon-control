@@ -51,7 +51,7 @@ abstract class ButtonBase(val info: ButtonInfo) {
         return false
     }
 
-    protected fun isHover(): Boolean {
+    fun isHover(): Boolean {
         val ssm = Global.getSettings().screenScaleMult
         val mx = Mouse.getX().toFloat() / ssm
         val my = Mouse.getY().toFloat() / ssm
