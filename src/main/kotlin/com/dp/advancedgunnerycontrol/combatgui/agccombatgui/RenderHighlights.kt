@@ -9,12 +9,11 @@ import java.awt.Color
 data class Highlight(val x: Float, val y: Float, val r: Float, var a: Float)
 val hlColor = Color.GREEN
 private const val CIRCLE_POINTS = 50
-private const val RADIUS_MULTIPLIER = 0.7f
+private const val RADIUS_MULTIPLIER = 0.6f
 
 
 fun renderHighlights(highlights: List<Highlight>, viewMult: Float){
     val uiMult = Global.getSettings()?.screenScaleMult ?: 1f
-    // if(Global.getSector().campaignUI.isShowingDialog || Global.getSector().campaignUI.isShowingMenu) return
     GL11.glPushAttrib(GL11.GL_ALL_ATTRIB_BITS)
     GL11.glMatrixMode(GL11.GL_PROJECTION)
     GL11.glPushMatrix()

@@ -40,8 +40,10 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
 
     override fun render() {
         super.render()
-        renderHighlights(highlights, Global.getCombatEngine()?.viewport?.viewMult ?: 1.0f)
-        highlights.forEach { it.a = max(0.0f, it.a - 0.008f) }
+        if(Settings.enableWeaponHighlighting()){
+            renderHighlights(highlights, Global.getCombatEngine()?.viewport?.viewMult ?: 1.0f)
+            highlights.forEach { it.a = max(0.0f, it.a - 0.008f) }
+        }
     }
 
     private fun createActionButtons() {

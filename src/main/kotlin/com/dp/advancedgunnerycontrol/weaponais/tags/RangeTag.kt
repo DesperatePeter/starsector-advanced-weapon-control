@@ -8,11 +8,11 @@ import org.lwjgl.util.vector.Vector2f
 
 class RangeTag(weapon: WeaponAPI, private val threshold: Float) : WeaponAITagBase(weapon) {
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
-        return if (isInRange(solution.aimPoint)) 1.0f else 100f
+        return if (isInRange(solution.target.location)) 1.0f else 100f
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {
-        return isInRange(solution.aimPoint)
+        return isInRange(solution.target.location)
     }
 
     override fun isBaseAiOverridable(): Boolean = true

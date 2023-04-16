@@ -9,5 +9,9 @@ interface ButtonGroupAction {
      * @param triggeringButtonData data of the button that was clicked (null if button was deselected)
      */
     fun execute(data: List<Any>, triggeringButtonData: Any?)
+
+    /**
+     * Override this function to perform some kind of action when a button of the group is hovered over
+     */
     fun onHover(){}
 }

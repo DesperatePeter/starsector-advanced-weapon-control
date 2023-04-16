@@ -58,12 +58,17 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     }
 
     /**
+     * This is the intended way of adding button groups
      * adds a new button group to the GUI. This library will take care of positioning based on grid layout.
      * all actions will be automatically executed when appropriate
      * @param action will be performed when one of the buttons gets clicked, can't pass null
+     *               Implement a class that implements ButtonGroupAction, overriding the execute method
      * @param create will be performed when the button group gets added, create individual buttons in this action, can't pass null
-     * @param refresh will be called every frame, feel free to pass null
+     *               Use the pre-existing class CreateSimpleButtons if you don't want to do anything fancy
+     * @param refresh will be called whenever something changes (e.g. any button gets clicked), feel free to pass null
      * @note ButtonGroups represent a set of data and the data of all active buttons will be passed to the action
+     * @note Internally, this will create a new object that inherits from DataButtonGroup and implements the abstract functions.
+     *       If you want to provide your own implementation for DataButtonGroup, use addCustomButtonGroup instead
      */
     protected fun addButtonGroup(
         action: ButtonGroupAction,

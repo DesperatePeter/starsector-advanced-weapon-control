@@ -8,8 +8,14 @@ import org.lazywizard.lazylib.ui.LazyFont
 /**
  * If possible, use GuiBase.addButtonGroup rather than using this class!
  *
+ * This class provides an inheritance-based option to create your buttons, whereas addButtonGroup instead allows
+ * you to pass actions for creating/refreshing buttons and the action to execute.
+ *
  * base class defining a group of buttons with each button representing a possible date and the whole group
  * representing a data set defined by the sum of data of all active buttons.
+ *
+ * In other words, this represents a row (or column) of buttons. All buttons in that row perform the same action
+ * when clicked. When a button is clicked, that action is performed with the data of all active buttons.
  *
  * buttons get activated/deactivated by the user by clicking on them
  * when a button is clicked, executeAction gets called with the sum of data of all active buttons
@@ -56,8 +62,8 @@ abstract class DataButtonGroup(
         currentY = layout.y
     }
 
-    fun disableButton(text: String) {
-        buttons.find { it.info.txt == text }?.let { it.isDisabled = true }
+    fun disableButton(title: String) {
+        buttons.find { it.info.txt == title }?.let { it.isDisabled = true }
     }
 
     fun refreshAllButtons(data: List<Any>) {
@@ -75,14 +81,14 @@ abstract class DataButtonGroup(
     }
 
     fun advance(): Boolean {
-        buttons.filter { it.advance() }.let {
-            if (it.isNotEmpty()) {
-                executeAction(buttons.mapNotNull { btn -> btn.getDataIfActive() }, it.firstOrNull()?.getDataIfActive())
-                return true
-            }
-        }
         if(buttons.any { it.isHover() }){
             onHover()
+        }
+        buttons.filter { it.advance() }.let {
+            if (it.isNotEmpty()) {
+                executeAction(getActiveButtonData(), it.firstOrNull()?.getDataIfActive())
+                return true
+            }
         }
         return false
     }
@@ -93,11 +99,33 @@ abstract class DataButtonGroup(
     }
 
     /**
-     * gets called on construction. Create
+     * Override me!
+     * gets called on construction. Create all buttons belonging to this group in the implementation of this method.
+     * cf. CreateSimpleButtons for an example implementation.
      */
     abstract fun createButtons()
+
+    /**
+     * Override me!
+     * gets called whenever a button of any group gets pressed (or something calls for a re-render)
+     * If you e.g. want to enable/disable buttons or change tooltips based on the current state, implement
+     * that logic in this method. Otherwise, an empty method will do.
+     */
     abstract fun refresh()
+
+    /**
+     * Override me!
+     * gets called whenever a button in this group gets clicked. Implement the actual logic you want your button group
+     * to perform in here.
+     * @param data a list of the data of all currently active buttons
+     * @param triggeringButtonData data of the button that was clicked. Might be null (usually shouldn't).
+     * @note Check if data contains triggeringButtonData to see if button was activated or deactivated
+     */
     abstract fun executeAction(data: List<Any>, triggeringButtonData: Any? = null)
 
+    /**
+     * Override this method to perform some action when the user hovers over a button in the group.
+     * @note use getActiveButtonData() if you need to know the current button states in this method.
+     */
     open fun onHover(){}
 }

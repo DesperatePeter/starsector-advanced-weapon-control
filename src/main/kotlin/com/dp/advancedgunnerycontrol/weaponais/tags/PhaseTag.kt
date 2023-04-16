@@ -32,8 +32,6 @@ class PhaseTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
         val ttt = computeTimeToTravel(weapon, solution.aimPoint)
         if (!pc.isActive && (pc.cooldownRemaining > ttt || ft.overloadTimeRemaining > ttt || ft.isVenting && ft.timeToVent > ttt)
         ) return false
-        if (pc.isActive && ((ft.currFlux + ttt * pc.fluxPerSecond) > ft.maxFlux) && (pc.cooldown > ttt)
-        ) return false
-        return true
+        return !(pc.isActive && ((ft.currFlux + ttt * pc.fluxPerSecond) > ft.maxFlux) && (pc.cooldown > ttt))
     }
 }

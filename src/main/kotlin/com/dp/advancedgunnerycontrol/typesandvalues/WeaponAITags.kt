@@ -45,7 +45,7 @@ val tagTooltips = mapOf(
             if (Settings.strictBigSmall()) "\nRestricts targeting to missiles and ships smaller than cruisers." else "\nNo targeting restrictions.",
     "NoPD" to "Forbids targeting missiles and prioritizes ships over fighters.",
     "Fighter" to "Restricts targeting to fighters.",
-    "AvoidShields" to "Weapon will prioritize targets without shields, flanked shields or high flux/shields off. Shields of fighters will ${
+    "AvoidShields" to "Weapon will prioritize targets without shields, flanked shields or high flux/shields off. \nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
@@ -53,7 +53,7 @@ val tagTooltips = mapOf(
         )
     } be ignored (configurable in settings)" +
             "\nNo targeting restrictions.",
-    "TargetShields" to "Weapon will prioritize shooting shields. Will stop firing against enemies with very high flux. Shields of fighters will ${
+    "TargetShields" to "Weapon will prioritize shooting shields. Will stop firing against enemies with very high flux. \nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
@@ -62,14 +62,14 @@ val tagTooltips = mapOf(
     } be ignored (configurable in settings)" +
             "\nTip: Keep one kinetic weapon on default to keep up pressure." +
             "\nNo targeting restrictions.",
-    "TgtShields+" to "As TargetShields, but will always shoot when shields are up and not flanked. (experimental). Shields of fighters will ${
+    "TgtShields+" to "As TargetShields, but will always shoot when shields are up and not flanked. (experimental). \nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
             "not"
         )
     } be ignored (configurable in settings)",
-    "AvdShields+" to "As AvoidShields, but will never fire when shields are up and not flanked. (experimental). Shields of fighters will ${
+    "AvdShields+" to "As AvoidShields, but will never fire when shields are up and not flanked. (experimental). \nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
@@ -95,14 +95,14 @@ val tagTooltips = mapOf(
     "AvoidPhased" to "Weapon will ignore phase-ships unless they are unable to avoid the shot by phasing (due to flux or cooldown)." +
             "\nNo targeting restrictions.",
     "ShipTarget" to "Weapon will only target the selected ship target (R-Key). I like to use this for regenerating missiles.",
-    "TgtShieldsFT" to "As TargetShields but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT() * 100f).toInt()}%. Shields of fighters will ${
+    "TgtShieldsFT" to "As TargetShields but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT() * 100f).toInt()}%. \nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
             "not"
         )
     } be ignored (configurable in settings)",
-    "AvdShieldsFT" to "As AvoidShields but will allow targeting of anything when flux is below ${(Settings.avoidShieldsAtFT() * 100f).toInt()}%. Shields of fighters will ${
+    "AvdShieldsFT" to "As AvoidShields but will allow targeting of anything when flux is below ${(Settings.avoidShieldsAtFT() * 100f).toInt()}%. \nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
@@ -141,7 +141,7 @@ fun getTagTooltip(tag: String): String {
                     )
                 } " +
                 "effectiveness vs armor." +
-                "\nCombine with AvoidShields to also avoid shields. (experimental)"
+                "\nCombine with AvoidShields to also avoid shields. (e.g. for frag weapons)"
 
         panicFireRegex.matches(tag) -> "Weapon will blindly fire without considering if/what the shot will hit as long as the ship" +
                 " hull level is below ${extractRegexThresholdAsPercentageString(panicFireRegex, tag)}." +

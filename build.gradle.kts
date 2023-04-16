@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.7.1"
+    val modVersion = "1.8.0"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -236,12 +236,15 @@ tasks {
                    |                "Opportunist", "Panic(H<25%)", "Range<60%",
                    |                "ConserveAmmo", "CnsrvPDAmmo"
                    |                ]
-                   |   , "simpleTagList" : [ "PD", "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "NoFighters" ]
+                   |   
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
                    |   #       Use Reset to clear them.
                    |   
                    |   # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons in advanced mode
                    |   ,"allowHotLoadingTags" : true
+                   |   
+                   |   # Tags to display in simple mode. Note that simple mode does not hot load tags
+                   |   , "simpleTagList" : [ "PD", "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "NoFighters" ]
                    |  
                    |   #                                 #### CUSTOM AI ####
                    |   # If you set this to true, if the base AI would have weapons in weapon groups target something invalid for the selected tags,
@@ -285,6 +288,9 @@ tasks {
                    |   # If you disable this, you will have to use the Load/Save-Buttons to save/load weapon modes
                    |   # This can't be enabled when enablePersistentFireModes is off
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
+                   |   
+                   |   # If true, in the combat gui, hovering over mode buttons will highlight affected weapons on the ship
+                   |   , "enableWeaponHighlighting" : true # <---- EDIT HERE ----
                    |   
                    |   #                                 #### CUSTOM AI CONFIGURATION  ####
                    |   # NOTE: All the stuff here is mainly here to facilitate testing. But feel free to play around with the settings here!

@@ -29,10 +29,8 @@ fun isPD(weapon: WeaponAPI): Boolean {
     if (weapon.hasAIHint(WeaponAPI.AIHints.PD_ALSO) || weapon.hasAIHint(WeaponAPI.AIHints.PD)
         || weapon.hasAIHint(WeaponAPI.AIHints.PD_ONLY)
     ) return true
-    if ((WeaponControlPlugin.determineSelectedShip(Global.getCombatEngine())?.variant?.hasHullMod("pointdefenseai") == true)
-        && (weapon.size == WeaponAPI.WeaponSize.SMALL) && (weapon.type != WeaponAPI.WeaponType.MISSILE)
-    ) return true
-    return false
+    return ((WeaponControlPlugin.determineSelectedShip(Global.getCombatEngine())?.variant?.hasHullMod("pointdefenseai") == true)
+            && (weapon.size == WeaponAPI.WeaponSize.SMALL) && (weapon.type != WeaponAPI.WeaponType.MISSILE))
 }
 
 fun isAimable(weapon: WeaponAPI): Boolean {
@@ -105,10 +103,7 @@ fun isOpportuneTarget(solution: FiringSolution?, weapon: WeaponAPI): Boolean {
     if (target.maxSpeed > weapon.projectileSpeed * trackingFactor) return false
     val ttt = (weapon.location - p).length() / weapon.projectileSpeed
     val ammoLessModifier = if (!weapon.usesAmmo()) 1.0f else if (weapon.ammoTracker.reloadSize > 0f) 0.5f else 0.1f
-    if (((p - weapon.location).length() - effectiveCollRadius(target) * ammoLessModifier + ttt * target.maxSpeed * 0.1f / ammoLessModifier) >
-        weapon.range * 0.95f * Settings.opportunistModifier()
-    ) return false
-    return true
+    return ((p - weapon.location).length() - effectiveCollRadius(target) * ammoLessModifier + ttt * target.maxSpeed * 0.1f / ammoLessModifier) <= weapon.range * 0.95f * Settings.opportunistModifier()
 }
 
 private fun isOpportuneType(target: ShipAPI, weapon: WeaponAPI): Boolean {

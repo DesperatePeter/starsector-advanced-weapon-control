@@ -288,8 +288,12 @@ You can find a usage example of the library here: <https://github.com/DesperateP
          Tuned default settings.
 - 1.6.1: Fix TargetShields+, turn jar into a pom-style library to allow for displaying javadoc in IDE
 - 1.7.0: Tag scrollbar, add new tags, add option to ignore fighter shields (special thanks to Seanra for contributing most of the new stuff!)
-- 1.7.1: Fix an issue with weapons that need to be aimed firing without aiming (special thanks to Genir!), fix an issue with PrioritizePD not ignoring flares with IPDAI.
-  (Hopefully) fix potential memory leak caused by in-combat-GUI.
+- 1.7.1: Fix an issue with weapons that need to be aimed firing without aiming (special thanks to Genir!). 
+         Fix an issue with PrioritizePD not ignoring flares with IPDAI.
+         (Hopefully) fix potential memory leak caused by in-combat-GUI.
+- 1.8.0: Add two new tags; ship module modes now persist; fix range tag for non-aimable weapons; 
+         UI improvements (advanced/simple mode, weapon highlighting, dynamic option names); 
+         Combat GUI lib: Add overrideable onHover method to group actions.
 
 ## Acknowledgements ##
 
