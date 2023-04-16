@@ -15,18 +15,20 @@ object Values {
     const val distToAngularDistEvaluationFactor = 1f / 400f
     var storageIndex = 0
     const val HELP_TEXT =
-        "---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
+        "Click on any of the top-row buttons to perform that action. Click on any mode button to enable/disable that mode." +
+                "\n---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
                 " for the stated modifications." +
                 "\nAs the name implies, Ship AI modes will only work for AI-controlled ships, not the player controlled ship." +
                 "\n---Fire Mode Tags---\nFire mode tags will modify what the weapon group targets and whether" +
                 " it will fire or not. Each tag will modify the behavior in a certain way. You can then combine multiple tags" +
                 "\nin order to create the desired behavior. For instance, if you wish for your weapon to target only shielded" +
                 " fighters, you could give it the Fighter and TargetShields tags." +
+                "\nTags that are incompatible to currently selected tags will be disabled." +
                 "\nNote: Each additional tag will make it less likely for the weapons to fire. Only when all tags agree that" +
-                " a target is valid, the weapons will fire." +
+                " a target should be shot at, the weapons will fire." +
                 "\n---Loadouts---\nIf you want to be able to adapt your strategy based on the situation you face, you can define" +
                 " multiple loadouts for your ships.\nYou can define different modes for your ships per loadout and cycle through them" +
-                " during combat." +
+                " during combat. All modes are saved on a per-loadout basis. " +
                 "\nAs you can only cycle loadouts for all ships, make sure your loadouts fit a theme and are consistent between ships." +
                 "\n---Tips---" +
                 "\n - Tags are mainly a flux management tool. If your ship is already flux-neutral, you probably won't need many tags." +

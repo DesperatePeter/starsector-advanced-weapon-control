@@ -14,7 +14,7 @@
     # that might match to other weapons (e.g. ".*h.*" would be a very bad idea to add...).,
     # Please refer to the README.md (in repo base folder) for a description of available tags and what to use them for.
     "suggestedWeaponTags" : {
-      ".*needler" : "TargetShields,Hold(Flx>90%)",
+      ".*needler" : "TargetShields",
       ".*flak" : "PD",
       "hellbore" : "NoFighters",
       "reaper" : "Opportunist",
@@ -25,7 +25,7 @@
       "swarmer" : "Fighter",
       "harpoon.*" : "Opportunist",
       "breach.*" : "AvoidShields",
-      "sabot.*" : "Opportunist",
+      "sabot.*" : "Opportunist,Range<60%",
       "hurricane" : "AvoidShields",
       "squall" : "TargetShields",
       "locust" : "Fighter",
@@ -39,10 +39,10 @@
       "amblaster" : "Opportunist",
       "pulselaser" : "Hold(Flx>90%)",
       "mjolnir" : "Hold(Flx>90%)",
-      "heavyblaster" : "Hold(Flux>75%)",
-      "miningblaster" : "Hold(Flux>75%)",
-      "plasma" : "Hold(Flux>90%)",
-      "ionpulser" : "Hold(Flux>90%)"
+      "heavyblaster" : "Hold(Flx>90%)",
+      "miningblaster" : "Hold(Flx>90%)",
+      "plasma" : "Hold(Flx>90%)",
+      "ionpulser" : "Hold(Flx>90%)"
     },
     "suggestedWeaponModes" : {},
     "suggestedWeaponSuffixes" : {}

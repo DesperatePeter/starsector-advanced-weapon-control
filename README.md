@@ -159,6 +159,9 @@ some actions and then let the base AI take back over.
 
 ### Compatibility and Integration with other mods ###
 
+Note: If you are unsure how anything in this section is supposed to work and need help, 
+please feel free to DM me on Discord (Jannes on the unofficial Starsector Discord).
+
 This mod should be compatible with other mods that provide custom AIs for their weapons, as long as they don't try to
 manipulate the weapon AI mid-combat. This mod will simply use the custom AI of that weapon as the base AI.
 This mod doesn't affect anything outside of combat, so it's very unlikely to cause problems on the campaign level.
@@ -213,11 +216,36 @@ ship.setCustomData("AGC_ApplyCustomOptions", mapOf("!MAGIC!Missile" to listOf("F
 
 ```java
 // Java
-// ship.setCustomData("AGC_ApplyCustomOptions", Collections.singletonMap("!MAGIC!Missile", Arrays.asList("ForceAF", "NoFighters")));
+// assuming ship is an object of type ShipAPI
+ship.setCustomData("AGC_ApplyCustomOptions", Collections.singletonMap("!MAGIC!Missile", Arrays.asList("ForceAF", "NoFighters")));
+```
+
+If you want to apply this via Hullmod, the hullmod effect could look something like this:
+
+```kotlin
+// Kotlin
+class ExampleTagSettingHullmod : HullModEffect {
+    // we only care to write to ship data in combat (after the ship is spawned), not before that or in the campaign
+    override fun applyEffectsAfterShipCreation(ship: ShipAPI?, id: String?) {
+        if(ship != null){// nullptr check just to be safe (I know, this is not the Kotlin-way, but easier to read for Java devs :P)           
+            val tagMap = mapOf(
+                "!MAGIC!Missile" to listOf("ForceAF", "NoFighters") // set all missiles to ForceAF and NoFighters
+                , "hveldriver" to listOf("TargetShields") // set all hyper-velocity drivers to TargetShields
+                , ".*flak" to listOf("PD") // all weapons with IDs ending in flak (vanilla: single + dual flak) to PD 
+            )
+            ship.setCustomData("AGC_ApplyCustomOptions", tagMap)
+        }
+        // apply other effects your hullmod might have below this, as usual
+    }
+    
+    // override remaining methods as usual
+    // [...]
+}
 ```
 
 If you want to check whether AGC has been installed/loaded by the user:
-It will write the key "AGC_Present" to the CombatEngine custom data.
+It will write the key "AGC_Present" to the CombatEngine custom data. Though there's usually no harm in simply setting the ship
+custom data. If AGC is present, it will handle it, if not, it won't have any effect.
 
 #### Using the combat gui library ####
 

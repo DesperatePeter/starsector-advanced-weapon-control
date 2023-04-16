@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.combatgui.buttons
 
+import com.dp.advancedgunnerycontrol.combatgui.renderTextbox
 import com.fs.starfarer.api.Global
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.GL11
@@ -15,7 +16,7 @@ abstract class ButtonBase(val info: ButtonInfo) {
     var wasHover = false
     abstract fun advance(): Boolean
     private fun determineColor(): Color {
-        return if (isDisabled) Color.GRAY else info.color
+        return if (isDisabled) Color.LIGHT_GRAY else info.color
     }
 
     fun render() {
@@ -26,7 +27,12 @@ abstract class ButtonBase(val info: ButtonInfo) {
 
         if (isHover()) {
             val tooltipText = info.font?.createText(info.tooltip.txt, baseColor = determineColor())
-            tooltipText?.draw(info.tooltip.x, info.tooltip.y)
+            tooltipText?.let {
+                renderTextbox(it, info.tooltip.x, info.tooltip.y, 10f)
+                it.draw(info.tooltip.x, info.tooltip.y)
+            }
+
+
             if (!wasHover) {
                 Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
                 wasHover = true

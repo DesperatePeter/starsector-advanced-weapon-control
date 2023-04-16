@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
+import com.dp.advancedgunnerycontrol.combatgui.Highlight
 import com.dp.advancedgunnerycontrol.combatgui.buttongroups.ButtonGroupAction
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.utils.applyTagsToWeaponGroup

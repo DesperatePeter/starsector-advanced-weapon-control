@@ -326,3 +326,20 @@ fun isIncompatibleWithExistingTags(tag: String, existingTags: List<String>): Boo
 fun createTags(names: List<String>, weapon: WeaponAPI): List<WeaponAITagBase> {
     return names.mapNotNull { createTag(it, weapon) }.filter { it.isValid() }
 }
+
+fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int) {
+    val groups = ship.variant.weaponGroups
+    val tagStore = Settings.tagStorage[storageIndex]
+    if (tagStore.modesByShip[ship.id] == null) {
+        tagStore.modesByShip[ship.id] = mutableMapOf()
+    }
+    groups.forEachIndexed { index, group ->
+        val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
+        val tagKey: String = if (Settings.suggestedTags.containsKey(weaponID)) {
+            weaponID
+        } else {
+            Settings.suggestedTags.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
+        }
+        tagStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedTags[tagKey] ?: emptyList() }
+    }
+}

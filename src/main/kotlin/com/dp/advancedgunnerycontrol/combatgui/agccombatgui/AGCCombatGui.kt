@@ -1,14 +1,13 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
 import com.dp.advancedgunnerycontrol.combatgui.GuiBase
+import com.dp.advancedgunnerycontrol.combatgui.Highlight
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ActionButton
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonAction
+import com.dp.advancedgunnerycontrol.combatgui.renderHighlights
 import com.dp.advancedgunnerycontrol.gui.groupAsString
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.typesandvalues.TagListView
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.typesandvalues.assignShipMode
-import com.dp.advancedgunnerycontrol.typesandvalues.saveShipModes
+import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.utils.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipAPI
@@ -68,10 +67,10 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
         fun updateCycleLoadoutInfo(){
             cycleLoadoutButtonInfo.txt = "Cycle LO ${Values.storageIndex + 1} / ${Settings.maxLoadouts()}"
             cycleLoadoutButtonInfo.tooltip.txt = "Cycle loadout for all ships (${Values.storageIndex + 1} / ${Settings.maxLoadouts()} " +
-                    "<${Settings.loadoutNames().getOrNull(Values.storageIndex) ?: "NoName"}>)"
+                    "<${Settings.loadoutNames().getOrNull(Values.storageIndex) ?: "NoName"}>)" +
+                    "\nOnly enabled in advanced mode."
             cycleActionButton?.isDisabled = !Settings.isAdvancedMode
         }
-        updateCycleLoadoutInfo()
         val cycleLoadoutAction = object : ButtonAction {
             override fun execute() {
                 Values.storageIndex =
@@ -79,9 +78,11 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
                 updateCycleLoadoutInfo()
                 refreshButtons()
                 reloadAllShips(Values.storageIndex)
+                refreshButtons()
             }
         }
         cycleActionButton = ActionButton(cycleLoadoutAction, cycleLoadoutButtonInfo)
+        updateCycleLoadoutInfo()
         addCustomButton(cycleActionButton)
 
         // RELOAD BUTTON
@@ -106,7 +107,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
             saveAction,
             "Save",
             "Make all temporary changes to current loadout done in combat permanent." +
-                    "\nNote: Only relevant if in-combat persistence has been disabled in the settings.",
+                    "\nOnly enabled if automatic in-combat persistence has been disabled in the settings.",
             Settings.enableCombatChangePersistance()
         )
         addButton(null, "Help", Values.HELP_TEXT, true)
@@ -134,6 +135,23 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
             }
         }
         addCustomButton(ActionButton(simpleAdvancedAction, simpleAdvancedButtonInfo))
+
+        // Suggested modes Button
+        val suggestedModeAction = object : ButtonAction{
+            override fun execute() {
+                applySuggestedModes(ship.fleetMember, Values.storageIndex)
+                reloadAllShips(Values.storageIndex)
+                Settings.hotAddTags(loadAllTags(ship.fleetMember, generateUniversalFleetMemberId(ship)))
+                refreshButtons()
+                reRenderButtonGroups()
+            }
+
+        }
+        addButton(suggestedModeAction, "Suggested",
+            "Apply suggested modes to all weapon groups." +
+                    "\nOnly works for vanilla weapons and mods that provide suggested modes." +
+                    "\nNote: In simple mode, some added tags might be invisible. " +
+                    "Switch to advanced mode to see all tags")
     }
 
     override fun advance() {

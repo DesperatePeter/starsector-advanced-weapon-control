@@ -2,6 +2,7 @@ package com.dp.advancedgunnerycontrol.gui.actions
 
 import com.dp.advancedgunnerycontrol.gui.GUIAttributes
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.typesandvalues.applySuggestedModes
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
 class ApplySuggestedModeAction(attributes: GUIAttributes) : GUIAction(attributes) {
@@ -26,21 +27,4 @@ class ApplySuggestedModeAction(attributes: GUIAttributes) : GUIAction(attributes
     }
 
     override fun getName(): String =  "Load suggested modes" + nameSuffix()
-
-    private fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int) {
-        val groups = ship.variant.weaponGroups
-        val tagStore = Settings.tagStorage[storageIndex]
-        if (tagStore.modesByShip[ship.id] == null) {
-            tagStore.modesByShip[ship.id] = mutableMapOf()
-        }
-        groups.forEachIndexed { index, group ->
-            val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
-            val tagKey: String = if (Settings.suggestedTags.containsKey(weaponID)) {
-                weaponID
-            } else {
-                Settings.suggestedTags.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
-            }
-            tagStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedTags[tagKey] ?: emptyList() }
-        }
-    }
 }
