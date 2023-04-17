@@ -167,7 +167,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     }
 
     private fun initializeUi() {
-        Settings.hotAddTags(loadAllTags(ship.fleetMember, generateUniversalFleetMemberId(ship)))
+        ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
 
         for (i in 0 until ship.variant.weaponGroups.size) {
             addButtonGroup(
