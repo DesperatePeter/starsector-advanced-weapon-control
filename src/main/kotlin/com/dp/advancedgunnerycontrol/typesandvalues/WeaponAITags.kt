@@ -35,8 +35,7 @@ fun shouldTagBeDisabled(groupIndex: Int, sh: FleetMemberAPI, tag: String): Boole
     val modTag = tagNameToRegexName(tag)
     if (pdTags.contains(modTag) && !isElligibleForPD(groupIndex, sh)) return true
     if (ammoTags.contains(modTag) && !usesAmmo(groupIndex, sh)) return true
-    if (isEverythingBlacklisted(groupIndex, sh)) return true
-    return false
+    return isEverythingBlacklisted(groupIndex, sh)
 }
 
 val tagTooltips = mapOf(
@@ -62,14 +61,18 @@ val tagTooltips = mapOf(
     } be ignored (configurable in settings)" +
             "\nTip: Keep one kinetic weapon on default to keep up pressure." +
             "\nNo targeting restrictions.",
-    "TgtShields+" to "As TargetShields, but will always shoot when shields are up and not flanked. (experimental). \nShields of fighters will ${
+    "TgtShields+" to "As TargetShields, but more aggressive." +
+            "\nWill only stop shooting when flanking shields or shields are disabled (experimental)." +
+            "\nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
             "not"
         )
     } be ignored (configurable in settings)",
-    "AvdShields+" to "As AvoidShields, but will never fire when shields are up and not flanked. (experimental). \nShields of fighters will ${
+    "AvdShields+" to "As AvoidShields, but less aggressive." +
+            "\nWill only shoot when flanking shields or shields are disabled (experimental)." +
+            "\nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
@@ -86,23 +89,23 @@ val tagTooltips = mapOf(
     "AvoidDebris" to "Weapon will not fire when the shot is blocked by debris/asteroids." +
             "\nNote: This only affects the custom AI and the Opportunist mode already includes this option.",
     "BigShips" to "Weapon won't target missiles and prioritize big ships" +
-            if (Settings.strictBigSmall()) " and won't target anything smaller than destroyers." else "",
+            if (Settings.strictBigSmall()) " and won't target anything smaller than destroyers." else ".",
     "SmallShips" to "Weapon will ignore missiles and prioritize small ships (including fighters)" +
-            if (Settings.strictBigSmall()) " and won't target anything bigger than destroyers." else "",
+            if (Settings.strictBigSmall()) " and won't target anything bigger than destroyers." else ".",
     "ForceAF" to "Will force AI-controlled ships to set this group to autofire, like the ForceAF ship mode does to all groups." +
             "\nNote: This will modify the ShipAI, as the Starsector API doesn't allow to directly set a weapon group to autofire." +
             "\n      The ShipAI might still try to select this weapon group, but will be forced to deselect it again.",
     "AvoidPhased" to "Weapon will ignore phase-ships unless they are unable to avoid the shot by phasing (due to flux or cooldown)." +
             "\nNo targeting restrictions.",
     "ShipTarget" to "Weapon will only target the selected ship target (R-Key). I like to use this for regenerating missiles.",
-    "TgtShieldsFT" to "As TargetShields but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT() * 100f).toInt()}%. \nShields of fighters will ${
+    "TgtShieldsFT" to "As TargetShields, but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT() * 100f).toInt()}%. \nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
             "not"
         )
     } be ignored (configurable in settings)",
-    "AvdShieldsFT" to "As AvoidShields but will allow targeting of anything when flux is below ${(Settings.avoidShieldsAtFT() * 100f).toInt()}%. \nShields of fighters will ${
+    "AvdShieldsFT" to "As AvoidShields, but will allow targeting of anything when flux is below ${(Settings.avoidShieldsAtFT() * 100f).toInt()}%. \nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
             "",
@@ -116,7 +119,7 @@ val tagTooltips = mapOf(
 
 fun getTagTooltip(tag: String): String {
     if (tagTooltips.containsKey(tag)) {
-        return tagTooltips[tag] ?: ""
+        return tagTooltips[tag] ?: "No description available."
     }
     return when {
         holdRegex.matches(tag) -> "Weapon will stop firing if ship flux exceeds ${
@@ -141,7 +144,7 @@ fun getTagTooltip(tag: String): String {
                     )
                 } " +
                 "effectiveness vs armor." +
-                "\nCombine with AvoidShields to also avoid shields. (e.g. for frag weapons)"
+                "\nCombine with AvoidShields to also avoid shields (e.g. for frag weapons)."
 
         panicFireRegex.matches(tag) -> "Weapon will blindly fire without considering if/what the shot will hit as long as the ship" +
                 " hull level is below ${extractRegexThresholdAsPercentageString(panicFireRegex, tag)}." +
@@ -161,7 +164,7 @@ fun getTagTooltip(tag: String): String {
         }." +
                 "\nNote: This will not circumvent targeting restrictions, only firing restrictions."
 
-        else -> ""
+        else -> "No description available."
     }
 }
 

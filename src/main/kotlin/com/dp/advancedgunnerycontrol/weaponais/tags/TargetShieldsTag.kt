@@ -26,7 +26,8 @@ class TargetShieldsTag(weapon: WeaponAPI, private val threshold: Float = Setting
             return true
         }
         val ttt = computeTimeToTravel(weapon, solution.aimPoint)
-        return computeShieldFactor(tgtShip, weapon, ttt) > threshold
+        val sFactor = computeShieldFactor(tgtShip, weapon, ttt)
+        return sFactor > threshold
     }
 
     override fun isBaseAiOverridable(): Boolean = true

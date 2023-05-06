@@ -322,6 +322,7 @@ You can find a usage example of the library here: <https://github.com/DesperateP
 - 1.8.0: Add two new tags; ship module modes now persist; fix range tag for non-aimable weapons; 
          UI improvements (advanced/simple mode, weapon highlighting, dynamic option names); 
          Combat GUI lib: Add overrideable onHover method to group actions.
+- 1.9.0: Compatibility update for Starsector 0.96a and MagicLib 1.0.0
 
 ## Acknowledgements ##
 

@@ -16,16 +16,16 @@ object Values {
     var storageIndex = 0
     const val HELP_TEXT =
         "Click on any of the top-row buttons to perform that action. Click on any mode button to enable/disable that mode." +
-                "\n---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
-                " for the stated modifications." +
-                "\nAs the name implies, Ship AI modes will only work for AI-controlled ships, not the player controlled ship." +
                 "\n---Fire Mode Tags---\nFire mode tags will modify what the weapon group targets and whether" +
                 " it will fire or not. Each tag will modify the behavior in a certain way. You can then combine multiple tags" +
-                "\nin order to create the desired behavior. For instance, if you wish for your weapon to target only shielded" +
-                " fighters, you could give it the Fighter and TargetShields tags." +
+                "\nin order to create the desired behavior. For instance, if you wish for your weapon group to only shoot at" +
+                " missiles, assign the PD and NoFighters tags." +
                 "\nTags that are incompatible to currently selected tags will be disabled." +
                 "\nNote: Each additional tag will make it less likely for the weapons to fire. Only when all tags agree that" +
                 " a target should be shot at, the weapons will fire." +
+                "\n---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
+                " for the stated modifications." +
+                "\nAs the name implies, Ship AI modes will only work for AI-controlled ships, not the player controlled ship." +
                 "\n---Loadouts---\nIf you want to be able to adapt your strategy based on the situation you face, you can define" +
                 " multiple loadouts for your ships.\nYou can define different modes for your ships per loadout and cycle through them" +
                 " during combat. All modes are saved on a per-loadout basis. " +
@@ -33,7 +33,7 @@ object Values {
                 "\n---Tips---" +
                 "\n - Tags are mainly a flux management tool. If your ship is already flux-neutral, you probably won't need many tags." +
                 "\n - If you want a weapon group to fire as much as possible, give it no tags." +
-                " In my experience, no tags or just the Flx<90% tag is the right choice for most weapon groups" +
+                " In my experience, no tags or just the Flx<90% tag is the right choice for many weapon groups" +
                 "\n - Consider leaving one loadout blank (all default) to give you a fallback option." +
                 "\n - Be very careful with ship modes! Force disabling shields might sound cool until you run into a HIL." +
                 "\n - Most values/thresholds can be adjusted in Settings.editme, if you don't like the default values."

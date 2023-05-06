@@ -66,6 +66,7 @@ class ShipView(private val tagView: TagListView) : CustomUIPanelPlugin {
     }
 
     override fun processInput(events: MutableList<InputEventAPI>?) {}
+    override fun buttonPressed(p0: Any?) {}
 
     fun showShipModes(attributes: GUIAttributes) {
         attributes.customPanel = attributes.visualPanel?.showCustomPanel(1210f, 650f, this)

@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.8.0"
+    val modVersion = "1.9.0"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -15,8 +15,8 @@ object Variables {
     val modId = "advanced_gunnery_control_dbeaa06e"
     val modName = "AdvancedGunneryControl"
     val author = "DesperatePeter"
-    const val description = "A Starsector mod that adds more autofire modes for weapon groups. On the campaign map, press J to open a GUI. In combat, with NUMLOCK enabled, press the NUMPAD keys to cycle weapon modes."
-    val gameVersion = "0.95.1a-RC6"
+    const val description = "A mod that allows fine-tuning of autofie. Press J-key in combat or on the campaign map to access."
+    val gameVersion = "0.96a-RC7"
     val jarsDir = "jars/agc/AdvancedGunneryControl/$modVersion"
     val jars = arrayOf("$jarsDir/$jarFileName")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
@@ -30,8 +30,6 @@ object Variables {
 // LazyLib is needed to use Kotlin, as it provides the Kotlin Runtime
 }
 //////////////////////
-
-// Note: On Linux, use "${Variables.starsectorDirectory}" as core directory
 val starsectorCoreDirectory = if(Os.isFamily(Os.FAMILY_WINDOWS)) "${Variables.starsectorDirectory}/starsector-core" else Variables.starsectorDirectory
 val starsectorModDirectory = "${Variables.starsectorDirectory}/mods"
 val modInModsFolder = File("$starsectorModDirectory/${Variables.modFolderName}")
@@ -52,7 +50,7 @@ repositories {
 dependencies {
     implementation("org.junit.jupiter:junit-jupiter:5.7.0")
     implementation("junit:junit:4.13.1")
-    val kotlinVersionInLazyLib = "1.5.31"
+    val kotlinVersionInLazyLib = "1.6.21"
 
     implementation(fileTree("libs") { include("*.jar") })
     testImplementation(kotlin("test"))
@@ -144,11 +142,12 @@ tasks {
                             {
                                 "id": "lw_lazylib",
                                 "name": "LazyLib",
-                                "version" : "2.7"
+                                "version" : "2.8"
                             },
                             {
                                 "id" : "MagicLib",
-                                "name" : "MagicLib"
+                                "name" : "MagicLib",
+                                "version" : "1.0.0-dev01"
                             }
                         ]
                     }

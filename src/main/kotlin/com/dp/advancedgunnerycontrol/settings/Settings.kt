@@ -2,7 +2,7 @@ package com.dp.advancedgunnerycontrol.settings
 
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.utils.StorageBase
-import data.scripts.util.MagicSettings
+import org.magiclib.util.MagicSettings
 import kotlin.math.max
 import kotlin.math.min
 
