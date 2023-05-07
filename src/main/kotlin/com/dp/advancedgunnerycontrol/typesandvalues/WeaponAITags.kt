@@ -95,7 +95,10 @@ val tagTooltips = mapOf(
     "ForceAF" to "Will force AI-controlled ships to set this group to autofire, like the ForceAF ship mode does to all groups." +
             "\nNote: This will modify the ShipAI, as the Starsector API doesn't allow to directly set a weapon group to autofire." +
             "\n      The ShipAI might still try to select this weapon group, but will be forced to deselect it again.",
-    "AvoidPhased" to "Weapon will ignore phase-ships unless they are unable to avoid the shot by phasing (due to flux or cooldown)." +
+    "AvoidPhased" to "Weapon will ignore phase-ships, unless they are unable to avoid the shot by phasing (due to flux or cooldown)." +
+            "\nNo targeting restrictions.",
+    "TargetPhase" to "Weapon will prioritize phase-ships. Does not care if the ship is currently phased or not." +
+            "\nUseful for fast-firing weapons (e.g. beams) to keep up pressure on enemy phase coils." +
             "\nNo targeting restrictions.",
     "ShipTarget" to "Weapon will only target the selected ship target (R-Key). I like to use this for regenerating missiles.",
     "TgtShieldsFT" to "As TargetShields, but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT() * 100f).toInt()}%. \nShields of fighters will ${
@@ -195,7 +198,8 @@ fun createTag(name: String, weapon: WeaponAPI): WeaponAITagBase? {
         "BigShips" -> BigShipTag(weapon)
         "SmallShips" -> SmallShipTag(weapon)
         "ForceAF" -> ForceAutofireTag(weapon)
-        "AvoidPhased" -> PhaseTag(weapon)
+        "AvoidPhased" -> AvoidPhaseTag(weapon)
+        "TargetPhase" -> TargetPhaseTag(weapon)
         "ShipTarget" -> ShipTargetTag(weapon)
         "TgtShieldsFT" -> TargetShieldsAtFTTag(weapon)
         "AvdShieldsFT" -> AvoidShieldsAtFTTag(weapon)
@@ -315,7 +319,9 @@ val tagIncompatibility = mapOf(
     "PD(Flx>N%)" to listOf("Fighter", "Opportunist", "NoPD", "PD", "BigShips", "SmallShips"),
     "SmallShips" to listOf("BigShips", "PD", "Fighter", "PD(Flx>N%)", "PrioritisePD"),
     "BigShips" to listOf("SmallShips", "PD", "Fighter", "PD(Flx>N%)", "PrioritisePD"),
-    "NoMissiles" to listOf("Opportunist")
+    "NoMissiles" to listOf("Opportunist"),
+    "TargetPhase" to listOf("AvoidPhased"),
+    "AvoidPhased" to listOf("TargetPhase")
 )
 
 fun isIncompatibleWithExistingTags(tag: String, existingTags: List<String>): Boolean {
