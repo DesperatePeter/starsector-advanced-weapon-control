@@ -129,7 +129,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
                 updateSimpleAdvancedTexts()
                 updateCycleLoadoutInfo()
                 // this isn't pretty and will break if I ever add another button group...
-                // FIXME: Maybe add IDs to button groups?
+                // TODO: Maybe add IDs to button groups?
                 buttonGroups.last().descriptionText = shipAiModesText
                 reRenderButtonGroups()
             }

@@ -323,6 +323,7 @@ You can find a usage example of the library here: <https://github.com/DesperateP
          UI improvements (advanced/simple mode, weapon highlighting, dynamic option names); 
          Combat GUI lib: Add overrideable onHover method to group actions.
 - 1.9.0: Compatibility update for Starsector 0.96a and MagicLib 1.0.0
+- 1.10.0: Add GUI for customizing suggested tags and option to automatically apply suggested tags (accessible from campaign GUI)
 
 ## Acknowledgements ##
 

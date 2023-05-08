@@ -19,6 +19,7 @@ class SuggestedTagGuiView(private val tagView: TagListView, private val weaponLi
         buttons.forEach { it.executeCallbackIfChecked() }
         tagView.advance()
     }
+
     fun show(panel: VisualPanelAPI): CustomPanelAPI{
         val customPanel = panel.showCustomPanel(1410f, 650f, this)
         customPanel?.position?.inTMid(20f)
