@@ -3,50 +3,15 @@ package com.dp.advancedgunnerycontrol.gui
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.TagListView
 import com.dp.advancedgunnerycontrol.utils.loadAllTags
-import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.CustomPanelAPI
-import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
-import org.lwjgl.opengl.GL11
 
-class ShipView(private val tagView: TagListView) : CustomUIPanelPlugin {
-    private var pos: PositionAPI? = null
+class ShipView(private val tagView: TagListView) : CustomView() {
+
     private val buttons: MutableList<ButtonBase<*>> = mutableListOf()
-
-    override fun positionChanged(pos: PositionAPI?) {
-        pos?.let {
-            this.pos = it
-        }
-    }
-
-    override fun renderBelow(alpha: Float) {}
-
-    override fun render(alpha: Float) {
-        pos?.let { p ->
-            GL11.glPushMatrix()
-            GL11.glDisable(GL11.GL_TEXTURE_2D)
-            GL11.glEnable(GL11.GL_BLEND)
-            GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-            GL11.glColor4f(0f, 150f / 255f, 90f / 255f, 0.6f * alpha)
-            GL11.glBegin(GL11.GL_LINES)
-            GL11.glLineWidth(10f)
-
-            GL11.glVertex2f(p.x, p.y + p.height)
-            GL11.glVertex2f(p.x + p.width, p.y + p.height)
-            GL11.glVertex2f(p.x + p.width, p.y + p.height)
-            GL11.glVertex2f(p.x + p.width, p.y)
-            GL11.glVertex2f(p.x + p.width, p.y)
-            GL11.glVertex2f(p.x, p.y)
-            GL11.glVertex2f(p.x, p.y)
-            GL11.glVertex2f(p.x, p.y + p.height)
-
-            GL11.glEnd()
-            GL11.glPopMatrix()
-        }
-    }
 
     private fun addTagButtonGroup(group: Int, ship: FleetMemberAPI, tooltip: TooltipMakerAPI) {
         buttons.addAll(TagButton.createModeButtonGroup(ship, group, tooltip, tagView))
@@ -62,7 +27,7 @@ class ShipView(private val tagView: TagListView) : CustomUIPanelPlugin {
     }
 
     fun shouldRegenerate(): Boolean {
-        return tagView.hasViewChanged()
+        return tagView.hasChanged()
     }
 
     override fun processInput(events: MutableList<InputEventAPI>?) {}
@@ -81,16 +46,6 @@ class ShipView(private val tagView: TagListView) : CustomUIPanelPlugin {
             var lastElement = imgView
 
             if(Settings.isAdvancedMode){
-//                imgView?.addPara("Ship AI Modes", 5f)
-//                val shipModeHeader = attributes.customPanel?.createUIElement(1200f, 50f, false)
-//
-//                attributes.customPanel?.addUIElement(shipModeHeader)?.leftOfBottom(imgView, 1f)
-//                attributes.customPanel?.let {
-//                    if (imgView != null) {
-//                        addShipModeButtonGroup(sh, it, imgView)
-//                    }
-//                }
-
                 val shipModeCard = attributes.customPanel?.createUIElement(1200f, 10f, false)
                 shipModeCard?.addTitle("Ship AI Modes")
                 attributes.customPanel?.addUIElement(shipModeCard)?.belowLeft(imgView, 1f)

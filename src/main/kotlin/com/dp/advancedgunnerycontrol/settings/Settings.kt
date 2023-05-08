@@ -56,12 +56,19 @@ object Settings : SettingsDefinition() {
     val avoidShieldsAtFT = addSetting<Float>("avoidShieldsAtFT_flux", 0.2f)
     val enableWeaponHighlighting = addSetting<Boolean>("enableWeaponHighlighting", true)
     var isAdvancedMode : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "isAdvancedMode", false)
+    var autoApplySuggestedTags : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "autoApplySuggestedTags", false)
+    var customSuggestedTags: Map<String, List<String>> by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "customSuggestedTags", mapOf())
 
     var weaponBlacklist = listOf<String>()
         private set
 
-    var suggestedTags = mapOf<String, List<String>>()
+    var defaultSuggestedTags = mapOf<String, List<String>>()
         private set
+
+    fun getCurrentSuggestedTags() : Map<String, List<String>>{
+        if(customSuggestedTags.isEmpty()) return defaultSuggestedTags
+        return customSuggestedTags
+    }
 
     var shipModeStorage: List<StorageBase<String>> = listOf()
     var tagStorage: List<StorageBase<List<String>>> = listOf()
@@ -76,7 +83,7 @@ object Settings : SettingsDefinition() {
     override fun readSettings() {
         super.readSettings()
         weaponBlacklist = MagicSettings.getList(Values.THIS_MOD_NAME, Values.WEAPON_BLACKLIST_KEY)
-        suggestedTags = MagicSettings.getStringMap(Values.THIS_MOD_NAME, Values.SUGGESTED_TAGS_KEY)
+        defaultSuggestedTags = MagicSettings.getStringMap(Values.THIS_MOD_NAME, Values.SUGGESTED_TAGS_KEY)
             .mapValues { it.value.split(",") }
     }
 

@@ -13,8 +13,8 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 
-class ShipModeButton(ship: FleetMemberAPI, associatedIndex: Int, mode: ShipModes, button: ButtonAPI) :
-    ButtonBase<ShipModes>(ship, associatedIndex, mode, button) {
+class ShipModeButton(var ship: FleetMemberAPI, var group: Int, mode: ShipModes, button: ButtonAPI) :
+    ButtonBase<ShipModes>(mode, button) {
 
     companion object {
         private var storage = ShipModeStorage[AGCGUI.storageIndex]

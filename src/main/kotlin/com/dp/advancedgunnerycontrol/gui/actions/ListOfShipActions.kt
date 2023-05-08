@@ -13,7 +13,8 @@ fun generateShipActions(attributes: GUIAttributes): List<GUIAction> {
         ApplySuggestedModeAction(attributes),
         CopyToSameVariantAction(attributes),
         ReloadSettingsAction(attributes),
-        SimpleAdvancedAction(attributes)
+        SimpleAdvancedAction(attributes),
+        GoToSuggestedTagsAction(attributes)
     )
     return listOf(
         BackAction(attributes),

@@ -157,7 +157,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     override fun advance() {
         super.advance()
         tagListView.advance()
-        if (tagListView.hasViewChanged()) {
+        if (tagListView.hasChanged()) {
             super.reRenderButtonGroups()
         }
     }

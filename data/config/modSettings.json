@@ -22,7 +22,6 @@
       "typhoon" : "Opportunist",
       "atropos.*" : "Opportunist",
       "hammer.*" : "Opportunist",
-      "swarmer" : "Fighter",
       "harpoon.*" : "Opportunist",
       "breach.*" : "AvoidShields",
       "sabot.*" : "Opportunist,Range<60%",

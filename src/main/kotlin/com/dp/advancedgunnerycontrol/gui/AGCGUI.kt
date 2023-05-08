@@ -3,6 +3,7 @@ package com.dp.advancedgunnerycontrol.gui
 import com.dp.advancedgunnerycontrol.gui.actions.ExitAction
 import com.dp.advancedgunnerycontrol.gui.actions.GUIAction
 import com.dp.advancedgunnerycontrol.gui.actions.generateShipActions
+import com.dp.advancedgunnerycontrol.gui.suggesttaggui.SuggestedTagGui
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.Global
