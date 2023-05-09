@@ -10,7 +10,7 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
 fun applyTagsToWeaponGroup(ship: ShipAPI, groupIndex: Int, tags: List<String>): Boolean {
-    val weaponGroup = ship.weaponGroupsCopy[groupIndex]
+    val weaponGroup = ship.weaponGroupsCopy?.getOrNull(groupIndex) ?: return false
     val plugins = weaponGroup.aiPlugins
     if (tags.isEmpty()) {
         for (i in 0 until plugins.size) {
