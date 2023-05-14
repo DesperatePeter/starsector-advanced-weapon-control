@@ -336,19 +336,25 @@ fun createTags(names: List<String>, weapon: WeaponAPI): List<WeaponAITagBase> {
     return names.mapNotNull { createTag(it, weapon) }.filter { it.isValid() }
 }
 
-fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int) {
+fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int, allowOverriding: Boolean = true) {
     val groups = ship.variant.weaponGroups
     val tagStore = Settings.tagStorage[storageIndex]
     if (tagStore.modesByShip[ship.id] == null) {
         tagStore.modesByShip[ship.id] = mutableMapOf()
     }
     groups.forEachIndexed { index, group ->
-        val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
-        val tagKey: String = if (Settings.suggestedTags.containsKey(weaponID)) {
-            weaponID
-        } else {
-            Settings.suggestedTags.keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
+        if(allowOverriding || (tagStore.modesByShip[ship.id]?.get(index)?.isEmpty() != false)){
+            val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
+            tagStore.modesByShip[ship.id]?.let { it[index] = getSuggestedModesForWeaponId(weaponID) }
         }
-        tagStore.modesByShip[ship.id]?.let { it[index] = Settings.suggestedTags[tagKey] ?: emptyList() }
     }
+}
+
+fun getSuggestedModesForWeaponId(weaponID: String) : List<String>{
+    val tagKey: String = if (Settings.getCurrentSuggestedTags().containsKey(weaponID)) {
+        weaponID
+    } else {
+        Settings.getCurrentSuggestedTags().keys.map { Regex(it) }.find { it.matches(weaponID) }.toString()
+    }
+    return Settings.getCurrentSuggestedTags()[tagKey] ?: emptyList()
 }

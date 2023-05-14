@@ -5,7 +5,6 @@ import com.fs.starfarer.api.ui.ButtonAPI
 
 
 abstract class ButtonBase<T>(
-    protected var ship: FleetMemberAPI, protected var group: Int,
     var associatedValue: T, var button: ButtonAPI,
     protected var isRadio: Boolean = true
 ) {

@@ -12,8 +12,8 @@ import com.fs.starfarer.api.ui.ButtonAPI
 import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.util.Misc
 
-class TagButton(ship: FleetMemberAPI, group: Int, tag: String, button: ButtonAPI) :
-    ButtonBase<String>(ship, group, tag, button, false) {
+class TagButton(var ship: FleetMemberAPI, var group: Int, tag: String, button: ButtonAPI) :
+    ButtonBase<String>(tag, button, false) {
 
     companion object {
         private var storage = Settings.tagStorage[AGCGUI.storageIndex]

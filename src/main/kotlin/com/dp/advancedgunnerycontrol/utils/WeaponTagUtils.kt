@@ -10,7 +10,7 @@ import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
 fun applyTagsToWeaponGroup(ship: ShipAPI, groupIndex: Int, tags: List<String>): Boolean {
-    val weaponGroup = ship.weaponGroupsCopy[groupIndex]
+    val weaponGroup = ship.weaponGroupsCopy?.getOrNull(groupIndex) ?: return false
     val plugins = weaponGroup.aiPlugins
     if (tags.isEmpty()) {
         for (i in 0 until plugins.size) {
@@ -53,12 +53,13 @@ fun reloadAllShips(storageIndex: Int) {
 }
 
 fun reloadShips(storageIndex: Int, ships: List<ShipAPI?>?) {
-    ships?.filter { it?.owner == 0 }?.filterNotNull().let {
-        it?.forEach { ship ->
-            var atLeastOneTagExist = false
+    ships?.filter { it?.owner == 0 }?.filterNotNull().let { ships ->
+        ships?.forEach { ship ->
             for (i in 0 until ship.weaponGroupsCopy.size) {
+                if(Settings.autoApplySuggestedTags){
+                    ship.fleetMember?.let { applySuggestedModes(it, storageIndex, false) }
+                }
                 val tags = loadTags(ship, i, storageIndex)
-                atLeastOneTagExist = tags.isNotEmpty() || atLeastOneTagExist
                 applyTagsToWeaponGroup(ship, i, tags)
             }
             val shipModes = loadShipModes(ship, storageIndex)

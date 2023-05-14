@@ -6,6 +6,7 @@ import com.dp.advancedgunnerycontrol.WeaponControlPlugin
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
+import org.lazywizard.lazylib.CollisionUtils
 import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
@@ -225,6 +226,46 @@ fun getMaxArmor(armor: ArmorGridAPI): Float {
     return horizontalCells * verticalCells * armor.maxArmorInCell
 }
 
+/**
+ * returns the location where the shot is predicted to impact, transformed to be relative to the current
+ * target position, under the assumption that the target is approximately circular
+ * @param predictedLocation: location where the target will be at the time the shot is estimated to connect
+ */
+fun predictImpactLocationInTgtCoordinates(target: CombatEntityAPI, firingWeapon: WeaponAPI, predictedLocation: Vector2f? = null): Vector2f{
+    val locationAtImpactTime = predictedLocation ?: target.location
+    val positionDelta = locationAtImpactTime - target.location
+    val vecToTarget = locationAtImpactTime - firingWeapon.location
+    // vec from weapon to target bound
+    vecToTarget.scale(1f - (target.collisionRadius / vecToTarget.length()))
+    val predictedPointOnCollisionCircle = firingWeapon.location + vecToTarget - positionDelta
+    return CollisionUtils.getCollisionPoint(predictedPointOnCollisionCircle, target.location, target) ?: predictedPointOnCollisionCircle
+}
+
+fun predictEffectiveArmorAtImpact(target: CombatEntityAPI, firingWeapon: WeaponAPI, predictedLocation: Vector2f? = null) : Float{
+    val armor = (target as? ShipAPI)?.armorGrid ?: return 0f
+    val impactLocation = predictImpactLocationInTgtCoordinates(target, firingWeapon, predictedLocation)
+    val (x, y) = armor.getCellAtLocation(impactLocation) ?: return armor.armorRating
+    return computeEffectiveArmorAroundIndex(armor, x, y)
+}
+
+fun computeEffectiveArmorAroundIndex(armor: ArmorGridAPI, x: Int, y: Int) : Float{
+    fun getWeighted(x2: Int, y2: Int): Float{
+        val a = armor.getArmorValue(x2, y2)
+        val distance = (abs(x - x2) * abs(x - x2)) + (abs(y - y2) * abs(y - y2))
+        return when{
+            distance <= 2 -> a
+            distance <= 4 -> 0.5f * a
+            else -> 0f
+        }
+    }
+    var toReturn = 0f
+    for(x2 in x - 2 until x + 3){
+        for(y2 in y - 2 until y + 3){
+            toReturn += getWeighted(x2, y2)
+        }
+    }
+    return toReturn
+}
 private fun isDefenseless(target: CombatEntityAPI, weapon: WeaponAPI): Boolean {
     if (target !is ShipAPI) return true
     if (target.shield == null && target.phaseCloak == null) return true

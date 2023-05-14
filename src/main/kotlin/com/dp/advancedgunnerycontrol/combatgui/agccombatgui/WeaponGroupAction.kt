@@ -21,7 +21,7 @@ class WeaponGroupAction(
     }
 
     override fun onHover() {
-        val weapons = ship.weaponGroupsCopy[index].weaponsCopy
+        val weapons = ship.weaponGroupsCopy?.getOrNull(index)?.weaponsCopy ?: return
         val vp = Global.getCombatEngine()?.viewport ?: return
 
         val toScreenX = { x: Float ->

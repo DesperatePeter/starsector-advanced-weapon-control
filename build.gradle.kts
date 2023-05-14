@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.9.0"
+    val modVersion = "1.10.1"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -220,7 +220,7 @@ tasks {
                    |   # Allowed values are: (replace N with a number between 0 and 100)
                    |   # "PD", "NoPD", "NoMissiles", "PD(Flux>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
                    |   # "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "AvdArmor(N%)", "AvoidDebris", "ShieldsOff",
-                   |   # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "CnsrvPDAmmo", "ShipTarget",
+                   |   # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "CnsrvPDAmmo", "ShipTarget", "AvoidPhased", "TargetPhase",
                    |   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded"
                    |   
                    |   # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
@@ -229,11 +229,12 @@ tasks {
                    |                "PD", "PD(Flx>50%)",
                    |                "AvoidShields", "TargetShields", "AvdArmor(33%)", 
                    |                "Hold(Flx>90%)", "Hold(Flx>75%)",
-                   |                "AvoidPhased", "ShipTarget", 
+                   |                "AvoidPhased", "TargetPhase", "ShipTarget", 
                    |                "ForceAF", "ForceF(F<50%)",
                    |                "PrioritisePD", "NoMissiles", "NoFighters",
                    |                "Opportunist", "Panic(H<25%)", "Range<60%",
-                   |                "ConserveAmmo", "CnsrvPDAmmo"
+                   |                "ConserveAmmo", "CnsrvPDAmmo",
+                   |                "AvdShields+", "TgtShields+"
                    |                ]
                    |   
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 

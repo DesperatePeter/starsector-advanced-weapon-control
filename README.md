@@ -92,6 +92,7 @@ Replace N with a number between 1 and 99 when the tag name contains N%
 | ForceF(Flx<N%) | -                              | -                                                    | None          |                -                |                         Circumvents firing restrictions (not targeting restrictions) of other tags such as e.g. AvoidShields                         |                                         -                                         | Fire weapons more liberally while ship has flux to spare                                 | No                            |
 |   Overloaded   | Overloaded ships               | Overloaded ships                                     | None          | Base AI targets non-overloaded  |                                                                          -                                                                           |                                         -                                         | Finisher-type weapons                                                                    | No                            |
 |   ShieldsOff   | Targets without active shields | Targets without active shields                       | None          |     Base AI targets shields     |                    This is simple boolean logic. If a target has no shields or its shields are turned off, it will get targeted.                     |                                other shield modes                                 | Was requested for EMP weapons, so EMP weapons I guess?                                   | No                            |
+|  TargetPhase   | -                              | Phase ships                                          | None          |    Base AI targets non-phase    |                                                                          -                                                                           |                                    AvoidPhased                                    | Beam weapons                                                                             | No                            |
 
 ## Settings ##
 
@@ -323,6 +324,8 @@ You can find a usage example of the library here: <https://github.com/DesperateP
          UI improvements (advanced/simple mode, weapon highlighting, dynamic option names); 
          Combat GUI lib: Add overrideable onHover method to group actions.
 - 1.9.0: Compatibility update for Starsector 0.96a and MagicLib 1.0.0
+- 1.10.0: Add GUI for customizing suggested tags and option to automatically apply suggested tags (accessible from campaign GUI)
+- 1.10.1: fix: catch possible out-of-bounds error for combat GUI, add SpamSystem and TgtPhase to readme, fix spamSystem logic error
 
 ## Acknowledgements ##
 

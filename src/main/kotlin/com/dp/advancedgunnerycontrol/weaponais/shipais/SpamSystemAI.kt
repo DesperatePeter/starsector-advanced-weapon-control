@@ -5,7 +5,7 @@ import com.fs.starfarer.api.combat.ShipCommand
 
 class SpamSystemAI(ship: ShipAPI) : ShipCommandGenerator(ship) {
     override fun generateCommands(): List<ShipCommandWrapper> {
-        return if (ship.system?.isActive == true) listOf(
+        return if (ship.system?.isActive == false) listOf(
             ShipCommandWrapper(ShipCommand.USE_SYSTEM)
         ) else listOf()
     }

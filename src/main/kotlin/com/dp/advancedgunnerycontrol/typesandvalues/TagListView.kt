@@ -28,7 +28,7 @@ class TagListView {
         startingIndex = MathUtils.clamp(startingIndex - delta, 0, maxStartingIndex)
     }
 
-    fun hasViewChanged(): Boolean {
+    fun hasChanged(): Boolean {
         val hasChanged = lastStartingIndex != startingIndex
         lastStartingIndex = startingIndex
         return hasChanged

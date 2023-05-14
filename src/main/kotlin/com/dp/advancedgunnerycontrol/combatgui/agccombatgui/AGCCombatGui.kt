@@ -129,8 +129,9 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
                 updateSimpleAdvancedTexts()
                 updateCycleLoadoutInfo()
                 // this isn't pretty and will break if I ever add another button group...
-                // FIXME: Maybe add IDs to button groups?
+                // TODO: Maybe add IDs to button groups?
                 buttonGroups.last().descriptionText = shipAiModesText
+                ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
                 reRenderButtonGroups()
             }
         }
@@ -141,7 +142,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
             override fun execute() {
                 applySuggestedModes(ship.fleetMember, Values.storageIndex)
                 reloadAllShips(Values.storageIndex)
-                Settings.hotAddTags(loadAllTags(ship.fleetMember, generateUniversalFleetMemberId(ship)))
+                ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
                 refreshButtons()
                 reRenderButtonGroups()
             }
@@ -157,7 +158,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     override fun advance() {
         super.advance()
         tagListView.advance()
-        if (tagListView.hasViewChanged()) {
+        if (tagListView.hasChanged()) {
             super.reRenderButtonGroups()
         }
     }
