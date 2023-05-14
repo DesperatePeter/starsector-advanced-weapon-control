@@ -326,6 +326,7 @@ You can find a usage example of the library here: <https://github.com/DesperateP
 - 1.9.0: Compatibility update for Starsector 0.96a and MagicLib 1.0.0
 - 1.10.0: Add GUI for customizing suggested tags and option to automatically apply suggested tags (accessible from campaign GUI)
 - 1.10.1: fix: catch possible out-of-bounds error for combat GUI, add SpamSystem and TgtPhase to readme, fix spamSystem logic error
+- 1.10.2: fix: improved accuracy for AvoidArmor calculations; allow hotloading tags in simple mode
 
 ## Acknowledgements ##
 

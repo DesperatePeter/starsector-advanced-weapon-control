@@ -42,6 +42,6 @@ jobs:
           tag: ${{ env.VERSION }}
           bodyFile: changes.txt
           draft: false
-          prerelease: true
+          prerelease: false
           token: ${{ secrets.GITHUB_TOKEN }}
           artifacts: ".github/workflows/artifacts/*"
