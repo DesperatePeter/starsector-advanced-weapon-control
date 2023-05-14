@@ -35,7 +35,7 @@ class AvoidArmorTag(
     override fun avoidDebris(): Boolean = false
 
     private fun computeArmorEffectiveness(entity: CombatEntityAPI, predictedLocation: Vector2f? = null): Float {
-        val armorInArc = computeOuterLayerArmorInImpactArea(weapon, entity, predictedLocation)
-        return computeWeaponEffectivenessVsArmor(weapon, armorInArc)
+        val armorAtImpact = predictEffectiveArmorAtImpact(entity, weapon, predictedLocation)
+        return computeWeaponEffectivenessVsArmor(weapon, armorAtImpact)
     }
 }

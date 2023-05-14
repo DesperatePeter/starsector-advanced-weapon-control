@@ -29,7 +29,8 @@ object Settings : SettingsDefinition() {
     val maxLoadouts = addSetting<Int>("maxLoadouts", 3)
     val loadoutNames = addSetting<List<String>>("loadoutNames", listOf())
     val allowHotLoadingTags = addSetting<Boolean>("allowHotLoadingTags", true)
-    var originalTagList: List<String> = listOf()
+    private var originalTagList: List<String> = listOf()
+    private var originalSimpleTagList: List<String> = listOf()
     val automaticallyReapplyPlayerShipModes = addSetting<Boolean>("automaticallyReapplyPlayerShipModes", true)
     val allowEnemyShipModeApplication = addSetting<Boolean>("allowEnemyShipModeApplication", true)
     val collisionRadiusMultiplier = addSetting<Float>("collisionRadiusMultiplier", 0.8f)
@@ -92,17 +93,22 @@ object Settings : SettingsDefinition() {
         shipModeStorage = StorageBase.assembleStorageArray<String>("$" + Values.THIS_MOD_NAME + "shipModes")
         tagStorage = StorageBase.assembleStorageArray("$" + Values.THIS_MOD_NAME + "tags")
         originalTagList = tagList()
+        originalSimpleTagList = simpleTagList()
         forceCustomAI.set(forceCustomAI() && enableCustomAI())
         enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set(max(0, min(2, customAIFriendlyFireComplexity())))
     }
 
-    fun hotAddTags(tags: List<String>, addForWholeSession: Boolean = true) {
+    fun hotAddTags(tags: List<String>, addForWholeSession: Boolean = false) {
         if (!allowHotLoadingTags()) return
         tagList.set(originalTagList)
+        simpleTagList.set(originalSimpleTagList)
         val combined = tagList().toMutableSet()
         combined.addAll(tags)
         if (addForWholeSession) originalTagList = combined.toList()
         tagList.set(combined.toList())
+        val combinedSimple = simpleTagList().toMutableSet()
+        combinedSimple.addAll(tags)
+        simpleTagList.set(combinedSimple.toList())
     }
 }

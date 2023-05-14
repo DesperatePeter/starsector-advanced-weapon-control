@@ -233,7 +233,8 @@ tasks {
                    |                "ForceAF", "ForceF(F<50%)",
                    |                "PrioritisePD", "NoMissiles", "NoFighters",
                    |                "Opportunist", "Panic(H<25%)", "Range<60%",
-                   |                "ConserveAmmo", "CnsrvPDAmmo"
+                   |                "ConserveAmmo", "CnsrvPDAmmo",
+                   |                "AvdShields+", "TgtShields+"
                    |                ]
                    |   
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
