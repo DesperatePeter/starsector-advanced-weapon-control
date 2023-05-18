@@ -23,6 +23,7 @@ object Settings : SettingsDefinition() {
     val uiAnchorY = addSetting<Float>("combatUiAnchorY", 0.7f)
     val infoHotkey = addSetting<Char>("inCombatGuiHotkey", 'j')
     val guiHotkey = addSetting<Char>("GUIHotkey", 'j')
+    val mergeHotkey = addSetting<Char>("mergeHotkey", 'k')
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
     val enableCombatChangePersistance = addSetting<Boolean>("persistChangesInCombat", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)

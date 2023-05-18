@@ -9,7 +9,7 @@
    # "PD", "NoPD", "NoMissiles", "PD(Flux>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
    # "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "AvdArmor(N%)", "AvoidDebris", "ShieldsOff",
    # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "CnsrvPDAmmo", "ShipTarget", "AvoidPhased", "TargetPhase",
-   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded"
+   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded", "Merge"
    
    # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
    
@@ -22,7 +22,7 @@
                 "PrioritisePD", "NoMissiles", "NoFighters",
                 "Opportunist", "Panic(H<25%)", "Range<60%",
                 "ConserveAmmo", "CnsrvPDAmmo",
-                "AvdShields+", "TgtShields+"
+                "AvdShields+", "TgtShields+", "Merge"
                 ]
    
    # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 

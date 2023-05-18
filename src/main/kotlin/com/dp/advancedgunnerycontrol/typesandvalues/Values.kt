@@ -14,6 +14,7 @@ object Values {
     const val CUSTOM_ENGINE_AGC_PRESENT_KEY = "AGC_Present"
     const val distToAngularDistEvaluationFactor = 1f / 400f
     const val CUSTOM_SUGGESTED_TAG_JSON_FILE_NAME = "AGC_customSuggestedTags.json"
+    const val CUSTOM_SHIP_DATA_ARE_WEAPONS_MERGED_KEY = "AGC_WeaponsMerged"
     var storageIndex = 0
     const val HELP_TEXT =
         "Click on any of the top-row buttons to perform that action. Click on any mode button to enable/disable that mode." +

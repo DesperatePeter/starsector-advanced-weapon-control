@@ -117,7 +117,8 @@ val tagTooltips = mapOf(
     } be ignored (configurable in settings)",
     "NoMissiles" to "Weapon won't target missiles.",
     "Overloaded" to "Weapon will only target and fire at overloaded ships.",
-    "ShieldsOff" to "Simplified version of AvoidShields. Will only fire at targets that have no shields or have shields turned off."
+    "ShieldsOff" to "Simplified version of AvoidShields. Will only fire at targets that have no shields or have shields turned off.",
+    "Merge" to "When pressing ${Settings.mergeHotkey()}, all weapons with this tag will be merged into current weapon group. For player controlled ship only!"
 )
 
 fun getTagTooltip(tag: String): String {
@@ -206,6 +207,7 @@ fun createTag(name: String, weapon: WeaponAPI): WeaponAITagBase? {
         "NoMissiles" -> NoMissilesTag(weapon)
         "Overloaded" -> OverloadTag(weapon)
         "ShieldsOff" -> ShieldsOff(weapon)
+        "Merge" -> MergeTag(weapon)
         else -> {
             unknownTagWarnCounter++
             when {
