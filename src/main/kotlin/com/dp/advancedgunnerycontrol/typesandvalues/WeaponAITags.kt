@@ -126,7 +126,8 @@ val tagTooltips = mapOf(
     "Overloaded" to "Weapon will only target and fire at overloaded ships.",
     "ShieldsOff" to "Simplified version of AvoidShields. Will only fire at targets that have no shields or have shields turned off.",
     "Merge" to "Press [${Settings.mergeHotkey().uppercaseChar()}] to merge all weapons with this tag into current weapon group. " +
-            "\nFor player controlled ship only! Press [${Settings.mergeHotkey().uppercaseChar()}] again to undo.",
+            "\nFor player controlled ship only! Press [${Settings.mergeHotkey().uppercaseChar()}] again to undo." +
+            "\nUse this tag to unleash big manually aimed barrages at your enemies!",
     "PrioFighter" to "Prioritize fighters over all other targets but target other things if no fighters present.$priorityBoilerplateText",
     "PrioMissile" to "Prioritize missiles over all other targets but target other things if no missiles present.$priorityBoilerplateText",
     "PrioShips" to "Prioritize non-fighter ships over all other targets but target other things if no ships present.$priorityBoilerplateText",
