@@ -14,8 +14,7 @@ class KeyStatusManager {
 
         when (event.eventChar.lowercaseChar()) {
             Settings.infoHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.INFO
-            // FIXME: Settings
-            'k' -> mkeyStatus.mcontrolEvent = ControlEventType.MERGE
+            Settings.mergeHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.MERGE
             else -> return false
         }
         event.consume()
