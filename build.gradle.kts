@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.10.2"
+    val modVersion = "1.11.0"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -16,7 +16,7 @@ object Variables {
     val modName = "AdvancedGunneryControl"
     val author = "DesperatePeter"
     const val description = "A mod that allows fine-tuning of autofie. Press J-key in combat or on the campaign map to access."
-    val gameVersion = "0.96a-RC7"
+    val gameVersion = "0.96a-RC10"
     val jarsDir = "jars/agc/AdvancedGunneryControl/$modVersion"
     val jars = arrayOf("$jarsDir/$jarFileName")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
@@ -221,17 +221,19 @@ tasks {
                    |   # "PD", "NoPD", "NoMissiles", "PD(Flux>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
                    |   # "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "AvdArmor(N%)", "AvoidDebris", "ShieldsOff",
                    |   # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "CnsrvPDAmmo", "ShipTarget", "AvoidPhased", "TargetPhase",
-                   |   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded"
+                   |   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded", "Merge",
+                   |   # "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded"
                    |   
                    |   # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
                    |   
                    |   "tagList" : [
                    |                "PD", "PD(Flx>50%)",
                    |                "AvoidShields", "TargetShields", "AvdArmor(33%)", 
-                   |                "Hold(Flx>90%)", "Hold(Flx>75%)",
+                   |                "Hold(Flx>90%)", "Hold(Flx>75%)", "Merge",
                    |                "AvoidPhased", "TargetPhase", "ShipTarget", 
                    |                "ForceAF", "ForceF(F<50%)",
-                   |                "PrioritisePD", "NoMissiles", "NoFighters",
+                   |                "PrioritisePD", "PrioFighter", "PrioMissile",
+                   |                "NoMissiles", "NoFighters",
                    |                "Opportunist", "Panic(H<25%)", "Range<60%",
                    |                "ConserveAmmo", "CnsrvPDAmmo",
                    |                "AvdShields+", "TgtShields+"
@@ -281,6 +283,7 @@ tasks {
                    |   , "inCombatGuiHotkey" : "j" # <---- EDIT HERE ----
                    |   # Campaign GUI
                    |   , "GUIHotkey" : "j" # <---- EDIT HERE ----
+                   |   , "mergeHotkey" : "k" # <---- EDIT HERE ----
                    |   
                    |   , "maxLoadouts" : 3 # <---- EDIT HERE ----
                    |   , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
@@ -389,6 +392,9 @@ tasks {
                    |   # Sets the flux threshold for "AvdShieldsFT" tag below which all targets are viable, regardless of their shield factor
                    |   ,"avoidShieldsAtFT_flux" : 0.2
                    |   
+                   |   # The PrioFighters/Missiles/Ships/PD tags will multiply the priority of the target type by this value.
+                   |   # For reference: ShipTarget modifies priority by a factor of 1000, most other things by 2~1000
+                   |   ,"prioXModifier" : 10000.0   
                    |   
                    | }
 

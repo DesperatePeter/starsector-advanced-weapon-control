@@ -9,6 +9,10 @@ import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
+
+fun WeaponAPI.getAutofirePlugin() : AutofireAIPlugin?{
+    return this.ship?.getWeaponGroupFor(this)?.getAutofirePlugin(this)
+}
 fun applyTagsToWeaponGroup(ship: ShipAPI, groupIndex: Int, tags: List<String>): Boolean {
     val weaponGroup = ship.weaponGroupsCopy?.getOrNull(groupIndex) ?: return false
     val plugins = weaponGroup.aiPlugins

@@ -23,6 +23,10 @@ val panicFireRegex = Regex("Panic\\(H<(\\d+)%\\)")
 val rangeRegex = Regex("Range<(\\d+)%")
 val forceFireRegex = Regex("ForceF\\(Fl?u?x?<(\\d+)%\\)")
 
+//val prioPdRegex = Regex("PrioP[dD]\\((\\d+)\\)")
+//val prioFightersRegex = Regex("PrioFighter\\((\\d+)\\)")
+//val prioMissilesRegex = Regex("PrioMissile\\((\\d+)\\)")
+
 fun extractRegexThreshold(regex: Regex, name: String): Float {
     return (regex.matchEntire(name)?.groupValues?.get(1)?.toFloat() ?: 0f) / 100f
 }
@@ -37,6 +41,9 @@ fun shouldTagBeDisabled(groupIndex: Int, sh: FleetMemberAPI, tag: String): Boole
     if (ammoTags.contains(modTag) && !usesAmmo(groupIndex, sh)) return true
     return isEverythingBlacklisted(groupIndex, sh)
 }
+
+val priorityBoilerplateText = "\nIncreases priority ba a factor of ${Settings.prioXModifier()} (adjustable in Settigs.editme)." +
+        "\nCombine multiple Prio-tags to de-prioritize everything else."
 
 val tagTooltips = mapOf(
     "PD" to "Restricts targeting to fighters and missiles.",
@@ -117,7 +124,14 @@ val tagTooltips = mapOf(
     } be ignored (configurable in settings)",
     "NoMissiles" to "Weapon won't target missiles.",
     "Overloaded" to "Weapon will only target and fire at overloaded ships.",
-    "ShieldsOff" to "Simplified version of AvoidShields. Will only fire at targets that have no shields or have shields turned off."
+    "ShieldsOff" to "Simplified version of AvoidShields. Will only fire at targets that have no shields or have shields turned off.",
+    "Merge" to "Press [${Settings.mergeHotkey().uppercaseChar()}] to merge all weapons with this tag into current weapon group. " +
+            "\nFor player controlled ship only! Press [${Settings.mergeHotkey().uppercaseChar()}] again to undo." +
+            "\nUse this tag to unleash big manually aimed barrages at your enemies!",
+    "PrioFighter" to "Prioritize fighters over all other targets but target other things if no fighters present.$priorityBoilerplateText",
+    "PrioMissile" to "Prioritize missiles over all other targets but target other things if no missiles present.$priorityBoilerplateText",
+    "PrioShips" to "Prioritize non-fighter ships over all other targets but target other things if no ships present.$priorityBoilerplateText",
+    "PrioWounded" to "Prioritize targets that have already taken lots of hull damage."
 )
 
 fun getTagTooltip(tag: String): String {
@@ -183,7 +197,7 @@ fun createTag(name: String, weapon: WeaponAPI): WeaponAITagBase? {
     }
     return when (name) {
         "PD" -> PDTag(weapon)
-        "PrioritisePD" -> PrioritisePDTag(weapon)
+        "PrioritisePD" -> PrioritisePDTag(weapon, Settings.prioXModifier())
         "NoPD" -> NoPDTag(weapon)
         "Fighter" -> FighterTag(weapon)
         "AvoidShields" -> AvoidShieldsTag(weapon)
@@ -206,6 +220,11 @@ fun createTag(name: String, weapon: WeaponAPI): WeaponAITagBase? {
         "NoMissiles" -> NoMissilesTag(weapon)
         "Overloaded" -> OverloadTag(weapon)
         "ShieldsOff" -> ShieldsOff(weapon)
+        "Merge" -> MergeTag(weapon)
+        "PrioFighter" -> PrioritizeFightersTag(weapon, Settings.prioXModifier())
+        "PrioMissile" -> PrioritizeMissilesTag(weapon, Settings.prioXModifier())
+        "PrioShips" -> PrioritizeShipsTag(weapon, Settings.prioXModifier())
+        "PrioWounded" -> PrioritizeWoundedTag(weapon)
         else -> {
             unknownTagWarnCounter++
             when {

@@ -9,17 +9,19 @@
    # "PD", "NoPD", "NoMissiles", "PD(Flux>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
    # "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "AvdArmor(N%)", "AvoidDebris", "ShieldsOff",
    # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "CnsrvPDAmmo", "ShipTarget", "AvoidPhased", "TargetPhase",
-   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded"
+   # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded", "Merge",
+   # "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded"
    
    # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
    
    "tagList" : [
                 "PD", "PD(Flx>50%)",
                 "AvoidShields", "TargetShields", "AvdArmor(33%)", 
-                "Hold(Flx>90%)", "Hold(Flx>75%)",
+                "Hold(Flx>90%)", "Hold(Flx>75%)", "Merge",
                 "AvoidPhased", "TargetPhase", "ShipTarget", 
                 "ForceAF", "ForceF(F<50%)",
-                "PrioritisePD", "NoMissiles", "NoFighters",
+                "PrioritisePD", "PrioFighter", "PrioMissile",
+                "NoMissiles", "NoFighters",
                 "Opportunist", "Panic(H<25%)", "Range<60%",
                 "ConserveAmmo", "CnsrvPDAmmo",
                 "AvdShields+", "TgtShields+"
@@ -69,6 +71,7 @@
    , "inCombatGuiHotkey" : "j" # <---- EDIT HERE ----
    # Campaign GUI
    , "GUIHotkey" : "j" # <---- EDIT HERE ----
+   , "mergeHotkey" : "k" # <---- EDIT HERE ----
    
    , "maxLoadouts" : 3 # <---- EDIT HERE ----
    , "loadoutNames" : [ "Normal", "Special", "AllDefault" ]
@@ -177,5 +180,8 @@
    # Sets the flux threshold for "AvdShieldsFT" tag below which all targets are viable, regardless of their shield factor
    ,"avoidShieldsAtFT_flux" : 0.2
    
+   # The PrioFighters/Missiles/Ships/PD tags will multiply the priority of the target type by this value.
+   # For reference: ShipTarget modifies priority by a factor of 1000, most other things by 2~1000
+   ,"prioXModifier" : 10000.0   
    
  }

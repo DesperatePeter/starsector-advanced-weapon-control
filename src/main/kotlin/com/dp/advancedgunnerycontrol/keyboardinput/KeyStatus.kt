@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol.keyboardinput
 
 enum class ControlEventType {
-    INFO, NONE
+    MERGE, INFO, NONE
 }
 
 class KeyStatus {

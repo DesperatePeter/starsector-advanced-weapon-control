@@ -7,7 +7,7 @@ import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 
 // Prioritises missiles > fighters > small ships > big ships
-class PrioritisePDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
+class PrioritisePDTag(weapon: WeaponAPI, private val multiplier: Float) : WeaponAITagBase(weapon) {
 
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
         return (entity as? ShipAPI)?.let { isSmall(it) } ?: false || (isPD(weapon) &&
@@ -18,7 +18,7 @@ class PrioritisePDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
         return if (isValidPDTargetForWeapon(solution.target, weapon)) {
-            0.02f
+            1f / multiplier
         } else {
             (solution.target as? ShipAPI)?.let { bigness(it) } ?: 10f
         }
