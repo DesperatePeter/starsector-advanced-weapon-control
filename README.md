@@ -93,6 +93,8 @@ Replace N with a number between 1 and 99 when the tag name contains N%
 |   Overloaded   | Overloaded ships               | Overloaded ships                                     | None          | Base AI targets non-overloaded  |                                                                          -                                                                           |                                         -                                         | Finisher-type weapons                                                                    | No                            |
 |   ShieldsOff   | Targets without active shields | Targets without active shields                       | None          |     Base AI targets shields     |                    This is simple boolean logic. If a target has no shields or its shields are turned off, it will get targeted.                     |                                other shield modes                                 | Was requested for EMP weapons, so EMP weapons I guess?                                   | No                            |
 |  TargetPhase   | -                              | Phase ships                                          | None          |    Base AI targets non-phase    |                                                                          -                                                                           |                                    AvoidPhased                                    | Beam weapons                                                                             | No                            |
+|     PrioX      | Anything                       | X                                                    | None          |   If Base AI doesn't target X   |                                         X is a placeholder. PrioX tags: PrioFighter, PrioMissile, PrioShips                                          |                                         -                                         | If you want your weapon to mainly shoot X, but other stuff too if no X in range.         | Yes                           |
+|     Merge      | N/A                            | Special                                              | None          |               N/A               | Allows for controlling multiple weapon groups manually. Press the K-Key to merge all weapons with this tag into active group. Press again to cancel. |                                         -                                         | Main-battery type weapons.                                                               | No                            |
 
 ## Settings ##
 
@@ -327,6 +329,7 @@ You can find a usage example of the library here: <https://github.com/DesperateP
 - 1.10.0: Add GUI for customizing suggested tags and option to automatically apply suggested tags (accessible from campaign GUI)
 - 1.10.1: fix: catch possible out-of-bounds error for combat GUI, add SpamSystem and TgtPhase to readme, fix spamSystem logic error
 - 1.10.2: fix: improved accuracy for AvoidArmor calculations; allow hotloading tags in simple mode
+- 1.11.0: Add Merge tag, which allows manually controlling multiple weapon groups (K-Key), add prioritization tags.
 
 ## Acknowledgements ##
 

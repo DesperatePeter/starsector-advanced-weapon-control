@@ -29,7 +29,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private val keyManager = KeyStatusManager()
 
     private var textFrameTimer: Int = 0
-    private var timeFrameTimer: Int = 1
+    private var periodicActionsFrameTimer: Int = 1
     private val optionApplicationFrameInterval = 50
     private var isInitialized = false
     private var initialShipInitRequired = Settings.enableAutoSaveLoad()
@@ -47,17 +47,17 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
-    private fun executeWeaponMergeCommand(index: Int){
+    private fun executeWeaponMergeCommand(index: Int) {
 
         val ship = determineSelectedShip(engine) ?: return
 
-        if(ship.weaponGroupsCopy?.getOrNull(index) == ship.selectedGroupAPI){
+        if (ship.weaponGroupsCopy?.getOrNull(index) == ship.selectedGroupAPI) {
             printMessage("Please don't select weapon groups immediately after merging. Aborting...")
         }
 
-        if (ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_ARE_WEAPONS_MERGED_KEY)){
+        if (ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_ARE_WEAPONS_MERGED_KEY)) {
             unmergeWeapons(ship)
-        }else{
+        } else {
             mergeWeapons(ship, index)
         }
         ship.giveCommand(ShipCommand.SELECT_GROUP, null, index)
@@ -78,11 +78,13 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             mergeWeaponGroupsIndex = null
         }
 
-        if (timeFrameTimer++ >= optionApplicationFrameInterval) {
-            timeFrameTimer = 0
+        if (periodicActionsFrameTimer++ >= optionApplicationFrameInterval) {
+            periodicActionsFrameTimer = 0
             if (Settings.allowEnemyShipModeApplication()) applyOptionsToEnemies()
             if (Settings.automaticallyReapplyPlayerShipModes()) reapplyShipModesAsNecessary()
         }
+
+        undoMergeIfTransferring()
 
         if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
 
@@ -106,6 +108,18 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             if (loadShipModes(ship, Values.storageIndex).let { it.isNotEmpty() && !it.contains(defaultShipMode) }
                 && ship.shipAI != null && !hasCustomAI(ship)) {
                 assignShipMode(loadShipModes(ship, Values.storageIndex), ship)
+            }
+        }
+    }
+
+    private fun undoMergeIfTransferring() {
+        engine.shipPlayerIsTransferringCommandFrom?.let {
+            if(mergedWeaponRestoration.isNotEmpty()) {
+                unmergeWeapons(it, false)
+                printMessage(
+                    "Restoring merged weapons of original ship due to ship transfer...",
+                    Settings.uiDisplayFrames() * 2
+                )
             }
         }
     }
@@ -146,10 +160,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                     engine.viewport?.isExternalControl = false
                 }
             }
+
             ControlEventType.MERGE -> {
                 determineSelectedShip(engine)?.let { ship ->
-                    if(engine.playerShip != ship){
-                        printMessage("Merging weapons only available for player ship!")
+                    if (engine.playerShip != ship) {
+                        printMessage("Merging weapons only available for player ship!" +
+                                "\nMake sure you have no allies selected via R-Key.")
                         return
                     }
                     // NOTE: When trying to merge weapons into the active weapon group, the game throws a NPE
@@ -164,19 +180,19 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         }
     }
 
-    private fun mergeWeapons(ship: ShipAPI, index: Int){
-        printMessage("Merging weapons with tag Merge into current weapon group")
+    private fun mergeWeapons(ship: ShipAPI, index: Int) {
+        printMessage("Merging weapons with tag Merge into current weapon group." +
+                "\nPress [${Settings.mergeHotkey().uppercaseChar()}] again to undo. ")
         val groups = ship.weaponGroupsCopy ?: return
-        // val currentGroup = ship.selectedGroupAPI ?: return
         val currentGroup = groups.getOrNull(index) ?: return
+        var wasSuccessful = false
+        mergedWeaponRestoration = mutableMapOf()
         groups.forEachIndexed { i, group ->
-            if(group != currentGroup){
-                for(weapon in group.weaponsCopy.toList()){
-                    if((weapon.getAutofirePlugin() as? TagBasedAI)?.tags?.any { it is MergeTag } == true){
+            if (group != currentGroup) {
+                for (weapon in group.weaponsCopy.toList()) {
+                    if ((weapon.getAutofirePlugin() as? TagBasedAI)?.tags?.any { it is MergeTag } == true) {
+                        wasSuccessful = true
                         val removedWeapon = group.removeWeapon(group.weaponsCopy.indexOf(weapon))
-                        group.aiPlugins.toList().filter { it.weapon == weapon }.forEach {
-                            group.aiPlugins.remove(it)
-                        }
                         removedWeapon?.let {
                             currentGroup.addWeaponAPI(it)
                             mergedWeaponRestoration.put(it, i)
@@ -185,27 +201,22 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 }
             }
         }
-        ship.setCustomData(Values.CUSTOM_SHIP_DATA_ARE_WEAPONS_MERGED_KEY, null)
-        reloadShips(Values.storageIndex, listOf(ship))
+        if(wasSuccessful){
+            ship.setCustomData(Values.CUSTOM_SHIP_DATA_ARE_WEAPONS_MERGED_KEY, null)
+            reloadShips(Values.storageIndex, listOf(ship))
+        }else{
+            printMessage("Unable to merge weapons into current group because no other weapon groups" +
+                                 "\nhave the Merge tag. Assign the merge tag to some groups and press [${Settings.mergeHotkey().uppercaseChar()}] again.",
+                Settings.uiDisplayFrames() * 2)
+        }
     }
 
-    private fun unmergeWeapons(ship: ShipAPI){
-        printMessage("Restoring weapon groups")
+    private fun unmergeWeapons(ship: ShipAPI, displayMessage: Boolean = true) {
+        if(displayMessage) printMessage("Restoring weapon groups")
         val groups = ship.weaponGroupsCopy ?: return
-//        groups.forEach { group ->
-//            for(weapon in group.weaponsCopy.toList()){
-//                val mergeTag = (weapon.getAutofirePlugin() as? TagBasedAI)?.tags?.find { it is MergeTag } as? MergeTag
-//                mergeTag?.let {
-//                    groups.getOrNull(mergeTag.originalGroup)?.addWeaponAPI(group.removeWeapon(group.weaponsCopy.indexOf(weapon)))
-//                }
-//            }
-//        }
-        mergedWeaponRestoration.forEach{ m ->
+        mergedWeaponRestoration.forEach { m ->
             ship.getWeaponGroupFor(m.key)?.let { wg ->
                 val i = wg.weaponsCopy.indexOf(m.key)
-                wg.aiPlugins.toList().filter { it.weapon == m.key }.forEach {
-                    wg.aiPlugins.remove(it)
-                }
                 groups.getOrNull(m.value)?.addWeaponAPI(wg.removeWeapon(i))
             }
 

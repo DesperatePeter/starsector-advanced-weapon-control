@@ -56,6 +56,8 @@ object Settings : SettingsDefinition() {
     val ignoreFighterShields = addSetting<Boolean>("ignoreFighterShields", false)
     val targetShieldsAtFT = addSetting<Float>("targetShieldsAtFT_flux", 0.2f)
     val avoidShieldsAtFT = addSetting<Float>("avoidShieldsAtFT_flux", 0.2f)
+    val prioXModifier = addSetting<Float>("prioXModifier", 10f)
+
     val enableWeaponHighlighting = addSetting<Boolean>("enableWeaponHighlighting", true)
     var isAdvancedMode : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "isAdvancedMode", false)
     var autoApplySuggestedTags : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "autoApplySuggestedTags", false)
