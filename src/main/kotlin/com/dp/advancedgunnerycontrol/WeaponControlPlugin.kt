@@ -206,7 +206,8 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             reloadShips(Values.storageIndex, listOf(ship))
         }else{
             printMessage("Unable to merge weapons into current group because no other weapon groups" +
-                                 "\nhave the Merge tag. Assign the merge tag to some groups and press [${Settings.mergeHotkey().uppercaseChar()}] again.",
+                                 "\nhave the Merge tag. Assign the merge tag to some groups and press [${Settings.mergeHotkey().uppercaseChar()}] again." +
+                    "\nNote: The Merge tag is available in advanced mode.",
                 Settings.uiDisplayFrames() * 2)
         }
     }

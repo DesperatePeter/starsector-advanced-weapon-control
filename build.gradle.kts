@@ -229,14 +229,14 @@ tasks {
                    |   "tagList" : [
                    |                "PD", "PD(Flx>50%)",
                    |                "AvoidShields", "TargetShields", "AvdArmor(33%)", 
-                   |                "Hold(Flx>90%)", "Hold(Flx>75%)",
+                   |                "Hold(Flx>90%)", "Hold(Flx>75%)", "Merge",
                    |                "AvoidPhased", "TargetPhase", "ShipTarget", 
                    |                "ForceAF", "ForceF(F<50%)",
                    |                "PrioritisePD", "PrioFighter", "PrioMissile",
                    |                "NoMissiles", "NoFighters",
                    |                "Opportunist", "Panic(H<25%)", "Range<60%",
                    |                "ConserveAmmo", "CnsrvPDAmmo",
-                   |                "AvdShields+", "TgtShields+", "Merge"
+                   |                "AvdShields+", "TgtShields+"
                    |                ]
                    |   
                    |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
