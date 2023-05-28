@@ -1,3 +1,27 @@
+=== For Starsector 0.96a ===
+
+- 1.11.0: Requires 0.96a-RC10
+Merge tag (Manually control multiple weapon groups at once), Prioritization tags
+
+- 1.10.0:
+Automatic tags: Add new GUI to customize suggested tags and option to apply them automatically
+
+- 1.9.0:
+Update for Starsector version 0.96a and updated library mods
+
+=== For Starsector 0.95.1 ===
+
+- 1.7.x - 1.8.x:
+UI improvements, combat GUI lib, tag scrollbar
+
+- 1.1.x - 1.6.x:
+Reworks, lots of new tags
+
+- 1.0.0:
+Mod rework: Introduction of the in-combat GUI and the new tag system
+
+Full changelog:
+
 - 0.1.0: Initial release
 - 0.2.0: Added IgnoreFighters mode, added custom AI, added settings
 - 0.2.1: Significant improvements to custom AI, including settings for custom AI
