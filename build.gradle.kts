@@ -177,7 +177,7 @@ tasks {
                             "minor":${version._2},
                             "patch":${version._3}
                         },
-                        "directDownloadURL": "https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases/download/${version._1}.${version._2}.${version._3}/AdvancedGunneryControl-${version._1}.${version._2}.${version._3}.zip"
+                        "directDownloadURL": "https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases/download/${version._1}.${version._2}.${version._3}/AdvancedGunneryControl-${version._1}.${version._2}.${version._3}.zip",
                         "changelogURL": "https://raw.githubusercontent.com/DesperatePeter/starsector-advanced-weapon-control/master/changelog.txt"
                     }
                 """.trimIndent()
