@@ -1,5 +1,8 @@
 === For Starsector 0.96a ===
 
+- 1.11.1:
+Fix potential memory leak caused by weapon highlighting when hovering over buttons for an extended period.
+
 - 1.11.0: Requires 0.96a-RC10
 Merge tag (Manually control multiple weapon groups at once), Prioritization tags
 
@@ -20,7 +23,7 @@ Reworks, lots of new tags
 - 1.0.0:
 Mod rework: Introduction of the in-combat GUI and the new tag system
 
-Full changelog:
+Full changelog/archive:
 
 - 0.1.0: Initial release
 - 0.2.0: Added IgnoreFighters mode, added custom AI, added settings
