@@ -293,8 +293,13 @@ tasks {
                    |   # This can't be enabled when enablePersistentFireModes is off
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
                    |   
-                   |   # If true, in the combat gui, hovering over mode buttons will highlight affected weapons on the ship
+                   |   #                                  #### TROUBLESHOOTING ####
+                   |   # These flags disable certain parts of the UI that might cause issues on specific systems
                    |   , "enableWeaponHighlighting" : true # <---- EDIT HERE ----
+                   |   , "enableHoverTooltips" : true # <---- EDIT HERE ----
+                   |   , "enableHoverTooltipBoxes" : true # <---- EDIT HERE ----
+                   |   , "enableButtonHoverSound" : true # <---- EDIT HERE ----
+                   |   , "enableButtonHoverEffects" : true # <---- EDIT HERE ----
                    |   
                    |   #                                 #### CUSTOM AI CONFIGURATION  ####
                    |   # NOTE: All the stuff here is mainly here to facilitate testing. But feel free to play around with the settings here!

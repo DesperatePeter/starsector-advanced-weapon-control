@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.combatgui.buttongroups
 
+import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonBase
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonInfo
 import com.dp.advancedgunnerycontrol.combatgui.buttons.DataToggleButton
 import com.dp.advancedgunnerycontrol.combatgui.buttons.HoverTooltip
@@ -81,7 +82,7 @@ abstract class DataButtonGroup(
     }
 
     fun advance(): Boolean {
-        if(buttons.any { it.isHover() }){
+        if(ButtonBase.enableButtonHoverEffects && buttons.any { it.isHover() }){
             onHover()
         }
         buttons.filter { it.advance() }.let {

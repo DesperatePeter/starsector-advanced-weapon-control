@@ -14,6 +14,14 @@ abstract class ButtonBase(val info: ButtonInfo) {
     var isDisabled = false
     var wasMouseReleased = true
     var wasHover = false
+
+    companion object{
+        var enableHoverTooltips = true
+        var enableHoverTooltipBoxes = true
+        var enableButtonHoverSound = true
+        var enableButtonHoverEffects = true
+    }
+
     abstract fun advance(): Boolean
     private fun determineColor(): Color {
         return if (isDisabled) Color.LIGHT_GRAY else info.color
@@ -25,16 +33,16 @@ abstract class ButtonBase(val info: ButtonInfo) {
 
         renderGLButton()
 
-        if (isHover()) {
+        if (isHover() && enableButtonHoverEffects) {
             val tooltipText = info.font?.createText(info.tooltip.txt, baseColor = determineColor())
             tooltipText?.let {
-                renderTextbox(it, info.tooltip.x, info.tooltip.y, 10f)
-                it.draw(info.tooltip.x, info.tooltip.y)
+                if(enableHoverTooltipBoxes) renderTextbox(it, info.tooltip.x, info.tooltip.y, 10f)
+                if(enableHoverTooltips) it.draw(info.tooltip.x, info.tooltip.y)
             }
 
 
             if (!wasHover) {
-                Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
+                if(enableButtonHoverSound) Global.getSoundPlayer().playUISound("ui_button_mouseover", 1f, 1f)
                 wasHover = true
             }
         } else {
