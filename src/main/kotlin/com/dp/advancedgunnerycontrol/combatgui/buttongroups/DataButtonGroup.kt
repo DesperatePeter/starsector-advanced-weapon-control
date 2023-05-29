@@ -85,8 +85,10 @@ abstract class DataButtonGroup(
             onHover()
         }
         buttons.filter { it.advance() }.let {
+            val selectedData = it.firstOrNull()?.getDataIfActive()
+            val deselectedData = if(selectedData == null) it.firstOrNull()?.data else null
             if (it.isNotEmpty()) {
-                executeAction(getActiveButtonData(), it.firstOrNull()?.getDataIfActive())
+                executeAction(getActiveButtonData(), selectedData, deselectedData)
                 return true
             }
         }
@@ -118,10 +120,11 @@ abstract class DataButtonGroup(
      * gets called whenever a button in this group gets clicked. Implement the actual logic you want your button group
      * to perform in here.
      * @param data a list of the data of all currently active buttons
-     * @param triggeringButtonData data of the button that was clicked. Might be null (usually shouldn't).
+     * @param triggeringButtonData data of the button that was clicked if it was turned active. Null otherwise.
+     * @param deselectedButtonData data of the button that was clicked if it was turned inactive. Null otherwise.
      * @note Check if data contains triggeringButtonData to see if button was activated or deactivated
      */
-    abstract fun executeAction(data: List<Any>, triggeringButtonData: Any? = null)
+    abstract fun executeAction(data: List<Any>, triggeringButtonData: Any? = null, deselectedButtonData: Any? = null)
 
     /**
      * Override this method to perform some action when the user hovers over a button in the group.

@@ -4,6 +4,7 @@ import com.dp.advancedgunnerycontrol.combatgui.Highlight
 import com.dp.advancedgunnerycontrol.combatgui.buttongroups.ButtonGroupAction
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.utils.applyTagsToWeaponGroup
+import com.dp.advancedgunnerycontrol.utils.loadTags
 import com.dp.advancedgunnerycontrol.utils.saveTags
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipAPI
@@ -14,8 +15,13 @@ class WeaponGroupAction(
     private val highlights: MutableList<Highlight>,
     private val viewMult: Float
 ) : ButtonGroupAction {
-    override fun execute(data: List<Any>, triggeringButtonData: Any?) {
-        val tagStrings = data.filterIsInstance<String>()
+    override fun execute(data: List<Any>, triggeringButtonData: Any?, deselectedButtonData: Any?) {
+        val currentTags = loadTags(ship, index, Values.storageIndex)
+        var tagStrings = (currentTags + data.filterIsInstance<String>()).toSet().toList()
+        (deselectedButtonData as? String)?.let { d ->
+            tagStrings = tagStrings.filter { d != it }
+        }
+
         applyTagsToWeaponGroup(ship, index, tagStrings)
         saveTags(ship, index, Values.storageIndex, tagStrings)
     }

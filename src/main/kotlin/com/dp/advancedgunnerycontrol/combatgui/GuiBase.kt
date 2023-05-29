@@ -85,8 +85,8 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
                 refresh?.refreshButtons(this)
             }
 
-            override fun executeAction(data: List<Any>, triggeringButtonData: Any?) {
-                action.execute(data, triggeringButtonData)
+            override fun executeAction(data: List<Any>, triggeringButtonData: Any?, deselectedButtonData: Any?) {
+                action.execute(data, triggeringButtonData, deselectedButtonData)
             }
 
             override fun onHover() {
