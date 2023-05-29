@@ -64,6 +64,8 @@ object Settings : SettingsDefinition() {
     val enableTooltipBoxes = addSetting<Boolean>("enableHoverTooltipBoxes", true)
     val enableButtonHoverSound = addSetting<Boolean>("enableButtonHoverSound", true)
     val enableButtonHoverEffects = addSetting<Boolean>("enableButtonHoverEffects", true)
+    val enableButtonOutlines = addSetting<Boolean>("enableButtonOutlines", true)
+
     var isAdvancedMode : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "isAdvancedMode", false)
     var autoApplySuggestedTags : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "autoApplySuggestedTags", false)
     var customSuggestedTags: Map<String, List<String>> by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "customSuggestedTags", mapOf())
@@ -109,6 +111,7 @@ object Settings : SettingsDefinition() {
         ButtonBase.enableHoverTooltipBoxes = enableTooltipBoxes()
         ButtonBase.enableButtonHoverSound = enableButtonHoverSound()
         ButtonBase.enableButtonHoverEffects = enableButtonHoverEffects()
+        ButtonBase.enableButtonOutlines = enableButtonOutlines()
     }
 
     fun hotAddTags(tags: List<String>, addForWholeSession: Boolean = false) {

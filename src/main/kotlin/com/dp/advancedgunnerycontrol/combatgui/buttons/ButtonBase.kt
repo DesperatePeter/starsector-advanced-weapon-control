@@ -20,6 +20,7 @@ abstract class ButtonBase(val info: ButtonInfo) {
         var enableHoverTooltipBoxes = true
         var enableButtonHoverSound = true
         var enableButtonHoverEffects = true
+        var enableButtonOutlines = true
     }
 
     abstract fun advance(): Boolean
@@ -73,6 +74,7 @@ abstract class ButtonBase(val info: ButtonInfo) {
     }
 
     private fun renderGLButton() {
+        if(!enableButtonOutlines) return
         GL11.glPushMatrix()
         GL11.glDisable(GL11.GL_TEXTURE_2D)
         GL11.glEnable(GL11.GL_BLEND)

@@ -300,6 +300,7 @@ tasks {
                    |   , "enableHoverTooltipBoxes" : true # <---- EDIT HERE ----
                    |   , "enableButtonHoverSound" : true # <---- EDIT HERE ----
                    |   , "enableButtonHoverEffects" : true # <---- EDIT HERE ----
+                   |   , "enableButtonOutlines": true # <---- EDIT HERE ----
                    |   
                    |   #                                 #### CUSTOM AI CONFIGURATION  ####
                    |   # NOTE: All the stuff here is mainly here to facilitate testing. But feel free to play around with the settings here!
