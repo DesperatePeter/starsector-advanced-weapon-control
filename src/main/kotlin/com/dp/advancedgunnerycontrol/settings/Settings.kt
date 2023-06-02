@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.settings
 
+import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonBase
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.utils.StorageBase
 import org.magiclib.util.MagicSettings
@@ -59,6 +60,12 @@ object Settings : SettingsDefinition() {
     val prioXModifier = addSetting<Float>("prioXModifier", 10f)
 
     val enableWeaponHighlighting = addSetting<Boolean>("enableWeaponHighlighting", true)
+    val enableTooltipsOnHover = addSetting<Boolean>("enableHoverTooltips", true)
+    val enableTooltipBoxes = addSetting<Boolean>("enableHoverTooltipBoxes", true)
+    val enableButtonHoverSound = addSetting<Boolean>("enableButtonHoverSound", true)
+    val enableButtonHoverEffects = addSetting<Boolean>("enableButtonHoverEffects", true)
+    val enableButtonOutlines = addSetting<Boolean>("enableButtonOutlines", true)
+
     var isAdvancedMode : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "isAdvancedMode", false)
     var autoApplySuggestedTags : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "autoApplySuggestedTags", false)
     var customSuggestedTags: Map<String, List<String>> by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "customSuggestedTags", mapOf())
@@ -100,6 +107,11 @@ object Settings : SettingsDefinition() {
         forceCustomAI.set(forceCustomAI() && enableCustomAI())
         enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set(max(0, min(2, customAIFriendlyFireComplexity())))
+        ButtonBase.enableHoverTooltips = enableTooltipsOnHover()
+        ButtonBase.enableHoverTooltipBoxes = enableTooltipBoxes()
+        ButtonBase.enableButtonHoverSound = enableButtonHoverSound()
+        ButtonBase.enableButtonHoverEffects = enableButtonHoverEffects()
+        ButtonBase.enableButtonOutlines = enableButtonOutlines()
     }
 
     fun hotAddTags(tags: List<String>, addForWholeSession: Boolean = false) {
