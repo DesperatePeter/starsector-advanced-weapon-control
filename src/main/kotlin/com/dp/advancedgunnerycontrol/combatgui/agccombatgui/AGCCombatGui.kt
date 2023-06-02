@@ -21,7 +21,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     }
 
     private val viewScaleMult = Global.getSector()?.viewport?.viewMult ?: 1.0f
-    private val highlights = mutableListOf<Highlight>()
+    private var highlights = mutableListOf<Highlight>()
 
     private val tagListView = TagListView()
     private val shipAiModesText : String by object {
@@ -42,7 +42,6 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
         if(Settings.enableWeaponHighlighting()){
             renderHighlights(highlights, Global.getCombatEngine()?.viewport?.viewMult ?: 1.0f)
             highlights.forEach { it.a = max(0.0f, it.a - 0.008f) }
-            highlights.removeIf { it.a <= 0.00001f }
         }
     }
 
