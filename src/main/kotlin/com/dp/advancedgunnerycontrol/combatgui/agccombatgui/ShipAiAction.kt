@@ -8,9 +8,9 @@ import com.dp.advancedgunnerycontrol.typesandvalues.saveShipModes
 import com.fs.starfarer.api.combat.ShipAPI
 
 class ShipAiAction(private val ship: ShipAPI) : ButtonGroupAction {
-    override fun execute(data: List<Any>, triggeringButtonData: Any?, deselectedButtonData: Any?) {
+    override fun execute(data: List<Any>, selectedButtonData: Any?, deselectedButtonData: Any?) {
         var tags = data.filterIsInstance<String>()
-        tags = if ((defaultShipMode == triggeringButtonData) || tags.isEmpty()) {
+        tags = if ((defaultShipMode == selectedButtonData) || tags.isEmpty()) {
             listOf(defaultShipMode)
         } else {
             tags.filter { it != defaultShipMode }

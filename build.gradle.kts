@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.11.1"
+    val modVersion = "1.11.2"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -294,7 +294,7 @@ tasks {
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
                    |   
                    |   #                                  #### TROUBLESHOOTING ####
-                   |   # These flags disable certain parts of the UI that might cause issues on specific systems
+                   |   # These flags disable certain parts of the combat UI that might cause issues on specific systems
                    |   , "enableWeaponHighlighting" : true # <---- EDIT HERE ----
                    |   , "enableHoverTooltips" : true # <---- EDIT HERE ----
                    |   , "enableHoverTooltipBoxes" : true # <---- EDIT HERE ----
@@ -351,7 +351,7 @@ tasks {
                    |   # For modes that want to avoid shields, the opposite is true
                    |   
                    |   ,"targetShields_threshold" : 0.1     # i.e. Attack if target flux < 90% (simplified, see above)
-                   |   ,"avoidShields_threshold" : 0.3      # i.e. Attack if target flux > 70% (simplified, see above)
+                   |   ,"avoidShields_threshold" : 0.2      # i.e. Attack if target flux > 80% (simplified, see above)
                    |   
                    |   # Opportunist AND conserveAmmo tag: (shield thresholds for opportunist mode, depending on damage type)
                    |   ,"opportunist_kineticThreshold" : 0.5    # i.e. Attack if target flux < 50% (simplified, see above)

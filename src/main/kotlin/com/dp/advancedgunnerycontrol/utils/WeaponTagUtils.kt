@@ -57,8 +57,8 @@ fun reloadAllShips(storageIndex: Int) {
 }
 
 fun reloadShips(storageIndex: Int, ships: List<ShipAPI?>?) {
-    ships?.filter { it?.owner == 0 }?.filterNotNull().let { ships ->
-        ships?.forEach { ship ->
+    ships?.filter { it?.owner == 0 }?.filterNotNull().let { relevantShips ->
+        relevantShips?.forEach { ship ->
             for (i in 0 until ship.weaponGroupsCopy.size) {
                 if(Settings.autoApplySuggestedTags){
                     ship.fleetMember?.let { applySuggestedModes(it, storageIndex, false) }

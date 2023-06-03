@@ -15,7 +15,7 @@ class WeaponGroupAction(
     private val highlights: MutableList<Highlight>,
     private val viewMult: Float
 ) : ButtonGroupAction {
-    override fun execute(data: List<Any>, triggeringButtonData: Any?, deselectedButtonData: Any?) {
+    override fun execute(data: List<Any>, selectedButtonData: Any?, deselectedButtonData: Any?) {
         val currentTags = loadTags(ship, index, Values.storageIndex)
         var tagStrings = (currentTags + data.filterIsInstance<String>()).toSet().toList()
         (deselectedButtonData as? String)?.let { d ->
