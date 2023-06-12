@@ -28,6 +28,10 @@ class TagListView {
         startingIndex = MathUtils.clamp(startingIndex - delta, 0, maxStartingIndex)
     }
 
+    fun reset() {
+        startingIndex = 0
+    }
+
     fun hasChanged(): Boolean {
         val hasChanged = lastStartingIndex != startingIndex
         lastStartingIndex = startingIndex
@@ -47,6 +51,12 @@ class TagListView {
 
     fun view(): List<String> {
         // Note: sublist excludes the endIndex, i.e. goes until endIndex -1 ==> endIndex() + 1
-        return Settings.getCurrentWeaponTagList().subList(startingIndex, endIndex + 1)
+        return try {
+            Settings.getCurrentWeaponTagList().subList(startingIndex, endIndex + 1)
+        }catch (e: Exception){
+            reset()
+            Settings.getCurrentWeaponTagList().subList(startingIndex, endIndex + 1)
+        }
+
     }
 }

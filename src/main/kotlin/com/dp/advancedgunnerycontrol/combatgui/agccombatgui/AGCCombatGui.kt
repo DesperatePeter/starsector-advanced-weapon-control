@@ -128,6 +128,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
                 Settings.isAdvancedMode = !Settings.isAdvancedMode
                 updateSimpleAdvancedTexts()
                 updateCycleLoadoutInfo()
+                tagListView.reset()
                 // this isn't pretty and will break if I ever add another button group...
                 // TODO: Maybe add IDs to button groups?
                 buttonGroups.last().descriptionText = shipAiModesText

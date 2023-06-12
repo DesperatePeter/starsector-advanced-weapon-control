@@ -5,6 +5,7 @@ import com.dp.advancedgunnerycontrol.settings.Settings
 
 class SimpleAdvancedAction(attributes: GUIAttributes) : GUIAction(attributes) {
     override fun execute() {
+        attributes.tagView.reset()
         Settings.isAdvancedMode = !Settings.isAdvancedMode
     }
 
