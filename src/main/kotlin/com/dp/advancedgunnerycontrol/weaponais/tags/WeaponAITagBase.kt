@@ -17,6 +17,11 @@ abstract class WeaponAITagBase(protected val weapon: WeaponAPI) {
         return true
     }
 
+    /**
+     * targets to consider even if they are out of range
+     */
+    open fun addFarAwayTargets(): List<CombatEntityAPI> = emptyList()
+
     abstract fun computeTargetPriorityModifier(solution: FiringSolution): Float
     abstract fun shouldFire(solution: FiringSolution): Boolean
     abstract fun isBaseAiOverridable(): Boolean

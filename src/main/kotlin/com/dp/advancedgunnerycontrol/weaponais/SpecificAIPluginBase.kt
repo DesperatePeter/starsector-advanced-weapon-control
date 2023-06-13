@@ -42,6 +42,8 @@ abstract class SpecificAIPluginBase(
      */
     protected abstract fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI>
 
+    protected abstract fun getRelevenEntitiesOutOfRange(): List<CombatEntityAPI>
+
     /**
      * @return true if the target selected by the baseAI matches what the weapon should target
      */
@@ -94,7 +96,8 @@ abstract class SpecificAIPluginBase(
     protected fun advanceWithCustomAI() {
         var potentialTargets = calculateFiringSolutions(
             getRelevantEntitiesWithinRange().filter { isHostile(it) }
-        ).filter { isInRange(it.aimPoint, effectiveCollRadius(it.target)) }
+        ).filter { isInRange(it.aimPoint, effectiveCollRadius(it.target)) } +
+                calculateFiringSolutions(getRelevenEntitiesOutOfRange().filter { isHostile(it) })
 
         // TODO: It would be faster to get friendlies and foes in one go
         if (Settings.customAIFriendlyFireComplexity() >= 2) {

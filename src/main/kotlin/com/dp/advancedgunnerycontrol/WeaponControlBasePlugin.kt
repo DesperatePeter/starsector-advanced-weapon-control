@@ -18,7 +18,7 @@ class WeaponControlBasePlugin : BaseModPlugin() {
         super.onGameLoad(newGame)
 
         ShipModeStorage.forEach {
-            it.purgeIfNecessary<String>()
+            it.purgeIfNecessary<List<String>>()
         }
         Settings.tagStorage.forEach {
             it.purgeIfNecessary<List<String>>()

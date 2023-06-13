@@ -31,11 +31,16 @@ class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = 
                     ?: 1.0f)
     }
 
+    override fun getRelevenEntitiesOutOfRange(): List<CombatEntityAPI> {
+        return tags.map { it.addFarAwayTargets() }.flatten()
+    }
+
     override fun getRelevantEntitiesWithinRange(): List<CombatEntityAPI> {
         val ships = CombatUtils.getShipsWithinRange(weapon.location, weapon.range + 200f).filterNotNull()
         val missiles = CombatUtils.getMissilesWithinRange(weapon.location, weapon.range + 200f).filterNotNull()
         val entities: MutableList<CombatEntityAPI> = (ships + missiles) as MutableList<CombatEntityAPI>
-        return entities.filter { entity -> tags.all { it.isValidTarget(entity) } }
+
+        return entities.toSet().filter { entity -> tags.all { it.isValidTarget(entity) } }
     }
 
     override fun isBaseAITargetValid(ship: ShipAPI?, missile: MissileAPI?): Boolean {

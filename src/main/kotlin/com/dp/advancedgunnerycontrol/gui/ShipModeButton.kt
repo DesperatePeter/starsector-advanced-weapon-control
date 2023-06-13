@@ -62,12 +62,13 @@ class ShipModeButton(var ship: FleetMemberAPI,  mode: ShipModes, button: ButtonA
     override fun executeCallbackIfChecked() {
         if (!active && button.isChecked) {
             check()
+            sameGroupButtons.forEach { (it as? ShipModeButton)?.updateIfCheckedBasedOnData() }
         } else if (active && !button.isChecked) {
             removePersistentShipMode(ship.id, AGCGUI.storageIndex, shipModeToString[associatedValue] ?: defaultShipMode)
             uncheck()
+            sameGroupButtons.forEach { (it as? ShipModeButton)?.updateIfCheckedBasedOnData() }
         }
         button.isChecked = active
-        sameGroupButtons.forEach { (it as? ShipModeButton)?.updateIfCheckedBasedOnData() }
     }
 
     private fun updateIfCheckedBasedOnData(){
