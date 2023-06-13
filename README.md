@@ -170,10 +170,12 @@ This mod should be compatible with other mods that provide custom AIs for their 
 manipulate the weapon AI mid-combat. This mod will simply use the custom AI of that weapon as the base AI.
 This mod doesn't affect anything outside of combat, so it's very unlikely to cause problems on the campaign level.
 
+#### Weapon Blocklist ####
+
 If you are a mod-author and want to explicitly tell my mod to not tweak the AI of your weapon(s), include the weapon id
 into your mod's modSettings.json:
 
-```
+```json
 {
   "AdvancedGunneryControl": {
     "weaponBlacklist": [
@@ -183,10 +185,25 @@ into your mod's modSettings.json:
 }
 ```
 
+#### Suggested Tags ####
+
 Similarly, this mod has a feature for suggested tags for weapons. If you want to include suggested tags for your
-weapons to allow users to quickly set up their tags, include a key suggestedWeaponTags in your modSettings.json.
+weapons to allow users to quickly or automatically set up their tags, include a key suggestedWeaponTags in your modSettings.json.
 Have a look at this mod's modSettings.json for an example. Refer to the tag table above to decide on tags.
 If in doubt, the safe bet is always to simply omit a weapon and assign no tags.
+
+A simple modSettings.json that only includes suggested tags would look like this:
+
+```json
+{
+  "AdvancedGunneryControl": {
+    "suggestedWeaponTags" : {
+      "my_awesome_pd_also_weapon_id": "PrioritisePD,PrioMissile",
+      "my_needler_style_weapon_id": "TargetShields"
+    }
+  }
+}
+```
 
 #### Assigning tags to enemy ship weapons ####
 
