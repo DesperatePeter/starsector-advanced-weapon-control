@@ -1,5 +1,13 @@
 === For Starsector 0.96a ===
 
+- 1.12.0: This update will reset ship modes!
+fix: possible crash when switching between advanced and simple mode
+Add BlockBeams tag (only relevant for very specific weapons, mainly a weapon from an upcoming mod release)
+Add Charge ship mode
+Internal refactoring of ship modes. The way they were previously stored was kind of stupid. The main
+effect of this is that you can now customize which ship modes will be available in the settings.
+For mod authors, it's now also possible to assign ship modes via custom ship data.
+
 - 1.11.2:
 fix: no longer requires JRE8, selecting a new tag in the combat GUI no longer deselects invisible tags.
 add settings for controlling in-combat-gui hover effects.
@@ -28,7 +36,7 @@ Reworks, lots of new tags
 - 1.0.0:
 Mod rework: Introduction of the in-combat GUI and the new tag system
 
-Full changelog/archive:
+changelog archive:
 
 - 0.1.0: Initial release
 - 0.2.0: Added IgnoreFighters mode, added custom AI, added settings

@@ -18,9 +18,14 @@ fun groupAsString(group: WeaponGroupSpec, sh: FleetMemberAPI): String {
 }
 
 fun groupFluxCost(group: WeaponGroupSpec, sh: FleetMemberAPI): Int {
-    return group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
-        Global.getSettings().getWeaponSpec(it).derivedStats.fluxPerSecond
-    }.sum().roundToInt()
+    return try {
+        group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
+            Global.getSettings().getWeaponSpec(it).derivedStats.fluxPerSecond
+        }.sum().roundToInt()
+    }catch (e: Exception){
+        0
+    }
+
 }
 
 fun groupWeaponSpriteNames(group: WeaponGroupSpec, sh: FleetMemberAPI): List<String> {
