@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
+import com.dp.advancedgunnerycontrol.gui.AGCGUI
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.utils.InShipShipModeStorage
 import com.dp.advancedgunnerycontrol.utils.doesShipHaveLocalShipModes
@@ -10,7 +11,7 @@ import com.fs.starfarer.combat.ai.BasicShipAI
 import java.lang.ref.WeakReference
 
 enum class ShipModes {
-    DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, VENT_AGGRESSIVE, RETREAT, NO_SYSTEM, SHIELDS_UP, SPAM_SYSTEM
+    DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, VENT_AGGRESSIVE, RETREAT, NO_SYSTEM, SHIELDS_UP, SPAM_SYSTEM, CHARGE
 }
 
 const val defaultShipMode = "DEFAULT"
@@ -24,7 +25,8 @@ val shipModeFromString = mapOf(
     "Run(HP<50%)" to ShipModes.RETREAT,
     "NoSystem" to ShipModes.NO_SYSTEM,
     "ShieldsUp" to ShipModes.SHIELDS_UP,
-    "SpamSystem" to ShipModes.SPAM_SYSTEM
+    "SpamSystem" to ShipModes.SPAM_SYSTEM,
+    "Charge" to ShipModes.CHARGE
 )
 
 val shipModeToString = shipModeFromString.map { it.value to it.key }.toMap()
@@ -45,7 +47,9 @@ val detailedShipModeDescriptions = mapOf(
     ShipModes.RETREAT to "Order a retreat command to the ship if hull < ${(Settings.retreatHullThreshold() * 100f).toInt()}%. This WILL use a CP.",
     ShipModes.NO_SYSTEM to "Ship will not use its ship system.",
     ShipModes.SHIELDS_UP to "Ship will not turn its shields off while flux < 90% and enemies are within weapon range.",
-    ShipModes.SPAM_SYSTEM to "Ship will always use the ship system when available."
+    ShipModes.SPAM_SYSTEM to "Ship will always use the ship system when available.",
+    ShipModes.CHARGE to "If the ship has a target it will accelerate towards it until all weapons are in range." +
+            "\nCaution! Might cause suicidal behavior!"
 ).withDefault { it.toString() }
 
 private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenerator {
@@ -64,11 +68,12 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenera
         ShipModes.NO_SYSTEM -> NoSystemAI(ship)
         ShipModes.SHIELDS_UP -> ShieldsUpAI(ship, 0.9f)
         ShipModes.SPAM_SYSTEM -> SpamSystemAI(ship)
+        ShipModes.CHARGE -> ChargeShipAI(ship)
         else -> ShipCommandGenerator(ship)
     }
 }
 
-fun assignShipMode(modes: List<String>, ship: ShipAPI, forceAssign: Boolean = false) {
+fun assignShipModes(modes: List<String>, ship: ShipAPI, forceAssign: Boolean = false) {
     if (ship.shipAI == null) return
     ship.resetDefaultAI()
     if (ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)) {
@@ -98,9 +103,7 @@ fun getCustomShipAI(ship: ShipAPI): CustomShipAI? {
 
 fun persistShipModes(shipId: String, loadoutIndex: Int, tags: List<String>) {
     Settings.shipModeStorage[loadoutIndex].modesByShip[shipId] = mutableMapOf()
-    tags.forEachIndexed { index, s ->
-        Settings.shipModeStorage[loadoutIndex].modesByShip[shipId]?.set(index, s)
-    }
+    Settings.shipModeStorage[loadoutIndex].modesByShip[shipId]?.set(0, tags)
 }
 
 fun saveShipModesInShip(ship: ShipAPI, tags: List<String>, storageIndex: Int) {
@@ -123,7 +126,18 @@ fun saveShipModes(ship: ShipAPI, loadoutIndex: Int, tags: List<String>) {
 }
 
 fun loadPersistedShipModes(shipId: String, loadoutIndex: Int): List<String> {
-    return Settings.shipModeStorage[loadoutIndex].modesByShip[shipId]?.values?.toList() ?: emptyList()
+    return Settings.shipModeStorage[loadoutIndex].modesByShip[shipId]?.get(0) ?: emptyList()
+}
+
+fun addPersistentShipMode(shipId: String, loadoutIndex: Int, mode: String){
+    val modes = loadPersistedShipModes(shipId, AGCGUI.storageIndex)
+    val newModes = (modes + mode).toSet().toList()
+    persistShipModes(shipId, loadoutIndex, newModes)
+}
+
+fun removePersistentShipMode(shipId: String, loadoutIndex: Int, mode: String){
+    val modes = loadPersistedShipModes(shipId, AGCGUI.storageIndex)
+    persistShipModes(shipId, loadoutIndex, modes.filter { it != mode })
 }
 
 fun loadShipModesFromShip(ship: ShipAPI, storageIndex: Int): List<String> {

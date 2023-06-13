@@ -67,7 +67,7 @@ fun reloadShips(storageIndex: Int, ships: List<ShipAPI?>?) {
                 applyTagsToWeaponGroup(ship, i, tags)
             }
             val shipModes = loadShipModes(ship, storageIndex)
-            assignShipMode(shipModes, ship)
+            assignShipModes(shipModes, ship)
         }
     }
 

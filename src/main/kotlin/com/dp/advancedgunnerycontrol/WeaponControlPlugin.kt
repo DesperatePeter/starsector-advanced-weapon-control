@@ -107,7 +107,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         engine.ships.filterNotNull().filter { it.owner == 0 }.forEach { ship ->
             if (loadShipModes(ship, Values.storageIndex).let { it.isNotEmpty() && !it.contains(defaultShipMode) }
                 && ship.shipAI != null && !hasCustomAI(ship)) {
-                assignShipMode(loadShipModes(ship, Values.storageIndex), ship)
+                assignShipModes(loadShipModes(ship, Values.storageIndex), ship)
             }
         }
     }
@@ -127,11 +127,17 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private fun applyOptionsToEnemies() {
         engine.ships.filterNotNull().filter { it.owner == 1 }.forEach {
             if (it.customData.containsKey(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)) {
-                val toApply = determineTagsByGroup(it)
+                val toApply = determineTagsByWeaponFromCustomData(it)
                 toApply.forEach { (k, v) ->
                     applyTagsToWeapon(k, v)
                 }
                 it.removeCustomData(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)
+                it.setCustomData(Values.CUSTOM_SHIP_DATA_OPTIONS_HAVE_BEEN_APPLIED_KEY, "DONE")
+            }
+            if (it.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_MODES_TO_APPLY_KEY)){
+                val modes = determineShipModesFromCustomData(it)
+                assignShipModes(modes, it)
+                it.removeCustomData(Values.CUSTOM_SHIP_DATA_SHIP_MODES_TO_APPLY_KEY)
                 it.setCustomData(Values.CUSTOM_SHIP_DATA_OPTIONS_HAVE_BEEN_APPLIED_KEY, "DONE")
             }
         }

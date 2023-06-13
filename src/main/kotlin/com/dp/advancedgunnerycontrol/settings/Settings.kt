@@ -1,7 +1,9 @@
 package com.dp.advancedgunnerycontrol.settings
 
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonBase
+import com.dp.advancedgunnerycontrol.typesandvalues.ShipModes
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
+import com.dp.advancedgunnerycontrol.typesandvalues.shipModeFromString
 import com.dp.advancedgunnerycontrol.utils.StorageBase
 import org.magiclib.util.MagicSettings
 import kotlin.math.max
@@ -10,6 +12,7 @@ import kotlin.math.min
 object Settings : SettingsDefinition() {
     private val tagList = addSetting<List<String>>("tagList", listOf())
     private val simpleTagList = addSetting<List<String>>("simpleTagList", listOf())
+    private val shipModeList = addSetting<List<String>>("shipModeList", listOf())
     val enableCustomAI = addSetting<Boolean>("enableCustomAI", true)
     val customAIRecursionLevel = addSetting<Int>("customAIRecursionLevel", 1)
     val forceCustomAI = addSetting<Boolean>("forceCustomAI", false)
@@ -81,7 +84,13 @@ object Settings : SettingsDefinition() {
         return customSuggestedTags
     }
 
-    var shipModeStorage: List<StorageBase<String>> = listOf()
+    fun getCurrentShipModes(): List<ShipModes>{
+        return shipModeList().mapNotNull { shipModeFromString[it] }
+    }
+
+    // why on earth did I decide that it was a good idea to use a map of int/string rather than a list of strings for ship modes?
+    // All modes are stored in key 0, keys other than 0 are unused
+    var shipModeStorage: List<StorageBase<List<String>>> = listOf()
     var tagStorage: List<StorageBase<List<String>>> = listOf()
 
     fun getCurrentWeaponTagList() : List<String>{
@@ -100,7 +109,7 @@ object Settings : SettingsDefinition() {
 
     override fun applySettings() {
         super.applySettings()
-        shipModeStorage = StorageBase.assembleStorageArray<String>("$" + Values.THIS_MOD_NAME + "shipModes")
+        shipModeStorage = StorageBase.assembleStorageArray("$" + Values.THIS_MOD_NAME + "shipModes")
         tagStorage = StorageBase.assembleStorageArray("$" + Values.THIS_MOD_NAME + "tags")
         originalTagList = tagList()
         originalSimpleTagList = simpleTagList()

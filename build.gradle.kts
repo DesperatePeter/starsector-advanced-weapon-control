@@ -238,16 +238,20 @@ tasks {
                    |                "Opportunist", "Panic(H<25%)", "Range<60%",
                    |                "ConserveAmmo", "CnsrvPDAmmo",
                    |                "AvdShields+", "TgtShields+"
-                   |                ]
+                   |                ]  
                    |   
-                   |   # Note: When you remove tags from this list that have been applied to ships, the tags will still affect that ship. 
-                   |   #       Use Reset to clear them.
                    |   
                    |   # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons in advanced mode
                    |   ,"allowHotLoadingTags" : true
                    |   
                    |   # Tags to display in simple mode. Note that simple mode does not hot load tags
                    |   , "simpleTagList" : [ "PD", "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "NoFighters" ]
+                   |   
+                   |   # Determines which ship modes will be shown in the GUIs. Modes that do not exist will be discarded
+                   |   # Allowed Values: "DEFAULT", "LowShields", "ShieldsUp", "Vent(Flx>75%)", "VntA(Flx>25%)", "Run(HP<50%)", "NoSystem", "SpamSystem", "Charge", "ForceAF"
+                   |   # Note that "DEFAULT" is not a real mode but instead a shortcut to disable all other modes. It's kind of deprecated and only still exists for compatibility reasons.
+                   |   
+                   |   ,"shipModeList" : ["LowShields", "ShieldsUp", "Vent(Flx>75%)", "VntA(Flx>25%)", "Run(HP<50%)", "NoSystem", "SpamSystem", "Charge"]
                    |  
                    |   #                                 #### CUSTOM AI ####
                    |   # If you set this to true, if the base AI would have weapons in weapon groups target something invalid for the selected tags,

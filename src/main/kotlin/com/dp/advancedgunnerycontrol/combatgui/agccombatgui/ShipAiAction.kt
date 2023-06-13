@@ -2,7 +2,7 @@ package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
 import com.dp.advancedgunnerycontrol.combatgui.buttongroups.ButtonGroupAction
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.typesandvalues.assignShipMode
+import com.dp.advancedgunnerycontrol.typesandvalues.assignShipModes
 import com.dp.advancedgunnerycontrol.typesandvalues.defaultShipMode
 import com.dp.advancedgunnerycontrol.typesandvalues.saveShipModes
 import com.fs.starfarer.api.combat.ShipAPI
@@ -15,7 +15,7 @@ class ShipAiAction(private val ship: ShipAPI) : ButtonGroupAction {
         } else {
             tags.filter { it != defaultShipMode }
         }
-        assignShipMode(tags, ship)
+        assignShipModes(tags, ship)
         saveShipModes(ship, Values.storageIndex, tags)
     }
 }

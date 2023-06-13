@@ -15,7 +15,7 @@ val magicKeyToType = mapOf(
     BALLISTIC_MAGIC_KEY to WeaponType.BALLISTIC
 )
 
-fun determineTagsByGroup(ship: ShipAPI): Map<WeaponAPI, List<String>> {
+fun determineTagsByWeaponFromCustomData(ship: ShipAPI): Map<WeaponAPI, List<String>> {
     if (!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY)) return emptyMap()
     val opts = (ship.customData[Values.CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY] as? Map<*, *>)
         ?.filter { mapPair -> mapPair.key is String && (mapPair.value as? List<*>)?.all { it is String } == true }
@@ -42,4 +42,10 @@ fun determineTagsByGroup(ship: ShipAPI): Map<WeaponAPI, List<String>> {
     }
 
     return toReturn.mapValues { it.value.toList() }
+}
+
+fun determineShipModesFromCustomData(ship: ShipAPI): List<String>{
+    if(!ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_MODES_TO_APPLY_KEY)) return emptyList()
+    val modes = (ship.customData[Values.CUSTOM_SHIP_DATA_SHIP_MODES_TO_APPLY_KEY] as? List<*>)?.filterIsInstance<String>()
+    return modes ?: emptyList()
 }

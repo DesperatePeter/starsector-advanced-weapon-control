@@ -227,7 +227,7 @@ If you want to apply this via Hullmod, the hullmod effect could look something l
 
 ```kotlin
 // Kotlin
-class ExampleTagSettingHullmod : HullModEffect {
+class ExampleTagSettingHullmod : BaseHullMod {
     // we only care to write to ship data in combat (after the ship is spawned), not before that or in the campaign
     override fun applyEffectsAfterShipCreation(ship: ShipAPI?, id: String?) {
         if(ship != null){// nullptr check just to be safe (I know, this is not the Kotlin-way, but easier to read for Java devs :P)           
@@ -241,7 +241,7 @@ class ExampleTagSettingHullmod : HullModEffect {
         // apply other effects your hullmod might have below this, as usual
     }
     
-    // override remaining methods as usual
+    // override other methods as required, as per usual
     // [...]
 }
 ```
@@ -249,6 +249,28 @@ class ExampleTagSettingHullmod : HullModEffect {
 If you want to check whether AGC has been installed/loaded by the user:
 It will write the key "AGC_Present" to the CombatEngine custom data. Though there's usually no harm in simply setting the ship
 custom data. If AGC is present, it will handle it, if not, it won't have any effect.
+
+#### Assigning ship modes to enemy ships ####
+
+You can also assign ship modes to enemy ships in a very similar fashion. Since ship modes are assigned on a per-ship basis
+rather than a per-weapon basis, this is much simpler. Instead of writing a map to custom data, you simply need to write a
+list of ship modes to assign.
+
+Use the key "AGC_ApplyCustomShipModes" and a List<String> as the value. 
+For instance, assigning the SpamSystem mode to an enemy ship could be achieved with the following code:
+
+```kotlin
+// Kotlin
+ship.setCustomData("AGC_ApplyCustomShipModes", listOf("SpamSystem"))
+```
+
+```java
+// Java
+ship.setCustomData("AGC_ApplyCustomShipModes", Arrays.asList("SpamSystem");
+```
+
+Same as before, after finishing the mode application, "AGC_CustomOptionsHaveBeenApplied" will be written to the ship's
+custom data and the original entry will be removed.
 
 #### Using the combat gui library ####
 

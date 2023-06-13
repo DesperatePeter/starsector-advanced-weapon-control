@@ -1,10 +1,8 @@
 package com.dp.advancedgunnerycontrol.gui
 
 
-import com.dp.advancedgunnerycontrol.typesandvalues.ShipModes
-import com.dp.advancedgunnerycontrol.typesandvalues.defaultShipMode
-import com.dp.advancedgunnerycontrol.typesandvalues.detailedShipModeDescriptions
-import com.dp.advancedgunnerycontrol.typesandvalues.shipModeToString
+import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.ui.ButtonAPI
@@ -13,26 +11,23 @@ import com.fs.starfarer.api.ui.TooltipMakerAPI
 import com.fs.starfarer.api.ui.UIComponentAPI
 import com.fs.starfarer.api.util.Misc
 
-class ShipModeButton(var ship: FleetMemberAPI, var group: Int, mode: ShipModes, button: ButtonAPI) :
-    ButtonBase<ShipModes>(mode, button) {
+class ShipModeButton(var ship: FleetMemberAPI,  mode: ShipModes, button: ButtonAPI) :
+    ButtonBase<ShipModes>(mode, button, false) {
 
     companion object {
-        private var storage = ShipModeStorage[AGCGUI.storageIndex]
 
         fun createModeButtonGroup(
             ship: FleetMemberAPI,
             panel: CustomPanelAPI,
             position: UIComponentAPI
         ): List<ShipModeButton> {
-            storage = ShipModeStorage[AGCGUI.storageIndex]
             val toReturn = mutableListOf<ShipModeButton>()
-            var isSomethingChecked = false
             val elementList = mutableListOf<TooltipMakerAPI>()
-            ShipModes.values().forEachIndexed { index, it ->
+            Settings.getCurrentShipModes().forEach {
                 val tooltip = panel.createUIElement(130f, 30f, false)
                 toReturn.add(
                     ShipModeButton(
-                        ship, index, it, tooltip.addAreaCheckbox(
+                        ship, it, tooltip.addAreaCheckbox(
                             shipModeToString[it],
                             it,
                             Misc.getBasePlayerColor(),
@@ -48,11 +43,6 @@ class ShipModeButton(var ship: FleetMemberAPI, var group: Int, mode: ShipModes, 
                     AGCGUI.makeTooltip(detailedShipModeDescriptions[it] ?: ""),
                     TooltipMakerAPI.TooltipLocation.BELOW
                 )
-                // if(ShipModes.HELP == it) toReturn.lastOrNull()?.disable()
-                if (storage.modesByShip[ship.id]?.values?.contains(shipModeToString[it]) == true) {
-                    toReturn.last().check()
-                    isSomethingChecked = true
-                }
                 if (elementList.isEmpty()) {
                     panel.addUIElement(tooltip).belowLeft(position, 5f)
                 } else {
@@ -60,12 +50,10 @@ class ShipModeButton(var ship: FleetMemberAPI, var group: Int, mode: ShipModes, 
                 }
                 elementList.add(tooltip)
             }
-            if (!isSomethingChecked) toReturn.firstOrNull()?.check()
-            var iter = toReturn.iterator()
-            iter.next().sameGroupButtons = toReturn
-            // note: forEachRemaining requires java 8
-            while (iter.hasNext()) {
-                iter.next().sameGroupButtons = listOf(toReturn.first())
+
+            toReturn.forEach {
+                it.sameGroupButtons = toReturn
+                it.updateIfCheckedBasedOnData()
             }
             return toReturn
         }
@@ -75,19 +63,30 @@ class ShipModeButton(var ship: FleetMemberAPI, var group: Int, mode: ShipModes, 
         if (!active && button.isChecked) {
             check()
         } else if (active && !button.isChecked) {
-            storage.modesByShip[ship.id]?.remove(group)
+            removePersistentShipMode(ship.id, AGCGUI.storageIndex, shipModeToString[associatedValue] ?: defaultShipMode)
             uncheck()
         }
         button.isChecked = active
+        sameGroupButtons.forEach { (it as? ShipModeButton)?.updateIfCheckedBasedOnData() }
+    }
+
+    private fun updateIfCheckedBasedOnData(){
+        if (loadPersistedShipModes(ship.id, AGCGUI.storageIndex).contains(shipModeToString[associatedValue] ?: defaultShipMode)){
+            check()
+        }else{
+            uncheck()
+        }
     }
 
     override fun onActivate() {
-        if (storage.modesByShip[ship.id] == null || associatedValue == ShipModes.DEFAULT) {
-            storage.modesByShip[ship.id] = mutableMapOf()
+        val id = ship.id
+        val index = AGCGUI.storageIndex
+        if (associatedValue == ShipModes.DEFAULT) {
+            persistShipModes(id, index, emptyList())
         }
         if (associatedValue != ShipModes.DEFAULT) {
-            storage.modesByShip[ship.id]?.remove(0)
+            removePersistentShipMode(id, index, defaultShipMode)
         }
-        storage.modesByShip[ship.id]?.let { it[group] = shipModeToString[associatedValue] ?: defaultShipMode }
+        addPersistentShipMode(id, index, shipModeToString[associatedValue] ?: defaultShipMode)
     }
 }

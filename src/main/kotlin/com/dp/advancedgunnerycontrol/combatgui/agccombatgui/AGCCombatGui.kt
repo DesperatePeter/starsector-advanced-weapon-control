@@ -55,7 +55,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
                     saveTags(ship, i, Values.storageIndex, noTags)
                 }
                 saveShipModes(ship, Values.storageIndex, noTags)
-                assignShipMode(noTags, ship)
+                assignShipModes(noTags, ship)
                 refreshButtons()
             }
         }

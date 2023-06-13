@@ -11,7 +11,7 @@ import com.dp.advancedgunnerycontrol.typesandvalues.shipModeToString
 class CreateShipAiButtons : CreateButtonsAction {
     override fun createButtons(group: DataButtonGroup) {
         if(!Settings.isAdvancedMode) return
-        ShipModes.values().mapNotNull { shipModeToString[it] }.forEach {
+        Settings.getCurrentShipModes().mapNotNull { shipModeToString[it] }.forEach {
             group.addButton(it, it, detailedShipModeDescriptions[shipModeFromString[it]] ?: "")
         }
     }
