@@ -11,9 +11,14 @@ open class CustomShipAI(
 ) : ShipAIPlugin {
 
     private var fleetingCommands: MutableList<ShipCommandWrapper> = mutableListOf()
+    private var fleetingBlockCommands: MutableSet<ShipCommand> = mutableSetOf()
 
     fun addFleetingCommand(cmd: ShipCommandWrapper) {
         fleetingCommands.add(cmd)
+    }
+
+    fun addFleetingBlockCommand(cmd: ShipCommand){
+        fleetingBlockCommands.add(cmd)
     }
 
     fun containsFleetingCommand(cmd: ShipCommand, index: Int? = null, pos: Vector2f? = null): Boolean {
@@ -54,11 +59,15 @@ open class CustomShipAI(
                 ship.blockCommandForOneFrame(it)
             }
         }
-        if (commanders.any { it.shouldReevaluate() }) forceCircumstanceEvaluation()
         fleetingCommands.forEach {
             ship.giveCommand(it.command, it.position, it.index)
         }
         fleetingCommands.clear()
+        fleetingBlockCommands.forEach {
+            ship.blockCommandForOneFrame(it)
+        }
+        fleetingBlockCommands.clear()
+        if (commanders.any { it.shouldReevaluate() }) forceCircumstanceEvaluation()
     }
 
     override fun needsRefit(): Boolean {

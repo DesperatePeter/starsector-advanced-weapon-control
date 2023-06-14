@@ -5,6 +5,7 @@ import com.dp.advancedgunnerycontrol.typesandvalues.assignShipModes
 import com.dp.advancedgunnerycontrol.typesandvalues.getCustomShipAI
 import com.dp.advancedgunnerycontrol.typesandvalues.hasCustomAI
 import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
+import com.dp.advancedgunnerycontrol.weaponais.TagBasedAI
 import com.dp.advancedgunnerycontrol.weaponais.isPD
 import com.dp.advancedgunnerycontrol.weaponais.shipais.ShipCommandWrapper
 import com.fs.starfarer.api.combat.*
@@ -63,6 +64,16 @@ abstract class WeaponAITagBase(protected val weapon: WeaponAPI) {
                         )
                     )
                 }
+            }
+            if(ship.weaponGroupsCopy.all { group ->
+                    group.aiPlugins.all { plugin ->
+                    (plugin as? TagBasedAI)?.tags?.any {
+                        it is ForceAutofireTag
+                    } == true
+                } }){
+                if(ship.selectedGroupAPI == null || ship.selectedGroupAPI.weaponsCopy?.isEmpty() != false) ai.addFleetingBlockCommand(ShipCommand.SELECT_GROUP)
+                if (ship.weaponGroupsCopy.all { it.isAutofiring }) ai.addFleetingBlockCommand(ShipCommand.TOGGLE_AUTOFIRE)
+
             }
         }
     }

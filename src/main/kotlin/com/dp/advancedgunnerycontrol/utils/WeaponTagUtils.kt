@@ -16,13 +16,6 @@ fun WeaponAPI.getAutofirePlugin() : AutofireAIPlugin?{
 fun applyTagsToWeaponGroup(ship: ShipAPI, groupIndex: Int, tags: List<String>): Boolean {
     val weaponGroup = ship.weaponGroupsCopy?.getOrNull(groupIndex) ?: return false
     val plugins = weaponGroup.aiPlugins
-    if (tags.isEmpty()) {
-        for (i in 0 until plugins.size) {
-            if (plugins[i] is TagBasedAI) {
-                plugins[i] = (plugins[i] as? TagBasedAI)?.baseAI ?: plugins[i]
-            }
-        }
-    }
     for (i in 0 until plugins.size) {
         if (plugins[i] !is TagBasedAI) {
             plugins[i] = TagBasedAI(plugins[i])

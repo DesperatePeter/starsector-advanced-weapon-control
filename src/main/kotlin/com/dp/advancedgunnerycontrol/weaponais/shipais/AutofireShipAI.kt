@@ -6,7 +6,12 @@ import com.fs.starfarer.api.combat.ShipCommand
 class AutofireShipAI(ship: ShipAPI) : ShipCommandGenerator(ship) {
 
     override fun blockCommands(): List<ShipCommand> {
-        return listOf(ShipCommand.SELECT_GROUP)
+        val isEverythingOnAutofire = ship.weaponGroupsCopy.all { it.isAutofiring }
+        val isEmptyGroupSelected = ship.selectedGroupAPI == null || ship.selectedGroupAPI.weaponsCopy?.isEmpty() != false
+        val toReturn = mutableListOf<ShipCommand>()
+        if(isEmptyGroupSelected) toReturn += ShipCommand.SELECT_GROUP
+        if (isEverythingOnAutofire) toReturn += ShipCommand.TOGGLE_AUTOFIRE
+        return toReturn
     }
 
     override fun generateCommands(): List<ShipCommandWrapper> {

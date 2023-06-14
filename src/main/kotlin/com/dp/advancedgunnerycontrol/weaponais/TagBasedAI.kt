@@ -14,7 +14,7 @@ import java.lang.ref.WeakReference
 class TagBasedAI(baseAI: AutofireAIPlugin, tags: MutableList<WeaponAITagBase> = mutableListOf()) :
     SpecificAIPluginBase(baseAI) {
 
-    var tags = mutableListOf<WeaponAITagBase>()
+    var tags = listOf<WeaponAITagBase>()
         set(value) {
             unregisterTagsForEveryFrameAdvance(field)
             field = value
