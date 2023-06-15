@@ -6,7 +6,7 @@ import java.awt.Color
 /**
  * data class describing data required to render button
  *
- * Use GuiBase.addButton so that you don't have to use this directly
+ * Only use directly to add custom buttons (it's recommended to use GuiBase.addButton instead)
  */
 data class ButtonInfo(
     val x: Float, val y: Float, val w: Float, val h: Float,

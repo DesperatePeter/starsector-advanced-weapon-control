@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol.combatgui.buttongroups
 
 /**
- * defines an action to be performed every frame on a button group
+ * defines an action to be performed whenever anything happens
  * Use this to e.g. disabled buttons that are incompatible with other active buttons
  */
 interface RefreshButtonsAction {

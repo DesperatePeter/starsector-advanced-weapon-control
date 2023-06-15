@@ -7,7 +7,7 @@ import com.dp.advancedgunnerycontrol.combatgui.buttons.HoverTooltip
 import org.lazywizard.lazylib.ui.LazyFont
 
 /**
- * If possible, use GuiBase.addButtonGroup rather than using this class!
+ * If possible, use GuiBase.addButtonGroup rather than using this class directly!
  *
  * This class provides an inheritance-based option to create your buttons, whereas addButtonGroup instead allows
  * you to pass actions for creating/refreshing buttons and the action to execute.
@@ -58,29 +58,50 @@ abstract class DataButtonGroup(
         }
     }
 
+    /**
+     * reset grid positions back to original values
+     * call this method if you want to e.g. change something and recreate buttons
+     */
     fun resetGrid() {
         currentX = layout.x
         currentY = layout.y
     }
 
+    /**
+     * disable (i.e. grey out and make un-clickable) button with given title/text/name
+     */
     fun disableButton(title: String) {
         buttons.find { it.info.txt == title }?.let { it.isDisabled = true }
     }
 
+    /**
+     * refresh state (active/inactive) of all buttons
+     * @param data all buttons where button data is contained in this list will be set to active
+     */
     fun refreshAllButtons(data: List<Any>) {
         buttons.forEach {
             it.isActive = data.contains(it.data)
         }
     }
 
+    /**
+     * hopefully self-explanatory =)
+     */
     fun enableAllButtons() {
         buttons.forEach { it.isDisabled = false }
     }
 
+    /**
+     * @return list containing the data of all currently active buttons
+     */
     fun getActiveButtonData(): List<Any> {
         return buttons.mapNotNull { it.getDataIfActive() }
     }
 
+    /**
+     * needs to be called every frame.
+     * checks if a button was clicked/hovered over during that frame
+     */
     fun advance(): Boolean {
         if(ButtonBase.enableButtonHoverEffects && buttons.any { it.isHover() }){
             onHover()
@@ -96,6 +117,9 @@ abstract class DataButtonGroup(
         return false
     }
 
+    /**
+     * needs to be called every frame from a render-method, such as e.g. BaseEveryFrameCombatPlugin::renderInUICoords
+     */
     fun render() {
         buttons.forEach { it.render() }
         font?.createText(descriptionText, baseColor = layout.color)?.draw(layout.x, layout.y + descriptionOffset)

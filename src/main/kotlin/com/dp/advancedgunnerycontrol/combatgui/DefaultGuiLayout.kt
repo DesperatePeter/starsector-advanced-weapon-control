@@ -4,6 +4,7 @@ import java.awt.Color
 
 /**
  * best guess GUI layout, feel free to pass this to GuiBase to get started quickly
+ * in the long term, you probably want to create your own GuiLayout
  */
 val defaultGuiLayout = GuiLayout(
     0.05f, 0.8f, 100f, 20f, 0.5f, Color.WHITE,

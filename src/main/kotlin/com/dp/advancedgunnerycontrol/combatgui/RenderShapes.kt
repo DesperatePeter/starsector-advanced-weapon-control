@@ -10,6 +10,9 @@ import org.lwjgl.opengl.GL11
 import java.awt.Color
 import java.nio.Buffer
 
+/**
+ * data class defining position, radius and opacity of a circle to highlight things
+ */
 data class Highlight(val x: Float, val y: Float, val r: Float, var a: Float)
 val defaultHighlightColor: Color = Color.GREEN
 val defaultTextBoxColor: Color = Color.BLACK
@@ -45,7 +48,11 @@ private fun postRender(){
 }
 
 /**
- * Render a circle at given position with given radius and alpha in given color
+ * Render circles in given color.
+ * You can call this in your render or onHover methods to e.g. visualize what a given button affects
+ * @param highlights list of highlights (filled circles) to render
+ * @param viewMult get from viewport
+ * @param color alpha value is unused (defined via Highlight instead)
  */
 fun renderHighlights(highlights: List<Highlight>, viewMult: Float, color: Color = defaultHighlightColor){
     val uiMult = Global.getSettings()?.screenScaleMult ?: 1f
@@ -57,7 +64,10 @@ fun renderHighlights(highlights: List<Highlight>, viewMult: Float, color: Color 
     postRender()
 }
 
-// Render a textbox for given string at given position
+/**
+ * Render a textbox for given string at given position
+ * this gets used by buttons internally, so unless you want to manually display text, you won't need to use this
+ */
 fun renderTextbox(text: LazyFont.DrawableString, xPos: Float, yPos: Float, buffer: Float, color: Color = defaultTextBoxColor, frameColor: Color = defaultFrameColor){
     val x = xPos - buffer/2f
     val y = yPos + buffer/2f

@@ -45,6 +45,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
 
     /**
      * override this returning a string representing your GUI title
+     * may change between frames
      */
     protected open fun getTitleString(): String? {
         return ""
@@ -52,6 +53,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
 
     /**
      * override this to display a message, feel free to return null
+     * may change between frames
      */
     protected open fun getMessageString(): String? {
         return ""
@@ -61,12 +63,18 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
      * This is the intended way of adding button groups
      * adds a new button group to the GUI. This library will take care of positioning based on grid layout.
      * all actions will be automatically executed when appropriate
+     *
+     * Think of a button group as a row of buttons that can be clicked. Whenever a button gets clicked by the user,
+     * it gets activated (i.e. visually highlighted). The user can click the button again to de-activate it.
+     * Each button has data (e.g. a string, maybe its name?) associated to it. Whenever a button in this group
+     * is clicked by the user, the action of the button group gets executed on the data of all active buttons.
+     *
      * @param action will be performed when one of the buttons gets clicked, can't pass null
      *               Implement a class that implements ButtonGroupAction, overriding the execute method
+     *               A list of data corresponding to the data of all currently active buttons will be passed to this action
      * @param create will be performed when the button group gets added, create individual buttons in this action, can't pass null
      *               Use the pre-existing class CreateSimpleButtons if you don't want to do anything fancy
      * @param refresh will be called whenever something changes (e.g. any button gets clicked), feel free to pass null
-     * @note ButtonGroups represent a set of data and the data of all active buttons will be passed to the action
      * @note Internally, this will create a new object that inherits from DataButtonGroup and implements the abstract functions.
      *       If you want to provide your own implementation for DataButtonGroup, use addCustomButtonGroup instead
      */
@@ -98,7 +106,9 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     }
 
     /**
-     * add a custom button group where you have to take care of positioning
+     * It is recommended to use addButtonGroup instead.
+     * add a custom button group where you have to take care of positioning etc.
+     * You will need to create a new class that inherits from DataButton group and pass an instance to this method
      * actions will be automatically executed when appropriate
      */
     protected fun addCustomButtonGroup(buttonGroup: DataButtonGroup) {
@@ -108,9 +118,10 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
 
     /**
      * add a new button to the GUI and let this library handle positioning
+     * a button in this context is the simplest GUI element. If a user clicks it, the passed action gets executed
      * @param action will be executed when the button is click, feel free to pass null
-     * @param txt display text
-     * @param tooltipTxt will be displayed when user hovers over button
+     * @param txt display text AKA name of the button
+     * @param tooltipTxt will be displayed when user hovers over button, feel free to pass an empty string
      */
     protected fun addButton(action: ButtonAction?, txt: String, tooltipTxt: String, isDisabled: Boolean = false) {
         val btnInfo = createButtonInfo(standaloneButtons.size, txt, tooltipTxt)
@@ -120,7 +131,8 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     }
 
     /**
-     * add a custom button where you have to take care of positioning
+     * It is recommended to use addButton instead of this
+     * add a custom button where you have to take care of positioning etc.
      */
     protected fun addCustomButton(button: ActionButton) {
         standaloneButtons.add(button)
@@ -129,7 +141,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     /**
      * returns layout that would be assigned to button group when using addButtonGroup
      *
-     * Note: Only relevant if you plan on using addCustomButtonGroup
+     * @note Only relevant if you plan on using addCustomButtonGroup
      */
     protected fun createButtonGroupLayout(index: Int): ButtonGroupLayout {
         return ButtonGroupLayout(
@@ -139,9 +151,9 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     }
 
     /**
-     * returns button info that would be assigned to button when using addButton
+     * @returns button info that would be assigned to button when using addButton
      *
-     * Note: Only relevant if you plan on using addCustomButton
+     * @note Only relevant if you plan on using addCustomButton
      */
     protected fun createButtonInfo(xIndex: Int, txt: String, tooltipTxt: String): ButtonInfo {
         return ButtonInfo(
@@ -161,7 +173,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
     }
 
     /**
-     * calls the refresh method of every button (group)
+     * calls the refresh method of every button group
      * gets automatically called in [advance], feel free to call once at the end of your constructor call
      */
     protected open fun refreshButtons() {
@@ -172,7 +184,7 @@ open class GuiBase(private val guiLayout: GuiLayout = defaultGuiLayout) {
 
     /**
      * call this every frame in your e.g. BaseEveryFrameCombatPlugin
-     * executes button logic
+     * executes button logic, such as checking which button was clicked and executing actions when appropriate
      */
     open fun advance() {
         var wasAction = false

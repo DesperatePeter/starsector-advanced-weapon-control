@@ -3,6 +3,7 @@ package com.dp.advancedgunnerycontrol.combatgui
 import java.awt.Color
 
 /**
+ * data class describing they layout, i.e. positions/spacings/color etc. of you GUI
  * @param xAnchorRel position in relative coordinates (value between 0 and 1) where the top-left corner of first
  * button group of the UI shall be placed. Note that ActionButtons will be placed above this.
  * @param yAnchorRel cf. xAnchorRel

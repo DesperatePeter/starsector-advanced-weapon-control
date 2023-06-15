@@ -1,7 +1,7 @@
 package com.dp.advancedgunnerycontrol.combatgui.buttongroups
 
 /**
- * Sample implementation of CreateButtonsAction interface that creates
+ * Simple implementation of CreateButtonsAction interface that creates
  * a button for each entry in names.
  * @param names list of display names of buttons. Must not be null and defines the number of buttons created
  * @param data list of data that buttons shall contain. If null or too short, button names will be used as data.
