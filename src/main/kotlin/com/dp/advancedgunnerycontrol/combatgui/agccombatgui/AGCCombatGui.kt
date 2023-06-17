@@ -141,6 +141,7 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
         // Suggested modes Button
         val suggestedModeAction = object : ButtonAction{
             override fun execute() {
+                if(ship.fleetMember == null) return
                 applySuggestedModes(ship.fleetMember, Values.storageIndex)
                 reloadAllShips(Values.storageIndex)
                 ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
