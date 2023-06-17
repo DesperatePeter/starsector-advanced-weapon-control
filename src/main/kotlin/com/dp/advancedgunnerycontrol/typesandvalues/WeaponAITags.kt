@@ -5,6 +5,9 @@ import com.dp.advancedgunnerycontrol.gui.isElligibleForPD
 import com.dp.advancedgunnerycontrol.gui.isEverythingBlacklisted
 import com.dp.advancedgunnerycontrol.gui.usesAmmo
 import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.utils.generateUniversalFleetMemberId
+import com.dp.advancedgunnerycontrol.utils.loadPersistentTags
+import com.dp.advancedgunnerycontrol.utils.persistTags
 import com.dp.advancedgunnerycontrol.weaponais.mapBooleanToSpecificString
 import com.dp.advancedgunnerycontrol.weaponais.tags.*
 import com.fs.starfarer.api.Global
@@ -357,16 +360,14 @@ fun createTags(names: List<String>, weapon: WeaponAPI): List<WeaponAITagBase> {
     return names.mapNotNull { createTag(it, weapon) }.filter { it.isValid() }
 }
 
-fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int, allowOverriding: Boolean = true) {
+fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int, allowOverriding: Boolean = true, shipId: String? = null) {
+    val id = shipId ?: ship.id
     val groups = ship.variant.weaponGroups
-    val tagStore = Settings.tagStorage[storageIndex]
-    if (tagStore.modesByShip[ship.id] == null) {
-        tagStore.modesByShip[ship.id] = mutableMapOf()
-    }
+
     groups.forEachIndexed { index, group ->
-        if(allowOverriding || (tagStore.modesByShip[ship.id]?.get(index)?.isEmpty() != false)){
+        if(allowOverriding || loadPersistentTags(id, index, storageIndex).isEmpty()){
             val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
-            tagStore.modesByShip[ship.id]?.let { it[index] = getSuggestedModesForWeaponId(weaponID) }
+            persistTags(id, index, storageIndex, getSuggestedModesForWeaponId(weaponID))
         }
     }
 }

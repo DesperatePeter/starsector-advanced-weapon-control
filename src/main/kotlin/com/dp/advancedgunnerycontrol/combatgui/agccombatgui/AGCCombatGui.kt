@@ -142,9 +142,9 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
         val suggestedModeAction = object : ButtonAction{
             override fun execute() {
                 if(ship.fleetMember == null) return
-                applySuggestedModes(ship.fleetMember, Values.storageIndex)
+                applySuggestedModes(ship.fleetMember, Values.storageIndex, true, generateUniversalFleetMemberId(ship))
                 reloadAllShips(Values.storageIndex)
-                ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
+                ship.fleetMember.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
                 refreshButtons()
                 reRenderButtonGroups()
             }
@@ -166,7 +166,8 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     }
 
     private fun createWeaponGroupDescription(index: Int): String {
-        return "Group ${index + 1}: ${groupAsString(ship.fleetMember.variant.weaponGroups[index], ship.fleetMember)}"
+        val group = ship.fleetMember?.variant?.weaponGroups?.get(index)
+        return "Group ${index + 1}: ${group?.let { groupAsString(it, ship.fleetMember) } ?: "N/A"}"
     }
 
     private fun initializeUi() {

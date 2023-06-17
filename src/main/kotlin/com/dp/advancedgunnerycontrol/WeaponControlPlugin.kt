@@ -39,11 +39,18 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     companion object {
         fun determineSelectedShip(engine: CombatEngineAPI): ShipAPI? {
-            return if (engine.playerShip?.shipTarget?.owner == 0) {
-                (engine.playerShip?.shipTarget) ?: engine.playerShip
-            } else {
-                engine.playerShip
+            var ship: ShipAPI? = null
+            if(engine.isUIShowingHUD){
+                ship = engine.combatUI?.mainTargetReticleTarget
             }
+            if (engine.playerShip?.shipTarget?.owner == 0) {
+                ship = (engine.playerShip?.shipTarget) ?: engine.playerShip
+            }
+            if(ship == null || ship.owner != 0){
+                ship = engine.playerShip
+            }
+            if(ship?.fleetMember == null) return null
+            return ship
         }
     }
 
@@ -158,9 +165,17 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         when (keyManager.mkeyStatus.mcontrolEvent) {
             ControlEventType.INFO -> {
                 if (combatGui == null) {
-                    engine.isPaused = true
-                    engine.viewport?.isExternalControl = true
-                    combatGui = determineSelectedShip(engine)?.let { AGCCombatGui(it) }
+                    combatGui = determineSelectedShip(engine)?.let { AGCCombatGui(it) } ?: kotlin.run {
+                        printMessage("No valid ship selected/deployed. Cannot open Gunnery GUI." +
+                                "\nThis usually happens when you don't have a flagship deployed or ally selected." +
+                                "\nDeploy a flagship and/or target an ally with the R-Key.",
+                            Settings.uiDisplayFrames() * 2) // or open the command HUD (TAB) and select an ally.
+                        null
+                    }
+                    if(combatGui != null){
+                        engine.isPaused = true
+                        engine.viewport?.isExternalControl = true
+                    }
                 } else {
                     combatGui = null
                     engine.viewport?.isExternalControl = false

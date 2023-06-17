@@ -1,5 +1,12 @@
 === For Starsector 0.96a ===
 
+- 1.12.1:
+fix: removing ForceAF as the last tag no longer makes it stick around.
+fix: There should be less UI flicker now when setting all weapons to ForceAF tag. It doesn't seem possible to completely get rid of flicker.
+fix: Combat GUI won't open anymore when an invalid ship (e.g. command shuttle) is selected.
+fix: Crash when clicking suggested button on a ship with no fleet member value.
+fix: suggested tags applied to ship modules would not get stored properly if exiting GUI after only pressing that button.
+
 - 1.12.0: This update will reset ship modes!
 fix: possible crash when switching between advanced and simple mode
 Add BlockBeams tag (only relevant for very specific weapons, mainly a weapon from an upcoming mod release)

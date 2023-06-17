@@ -126,6 +126,7 @@ fun generateUniversalFleetMemberId(ship: ShipAPI): String {
     return parentId + index.toString()
 }
 
+
 fun persistTags(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<String>) {
     if (shipId == "") return
     if (!Settings.tagStorage[loadoutIndex].modesByShip.containsKey(shipId)) {
