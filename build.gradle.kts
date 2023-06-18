@@ -270,6 +270,7 @@ tasks {
                    |   
                    |   #                                 #### UI SETTINGS ####
                    |   
+                   |   , "suppressHudWarning" : false
                    |   # Switch this off if you want to reset modes every battle (campaign-GUI only works when enabled)
                    |   , "enablePersistentFireModes" : true # <---- EDIT HERE ----
                    |   # If set to false, changes are only persistent if made in the campaign-GUI or manually saved

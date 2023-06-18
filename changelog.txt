@@ -6,6 +6,7 @@ fix: There should be less UI flicker now when setting all weapons to ForceAF tag
 fix: Combat GUI won't open anymore when an invalid ship (e.g. command shuttle) is selected.
 fix: Crash when clicking suggested button on a ship with no fleet member value.
 fix: suggested tags applied to ship modules would not get stored properly if exiting GUI after only pressing that button.
+fix/feat: Selecting a ship in the command HUD (TAB-Key) now lets you open their GUI (experimental, uses reflection as this is not exposed by API).
 
 - 1.12.0: This update will reset ship modes!
 fix: possible crash when switching between advanced and simple mode

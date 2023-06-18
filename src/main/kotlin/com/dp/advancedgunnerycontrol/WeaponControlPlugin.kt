@@ -38,10 +38,10 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var combatGui: GuiBase? = null
 
     companion object {
-        fun determineSelectedShip(engine: CombatEngineAPI): ShipAPI? {
+        fun determineSelectedShip(engine: CombatEngineAPI, displayHudWarning: Boolean = true): ShipAPI? {
             var ship: ShipAPI? = null
             if(engine.isUIShowingHUD){
-                ship = engine.combatUI?.mainTargetReticleTarget
+                ship = getSelectedShipFromHud(engine.combatUI, displayHudWarning)
             }
             if (engine.playerShip?.shipTarget?.owner == 0) {
                 ship = (engine.playerShip?.shipTarget) ?: engine.playerShip
@@ -51,6 +51,22 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             }
             if(ship?.fleetMember == null) return null
             return ship
+        }
+
+        private fun getSelectedShipFromHud(ui: CombatUIAPI, displayHudWarning: Boolean): ShipAPI?{
+            try {
+                val warRoom = getFieldsByName("warroom", ui).firstOrNull() ?: return null
+                val selectionManager = invokeMethod("getSelectionManager", warRoom, declared = true) ?: return null
+                val combatManager = invokeMethodThatReturnsType(selectionManager, "CombatFleetManager") ?: return null
+                val ship = invokeMethod("getShipIfShip", combatManager) ?: return null
+                if(displayHudWarning && !Settings.suppressHudWarning()){
+                    ui.addMessage(0, "Selecting ships for AGC GUI from command HUD is experimental! " +
+                            "(warning suppressible in settings)")
+                }
+                return (ship as? ShipAPI)
+            }catch (e: Exception){
+                return null
+            }
         }
     }
 
@@ -168,8 +184,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                     combatGui = determineSelectedShip(engine)?.let { AGCCombatGui(it) } ?: kotlin.run {
                         printMessage("No valid ship selected/deployed. Cannot open Gunnery GUI." +
                                 "\nThis usually happens when you don't have a flagship deployed or ally selected." +
-                                "\nDeploy a flagship and/or target an ally with the R-Key.",
-                            Settings.uiDisplayFrames() * 2) // or open the command HUD (TAB) and select an ally.
+                                "\nDeploy a flagship and/or target an ally with the R-Key " +
+                                "or open the command HUD (TAB) and select an ally (experimental).",
+                            Settings.uiDisplayFrames() * 2) //
                         null
                     }
                     if(combatGui != null){

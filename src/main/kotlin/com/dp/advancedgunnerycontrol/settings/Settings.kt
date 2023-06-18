@@ -39,6 +39,7 @@ object Settings : SettingsDefinition() {
     val automaticallyReapplyPlayerShipModes = addSetting<Boolean>("automaticallyReapplyPlayerShipModes", true)
     val allowEnemyShipModeApplication = addSetting<Boolean>("allowEnemyShipModeApplication", true)
     val collisionRadiusMultiplier = addSetting<Float>("collisionRadiusMultiplier", 0.8f)
+    val suppressHudWarning = addSetting("suppressHudWarning", false)
 
 
     // mode/suffix params
