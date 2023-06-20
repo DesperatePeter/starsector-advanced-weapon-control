@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
 import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
+import com.dp.advancedgunnerycontrol.weaponais.determineUniversalShipTarget
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 
@@ -19,7 +20,7 @@ class ShipTargetTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     override fun avoidDebris(): Boolean = false
 
     private fun entityMatchesShipTarget(entity: CombatEntityAPI): Boolean {
-        val shipTgt = weapon.ship?.shipTarget
+        val shipTgt = weapon.ship?.determineUniversalShipTarget()
         return shipTgt == entity
     }
 }

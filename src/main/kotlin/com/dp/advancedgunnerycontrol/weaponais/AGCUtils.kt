@@ -8,6 +8,7 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.CollisionUtils
 import org.lazywizard.lazylib.MathUtils
+import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
@@ -303,6 +304,12 @@ fun mapBooleanToSpecificString(boolValue: Boolean, trueString: String, falseStri
 // Why doesn't Vector2f support this naturally? Note: infix and _ rather than operator in case this ever gets added
 internal infix fun Vector2f.times_(d: Float): Vector2f {
     return Vector2f(d * x, d * y)
+}
+
+fun ShipAPI.determineUniversalShipTarget(): ShipAPI?{
+    shipTarget?.let { return it }
+    (aiFlags?.getCustom(ShipwideAIFlags.AIFlags.MANEUVER_TARGET) as? ShipAPI)?.let { return it }
+    return null
 }
 
 

@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.shipais
 
+import com.dp.advancedgunnerycontrol.weaponais.determineUniversalShipTarget
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipCommand
 import org.lazywizard.lazylib.ext.minus
@@ -20,8 +21,8 @@ class ChargeShipAI(ship: ShipAPI) : ShipCommandGenerator(ship) {
     }
 
     private fun areWeaponsNotInRange(): Boolean{
-        ship.shipTarget?.let { tgt ->
-            if(tgt.owner == ship.owner) return false
+        ship.determineUniversalShipTarget()?.let { tgt ->
+            if(tgt.owner == ship.owner || tgt.owner == 100) return false
             return ship.allWeapons.any {
                 it.range < (it.location - tgt.location).length()
             }

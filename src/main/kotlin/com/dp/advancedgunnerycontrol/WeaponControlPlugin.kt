@@ -44,7 +44,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 ship = getSelectedShipFromHud(engine.combatUI, displayHudWarning)
             }
             if (engine.playerShip?.shipTarget?.owner == 0) {
-                ship = (engine.playerShip?.shipTarget) ?: engine.playerShip
+                ship = engine.playerShip?.shipTarget
             }
             if(ship == null || ship.owner != 0){
                 ship = engine.playerShip
