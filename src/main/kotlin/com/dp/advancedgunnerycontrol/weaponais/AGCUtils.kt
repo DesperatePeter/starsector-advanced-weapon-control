@@ -245,7 +245,7 @@ fun predictEffectiveArmorAtImpact(target: CombatEntityAPI, firingWeapon: WeaponA
     val armor = (target as? ShipAPI)?.armorGrid ?: return 0f
     val impactLocation = predictImpactLocationInTgtCoordinates(target, firingWeapon, predictedLocation)
     val (x, y) = armor.getCellAtLocation(impactLocation) ?: return armor.armorRating
-    return computeEffectiveArmorAroundIndex(armor, x, y)
+    return max(computeEffectiveArmorAroundIndex(armor, x, y), armor.armorRating * 0.05f)
 }
 
 fun computeEffectiveArmorAroundIndex(armor: ArmorGridAPI, x: Int, y: Int) : Float{

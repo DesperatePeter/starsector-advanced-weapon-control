@@ -9,6 +9,7 @@ import com.dp.advancedgunnerycontrol.gui.groupAsString
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.utils.*
+import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipAPI
 import kotlin.math.max

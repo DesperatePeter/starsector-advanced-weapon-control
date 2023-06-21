@@ -272,20 +272,23 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     override fun init(engine: CombatEngineAPI?) {
         super.init(engine)
-        if (null != engine) {
-            engine.customData[Values.CUSTOM_ENGINE_AGC_PRESENT_KEY] = "true"
-            try {
-                font = LazyFont.loadFont("graphics/fonts/insignia15LTaa.fnt")
-            } catch (e: FontException) {
-                Global.getLogger(this.javaClass).error("Failed to load font, won't de displaying messages", e)
-            }
-            // don't init during title screen
-            if (Global.getCurrentState() != GameState.TITLE) {
-                this.engine = engine
-                deployChecker = DeploymentChecker(engine)
-                isInitialized = true
-            }
+        if(engine == null) return
+
+        engine.customData[Values.CUSTOM_ENGINE_AGC_PRESENT_KEY] = "true"
+
+        try {
+            font = LazyFont.loadFont("graphics/fonts/insignia15LTaa.fnt")
+        } catch (e: FontException) {
+            Global.getLogger(this.javaClass).error("Failed to load font, won't de displaying messages", e)
         }
+
+        // don't init during title screen unless it's a simulation launched from mission screen
+        if(Global.getCurrentState() == GameState.TITLE && !engine.isSimulation) return
+
+        this.engine = engine
+        deployChecker = DeploymentChecker(engine)
+        isInitialized = true
+
     }
 
     override fun renderInUICoords(viewport: ViewportAPI?) {
