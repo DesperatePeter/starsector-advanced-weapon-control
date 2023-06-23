@@ -5,7 +5,8 @@ fix: AI-controlled ships now use their maneuver target as ship target for ShipTa
 fix: AvoidArmor tag now considers residual armor
 fix: AGC-GUI now available in mission refit-screen simulations
 fix: Opening combat-GUI via command HUD now only works when in command HUD, as intended
-fix: Improve logic for PD-validity evaluation (might improve performance/stability, might do nothing)
+fix: Improve logic for PD-validity evaluation
+fix: Performance issues
 
 - 1.12.1:
 fix: removing ForceAF as the last tag no longer makes it stick around.
