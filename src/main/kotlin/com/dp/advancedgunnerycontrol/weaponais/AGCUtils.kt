@@ -30,7 +30,7 @@ data class FiringSolution(
 fun isPD(weapon: WeaponAPI): Boolean {
     if (weapon.hasAIHint(WeaponAPI.AIHints.PD) || weapon.hasAIHint(WeaponAPI.AIHints.PD_ONLY)
     ) return true
-    return ((WeaponControlPlugin.determineSelectedShip(Global.getCombatEngine(), false)?.variant?.hasHullMod("pointdefenseai") == true)
+    return ((weapon.ship?.variant?.hasHullMod("pointdefenseai") == true)
             && (weapon.size == WeaponAPI.WeaponSize.SMALL) && (weapon.type != WeaponAPI.WeaponType.MISSILE))
 }
 

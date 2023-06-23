@@ -40,7 +40,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     companion object {
         fun determineSelectedShip(engine: CombatEngineAPI, displayHudWarning: Boolean = true): ShipAPI? {
             var ship: ShipAPI? = null
-            if(engine.isUIShowingHUD){
+            if(engine.combatUI.isShowingCommandUI){
                 ship = getSelectedShipFromHud(engine.combatUI, displayHudWarning)
             }
             if (engine.playerShip?.shipTarget?.owner == 0) {
