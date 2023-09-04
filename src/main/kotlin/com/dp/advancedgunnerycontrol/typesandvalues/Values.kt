@@ -24,8 +24,10 @@ object Values {
                 "\nin order to create the desired behavior. For instance, if you wish for your weapon group to only shoot at" +
                 " missiles, assign the PD and NoFighters tags." +
                 "\nTags that are incompatible to currently selected tags will be disabled." +
-                "\nNote: Each additional tag will make it less likely for the weapons to fire. Only when all tags agree that" +
+                "\nEach additional tag will make it less likely for the weapons to fire. Only when all tags agree that" +
                 " a target should be shot at, the weapons will fire." +
+                "\nWith very few exceptions, modes will only affect the autofire AI of that weapon. The Ship AI won't necessarily" +
+                " understand that the weapon now uses non-default behavior." +
                 "\n---Ship AI Modes---\nThese will modify the behavior of the ship AI. They will behave like the normal ship AI, except" +
                 " for the stated modifications." +
                 "\nAs the name implies, Ship AI modes will only work for AI-controlled ships, not the player controlled ship." +

@@ -7,8 +7,8 @@
     {
         "major":1,
         "minor":12,
-        "patch":2
+        "patch":3
     },
-    "directDownloadURL": "https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases/download/1.12.2/AdvancedGunneryControl-1.12.2.zip",
+    "directDownloadURL": "https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases/download/1.12.3/AdvancedGunneryControl-1.12.3.zip",
     "changelogURL": "https://raw.githubusercontent.com/DesperatePeter/starsector-advanced-weapon-control/master/changelog.txt"
 }

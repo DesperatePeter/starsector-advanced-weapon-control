@@ -15,6 +15,7 @@ import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.input.InputEventAPI
+import com.fs.starfarer.api.loading.WeaponGroupType
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import java.awt.Color
@@ -35,6 +36,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var initialShipInitRequired = Settings.enableAutoSaveLoad()
     private var mergeWeaponGroupsIndex: Int? = null
     private var mergedWeaponRestoration = mutableMapOf<WeaponAPI, Int>()
+    private var restoreAlternatingGroups = mutableSetOf<WeaponGroupAPI>()
     private var combatGui: GuiBase? = null
 
     companion object {
@@ -225,12 +227,18 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         val currentGroup = groups.getOrNull(index) ?: return
         var wasSuccessful = false
         mergedWeaponRestoration = mutableMapOf()
+        restoreAlternatingGroups = mutableSetOf()
         groups.forEachIndexed { i, group ->
             if (group != currentGroup) {
                 for (weapon in group.weaponsCopy.toList()) {
                     if ((weapon.getAutofirePlugin() as? TagBasedAI)?.tags?.any { it is MergeTag } == true) {
                         wasSuccessful = true
                         val removedWeapon = group.removeWeapon(group.weaponsCopy.indexOf(weapon))
+                        // Note: For some reason, switching to an empty alternating weapon group crashes the game...
+                        if(group.type == WeaponGroupType.ALTERNATING){
+                            restoreAlternatingGroups.add(group)
+                            group.type = WeaponGroupType.LINKED
+                        }
                         removedWeapon?.let {
                             currentGroup.addWeaponAPI(it)
                             mergedWeaponRestoration.put(it, i)
@@ -260,7 +268,11 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             }
 
         }
+        restoreAlternatingGroups.forEach {
+            it.type = WeaponGroupType.ALTERNATING
+        }
         mergedWeaponRestoration = mutableMapOf()
+        restoreAlternatingGroups = mutableSetOf()
         ship.removeCustomData(Values.CUSTOM_SHIP_DATA_ARE_WEAPONS_MERGED_KEY)
         reloadShips(Values.storageIndex, listOf(ship))
     }

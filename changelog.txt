@@ -1,5 +1,9 @@
 === For Starsector 0.96a ===
 
+- 1.12.3:
+fix: crash when merging weapon group with alternating mode and then selecting that group
+fix: slightly improved some descriptions in hover tooltips
+
 - 1.12.2:
 fix: AI-controlled ships now use their maneuver target as ship target for ShipTarget-Tag and Charge-ship-mode
 fix: AvoidArmor tag now considers residual armor

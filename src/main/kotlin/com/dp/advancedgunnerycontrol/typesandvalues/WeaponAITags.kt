@@ -93,7 +93,7 @@ val tagTooltips = mapOf(
     "ConserveAmmo" to "Weapon will be much more hesitant to fire when ammo below ${(Settings.conserveAmmo() * 100f).toInt()}%." +
             "\nNo targeting restrictions.",
     "CnsrvPDAmmo" to "When ammo is below ${(Settings.conservePDAmmo() * 100f).toInt()}%, weapon will only fire when the target is a fighter/missile." +
-            "\nFor non-PD weapons, only fighters will be fired upon." +
+            "\nFor non-PD weapons, only fighters will be fired upon in that case." +
             "\nNo targeting restrictions.",
     "Opportunist" to "Weapon will be much more hesitant to fire and won't target missiles or fighters. Use for e.g. limited ammo weapons.",
     "AvoidDebris" to "Weapon will not fire when the shot is blocked by debris/asteroids." +
@@ -106,11 +106,13 @@ val tagTooltips = mapOf(
             "\nNote: This will modify the ShipAI, as the Starsector API doesn't allow to directly set a weapon group to autofire." +
             "\n      The ShipAI might still try to select this weapon group, but will be forced to deselect it again.",
     "AvoidPhased" to "Weapon will ignore phase-ships, unless they are unable to avoid the shot by phasing (due to flux or cooldown)." +
+            "\nWhen used to fight phase-ships, it's best to use this on high-impact weapons and set some rapid-fire or beam weapons on TargetPhase." +
             "\nNo targeting restrictions.",
     "TargetPhase" to "Weapon will prioritize phase-ships. Does not care if the ship is currently phased or not." +
-            "\nUseful for fast-firing weapons (e.g. beams) to keep up pressure on enemy phase coils." +
+            "\nUseful for rapid-fire or beam weapons to keep up pressure on enemy phase coils." +
             "\nNo targeting restrictions.",
-    "ShipTarget" to "Weapon will only target the selected ship target (R-Key). I like to use this for regenerating missiles.",
+    "ShipTarget" to "Weapon will only target the selected ship target (R-Key). I like to use this for regenerating missiles." +
+            "\nFor AI-controlled ships, this will limit them to the maneuver-target that the ShipAI has chosen.",
     "TgtShieldsFT" to "As TargetShields, but will allow targeting of anything when flux is below ${(Settings.targetShieldsAtFT() * 100f).toInt()}%. \nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
@@ -135,7 +137,7 @@ val tagTooltips = mapOf(
     "PrioMissile" to "Prioritize missiles over all other targets but target other things if no missiles present.$priorityBoilerplateText",
     "PrioShips" to "Prioritize non-fighter ships over all other targets but target other things if no ships present.$priorityBoilerplateText",
     "PrioWounded" to "Prioritize targets that have already taken lots of hull damage.",
-    "BlockBeams" to "Will shoot at enemies that are shooting this ship, even when out of range. Intended mainly for the SVC Ink Spitter gun."
+    "BlockBeams" to "Will shoot at enemies that are shooting this ship with beams, even when out of range. Intended mainly for the SVC Ink Spitter gun."
 )
 
 fun getTagTooltip(tag: String): String {
@@ -176,7 +178,9 @@ fun getTagTooltip(tag: String): String {
                 rangeRegex, tag
             )
         } of weapon range." +
-                "\nThis is useful for weapons (especially missiles) with slow projectiles, such as e.g. sabots."
+                "\nThis is useful for weapons (especially missiles) with slow projectiles, such as e.g. sabots" +
+                " or shotgun-style weapons, such as the devastator cannon." +
+                "\nNote: This does not modify the actual range of the weapon, it only affects autofire behavior!"
 
         forceFireRegex.matches(tag) -> "ForceFire: Weapon will ignore firing restrictions of other tags while flux < ${
             extractRegexThresholdAsPercentageString(
