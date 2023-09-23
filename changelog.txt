@@ -1,5 +1,8 @@
 === For Starsector 0.96a ===
 
+- 1.12.4:
+fix: compatibility issue with VAS (AGC will no longer wrap the AIs of blacklisted weapons in an empty wrapper)
+
 - 1.12.3:
 fix: crash when merging weapon group with alternating mode and then selecting that group
 fix: slightly improved some descriptions in hover tooltips
