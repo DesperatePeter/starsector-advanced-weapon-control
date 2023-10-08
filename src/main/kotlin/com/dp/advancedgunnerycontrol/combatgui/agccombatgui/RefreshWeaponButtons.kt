@@ -18,7 +18,7 @@ class RefreshWeaponButtons(private val ship: ShipAPI, private val index: Int) : 
             if (isIncompatibleWithExistingTags(str, currentTags)) {
                 it.isDisabled = true
             }
-            if (true != ship.weaponGroupsCopy.getOrNull(index)?.weaponsCopy?.any { w ->
+            if (false == ship.weaponGroupsCopy.getOrNull(index)?.weaponsCopy?.any { w ->
                     createTag(str, w)?.isValid() == true
                 }) {
                 it.isDisabled = true

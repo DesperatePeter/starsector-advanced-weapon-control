@@ -2,6 +2,7 @@ package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
 import com.dp.advancedgunnerycontrol.combatgui.Highlight
 import com.dp.advancedgunnerycontrol.combatgui.buttongroups.ButtonGroupAction
+import com.dp.advancedgunnerycontrol.gui.refitscreen.RefitScreenHandler
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.utils.applyTagsToWeaponGroup
 import com.dp.advancedgunnerycontrol.utils.loadTags
@@ -13,7 +14,8 @@ class WeaponGroupAction(
     private val ship: ShipAPI,
     private val index: Int,
     private val highlights: MutableList<Highlight>,
-    private val viewMult: Float
+    private val viewMult: Float,
+    private val campaignMode: Boolean
 ) : ButtonGroupAction {
     override fun execute(data: List<Any>, selectedButtonData: Any?, deselectedButtonData: Any?) {
         val currentTags = loadTags(ship, index, Values.storageIndex)
@@ -31,10 +33,10 @@ class WeaponGroupAction(
         val vp = Global.getCombatEngine()?.viewport ?: return
 
         val toScreenX = { x: Float ->
-            vp.convertWorldXtoScreenX(x)
+            if(campaignMode) x + RefitScreenHandler.refitPanelAnchorX else vp.convertWorldXtoScreenX(x)
         }
         val toScreenY = { y: Float ->
-            vp.convertWorldYtoScreenY(y)
+            if(campaignMode) y + RefitScreenHandler.refitPanelAnchorY else vp.convertWorldYtoScreenY(y)
         }
         highlights.clear()
         highlights.addAll(

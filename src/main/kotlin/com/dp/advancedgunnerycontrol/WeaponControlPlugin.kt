@@ -58,9 +58,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         private fun getSelectedShipFromHud(ui: CombatUIAPI, displayHudWarning: Boolean): ShipAPI?{
             try {
                 val warRoom = getFieldsByName("warroom", ui).firstOrNull() ?: return null
-                val selectionManager = invokeMethod("getSelectionManager", warRoom, declared = true) ?: return null
+                val selectionManager = invokeMethodByName("getSelectionManager", warRoom, declared = true) ?: return null
                 val combatManager = invokeMethodThatReturnsType(selectionManager, "CombatFleetManager") ?: return null
-                val ship = invokeMethod("getShipIfShip", combatManager) ?: return null
+                val ship = invokeMethodByName("getShipIfShip", combatManager) ?: return null
                 if(displayHudWarning && !Settings.suppressHudWarning()){
                     ui.addMessage(0, "Selecting ships for AGC GUI from command HUD is experimental! " +
                             "(warning suppressible in settings)")

@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
 import com.dp.advancedgunnerycontrol.combatgui.GuiBase
+import com.dp.advancedgunnerycontrol.combatgui.GuiLayout
 import com.dp.advancedgunnerycontrol.combatgui.Highlight
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ActionButton
 import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonAction
@@ -15,10 +16,28 @@ import com.fs.starfarer.api.combat.ShipAPI
 import kotlin.math.max
 import kotlin.reflect.KProperty
 
-class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
+class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean = false) : GuiBase(AGCGridLayout) {
     override fun getTitleString(): String {
         return "${ship.name}, ${ship.fleetMember?.variant?.fullDesignationWithHullNameForShip ?: "Unknown ship type"}" +
                 " | Tag Scrollbar: " + tagListView.asciiScrollBar()
+    }
+
+    override fun getMessageString(): String? {
+        ship.variant?.weaponGroups?.let { groups ->
+            val firstEmpty = groups.indexOf(groups.find { it.slots.size == 0 })
+            val lastFilled = groups.indexOf(groups.findLast { it.slots.size != 0 })
+            if((firstEmpty != -1) && (firstEmpty - 1 != lastFilled)){
+                return "Warning!\nPlease make sure your filled weapon groups are contiguous!" +
+                        "\nYour filled groups should look like [X][X][X][X][ ][ ][ ], not [X][X][ ][X][ ][X][ ]" +
+                        "\nOtherwise, configured tags might behave weirdly (since Starsector will collapse your weapon groups later)." +
+                        "\nIf in refit-screen, simply briefly select another ship and then this ship again." +
+                        "\nWarning!"
+            }
+            if(ship.weaponGroupsCopy.filter { it.weaponsCopy.size != 0 }.size != ship.variant.weaponGroups.filter { it.slots.size != 0 }.size){
+                return "Ship variant weapon groups size doesn't match ship. Try refreshing by selecting a different ship."
+            }
+        }
+        return null
     }
 
     private val viewScaleMult = Global.getSector()?.viewport?.viewMult ?: 1.0f
@@ -167,16 +186,16 @@ class AGCCombatGui(private val ship: ShipAPI) : GuiBase(AGCGridLayout) {
     }
 
     private fun createWeaponGroupDescription(index: Int): String {
-        val group = ship.fleetMember?.variant?.weaponGroups?.get(index)
+        val group = ship.variant?.weaponGroups?.getOrNull(index)
         return "Group ${index + 1}: ${group?.let { groupAsString(it, ship.fleetMember) } ?: "N/A"}"
     }
 
     private fun initializeUi() {
         ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
 
-        for (i in 0 until ship.variant.weaponGroups.size) {
+        for (i in 0 until (ship.variant.weaponGroups?.filter { it.slots?.size != 0 }?.size ?: 0)) {
             addButtonGroup(
-                WeaponGroupAction(ship, i, highlights, viewScaleMult),
+                WeaponGroupAction(ship, i, highlights, viewScaleMult, campaignMode),
                 CreateWeaponButtons(tagListView),
                 RefreshWeaponButtons(ship, i),
                 createWeaponGroupDescription(i)
