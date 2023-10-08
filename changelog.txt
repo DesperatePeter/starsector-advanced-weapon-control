@@ -1,5 +1,9 @@
 === For Starsector 0.96a ===
 
+- 1.13.0:
+feat: refit-screen integration
+fix: screen scale mult issues
+
 - 1.12.4:
 fix: compatibility issue with VAS (AGC will no longer wrap the AIs of blacklisted weapons in an empty wrapper)
 
