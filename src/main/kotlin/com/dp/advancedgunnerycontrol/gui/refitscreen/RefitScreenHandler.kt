@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui.refitscreen
 
 import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.AGCCombatGui
+import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonAction
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.utils.getChildren
 import com.dp.advancedgunnerycontrol.utils.hasMethodNamed
@@ -12,7 +13,6 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.CampaignState
 import com.fs.state.AppDriver
 import org.lwjgl.input.Keyboard
-import kotlin.math.max
 
 class RefitScreenHandler {
 
@@ -23,34 +23,64 @@ class RefitScreenHandler {
 
     private var lastEventTime = 0L
 
+    private val isRefit
+        get() = Global.getSector().campaignUI.currentCoreTab == CoreUITabId.REFIT
     private val isRelevantEvent
-        get() = Global.getSector().campaignUI.currentCoreTab == CoreUITabId.REFIT && Keyboard.getEventNanoseconds() > lastEventTime
+        get() = Keyboard.getEventNanoseconds() > lastEventTime
     private val isAgcHotkey
-        get() = Keyboard.getEventCharacter().lowercaseChar() == Settings.guiHotkey()
+        get() = Keyboard.getEventCharacter().lowercaseChar() == Settings.guiHotkey() && isRelevantEvent
     private val isEsc
-        get() = Keyboard.isKeyDown(Keyboard.KEY_ESCAPE)
+        get() = Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && isRelevantEvent
     private val shouldOpen
         get() = isAgcHotkey && gui == null
     private val shouldClose
         get() = gui != null && (isAgcHotkey || isEsc)
 
     private var gui: RefitScreenPanel? = null
+    private var buttonHolder: ButtonHolderPanel? = null
     fun advance(amount: Float){
-        if(!isRelevantEvent) return
-        lastEventTime = Keyboard.getEventNanoseconds()
-        if(shouldOpen){
-            gui = createGUI()
+        if(!isRefit){
+            buttonHolder?.close()
+            buttonHolder = null
+            return
+        }
 
+        if(buttonHolder == null){
+            buttonHolder = createButtonHolder()
+        }
+
+        buttonHolder?.advance(amount)
+
+        if(shouldOpen){
+            openGUI()
         }else if(shouldClose){
-            gui?.close()
-            gui = null
+            closeGUI()
+        }
+        lastEventTime = Keyboard.getEventNanoseconds()
+    }
+
+    private fun openGUI(){
+        gui = createGUI()
+    }
+    private fun closeGUI(){
+        gui?.close()
+        gui = null
+    }
+    private fun toggleOpenGUI(){
+        if(gui == null){
+            openGUI()
+        }else{
+            closeGUI()
         }
     }
 
     private fun getRefitPanel(core: UIPanelAPI): UIPanelAPI?{
         val panel1 = core.getChildren().find { hasMethodNamed(it, "setBorderInsetLeft") } as? UIPanelAPI ?: return null
         val panel2 = panel1.getChildren().find { hasMethodNamed(it, "goBackToParentIfNeeded") } as? UIPanelAPI ?: return null
-        return panel2.getChildren().find { hasMethodNamed(it, "syncWithCurrentVariant") } as? UIPanelAPI
+        val refitPanel = panel2.getChildren().find { hasMethodNamed(it, "syncWithCurrentVariant") } as? UIPanelAPI
+        refitPanelAnchorX = refitPanel?.position?.centerX ?: 0f
+        refitPanelAnchorY = refitPanel?.position?.centerY ?: 0f
+        return refitPanel
     }
 
     private fun getShip(refitPanel: UIPanelAPI): ShipAPI?{
@@ -60,26 +90,44 @@ class RefitScreenHandler {
     }
 
     private fun createGUI(): RefitScreenPanel?{
-        val appState = AppDriver.getInstance()?.currentState as? CampaignState ?: return null
-        val dialog = invokeMethodByName("getEncounterDialog", appState)
-        (dialog?.run { invokeMethodByName("getCoreUI", this) as? UIPanelAPI }
-            ?: invokeMethodByName("getCore", appState) as? UIPanelAPI)?.let { core ->
+        getCore()?.let { core ->
             val refitPanel = getRefitPanel(core) ?: return null
-            refitPanelAnchorX = refitPanel.position.centerX
-            refitPanelAnchorY = refitPanel.position.centerY
             val combatGui = getShip(refitPanel)?.let { ship ->
                 AGCCombatGui(ship, true)
             } ?: return null
-            val gui = RefitScreenPanel(combatGui, core)
-            // values like height/width/x/y are irrelevant
-            val panel = Global.getSettings().createCustom(1210f, 800f, gui) ?: return null
-            gui.panel = panel
-//            val x = max(Settings.uiAnchorX() - 0.05f, 0f) * Global.getSettings().screenWidth
-//            val y = max(1f - Settings.uiAnchorY() - 0.1f, 0f) * Global.getSettings().screenHeight
+            val refitScreenPanel = RefitScreenPanel(combatGui, core)
+            val panel = Global.getSettings().createCustom(1f, 1f, refitScreenPanel) ?: return null
+            refitScreenPanel.panel = panel
             core.addComponent(panel)?.inTL(10f, 10f)
-            return gui
+            return refitScreenPanel
         }
         return null
+    }
+
+    private fun createButtonHolder(): ButtonHolderPanel?{
+        getCore()?.let { core ->
+            val refitPanel = getRefitPanel(core) ?: return null
+            val buttonHolderPanel = ButtonHolderPanel(object: ButtonAction{
+                override fun execute() {
+                    toggleOpenGUI()
+                }
+            }, refitPanel)
+            val panel = Global.getSettings().createCustom(1f, 1f, buttonHolderPanel) ?: return null
+            buttonHolderPanel.panel = panel
+            val posX = refitPanelAnchorX / Global.getSettings().screenScaleMult + (refitPanel.position?.width ?: 0f) * 0.37f * Global.getSettings().screenScaleMult
+            val posY = refitPanelAnchorY / Global.getSettings().screenScaleMult - (refitPanel.position?.height ?: 0f) * 0.5f * Global.getSettings().screenScaleMult
+            refitPanel.addComponent(panel)?.inBR(110f, 10f)
+            return  buttonHolderPanel
+
+        }
+        return null
+    }
+
+    private fun getCore(): UIPanelAPI?{
+        val appState = AppDriver.getInstance()?.currentState as? CampaignState ?: return null
+        val dialog = invokeMethodByName("getEncounterDialog", appState)
+        return (dialog?.run { invokeMethodByName("getCoreUI", this) as? UIPanelAPI }
+            ?: invokeMethodByName("getCore", appState) as? UIPanelAPI)
     }
 
 

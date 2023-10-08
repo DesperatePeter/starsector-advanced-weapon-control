@@ -59,7 +59,7 @@ fun renderHighlights(highlights: List<Highlight>, viewMult: Float, color: Color 
     preRender()
     highlights.forEach{
         GL11.glColor4f(color.red.toFloat()/255f, color.green.toFloat()/255f, color.blue.toFloat()/255f, it.a)
-        DrawUtils.drawCircle(it.x, it.y, it.r * RADIUS_MULTIPLIER / viewMult * uiMult , CIRCLE_POINTS, true)
+        DrawUtils.drawCircle(it.x * uiMult, it.y * uiMult, it.r * RADIUS_MULTIPLIER / viewMult * uiMult , CIRCLE_POINTS, true)
     }
     postRender()
 }
@@ -69,10 +69,11 @@ fun renderHighlights(highlights: List<Highlight>, viewMult: Float, color: Color 
  * this gets used by buttons internally, so unless you want to manually display text, you won't need to use this
  */
 fun renderTextbox(text: LazyFont.DrawableString, xPos: Float, yPos: Float, buffer: Float, color: Color = defaultTextBoxColor, frameColor: Color = defaultFrameColor){
-    val x = xPos - buffer/2f
-    val y = yPos + buffer/2f
-    val w = text.width + buffer
-    val h = text.height + buffer
+    val uiMult = Global.getSettings().screenScaleMult ?: 1f
+    val x = (xPos - buffer/2f) * uiMult
+    val y = (yPos + buffer/2f) * uiMult
+    val w = (text.width + buffer) * uiMult
+    val h = (text.height + buffer) * uiMult
     // assume TOP_LEFT anchor for now, move later
     val vertices = arrayOf(x, y, // top left
         x + w, y, // top right

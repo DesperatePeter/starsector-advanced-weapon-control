@@ -10,9 +10,6 @@ import org.lwjgl.opengl.GL11
 import java.awt.Color
 
 class RefitScreenPanel(private val gui: GuiBase, private val parent: UIPanelAPI): CustomUIPanelPlugin {
-    companion object{
-        val bgc: Color = Color(80, 80, 80, 200)
-    }
     var panel: UIPanelAPI? = null
     var pos: PositionAPI? = null
     override fun positionChanged(p: PositionAPI?) {
@@ -25,7 +22,7 @@ class RefitScreenPanel(private val gui: GuiBase, private val parent: UIPanelAPI)
             GL11.glEnable(GL11.GL_BLEND)
             GL11.glDisable(GL11.GL_TEXTURE_2D)
             GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
-            GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.3f)
+            GL11.glColor4f(0.3f, 0.3f, 0.3f, 0.4f)
             // GL11.glRectf(p.x, p.y, p.x + p.width, p.y + p.height)
             GL11.glRectf(0f, 0f,  Global.getSettings().screenWidth, Global.getSettings().screenHeight)
             GL11.glPopMatrix()
