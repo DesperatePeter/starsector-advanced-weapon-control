@@ -33,9 +33,9 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
                         "\nIf in refit-screen, simply briefly select another ship and then this ship again." +
                         "\nWarning!"
             }
-            if(ship.weaponGroupsCopy.filter { it.weaponsCopy.size != 0 }.size != ship.variant.weaponGroups.filter { it.slots.size != 0 }.size){
-                return "Ship variant weapon groups size doesn't match ship. Try refreshing by selecting a different ship."
-            }
+//            if(ship.weaponGroupsCopy.filter { it.weaponsCopy.size != 0 }.size != ship.variant.weaponGroups.filter { it.slots.size != 0 }.size){
+//                return "Ship variant weapon groups size doesn't match ship. Try refreshing by selecting a different ship."
+//            }
         }
         return null
     }

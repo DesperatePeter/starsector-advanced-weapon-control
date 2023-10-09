@@ -75,18 +75,19 @@ class RefitScreenHandler {
     }
 
     private fun getRefitPanel(core: UIPanelAPI): UIPanelAPI?{
-        val panel1 = core.getChildren().find { hasMethodNamed(it, "setBorderInsetLeft") } as? UIPanelAPI ?: return null
-        val panel2 = panel1.getChildren().find { hasMethodNamed(it, "goBackToParentIfNeeded") } as? UIPanelAPI ?: return null
-        val refitPanel = panel2.getChildren().find { hasMethodNamed(it, "syncWithCurrentVariant") } as? UIPanelAPI
+        val panel1 = core.getChildren().find { hasMethodNamed(it, "setBorderInsetLeft", "getRefitPanel, panel1") } as? UIPanelAPI ?: return null
+        val panel2 = panel1.getChildren().find { hasMethodNamed(it, "goBackToParentIfNeeded", "getRefitPanel, panel2") } as? UIPanelAPI ?: return null
+        val refitPanel = panel2.getChildren().find { hasMethodNamed(it, "syncWithCurrentVariant", "getRefitPanel, refitPanel") } as? UIPanelAPI
         refitPanelAnchorX = refitPanel?.position?.centerX ?: 0f
         refitPanelAnchorY = refitPanel?.position?.centerY ?: 0f
         return refitPanel
     }
 
     private fun getShip(refitPanel: UIPanelAPI): ShipAPI?{
-        val shipDisplay = invokeMethodByName("getShipDisplay", refitPanel) as? UIPanelAPI ?: return null
-        invokeMethodByName("syncWithCurrentVariant", refitPanel)
-        return invokeMethodByName("getShip", shipDisplay) as? ShipAPI
+        val shipDisplay = invokeMethodByName("getShipDisplay", refitPanel, narrativeContext = "GetShip, getting ship display") as? UIPanelAPI ?: return null
+        val ship =  invokeMethodByName("getShip", shipDisplay, narrativeContext = "GetShip, getting ship from ShipDisplay") as? ShipAPI
+        invokeMethodByName("syncWithCurrentVariant", refitPanel, narrativeContext = "GetShip, syncing, not so important.")
+        return ship
     }
 
     private fun createGUI(): RefitScreenPanel?{
@@ -116,7 +117,7 @@ class RefitScreenHandler {
             buttonHolderPanel.panel = panel
             val posX = refitPanelAnchorX / Global.getSettings().screenScaleMult + (refitPanel.position?.width ?: 0f) * 0.37f * Global.getSettings().screenScaleMult
             val posY = refitPanelAnchorY / Global.getSettings().screenScaleMult - (refitPanel.position?.height ?: 0f) * 0.5f * Global.getSettings().screenScaleMult
-            refitPanel.addComponent(panel)?.inBR(110f, 10f)
+            refitPanel.addComponent(panel)?.inBR(110f, 120f)
             return  buttonHolderPanel
 
         }
@@ -125,9 +126,9 @@ class RefitScreenHandler {
 
     private fun getCore(): UIPanelAPI?{
         val appState = AppDriver.getInstance()?.currentState as? CampaignState ?: return null
-        val dialog = invokeMethodByName("getEncounterDialog", appState)
-        return (dialog?.run { invokeMethodByName("getCoreUI", this) as? UIPanelAPI }
-            ?: invokeMethodByName("getCore", appState) as? UIPanelAPI)
+        val dialog = invokeMethodByName("getEncounterDialog", appState, narrativeContext = "getCore, getting main dialog")
+        return (dialog?.run { invokeMethodByName("getCoreUI", this, narrativeContext = "getCore, trying to get from main dialog") as? UIPanelAPI }
+            ?: invokeMethodByName("getCore", appState, narrativeContext = "getCore, trying to get from app state") as? UIPanelAPI)
     }
 
 

@@ -1,5 +1,8 @@
 === For Starsector 0.96a ===
 
+- 1.13.1:
+fix: refit-screen integration should now also work with JRE8
+
 - 1.13.0:
 feat: refit-screen integration
 fix: screen scale mult issues
