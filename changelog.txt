@@ -1,5 +1,9 @@
 === For Starsector 0.96a ===
 
+- 1.13.2:
+feat: add option to disable refit screen integration to Settings.editme
+feat: add option (true by default) to use exact bounds rather than circle approximations to determine if weapons should fire
+
 - 1.13.1:
 fix: refit-screen integration should now also work with JRE8
 

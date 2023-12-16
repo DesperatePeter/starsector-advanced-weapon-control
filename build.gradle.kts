@@ -299,7 +299,8 @@ tasks {
                    |   , "enableAutoSaveLoad" : true # <---- EDIT HERE ----
                    |   
                    |   #                                  #### TROUBLESHOOTING ####
-                   |   # These flags disable certain parts of the combat UI that might cause issues on specific systems
+                   |   # These flags disable certain parts of the UI that might cause issues on specific systems
+                   |   , "enableRefitScreenIntegration" : true # <---- EDIT HERE ----
                    |   , "enableWeaponHighlighting" : true # <---- EDIT HERE ----
                    |   , "enableHoverTooltips" : true # <---- EDIT HERE ----
                    |   , "enableHoverTooltipBoxes" : true # <---- EDIT HERE ----
@@ -316,7 +317,13 @@ tasks {
                    |   # I.e. doubling this value doubles the time required to compute firing solutions but only increases their
                    |   # accuracy a little bit.
                    |   # I believe that 1 is the value used in Vanilla
-                   |   ,"customAIRecursionLevel" : 1 # <---- EDIT HERE (maybe)----                   
+                   |   ,"customAIRecursionLevel" : 1 # <---- EDIT HERE (maybe)----
+                   |           
+                   |   # If set to false, ships will be approximated as circles. This might lead to questionable firing decisions
+                   |   # with very precise weapons (e.g. beams) against decidedly non-circular ships. On the other hand, using exact
+                   |   # bounds will use significantly more performance
+                   |   # Note: Even if set to true, exact bounds will only be used for making a firing decision, not for target selection
+                   |   ,"useExactBoundsForFiringDecision" : true # <---- EDIT HERE (maybe)----
                    |   
                    |   # Any positive or negative float possible, reasonable values: between 0.7 ~ 2.0 or so
                    |   # 1.0 means "fire if shot will land within 1.0*(targetHitbox+10)"

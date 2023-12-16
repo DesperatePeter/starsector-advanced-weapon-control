@@ -39,6 +39,8 @@ class RefitScreenHandler {
     private var gui: RefitScreenPanel? = null
     private var buttonHolder: ButtonHolderPanel? = null
     fun advance(amount: Float){
+        if(!Settings.enableRefitScreenIntegration()) return
+
         if(!isRefit){
             buttonHolder?.close()
             buttonHolder = null
@@ -115,8 +117,6 @@ class RefitScreenHandler {
             }, refitPanel)
             val panel = Global.getSettings().createCustom(1f, 1f, buttonHolderPanel) ?: return null
             buttonHolderPanel.panel = panel
-            val posX = refitPanelAnchorX / Global.getSettings().screenScaleMult + (refitPanel.position?.width ?: 0f) * 0.37f * Global.getSettings().screenScaleMult
-            val posY = refitPanelAnchorY / Global.getSettings().screenScaleMult - (refitPanel.position?.height ?: 0f) * 0.5f * Global.getSettings().screenScaleMult
             refitPanel.addComponent(panel)?.inBR(110f, 120f)
             return  buttonHolderPanel
 

@@ -62,6 +62,7 @@ object Settings : SettingsDefinition() {
     val targetShieldsAtFT = addSetting<Float>("targetShieldsAtFT_flux", 0.2f)
     val avoidShieldsAtFT = addSetting<Float>("avoidShieldsAtFT_flux", 0.2f)
     val prioXModifier = addSetting<Float>("prioXModifier", 10f)
+    val useExactBoundsForFiringDecision = addSetting<Boolean>("useExactBoundsForFiringDecision", true)
 
     val enableWeaponHighlighting = addSetting<Boolean>("enableWeaponHighlighting", true)
     val enableTooltipsOnHover = addSetting<Boolean>("enableHoverTooltips", true)
@@ -69,6 +70,7 @@ object Settings : SettingsDefinition() {
     val enableButtonHoverSound = addSetting<Boolean>("enableButtonHoverSound", true)
     val enableButtonHoverEffects = addSetting<Boolean>("enableButtonHoverEffects", true)
     val enableButtonOutlines = addSetting<Boolean>("enableButtonOutlines", true)
+    val enableRefitScreenIntegration = addSetting<Boolean>("enableRefitScreenIntegration", true)
 
     var isAdvancedMode : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "isAdvancedMode", false)
     var autoApplySuggestedTags : Boolean by CampaignSettingDelegate("$" + Values.THIS_MOD_NAME + "autoApplySuggestedTags", false)

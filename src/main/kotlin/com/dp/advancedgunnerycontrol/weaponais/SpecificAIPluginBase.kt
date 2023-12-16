@@ -253,7 +253,7 @@ abstract class SpecificAIPluginBase(
             .forEach {
                 val effectiveCollisionRadius =
                     effectiveCollRadius(it.target) * aimingToleranceFactor + aimingToleranceFlat
-                if (determineIfShotWillHit(it.aimPoint, effectiveCollisionRadius, weapon)) return true
+                if (determineIfShotWillHitBySetting(it.target, it.aimPoint, effectiveCollisionRadius, weapon)) return true
             }
 
         return false

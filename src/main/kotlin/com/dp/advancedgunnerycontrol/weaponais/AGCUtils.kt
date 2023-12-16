@@ -2,13 +2,10 @@
 
 package com.dp.advancedgunnerycontrol.weaponais
 
-import com.dp.advancedgunnerycontrol.WeaponControlPlugin
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.*
 import org.lazywizard.lazylib.CollisionUtils
 import org.lazywizard.lazylib.MathUtils
-import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
@@ -330,9 +327,10 @@ fun linearDistanceFromWeapon(entity: Vector2f, weapon: WeaponAPI): Float {
 }
 
 /**
- * @param entity: In relative coordinates
- * @param collRadius: Include any tolerances in here
- * @param aimPoint: Point the weapon is aiming at, deduced from current weapon facing if not provided
+ * @param predictedEntityPosition In time-adjusted relative coordinates (i.e. where the ship will be when the shot arrives,
+ *               adjusted for both the firing ships and target velocity, taking into consideration travel time)
+ * @param collRadius Include any tolerances in here
+ * @param aimPoint Point the weapon is aiming at, deduced from current weapon facing if not provided
  *
  * The calculation is done by finding the minimum point of function f(x)=distSquared(aimPoint * x, entity).
  * f(x) describes the distance between the target and the projectile along the projectile path.
@@ -341,17 +339,60 @@ fun linearDistanceFromWeapon(entity: Vector2f, weapon: WeaponAPI): Float {
  *
  */
 fun determineIfShotWillHit(
-    entity: Vector2f,
+    predictedEntityPosition: Vector2f,
     collRadius: Float,
     weapon: WeaponAPI,
     aimPoint: Vector2f? = null
 ): Boolean {
     val p = aimPoint?.minus(weapon.location) ?: vectorFromAngleDeg(weapon.currAngle)
-    val e = entity - weapon.location
+    val e = predictedEntityPosition - weapon.location
+    // Note: While this formula has been obtained by solving the equation mentioned in the description,
+    // it can also be interpreted as the vector product (p_transposed * e), divided by the square of the length of p
     val minimum = (e.x * p.x + e.y * p.y) / (p.x * p.x + p.y * p.y)
     return minimum > 0 && MathUtils.getDistanceSquared(p.times_(minimum), e) < collRadius * collRadius
 }
 
+/**
+ * this function is very similar to the other overload of determineIfShotWillHit, but uses exact bounds rather
+ * than a collision radius
+ * Will fall back to previously mentioned overload if target has no bounds
+ */
+fun determineIfShotWillHit(
+    entity: CombatEntityAPI,
+    predictedEntityPosition: Vector2f,
+    fallbackCollRadius: Float,
+    weapon: WeaponAPI,
+    aimPoint: Vector2f? = null
+): Boolean {
+    val p = aimPoint?.minus(weapon.location) ?: vectorFromAngleDeg(weapon.currAngle)
+
+    val bounds = entity.exactBounds ?:
+        return determineIfShotWillHit(entity, predictedEntityPosition, fallbackCollRadius, weapon, aimPoint)
+
+    bounds.update(predictedEntityPosition, entity.facing)
+    val p1 = weapon.location
+    val p2 = weapon.location + p
+    return bounds.segments?.any { segment ->
+        val e1 = segment.p1
+        val e2 = segment.p2
+        CollisionUtils.getCollisionPoint(p1, p2, e1, e2) != null
+    } ?: false
+}
+
+fun determineIfShotWillHitBySetting(
+    entity: CombatEntityAPI,
+    predictedEntityPosition: Vector2f,
+    collRadius: Float,
+    weapon: WeaponAPI,
+    aimPoint: Vector2f? = null,
+    useBounds: Boolean = Settings.useExactBoundsForFiringDecision()
+) : Boolean {
+    return if(useBounds){
+        determineIfShotWillHit(entity, predictedEntityPosition, collRadius, weapon, aimPoint)
+    } else {
+        determineIfShotWillHit(predictedEntityPosition, collRadius, weapon, aimPoint)
+    }
+}
 fun effectiveCollRadius(entity: CombatEntityAPI): Float {
     return entity.collisionRadius * Settings.collisionRadiusMultiplier()
 }
