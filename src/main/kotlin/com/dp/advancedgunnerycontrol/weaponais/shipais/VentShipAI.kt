@@ -23,19 +23,19 @@ class VentShipAI(
     private var blockCommands = listOf<ShipCommand>()
 
     companion object {
-        const val scanningRange = 2000f
-        const val checkFrequency = 20
+        const val SCANNING_RANGE = 2000f
+        const val CHECK_FREQUENCY = 20
     }
 
     private fun isSafeToVent(): Boolean {
         // val nearbyEnemies = CombatUtils.getShipsWithinRange(ship.location, scanningRange).filterNotNull().filter { it.owner == 1 }
         val nearbyEnemiesAndAllies =
-            CombatUtils.getShipsWithinRange(ship.location, scanningRange).filterNotNull().filter { it.owner != 100 }
+            CombatUtils.getShipsWithinRange(ship.location, SCANNING_RANGE).filterNotNull().filter { it.owner != 100 }
                 .partition { it.owner == 1 }
         val nearbyEnemies = nearbyEnemiesAndAllies.first
         val nearbyAllies = nearbyEnemiesAndAllies.second
         val enemyMissiles =
-            CombatUtils.getMissilesWithinRange(ship.location, scanningRange).filterNotNull().filter { it.owner == 1 }
+            CombatUtils.getMissilesWithinRange(ship.location, SCANNING_RANGE).filterNotNull().filter { it.owner == 1 }
         val armorGrid = ship.armorGrid ?: return false
         val armor = getAverageArmor(armorGrid)
         val armorIntegrity = (armor / getMaxArmor(armorGrid)) * ship.hullLevel
@@ -91,7 +91,7 @@ class VentShipAI(
         if (ship.fluxLevel >= fluxThreshold) {
             frameTracker--
             if (frameTracker <= 0) {
-                frameTracker = checkFrequency
+                frameTracker = CHECK_FREQUENCY
                 isSafe = isSafeToVent()
             }
             if (isSafe) {

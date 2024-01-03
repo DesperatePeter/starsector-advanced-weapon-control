@@ -11,7 +11,9 @@ import com.fs.starfarer.combat.ai.BasicShipAI
 import java.lang.ref.WeakReference
 
 enum class ShipModes {
-    DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, VENT_AGGRESSIVE, RETREAT, NO_SYSTEM, SHIELDS_UP, SPAM_SYSTEM, CHARGE
+    DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, VENT_AGGRESSIVE,
+    RETREAT, NO_SYSTEM, SHIELDS_UP, SPAM_SYSTEM, CHARGE, SHIELDS_UP_PLUS,
+    STAY_AWAY, FAR_AWAY
 }
 
 const val defaultShipMode = "DEFAULT"
@@ -26,7 +28,10 @@ val shipModeFromString = mapOf(
     "NoSystem" to ShipModes.NO_SYSTEM,
     "ShieldsUp" to ShipModes.SHIELDS_UP,
     "SpamSystem" to ShipModes.SPAM_SYSTEM,
-    "Charge" to ShipModes.CHARGE
+    "Charge" to ShipModes.CHARGE,
+    "ShieldsUp+" to ShipModes.SHIELDS_UP_PLUS,
+    "StayAway" to ShipModes.STAY_AWAY,
+    "FarAway" to ShipModes.FAR_AWAY
 )
 
 val shipModeToString = shipModeFromString.map { it.value to it.key }.toMap()
@@ -47,6 +52,9 @@ val detailedShipModeDescriptions = mapOf(
     ShipModes.RETREAT to "Order a retreat command to the ship if hull < ${(Settings.retreatHullThreshold() * 100f).toInt()}%. This WILL use a CP.",
     ShipModes.NO_SYSTEM to "Ship will not use its ship system.",
     ShipModes.SHIELDS_UP to "Ship will not turn its shields off while flux < 90% and enemies are within weapon range.",
+    ShipModes.SHIELDS_UP_PLUS to "Like shields up, but until 100% flux.",
+    ShipModes.STAY_AWAY to "Will move away backwards from enemies that get too close",
+    ShipModes.FAR_AWAY to "Will try to stay far away from all enemies",
     ShipModes.SPAM_SYSTEM to "Ship will always use the ship system when available.",
     ShipModes.CHARGE to "If the ship has a target it will accelerate towards it until all weapons are in range." +
             "\nCaution! Might cause suicidal behavior!"
@@ -57,16 +65,13 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenera
         ShipModes.FORCE_AUTOFIRE -> AutofireShipAI(ship)
         ShipModes.SHIELDS_OFF -> ShieldsOffShipAI(ship, Settings.shieldsOffThreshold())
         ShipModes.VENT -> VentShipAI(ship, Settings.ventFluxThreshold(), Settings.ventSafetyFactor(), false)
-        ShipModes.VENT_AGGRESSIVE -> VentShipAI(
-            ship,
-            Settings.aggressiveVentFluxThreshold(),
-            Settings.aggressiveVentSafetyFactor(),
-            true
-        )
-
+        ShipModes.VENT_AGGRESSIVE -> VentShipAI(ship, Settings.aggressiveVentFluxThreshold(), Settings.aggressiveVentSafetyFactor(), true)
         ShipModes.RETREAT -> RetreatShipAI(ship, Settings.retreatHullThreshold())
         ShipModes.NO_SYSTEM -> NoSystemAI(ship)
         ShipModes.SHIELDS_UP -> ShieldsUpAI(ship, 0.9f)
+        ShipModes.SHIELDS_UP_PLUS -> ShieldsUpAI(ship, 1.1f)
+        ShipModes.STAY_AWAY -> StayAwayAI(ship)
+        ShipModes.FAR_AWAY -> StayFarAI(ship)
         ShipModes.SPAM_SYSTEM -> SpamSystemAI(ship)
         ShipModes.CHARGE -> ChargeShipAI(ship)
         else -> ShipCommandGenerator(ship)
