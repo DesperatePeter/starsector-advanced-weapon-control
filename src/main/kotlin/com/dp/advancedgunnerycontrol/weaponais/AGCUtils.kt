@@ -305,6 +305,9 @@ internal infix fun Vector2f.times_(d: Float): Vector2f {
 
 fun ShipAPI.determineUniversalShipTarget(): ShipAPI?{
     shipTarget?.let { return it }
+    if(this.isStationModule){
+        return this.parentStation?.determineUniversalShipTarget()
+    }
     (aiFlags?.getCustom(ShipwideAIFlags.AIFlags.MANEUVER_TARGET) as? ShipAPI)?.let { return it }
     return null
 }
