@@ -323,6 +323,8 @@ tasks {
                    |   # with very precise weapons (e.g. beams) against decidedly non-circular ships. On the other hand, using exact
                    |   # bounds will use significantly more performance
                    |   # Note: Even if set to true, exact bounds will only be used for making a firing decision, not for target selection
+                   |   #       and aiming. Since weapons will always try to aim at the center of a ship, 
+                   |   #       using it universally seemed like a waste of performance.
                    |   ,"useExactBoundsForFiringDecision" : true # <---- EDIT HERE (maybe)----
                    |   
                    |   # Any positive or negative float possible, reasonable values: between 0.7 ~ 2.0 or so

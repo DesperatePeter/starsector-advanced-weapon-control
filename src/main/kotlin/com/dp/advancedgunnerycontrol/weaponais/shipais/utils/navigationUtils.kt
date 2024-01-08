@@ -1,7 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.shipais.utils
 
 import com.dp.advancedgunnerycontrol.weaponais.shipais.ShipCommandWrapper
-import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipCommand
 import com.fs.starfarer.api.util.Misc
@@ -10,7 +9,6 @@ import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.abs
-import kotlin.math.pow
 
 const val SP_SCAN_RANGE = 8000f
 const val NUMBER_OF_EXPLORATION_RAYS = 36
@@ -58,8 +56,12 @@ fun getInvertedCommands(command: ShipCommand): List<ShipCommand>{
 class PointNavigator(private val ship: ShipAPI){
     companion object{
         const val DEFAULT_APPROACH_DISTANCE = 50f
-        const val FACING_TOLERANCE = 5f
-        const val DELTA_FACING_THRESHOLD = 45f
+        const val FACING_TOLERANCE = 4f
+        const val ANGULAR_VEL_TOLERANCE = 1f
+        const val DELTA_FACING_THRESHOLD = 45f // should start accelerating if deltaFacing is below threshold
+        private fun commandFromDirection(isPositiveDirection: Boolean): ShipCommand{
+            return if(isPositiveDirection) ShipCommand.TURN_LEFT else ShipCommand.TURN_RIGHT
+        }
     }
 
     private val timeToComeToStop
@@ -81,22 +83,40 @@ class PointNavigator(private val ship: ShipAPI){
         if(distance < DEFAULT_APPROACH_DISTANCE) return emptyList()
         val facingToTarget = Misc.normalizeAngle(Misc.getAngleInDegrees(ship.location, point) + angleOffset)
         val facing = ship.facing
-        val deltaFacing = abs(facing - facingToTarget)
+        val deltaFacingAbs = abs(facing - facingToTarget)
 
-        val otherWayShorter = deltaFacing > 180f + 10f
+        val otherWayShorter = deltaFacingAbs > 180f + 10f
         val shouldTurnInPositiveDirection = facingToTarget > facing && !otherWayShorter
 
-        if(deltaFacing > FACING_TOLERANCE){
+        if(Misc.normalizeAngle(deltaFacingAbs) > FACING_TOLERANCE){
             val command = if(shouldTurnInPositiveDirection) ShipCommand.TURN_LEFT else ShipCommand.TURN_RIGHT
             toReturn.add(ShipCommandWrapper(command))
         }
 
-        if(Misc.normalizeAngle(deltaFacing) < DELTA_FACING_THRESHOLD){
+        determineTurningCommand(deltaFacingAbs, shouldTurnInPositiveDirection)?.let {
+            toReturn.add(ShipCommandWrapper(it))
+        }
+
+        if(Misc.normalizeAngle(deltaFacingAbs) < DELTA_FACING_THRESHOLD){
             val command = if(distance < distToComeToStop) ShipCommand.DECELERATE else accelCommand
             toReturn.add(ShipCommandWrapper(command))
         }
 
         return toReturn
+    }
+
+    private fun determineTurningCommand(deltaFacingAbs: Float, isPositiveDirection: Boolean): ShipCommand?{
+        val deltaFacing = if(isPositiveDirection) deltaFacingAbs else -deltaFacingAbs
+        if(deltaFacingAbs < FACING_TOLERANCE && abs(ship.angularVelocity) < ANGULAR_VEL_TOLERANCE) return null
+        val isTurningInCorrectDirection = deltaFacing * ship.angularVelocity > 0
+        if(!isTurningInCorrectDirection) return commandFromDirection(isPositiveDirection)
+        val timeToNeutralAngularVel = abs(ship.angularVelocity) / ship.turnAcceleration
+        val projectedDeltaFacing = 0.5f * ship.angularVelocity * timeToNeutralAngularVel
+        return if(abs(projectedDeltaFacing) < deltaFacingAbs){
+            commandFromDirection(isPositiveDirection)
+        }else{
+            commandFromDirection(!isPositiveDirection)
+        }
     }
 }
 
