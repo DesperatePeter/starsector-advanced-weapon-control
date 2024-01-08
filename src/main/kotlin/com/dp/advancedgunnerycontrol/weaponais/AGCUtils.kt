@@ -312,6 +312,15 @@ fun ShipAPI.determineUniversalShipTarget(): ShipAPI?{
     return null
 }
 
+fun WeaponAPI.sizeAsFloat(): Float{
+    return when(size){
+        WeaponAPI.WeaponSize.SMALL -> 1f
+        WeaponAPI.WeaponSize.MEDIUM -> 2f
+        WeaponAPI.WeaponSize.LARGE -> 4f
+        null -> 0f
+    }
+}
+
 
 /**
  * @return approximate angular distance of target from current weapon facing in rad

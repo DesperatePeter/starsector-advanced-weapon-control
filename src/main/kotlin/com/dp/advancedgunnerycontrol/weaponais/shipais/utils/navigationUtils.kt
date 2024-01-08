@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.weaponais.shipais.utils
 
 import com.dp.advancedgunnerycontrol.weaponais.shipais.ShipCommandWrapper
+import com.dp.advancedgunnerycontrol.weaponais.sizeAsFloat
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.ShipCommand
 import com.fs.starfarer.api.util.Misc
@@ -10,12 +11,12 @@ import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
 import kotlin.math.abs
 
-const val SP_SCAN_RANGE = 8000f
+const val SP_SCAN_RANGE = 10000f
 const val NUMBER_OF_EXPLORATION_RAYS = 36
 const val NUMBER_OF_EXPLORATION_POINTS_PER_RAY = 8
-const val EXPLORATION_RAY_LENGTH = 4000f
+const val EXPLORATION_RAY_LENGTH = 5000f
 const val EXPLORATION_RAY_SEGMENT_LENGTH = EXPLORATION_RAY_LENGTH / NUMBER_OF_EXPLORATION_POINTS_PER_RAY.toFloat()
-const val POINT_SAFETY_EVAL_MAX_RANGE = 3000f
+const val POINT_SAFETY_EVAL_RANGE_MARGIN = 1000f
 
 fun findSafePoint(ship: ShipAPI): Vector2f?{
     val enemies = CombatUtils.getShipsWithinRange(ship.location, SP_SCAN_RANGE).filter { it.owner == 1 }
@@ -28,15 +29,24 @@ fun findSafePoint(ship: ShipAPI): Vector2f?{
         }
     }
     return possibleTrajectories.minByOrNull { t ->
-        t.map { evaluatePointDanger(it, enemies) }.sum()
+        t.map { evaluateDangerAtPoint(it, enemies) }.sum()
     }?.last()
 }
 
-fun evaluatePointDanger(point: Vector2f, enemies: List<ShipAPI>, maxDist: Float = POINT_SAFETY_EVAL_MAX_RANGE ): Float{
-    return enemies.filter {
-        (it.location - point).length() < maxDist
-    }.map {
-        enemy -> ((enemy.fleetMember?.deploymentPointsCost ?: 0f) + 0.5f) / ((enemy.location - point).length() + 250f)
+/**
+ * returns a value roughly equal to the sum of the ordinance points of enemies, adjusted by distance to that point
+ * the danger value for an individual ship is roughly 0~2 times its DP
+ */
+fun evaluateDangerAtPoint(point: Vector2f, enemies: List<ShipAPI>, rangeSafetyMargin: Float = POINT_SAFETY_EVAL_RANGE_MARGIN ): Float{
+    return enemies.associateWith { enemy ->
+         (enemy.allWeapons?.map { (it?.range ?: 1f) * (it?.sizeAsFloat() ?: 1f) }?.sum() ?: 1f) /
+                 (enemy.allWeapons?.map { it?.sizeAsFloat() ?: 1f }?.sum() ?: 1f)
+    }.filter { (enemy, avgRange) ->
+        (enemy.location - point).length() < rangeSafetyMargin + avgRange
+    }.map { (enemy, avgRange) ->
+        val dp = enemy.fleetMember?.deploymentPointsCost ?: 0f
+        val distance = (enemy.location - point).length()
+        (dp + 0.5f) * (1000f / (distance + 1000f) + (avgRange + 1000f) / (avgRange + distance + 1000f))
     }.sum()
 }
 
