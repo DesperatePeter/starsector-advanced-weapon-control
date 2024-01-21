@@ -21,20 +21,9 @@ class RefitScreenHandler {
         var refitPanelAnchorY = 0f
     }
 
-    private var lastEventTime = 0L
-
     private val isRefit
         get() = Global.getSector().campaignUI.currentCoreTab == CoreUITabId.REFIT
-    private val isRelevantEvent
-        get() = Keyboard.getEventNanoseconds() > lastEventTime
-    private val isAgcHotkey
-        get() = Keyboard.getEventCharacter().lowercaseChar() == Settings.guiHotkey() && isRelevantEvent
-    private val isEsc
-        get() = Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && isRelevantEvent
-    private val shouldOpen
-        get() = isAgcHotkey && gui == null
-    private val shouldClose
-        get() = gui != null && (isAgcHotkey || isEsc)
+
 
     private var gui: RefitScreenPanel? = null
     private var buttonHolder: ButtonHolderPanel? = null
@@ -51,14 +40,8 @@ class RefitScreenHandler {
             buttonHolder = createButtonHolder()
         }
 
+        // the button holder takes care of opening/closing the GUI via button or hotkey
         buttonHolder?.advance(amount)
-
-        if(shouldOpen){
-            openGUI()
-        }else if(shouldClose){
-            closeGUI()
-        }
-        lastEventTime = Keyboard.getEventNanoseconds()
     }
 
     private fun openGUI(){
@@ -114,7 +97,9 @@ class RefitScreenHandler {
                 override fun execute() {
                     toggleOpenGUI()
                 }
-            }, refitPanel)
+            },
+                refitPanel
+            ) { gui != null }
             val panel = Global.getSettings().createCustom(1f, 1f, buttonHolderPanel) ?: return null
             buttonHolderPanel.panel = panel
             refitPanel.addComponent(panel)?.inBR(110f, 120f)

@@ -13,13 +13,28 @@ import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
+import org.lwjgl.input.Keyboard
 
-class ButtonHolderPanel(private val action: ButtonAction, private val parent: UIPanelAPI): CustomUIPanelPlugin {
+class ButtonHolderPanel(private val action: ButtonAction, private val parent: UIPanelAPI, private val isGuiOpen: () -> Boolean)
+    : CustomUIPanelPlugin {
     private var position: PositionAPI? = null
     private var button: ActionButton? = null
     var panel: UIPanelAPI? = null
+    private var wasGuiRecentlyOpened = false
+    private var lastEventTime = 0L
+    private val isRelevantEvent
+        get() = Keyboard.getEventNanoseconds() > lastEventTime
+    private val isAgcHotkey: Boolean
+        get() {
+            return (Keyboard.getEventCharacter().lowercaseChar() == Settings.guiHotkey()) && isRelevantEvent
+        }
+    private val isEsc
+        get() = Keyboard.isKeyDown(Keyboard.KEY_ESCAPE) && isRelevantEvent
+
+    private val shouldClose
+        get() = (isAgcHotkey || isEsc) && !wasGuiRecentlyOpened && isGuiOpen()
     companion object{
-        val font = try {
+        private val font = try {
             LazyFont.loadFont("graphics/fonts/insignia17LTAaa.fnt")
         } catch (e: FontException) {
             Global.getLogger(this::class.java).error("Failed to load font, won't de displaying messages", e)
@@ -51,9 +66,21 @@ class ButtonHolderPanel(private val action: ButtonAction, private val parent: UI
             }
         }
         button?.advance()
+        if(shouldClose) action.execute()
+        lastEventTime = Keyboard.getEventNanoseconds()
     }
 
-    override fun processInput(p0: MutableList<InputEventAPI>?) {
+    override fun processInput(events: MutableList<InputEventAPI>?) {
+        wasGuiRecentlyOpened = false
+        events?.filter {
+            !it.isConsumed && it.isKeyDownEvent
+        }?.firstOrNull {
+            it.eventChar.lowercaseChar() == Settings.guiHotkey()
+        }?.let { event ->
+            event.consume()
+            action.execute()
+            wasGuiRecentlyOpened = true
+        }
     }
 
     override fun buttonPressed(p0: Any?) {
