@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.13.1"
+    val modVersion = "1.14.0"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -16,7 +16,7 @@ object Variables {
     val modName = "AdvancedGunneryControl"
     val author = "DesperatePeter"
     const val description = "A mod that allows fine-tuning of autofie. Press J-key in combat or on the campaign map to access."
-    val gameVersion = "0.96a-RC10"
+    val gameVersion = "0.97a"
     val jarsDir = "jars/agc/AdvancedGunneryControl/$modVersion"
     val jars = arrayOf("$jarsDir/$jarFileName")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
@@ -251,7 +251,7 @@ tasks {
                    |   # Allowed Values: "DEFAULT", "LowShields", "ShieldsUp", "Vent(Flx>75%)", "VntA(Flx>25%)", "Run(HP<50%)", "NoSystem", "SpamSystem", "Charge", "ForceAF"
                    |   # Note that "DEFAULT" is not a real mode but instead a shortcut to disable all other modes. It's kind of deprecated and only still exists for compatibility reasons.
                    |   
-                   |   ,"shipModeList" : ["LowShields", "ShieldsUp", "Vent(Flx>75%)", "VntA(Flx>25%)", "Run(HP<50%)", "NoSystem", "SpamSystem", "Charge"]
+                   |   ,"shipModeList" : ["LowShields", "ShieldsUp", "Vent(Flx>75%)", "VntA(Flx>25%)", "Run(HP<50%)", "NoSystem", "SpamSystem", "Charge", "FarAway", "StayAway"]
                    |  
                    |   #                                 #### CUSTOM AI ####
                    |   # If you set this to true, if the base AI would have weapons in weapon groups target something invalid for the selected tags,

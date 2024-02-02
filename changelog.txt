@@ -1,10 +1,19 @@
-=== For Starsector 0.96a ===
+=== For Starsector 0.97a ===
 
-- 1.13.2:
+- 1.14.0:
+Disclaimer: This version has been released very shortly after the new game version, so it might still contain issues
+feat: update for new game version 0.97a
 feat: add option to disable refit screen integration to Settings.editme
 feat: add option (true by default) to use exact bounds rather than circle approximations to determine if weapons should fire
-feat: add new ship modes (KeepAway, FarAway and ShieldsUp+)
+      This has not yet been tested sufficiently, so if this causes issues,
+      please disable useExactBoundsForFiringDecision in Settings.editme and let me know!
+feat: add new ship modes (KeepAway, FarAway and ShieldsUp+). FarAway is still in experimental stage
+      ShieldsUp+ needs to be enables manually in Settings.editme.
+      Depending on feedback, either KeepAway or FarAway will probably get removed, as they are different ways to achieve the same thing
 feat: ship/station modules now use their parent ship/station to determine ship target for tags such as ShipTarget
+fix: will no longer open refit screen integration GUI when typing J while naming ships
+
+=== For Starsector 0.96a ===
 
 - 1.13.1:
 fix: refit-screen integration should now also work with JRE8
