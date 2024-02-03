@@ -1,5 +1,8 @@
 === For Starsector 0.97a ===
 
+- 1.14.1:
+fix: Issue with bounds detection that prevented weapons from firing
+
 - 1.14.0:
 Disclaimer: This version has been released very shortly after the new game version, so it might still contain issues
 feat: update for new game version 0.97a

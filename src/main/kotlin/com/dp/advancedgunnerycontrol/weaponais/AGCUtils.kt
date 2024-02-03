@@ -376,7 +376,7 @@ fun determineIfShotWillHit(
     weapon: WeaponAPI,
     aimPoint: Vector2f? = null
 ): Boolean {
-    val p = aimPoint?.minus(weapon.location) ?: vectorFromAngleDeg(weapon.currAngle)
+    val p = aimPoint?.minus(weapon.location) ?: vectorFromAngleDeg(weapon.currAngle).times_(5000f)
 
     val bounds = entity.exactBounds ?:
         return determineIfShotWillHit(entity, predictedEntityPosition, fallbackCollRadius, weapon, aimPoint)
