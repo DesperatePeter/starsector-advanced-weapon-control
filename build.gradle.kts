@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.14.1"
+    val modVersion = "1.14.2"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"

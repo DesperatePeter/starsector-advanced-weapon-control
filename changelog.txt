@@ -1,5 +1,8 @@
 === For Starsector 0.97a ===
 
+- 1.14.2 (hotfix):
+fix: Issue that can cause a crash via stack overflow (log spammed with determineIfShotWillHit(AGCUtils.kt:379))
+
 - 1.14.1:
 fix: Issue with bounds detection that prevented weapons from firing
 
