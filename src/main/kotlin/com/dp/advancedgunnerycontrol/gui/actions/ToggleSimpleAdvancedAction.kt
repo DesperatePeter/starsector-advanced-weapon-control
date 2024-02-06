@@ -3,7 +3,7 @@ package com.dp.advancedgunnerycontrol.gui.actions
 import com.dp.advancedgunnerycontrol.gui.GUIAttributes
 import com.dp.advancedgunnerycontrol.settings.Settings
 
-class SimpleAdvancedAction(attributes: GUIAttributes) : GUIAction(attributes) {
+class ToggleSimpleAdvancedAction(attributes: GUIAttributes) : GUIAction(attributes) {
     override fun execute() {
         attributes.tagView.reset()
         Settings.isAdvancedMode = !Settings.isAdvancedMode

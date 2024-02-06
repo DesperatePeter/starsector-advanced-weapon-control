@@ -1,15 +1,15 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
-import com.dp.advancedgunnerycontrol.combatgui.buttongroups.DataButtonGroup
-import com.dp.advancedgunnerycontrol.combatgui.buttongroups.RefreshButtonsAction
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.typesandvalues.defaultShipMode
 import com.dp.advancedgunnerycontrol.typesandvalues.loadShipModes
 import com.dp.advancedgunnerycontrol.typesandvalues.saveShipModes
 import com.fs.starfarer.api.combat.ShipAPI
+import org.magiclib.combatgui.buttongroups.MagicCombatDataButtonGroup
+import org.magiclib.combatgui.buttongroups.MagicCombatRefreshButtonsAction
 
-class RefreshShipAiButtons(private val ship: ShipAPI) : RefreshButtonsAction {
-    override fun refreshButtons(group: DataButtonGroup) {
+class RefreshShipAiButtons(private val ship: ShipAPI) : MagicCombatRefreshButtonsAction {
+    override fun refreshButtons(group: MagicCombatDataButtonGroup) {
         if (loadShipModes(ship, Values.storageIndex).isEmpty()) {
             saveShipModes(ship, Values.storageIndex, listOf(defaultShipMode))
         }

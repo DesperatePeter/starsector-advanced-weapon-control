@@ -1,15 +1,15 @@
 package com.dp.advancedgunnerycontrol.gui.refitscreen
 
-import com.dp.advancedgunnerycontrol.combatgui.GuiBase
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
 import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.ui.PositionAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import org.lwjgl.opengl.GL11
+import org.magiclib.combatgui.MagicCombatGuiBase
 import java.awt.Color
 
-class RefitScreenPanel(private val gui: GuiBase, private val parent: UIPanelAPI): CustomUIPanelPlugin {
+class RefitScreenPanel(private val gui: MagicCombatGuiBase, private val parent: UIPanelAPI): CustomUIPanelPlugin {
     var panel: UIPanelAPI? = null
     var pos: PositionAPI? = null
     override fun positionChanged(p: PositionAPI?) {

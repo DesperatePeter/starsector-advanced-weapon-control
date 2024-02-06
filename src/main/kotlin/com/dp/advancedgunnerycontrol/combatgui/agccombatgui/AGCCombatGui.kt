@@ -1,22 +1,21 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
-import com.dp.advancedgunnerycontrol.combatgui.GuiBase
-import com.dp.advancedgunnerycontrol.combatgui.GuiLayout
-import com.dp.advancedgunnerycontrol.combatgui.Highlight
-import com.dp.advancedgunnerycontrol.combatgui.buttons.ActionButton
-import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonAction
-import com.dp.advancedgunnerycontrol.combatgui.renderHighlights
+
+import org.magiclib.combatgui.MagicCombatGuiBase
+import org.magiclib.combatgui.MagicCombatRenderShapes.Highlight
+import org.magiclib.combatgui.MagicCombatRenderShapes.renderHighlights
+import org.magiclib.combatgui.buttons.MagicCombatButtonAction
+import org.magiclib.combatgui.buttons.MagicCombatActionButton
 import com.dp.advancedgunnerycontrol.gui.groupAsString
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.utils.*
-import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipAPI
 import kotlin.math.max
 import kotlin.reflect.KProperty
 
-class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean = false) : GuiBase(AGCGridLayout) {
+class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean = false) : MagicCombatGuiBase(AGCGridLayout) {
     override fun getTitleString(): String {
         return "${ship.name}, ${ship.fleetMember?.variant?.fullDesignationWithHullNameForShip ?: "Unknown ship type"}" +
                 " | Tag Scrollbar: " + tagListView.asciiScrollBar()
@@ -67,7 +66,7 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
 
     private fun createActionButtons() {
         // RESET BUTTON
-        val resetButtonAction = object : ButtonAction {
+        val resetButtonAction = object : MagicCombatButtonAction {
             override fun execute() {
                 val noTags = listOf<String>()
                 for (i in 0 until ship.weaponGroupsCopy.size) {
@@ -83,7 +82,7 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
 
         // CYCLE LOADOUT BUTTON
         val cycleLoadoutButtonInfo = createButtonInfo(standaloneButtons.size, "", "")
-        var cycleActionButton: ActionButton? = null
+        var cycleActionButton: MagicCombatActionButton? = null
         fun updateCycleLoadoutInfo(){
             cycleLoadoutButtonInfo.txt = "Cycle LO ${Values.storageIndex + 1} / ${Settings.maxLoadouts()}"
             cycleLoadoutButtonInfo.tooltip.txt = "Cycle loadout for all ships (${Values.storageIndex + 1} / ${Settings.maxLoadouts()} " +
@@ -91,7 +90,7 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
                     "\nOnly enabled in advanced mode."
             cycleActionButton?.isDisabled = !Settings.isAdvancedMode
         }
-        val cycleLoadoutAction = object : ButtonAction {
+        val cycleLoadoutAction = object : MagicCombatButtonAction {
             override fun execute() {
                 Values.storageIndex =
                     if (Values.storageIndex < Settings.maxLoadouts() - 1) Values.storageIndex + 1 else 0
@@ -101,12 +100,12 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
                 refreshButtons()
             }
         }
-        cycleActionButton = ActionButton(cycleLoadoutAction, cycleLoadoutButtonInfo)
+        cycleActionButton = MagicCombatActionButton(cycleLoadoutAction, cycleLoadoutButtonInfo)
         updateCycleLoadoutInfo()
         addCustomButton(cycleActionButton)
 
         // RELOAD BUTTON
-        val reloadAction = object : ButtonAction {
+        val reloadAction = object : MagicCombatButtonAction {
             override fun execute() {
                 reloadAllShips(Values.storageIndex)
             }
@@ -118,7 +117,7 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
         )
 
         // SAVE BUTTON
-        val saveAction = object : ButtonAction {
+        val saveAction = object : MagicCombatButtonAction {
             override fun execute() {
                 persistTemporaryShipData(Values.storageIndex, Global.getCombatEngine().ships ?: listOf())
             }
@@ -143,7 +142,7 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
             }
         }
         updateSimpleAdvancedTexts()
-        val simpleAdvancedAction = object : ButtonAction{
+        val simpleAdvancedAction = object : MagicCombatButtonAction{
             override fun execute() {
                 Settings.isAdvancedMode = !Settings.isAdvancedMode
                 updateSimpleAdvancedTexts()
@@ -156,10 +155,10 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
                 reRenderButtonGroups()
             }
         }
-        addCustomButton(ActionButton(simpleAdvancedAction, simpleAdvancedButtonInfo))
+        addCustomButton(MagicCombatActionButton(simpleAdvancedAction, simpleAdvancedButtonInfo))
 
         // Suggested modes Button
-        val suggestedModeAction = object : ButtonAction{
+        val suggestedModeAction = object : MagicCombatButtonAction{
             override fun execute() {
                 if(ship.fleetMember == null) return
                 applySuggestedModes(ship.fleetMember, Values.storageIndex, true, generateUniversalFleetMemberId(ship))

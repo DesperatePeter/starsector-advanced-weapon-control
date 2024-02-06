@@ -1,10 +1,6 @@
 package com.dp.advancedgunnerycontrol.gui.refitscreen
 
 import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.AGCGridLayout
-import com.dp.advancedgunnerycontrol.combatgui.buttons.ActionButton
-import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonAction
-import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonInfo
-import com.dp.advancedgunnerycontrol.combatgui.buttons.HoverTooltip
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CustomUIPanelPlugin
@@ -14,11 +10,15 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import org.lwjgl.input.Keyboard
+import org.magiclib.combatgui.buttons.MagicCombatActionButton
+import org.magiclib.combatgui.buttons.MagicCombatButtonAction
+import org.magiclib.combatgui.buttons.MagicCombatButtonInfo
+import org.magiclib.combatgui.buttons.MagicCombatHoverTooltip
 
-class ButtonHolderPanel(private val action: ButtonAction, private val parent: UIPanelAPI, private val isGuiOpen: () -> Boolean)
+class ButtonHolderPanel(private val action: MagicCombatButtonAction, private val parent: UIPanelAPI, private val isGuiOpen: () -> Boolean)
     : CustomUIPanelPlugin {
     private var position: PositionAPI? = null
-    private var button: ActionButton? = null
+    private var button: MagicCombatActionButton? = null
     var panel: UIPanelAPI? = null
     private var wasGuiRecentlyOpened = false
     private var lastEventTime = 0L
@@ -40,10 +40,10 @@ class ButtonHolderPanel(private val action: ButtonAction, private val parent: UI
             Global.getLogger(this::class.java).error("Failed to load font, won't de displaying messages", e)
             null
         }
-        fun createButtonInf(x: Float, y: Float): ButtonInfo{
-            return ButtonInfo(
+        fun createButtonInf(x: Float, y: Float): MagicCombatButtonInfo {
+            return MagicCombatButtonInfo(
                 x, y, 96f, 21f, 0.8f, "Gunnery (${Settings.guiHotkey().uppercaseChar()})", font, AGCGridLayout.color,
-                HoverTooltip(0f, 0f, "")
+                MagicCombatHoverTooltip(0f, 0f, "")
             )
         }
 
@@ -62,7 +62,7 @@ class ButtonHolderPanel(private val action: ButtonAction, private val parent: UI
     override fun advance(p0: Float) {
         if(button == null){
             position?.let { p ->
-                button = ActionButton(action, createButtonInf(p.x, p.y))
+                button = MagicCombatActionButton(action, createButtonInf(p.x, p.y))
             }
         }
         button?.advance()

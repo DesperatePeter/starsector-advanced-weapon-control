@@ -2,7 +2,6 @@
 
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.combatgui.GuiBase
 import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.AGCCombatGui
 import com.dp.advancedgunnerycontrol.keyboardinput.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
@@ -18,6 +17,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
+import org.magiclib.combatgui.MagicCombatGuiBase
 import java.awt.Color
 
 
@@ -37,7 +37,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var mergeWeaponGroupsIndex: Int? = null
     private var mergedWeaponRestoration = mutableMapOf<WeaponAPI, Int>()
     private var restoreAlternatingGroups = mutableSetOf<WeaponGroupAPI>()
-    private var combatGui: GuiBase? = null
+    private var combatGui: MagicCombatGuiBase? = null
 
     companion object {
         fun determineSelectedShip(engine: CombatEngineAPI, displayHudWarning: Boolean = true): ShipAPI? {

@@ -1,10 +1,10 @@
 package com.dp.advancedgunnerycontrol.settings
 
-import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonBase
 import com.dp.advancedgunnerycontrol.typesandvalues.ShipModes
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.typesandvalues.shipModeFromString
 import com.dp.advancedgunnerycontrol.utils.StorageBase
+import org.magiclib.combatgui.buttons.MagicCombatButtonBase
 import org.magiclib.util.MagicSettings
 import kotlin.math.max
 import kotlin.math.min
@@ -119,11 +119,11 @@ object Settings : SettingsDefinition() {
         forceCustomAI.set(forceCustomAI() && enableCustomAI())
         enableAutoSaveLoad.set(enableAutoSaveLoad() && enablePersistentModes())
         customAIFriendlyFireComplexity.set(max(0, min(2, customAIFriendlyFireComplexity())))
-        ButtonBase.enableHoverTooltips = enableTooltipsOnHover()
-        ButtonBase.enableHoverTooltipBoxes = enableTooltipBoxes()
-        ButtonBase.enableButtonHoverSound = enableButtonHoverSound()
-        ButtonBase.enableButtonHoverEffects = enableButtonHoverEffects()
-        ButtonBase.enableButtonOutlines = enableButtonOutlines()
+        MagicCombatButtonBase.enableHoverTooltips = enableTooltipsOnHover()
+        MagicCombatButtonBase.enableHoverTooltipBoxes = enableTooltipBoxes()
+        MagicCombatButtonBase.enableButtonHoverSound = enableButtonHoverSound()
+        MagicCombatButtonBase.enableButtonHoverEffects = enableButtonHoverEffects()
+        MagicCombatButtonBase.enableButtonOutlines = enableButtonOutlines()
     }
 
     fun hotAddTags(tags: List<String>, addForWholeSession: Boolean = false) {

@@ -1,7 +1,5 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
-import com.dp.advancedgunnerycontrol.combatgui.Highlight
-import com.dp.advancedgunnerycontrol.combatgui.buttongroups.ButtonGroupAction
 import com.dp.advancedgunnerycontrol.gui.refitscreen.RefitScreenHandler
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.utils.applyTagsToWeaponGroup
@@ -9,6 +7,8 @@ import com.dp.advancedgunnerycontrol.utils.loadTags
 import com.dp.advancedgunnerycontrol.utils.saveTags
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipAPI
+import org.magiclib.combatgui.buttongroups.MagicCombatButtonGroupAction
+import org.magiclib.combatgui.MagicCombatRenderShapes.Highlight
 
 class WeaponGroupAction(
     private val ship: ShipAPI,
@@ -16,7 +16,7 @@ class WeaponGroupAction(
     private val highlights: MutableList<Highlight>,
     private val viewMult: Float,
     private val campaignMode: Boolean
-) : ButtonGroupAction {
+) : MagicCombatButtonGroupAction {
     override fun execute(data: List<Any>, selectedButtonData: Any?, deselectedButtonData: Any?) {
         val currentTags = loadTags(ship, index, Values.storageIndex)
         var tagStrings = (currentTags + data.filterIsInstance<String>()).toSet().toList()

@@ -1,7 +1,6 @@
 package com.dp.advancedgunnerycontrol.gui.refitscreen
 
 import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.AGCCombatGui
-import com.dp.advancedgunnerycontrol.combatgui.buttons.ButtonAction
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.utils.getChildren
 import com.dp.advancedgunnerycontrol.utils.hasMethodNamed
@@ -13,6 +12,7 @@ import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.CampaignState
 import com.fs.state.AppDriver
 import org.lwjgl.input.Keyboard
+import org.magiclib.combatgui.buttons.MagicCombatButtonAction
 
 class RefitScreenHandler {
 
@@ -93,7 +93,7 @@ class RefitScreenHandler {
     private fun createButtonHolder(): ButtonHolderPanel?{
         getCore()?.let { core ->
             val refitPanel = getRefitPanel(core) ?: return null
-            val buttonHolderPanel = ButtonHolderPanel(object: ButtonAction{
+            val buttonHolderPanel = ButtonHolderPanel(object: MagicCombatButtonAction {
                 override fun execute() {
                     toggleOpenGUI()
                 }
