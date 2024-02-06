@@ -186,7 +186,7 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
     }
 
     private fun createWeaponGroupDescription(index: Int): String {
-        val group = ship.variant?.weaponGroups?.getOrNull(index)
+        val group = ship.weaponGroupsCopy?.getOrNull(index)
         return "Group ${index + 1}: ${group?.let { groupAsString(it, ship.fleetMember) } ?: "N/A"}"
     }
 

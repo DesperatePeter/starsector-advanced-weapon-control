@@ -15,12 +15,15 @@ class RefreshWeaponButtons(private val ship: ShipAPI, private val index: Int) : 
         group.enableAllButtons()
         group.buttons.forEach {
             val str = it.data as? String ?: ""
-            if (isIncompatibleWithExistingTags(str, currentTags)) {
-                it.isDisabled = true
-            }
-            if (false == ship.weaponGroupsCopy.getOrNull(index)?.weaponsCopy?.any { w ->
+            val isInvalid = isIncompatibleWithExistingTags(str, currentTags) ||
+                    (false == ship.weaponGroupsCopy.getOrNull(index)?.weaponsCopy?.any { w ->
                     createTag(str, w)?.isValid() == true
-                }) {
+                })
+            if(it.isActive && isInvalid){
+                it.isActive = false
+                group.executeAction(listOf(), null, it.data)
+            }
+            if(isInvalid){
                 it.isDisabled = true
             }
         }

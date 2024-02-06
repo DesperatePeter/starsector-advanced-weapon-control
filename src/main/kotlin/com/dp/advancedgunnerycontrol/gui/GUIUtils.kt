@@ -3,6 +3,7 @@ package com.dp.advancedgunnerycontrol.gui
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
+import com.fs.starfarer.api.combat.WeaponGroupAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import kotlin.math.roundToInt
@@ -15,6 +16,19 @@ fun groupAsString(group: WeaponGroupSpec, sh: FleetMemberAPI): String {
     val occ = mutableMapOf<String, Int>()
     strings.forEach { occ[it] = occ[it]?.plus(1) ?: 1 }
     return set.map { ("${occ[it] ?: "0"} x $it") }.toString()
+}
+
+fun groupAsString(group: WeaponGroupAPI, sh: FleetMemberAPI): String {
+    val weaponStrings = group.weaponsCopy.map {
+        it.displayName
+    }
+    val occ = mutableMapOf<String, Int>()
+    weaponStrings.forEach {
+        occ[it] = occ[it]?.plus(1) ?: 1
+    }
+    return weaponStrings.toSet().map {
+        ("${occ[it] ?: "0"} x $it")
+    }.toString()
 }
 
 fun groupFluxCost(group: WeaponGroupSpec, sh: FleetMemberAPI): Int {

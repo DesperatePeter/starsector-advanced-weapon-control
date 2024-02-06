@@ -70,8 +70,8 @@ class RefitScreenHandler {
 
     private fun getShip(refitPanel: UIPanelAPI): ShipAPI?{
         val shipDisplay = invokeMethodByName("getShipDisplay", refitPanel, narrativeContext = "GetShip, getting ship display") as? UIPanelAPI ?: return null
-        val ship =  invokeMethodByName("getShip", shipDisplay, narrativeContext = "GetShip, getting ship from ShipDisplay") as? ShipAPI
         invokeMethodByName("syncWithCurrentVariant", refitPanel, narrativeContext = "GetShip, syncing, not so important.")
+        val ship =  invokeMethodByName("getShip", shipDisplay, narrativeContext = "GetShip, getting ship from ShipDisplay") as? ShipAPI
         return ship
     }
 
