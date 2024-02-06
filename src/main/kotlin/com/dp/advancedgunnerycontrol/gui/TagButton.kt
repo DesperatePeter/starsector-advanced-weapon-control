@@ -60,7 +60,7 @@ class TagButton(var ship: FleetMemberAPI, var group: Int, tag: String, button: B
     }
 
     private fun updateDisabledButtons() {
-        val tags = loadPersistentTags(ship.id, group, AGCGUI.storageIndex)
+        val tags = loadPersistentTags(ship.id, group, AGCGUI.storageIndex).toMutableList()
         sameGroupButtons.forEach {
             it.enable()
             if (isIncompatibleWithExistingTags(it.associatedValue, tags) || shouldTagBeDisabled(
@@ -69,9 +69,12 @@ class TagButton(var ship: FleetMemberAPI, var group: Int, tag: String, button: B
                     it.associatedValue
                 )
             ) {
+                tags.remove(it.associatedValue)
                 it.disable()
+                it.button.isChecked = false
             }
         }
+        persistTags(ship.id, group, AGCGUI.storageIndex, tags)
     }
 
     override fun executeCallbackIfChecked() {
