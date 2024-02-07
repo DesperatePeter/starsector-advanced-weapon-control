@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
 object Values {
+    const val THIS_MOD_ID = "advanced_gunnery_control_dbeaa06e"
     const val SETTINGS_FILE_NAME = "Settings.editme"
     const val WEAPON_BLACKLIST_KEY = "weaponBlacklist"
     const val SUGGESTED_TAGS_KEY = "suggestedWeaponTags"

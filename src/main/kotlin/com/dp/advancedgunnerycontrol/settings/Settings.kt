@@ -4,6 +4,7 @@ import com.dp.advancedgunnerycontrol.typesandvalues.ShipModes
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.typesandvalues.shipModeFromString
 import com.dp.advancedgunnerycontrol.utils.StorageBase
+import lunalib.lunaSettings.LunaSettings
 import org.magiclib.combatgui.buttons.MagicCombatButtonBase
 import org.magiclib.util.MagicSettings
 import kotlin.math.max
@@ -13,7 +14,7 @@ object Settings : SettingsDefinition() {
     private val tagList = addSetting<List<String>>("tagList", listOf())
     private val simpleTagList = addSetting<List<String>>("simpleTagList", listOf())
     private val shipModeList = addSetting<List<String>>("shipModeList", listOf())
-    val enableCustomAI = addSetting<Boolean>("enableCustomAI", true)
+    val enableCustomAI = LunaSettingHandler<Boolean>("agc_enableCustomAI", true)
     val customAIRecursionLevel = addSetting<Int>("customAIRecursionLevel", 1)
     val forceCustomAI = addSetting<Boolean>("forceCustomAI", false)
     val customAITriggerHappiness = addSetting<Float>("customAITriggerHappiness", 1.2f)

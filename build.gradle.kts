@@ -62,6 +62,7 @@ dependencies {
 
     implementation(fileTree("$starsectorModDirectory/LazyLib/jars") { include("*.jar") })
     implementation(fileTree("$starsectorModDirectory/MagicLib/jars") { include("*.jar") })
+    implementation(fileTree("$starsectorModDirectory/LunaLib/jars") { include("*.jar") })
     //compileOnly(fileTree("$starsectorModDirectory/Console Commands/jars") { include("*.jar") })
 
     // Starsector jars and dependencies
@@ -141,13 +142,15 @@ tasks {
                         "dependencies": [
                             {
                                 "id": "lw_lazylib",
-                                "name": "LazyLib",
-                                "version" : "2.8"
+                                "name": "LazyLib"
                             },
                             {
                                 "id" : "MagicLib",
-                                "name" : "MagicLib",
-                                "version" : "1.0.0-dev01"
+                                "name" : "MagicLib"
+                            },
+                            {
+                                "id": "lunalib",
+                                "name": "LunaLib",
                             }
                         ]
                     }

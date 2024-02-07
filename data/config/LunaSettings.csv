@@ -1,0 +1,32 @@
+fieldID,fieldName,fieldType,defaultValue,secondaryValue,fieldDescription,minValue,maxValue,tab
+agc_keybingsHeader,Keybinds Header,Header,Keybinds,,,,,
+agc_campaignGuiHotkey,Campaign GUI Keybind,Keycode,36,,"Changes the Keybind for opening the AGC menu in the Campaign.",,,
+agc_combatGuiHotkey,Combat GUI Keybind,Keycode,36,,"Changes the keybind for opening the AGC menu in combat or refit screen.",,,
+agc_mergeHotkey,Merge Tag Keybind,Keycode,37,,"Changes the keybind for merging weapon groups (cf. Merge tag).",,,
+,,,,,,,,
+,,,,,,,,
+agc_GeneralHeader,General header,Header,General Settings,,,,,
+agc_autoApplySuggestedTags,autoApplySuggestedTags,Boolean,false,,"When true, suggested tags will be applied automatically to weapon groups with no tags. Use the campaign GUI to customize suggested tags,",,,
+agc_enablePersistentFireModes,enablePersistentFireModes,Boolean,true,,"Switch this off if you want to reset modes every battle (campaign-GUI will be disabled)",,,
+agc_persistChangesInCombat,persistChangesInCombat,Boolean,true,,"If set to false, changes made in combat or refit GUI will be reset after combat, unless manually saved via save button.",,,
+,,,,,,,,
+,,,,,,,,
+agc_AiHeader,AI Header,Header,Custom AI Settings,,,,,
+agc_enableCustomAI,enableCustomAI,Boolean,true,,"If set to false, weapons will simply not fire if their default AI would target someting forbidden by tags.
+
+If true, they will use a custom AI to find a new firing solution. Many tags will not work well with this set to false.",,,
+agc_forceCustomAI,forceCustomAI,Boolean,false,,"Enabling this will always use the customAI, skipping the default AI (for applicable modes).
+
+This improves performance and is very useful for testing, but might produce the occasional odd firing solution.",,,
+,,,,,,,,
+,,,,,,,,
+agc_UiHeader,UI Header,Header,UI,,,,,UI
+agc_messageDisplayDuration,messageDisplayDuration,Int,250,,"Duration (in frames) to display messages during combat.",0,10000,
+agc_positionText,UI Positions,Text,"[Combat UI X/Y Positions] where UI Elements will be displayed in combat.
+
+Values between 0 and 1, x = 0.0 means left side of the screen, y = 0.0 means bottom of the screen",,"",,,UI
+agc_messagePositionX,messagePositionX,Double,0.2,,"X Position of messages and tooltips (refpoint: top left corner of message)",0.0,1.0,UI
+agc_messagePositionY,messagePositionY,Double,0.4,,"Y Position of messages and tooltips",0.0,1.0,UI
+agc_combatUiAnchorX,combatUiAnchorX,Double,0.025,,"X Position of Combat GUI (refpoint: left side of first weapon group)",0.0,1.0,UI
+agc_combatUiAnchorY,combatUiAnchorY,Double,0.8,,"Y Position of Combat GUI",0.0,1.0,UI
+agc_suppressHudWarnings,suppressHudWarning,Boolean,false,,"Suppress warnings displayed in combat when doing ill-advised things.",,,UI

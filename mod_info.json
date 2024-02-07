@@ -12,13 +12,15 @@
     "dependencies": [
         {
             "id": "lw_lazylib",
-            "name": "LazyLib",
-            "version" : "2.8"
+            "name": "LazyLib"
         },
         {
             "id" : "MagicLib",
-            "name" : "MagicLib",
-            "version" : "1.0.0-dev01"
+            "name" : "MagicLib"
+        },
+        {
+            "id": "lunalib",
+            "name": "LunaLib",
         }
     ]
 }

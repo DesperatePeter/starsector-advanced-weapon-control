@@ -50,6 +50,7 @@ class ButtonHolderPanel(private val action: MagicCombatButtonAction, private val
     }
     override fun positionChanged(pos: PositionAPI?) {
         position = pos
+        Keyboard.KEY_J
     }
 
     override fun renderBelow(p0: Float) {
