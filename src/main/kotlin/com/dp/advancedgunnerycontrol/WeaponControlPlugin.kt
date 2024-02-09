@@ -17,6 +17,7 @@ import com.fs.starfarer.api.input.InputEventAPI
 import com.fs.starfarer.api.loading.WeaponGroupType
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
+import org.lwjgl.input.Keyboard
 import org.magiclib.combatgui.MagicCombatGuiBase
 import java.awt.Color
 
@@ -222,7 +223,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun mergeWeapons(ship: ShipAPI, index: Int) {
         printMessage("Merging weapons with tag Merge into current weapon group." +
-                "\nPress [${Settings.mergeHotkey().uppercaseChar()}] again to undo. ")
+                "\nPress [${Keyboard.getKeyName(Settings.mergeHotkey())}] again to undo. ")
         val groups = ship.weaponGroupsCopy ?: return
         val currentGroup = groups.getOrNull(index) ?: return
         var wasSuccessful = false
@@ -252,7 +253,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
             reloadShips(Values.storageIndex, listOf(ship))
         }else{
             printMessage("Unable to merge weapons into current group because no other weapon groups" +
-                                 "\nhave the Merge tag. Assign the merge tag to some groups and press [${Settings.mergeHotkey().uppercaseChar()}] again." +
+                                 "\nhave the Merge tag. Assign the merge tag to some groups and press [${Keyboard.getKeyName(Settings.mergeHotkey())}] again." +
                     "\nNote: The Merge tag is available in advanced mode.",
                 Settings.uiDisplayFrames() * 2)
         }

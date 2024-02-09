@@ -214,7 +214,9 @@ tasks {
         File(projectDir, "Settings.editme")
             .writeText(
                 """
-                   | # By editing this file, you can modify the behaviour of this mod!
+                   | # NOTE: If LunaLib is enabled, LunaSettings override these settings! Use of LunaSettings is recommended.
+                   | # When using LunaSettings, the main area of interest in this file are the tag lists, as they cannot be set via LunaSettings
+                   | 
                    | # NOTE: If the mod fails to parse these settings, it will fall back to default settings
                    | # NOTE: For bool values, everything but true will be interpreted as false
                    | #       Check starsector.log (in the Starsector folder) for details (ctrl+f for advancedgunnerycontrol)
@@ -230,7 +232,27 @@ tasks {
                    |   
                    |   # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
                    |   
-                   |   "tagList" : [
+                   |   # Choose which of the following lists will be used. Valid options are: "classic", "novice" and "complete"
+                   |   # If you are using LunaSettings, adjust the lists below
+                   |   "listVariant" : "classic"
+                   |   
+                   |   ,"completeTagList" : [
+                   |                "PD", "NoPD", "PD(Flx>50%)", "PD(Flx>10%)",
+                   |                "AvoidShields", "TargetShields", "AvdArmor(33%)", "AvdArmor(75%)",
+                   |                "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx<50%)", "Merge",
+                   |                "AvoidPhased", "TargetPhase", "ShipTarget", 
+                   |                "ForceAF", "ForceF(F<25%)", "ForceF(F<50%)", "ForceF(F<75%)",
+                   |                "PrioritisePD", "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded",
+                   |                "Fighter", "AvdShieldsFT", "TgtShieldsFT", "AvoidDebris",
+                   |                "NoMissiles", "NoFighters",
+                   |                "Opportunist", "Panic(H<25%)", "Range<60%",
+                   |                "ConserveAmmo", "CnsrvPDAmmo",
+                   |                "BigShips", "SmallShips",
+                   |                "AvdShields+", "TgtShields+",
+                   |                "Overloaded"
+                   |                ]  
+                   |   
+                   |   ,"classicTagList" : [
                    |                "PD", "PD(Flx>50%)",
                    |                "AvoidShields", "TargetShields", "AvdArmor(33%)", 
                    |                "Hold(Flx>90%)", "Hold(Flx>75%)", "Merge",
@@ -242,12 +264,22 @@ tasks {
                    |                "ConserveAmmo", "CnsrvPDAmmo",
                    |                "AvdShields+", "TgtShields+"
                    |                ]  
+                   |                
+                   |   ,"noviceTagList" : [
+                   |                "PD",
+                   |                "AvoidShields", "TargetShields", "AvdArmor(33%)", 
+                   |                "Hold(Flx>90%)",
+                   |                "AvoidPhased", "ShipTarget", 
+                   |                "ForceAF", "ForceF(F<50%)",
+                   |                "NoMissiles", "NoFighters",
+                   |                "Range<60%"
+                   |                ]   
                    |   
                    |   
                    |   # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons in advanced mode
                    |   ,"allowHotLoadingTags" : true
                    |   
-                   |   # Tags to display in simple mode. Note that simple mode does not hot load tags
+                   |   # Tags to display in simple mode. 
                    |   , "simpleTagList" : [ "PD", "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "NoFighters" ]
                    |   
                    |   # Determines which ship modes will be shown in the GUIs. Modes that do not exist will be discarded
@@ -304,6 +336,7 @@ tasks {
                    |   #                                  #### TROUBLESHOOTING ####
                    |   # These flags disable certain parts of the UI that might cause issues on specific systems
                    |   , "enableRefitScreenIntegration" : true # <---- EDIT HERE ----
+                   |   , "showRefitScreenButton" : true # <---- EDIT HERE ----
                    |   , "enableWeaponHighlighting" : true # <---- EDIT HERE ----
                    |   , "enableHoverTooltips" : true # <---- EDIT HERE ----
                    |   , "enableHoverTooltipBoxes" : true # <---- EDIT HERE ----

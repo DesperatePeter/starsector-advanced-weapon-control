@@ -11,8 +11,8 @@ open class SettingsDefinition {
 
     private val settinglist = mutableListOf<Setting<*>>()
 
-    protected fun <T> addSetting(key: String, defaultValue: T): Setting<T> {
-        Setting<T>(key, defaultValue).let {
+    protected fun <T> addSetting(key: String, defaultValue: T, tryLunar: Boolean = true): Setting<T> {
+        Setting<T>(key, defaultValue, tryLunar).let {
             settinglist.add(it)
             return it
         }

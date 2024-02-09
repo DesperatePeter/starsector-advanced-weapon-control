@@ -30,7 +30,7 @@ class GUIShower : EveryFrameScript {
             || Global.getCurrentState() == GameState.TITLE
         ) return
 
-        if (Keyboard.getEventCharacter().lowercaseChar() == Settings.guiHotkey() || shouldOpenAgcGui) {
+        if (Keyboard.isKeyDown(Settings.guiHotkey())|| shouldOpenAgcGui) {
             Global.getSector()?.campaignUI?.showInteractionDialog(AGCGUI(), Global.getSector().playerFleet)
             shouldOpenAgcGui = false
         }

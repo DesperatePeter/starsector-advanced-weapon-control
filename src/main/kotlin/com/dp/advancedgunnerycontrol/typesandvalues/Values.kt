@@ -42,5 +42,5 @@ object Values {
                 " In my experience, no tags or just the Flx<90% tag is the right choice for many weapon groups" +
                 "\n - Consider leaving one loadout blank (all default) to give you a fallback option." +
                 "\n - Be very careful with ship modes! Force disabling shields might sound cool until you run into a HIL." +
-                "\n - Most values/thresholds can be adjusted in Settings.editme, if you don't like the default values."
+                "\n - Most values/thresholds can be adjusted in Settings.editme or via LunaSettings, if you don't like the default values."
 }

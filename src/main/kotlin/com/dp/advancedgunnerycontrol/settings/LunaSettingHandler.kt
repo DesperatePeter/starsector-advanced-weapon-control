@@ -1,16 +1,16 @@
 package com.dp.advancedgunnerycontrol.settings
 
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import lunalib.lunaSettings.LunaSettings
+import com.fs.starfarer.api.Global
 
 class LunaSettingHandler<T>(private val key: String, private val defaultValue: T) {
-    operator fun invoke(): T{
-        return when (defaultValue) {
-            is Float -> (LunaSettings.getFloat(Values.THIS_MOD_ID, key) as? T) ?: defaultValue
-            is Boolean -> (LunaSettings.getBoolean(Values.THIS_MOD_ID, key) as? T) ?: defaultValue
-            is Int -> (LunaSettings.getInt(Values.THIS_MOD_ID, key) as? T) ?: defaultValue
-            is String -> (LunaSettings.getString(Values.THIS_MOD_ID, key) as? T) ?: defaultValue
-            else -> defaultValue
-        }
+    companion object{
+        private const val LUNALIB_MOD_ID = "lunalib"
+        const val LUNALIB_AGC_KEY_PREFIX = "agc_"
+        val isLunaLibPresent: Boolean
+            get() = Global.getSettings().modManager.isModEnabled(LUNALIB_MOD_ID)
+    }
+    operator fun invoke(): T?{
+        if(!isLunaLibPresent) return null
+        return loadLunaSetting(LUNALIB_AGC_KEY_PREFIX + key, defaultValue)
     }
 }
