@@ -1,5 +1,12 @@
 === For Starsector 0.97a ===
 
+- 1.15.0 (pre-release):
+feat: Add LunaLib integration for settings. Everything should still work without LunaLib
+feat: Add different tag storage modes, selectable via LunaSettings or settings.editme
+      Check out the Tab Tags in LunaSettings for more information!
+      WeaponComposition mode allows for storing tags based on weapons in groups rather than group index
+      WeaponCompositionGlobal allows to apply modes fleet-wide in an automated fashion
+
 - 1.14.2 (hotfix):
 fix: Issue that can cause a crash via stack overflow (log spammed with determineIfShotWillHit(AGCUtils.kt:379))
 
