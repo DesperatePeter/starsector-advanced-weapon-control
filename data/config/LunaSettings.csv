@@ -6,7 +6,6 @@ agc_mergeHotkey,Merge Tag Keybind,Keycode,37,,"Changes the keybind for merging w
 ,,,,,,,,
 ,,,,,,,,
 agc_GeneralHeader,General header,Header,General Settings,,,,,
-agc_autoApplySuggestedTags,autoApplySuggestedTags,Boolean,false,,"When true, suggested tags will be applied automatically to weapon groups with no tags. Use the campaign GUI to customize suggested tags,",,,
 agc_enablePersistentFireModes,enablePersistentFireModes,Boolean,true,,"Switch this off if you want to reset modes every battle (campaign-GUI will be disabled)",,,
 agc_enableAutoSaveLoad,enableAutoSaveLoad,Boolean,true,,"If you disable this, you will have to use the Load/Save-Buttons to save/load weapon modes",,,
 agc_persistChangesInCombat,persistChangesInCombat,Boolean,true,,"If set to false, changes made in combat or refit GUI will be reset after combat, unless manually saved via save button.",,,
@@ -44,8 +43,9 @@ agc_combatUiAnchorY,combatUiAnchorY,Double,0.8,,"Y Position of Combat GUI",0.0,1
 agc_suppressHudWarning,suppressHudWarning,Boolean,false,,"Suppress warnings displayed in combat when doing ill-advised things.",,,UI
 ,,,,,,,,
 ,,,,,,,,
-agc_TagListHeader,Tag List Header,Header,Customize tag list,,,,,Tags
-agc_TagListText,Tag List Test,Text,"This section lets you pick from a set of [preset tag lists]. If you wish to further customize lists, you can edit the preset lists in Settings.editme
+agc_autoApplySuggestedTags,autoApplySuggestedTags,Boolean,false,,"When true, suggested tags will be applied automatically to weapon groups with no tags. Use the campaign GUI to customize suggested tags,",,,Tags
+agc_TagListHeader,Tag List Header,Header,Tag List,,,,,Tags
+agc_TagListText,Tag List Text,Text,"This section lets you pick from a set of [preset tag lists]. If you wish to further customize lists, you can edit the preset lists in Settings.editme
 
 This setting is only relevant for advanced mode! Simple mode always uses the simple list.
 
@@ -55,6 +55,15 @@ This setting is only relevant for advanced mode! Simple mode always uses the sim
 
 [Complete]: This includes all available tags, leading to a long list.",,"",,,Tags
 agc_listVariant,listVariant,Radio,"novice","novice,classic,complete","Choose which preset tag list to use.",,,Tags
+agc_TagStorageHeader,Tag Storage Header,Header,Choose tag storage mode,,,,,Tags
+agc_TagStorageText,Tag Storage Text,Text,"Choose a [Tag Storage Mode]. This affects how tags are persisted. When changing modes, you will have to redo all tags!
+
+[Index]: This is the default behavior. Tags are stored per ship and weapon group index. This is the most precise method, but if you refit a ship, you will need to redo tags lest you have nonsensical tags.
+
+[WeaponComposition]: Tags are stored per ship by weapon composition. If you e.g. have a weapon group with railguns and light autocannons on a ship and refit it, such that the weapon group with those weapons gets a new index, you won't have to redo tags. On the other hand, if you e.g. remove the light autocannon, you will have to redo tags, since now the group will be composed of railguns rather than railguns and light autocannons.
+
+[WeaponCompositionGlobal]: The same as WeaponComposition, but tags are NOT stored per ship. So if you e.g. set a weapon group containing only PD Lasers to PD, it will affect all your ships that have a weapon group containing only PD Lasers. This storage mode takes the least amount of effort, but also offers the least flexibility.",,"",,,Tags
+agc_tagStorageMode,TagStorageMode,Radio,"Index","Index,WeaponComposition,WeaponCompositionGlobal","Choose tag storage mode.",,,Tags
 ,,,,,,,,
 ,,,,,,,,
 agc_miscHeader,Misc Header,Header,Misc,,,,,Misc

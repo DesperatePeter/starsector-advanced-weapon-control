@@ -4,6 +4,9 @@ import com.dp.advancedgunnerycontrol.typesandvalues.ShipModes
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.dp.advancedgunnerycontrol.typesandvalues.shipModeFromString
 import com.dp.advancedgunnerycontrol.utils.StorageBase
+import com.dp.advancedgunnerycontrol.utils.StorageBaseIntKey
+import com.dp.advancedgunnerycontrol.utils.TagStorageModes
+import com.dp.advancedgunnerycontrol.utils.tagStorageModeFromStr
 import com.fs.starfarer.api.Global
 import org.lwjgl.input.Keyboard
 import org.magiclib.combatgui.buttons.MagicCombatButtonBase
@@ -18,6 +21,9 @@ object Settings : SettingsDefinition() {
     private val simpleTagList = addSetting<List<String>>("simpleTagList", listOf(), false)
     private val shipModeList = addSetting<List<String>>("shipModeList", listOf(), false)
     private val listVariant = addSetting("listVariant", "novice")
+    private val tagStorageModeInternal = addSetting("tagStorageMode", "Index")
+    val tagStorageMode: TagStorageModes
+        get() = tagStorageModeFromStr[tagStorageModeInternal()] ?: TagStorageModes.INDEX
     val enableCustomAI = addSetting<Boolean>("enableCustomAI", true)
     val customAIRecursionLevel = addSetting<Int>("customAIRecursionLevel", 1)
     val forceCustomAI = addSetting<Boolean>("forceCustomAI", false)
@@ -34,7 +40,7 @@ object Settings : SettingsDefinition() {
     val guiHotkey = addSetting<Int>("GUIHotkey", Keyboard.KEY_J)
     val mergeHotkey = addSetting<Int>("mergeHotkey", Keyboard.KEY_K)
     val enablePersistentModes = addSetting<Boolean>("enablePersistentFireModes", true)
-    val enableCombatChangePersistance = addSetting<Boolean>("persistChangesInCombat", true)
+    val enableCombatChangePersistence = addSetting<Boolean>("persistChangesInCombat", true)
     val enableAutoSaveLoad = addSetting<Boolean>("enableAutoSaveLoad", true)
     val maxLoadouts = addSetting<Int>("maxLoadouts", 3)
     val loadoutNames = addSetting<List<String>>("loadoutNames", listOf(), false)
@@ -104,8 +110,9 @@ object Settings : SettingsDefinition() {
 
     // why on earth did I decide that it was a good idea to use a map of int/string rather than a list of strings for ship modes?
     // All modes are stored in key 0, keys other than 0 are unused
-    var shipModeStorage: List<StorageBase<List<String>>> = listOf()
-    var tagStorage: List<StorageBase<List<String>>> = listOf()
+    var shipModeStorage: List<StorageBaseIntKey<List<String>>> = listOf()
+    var tagStorage: List<StorageBaseIntKey<List<String>>> = listOf()
+    var tagStorageByWeaponComposition: List<StorageBase<String, List<String>>> = listOf()
 
     fun getCurrentWeaponTagList() : List<String>{
         if(isAdvancedMode){
@@ -129,8 +136,9 @@ object Settings : SettingsDefinition() {
 
     override fun applySettings() {
         super.applySettings()
-        shipModeStorage = StorageBase.assembleStorageArray("$" + Values.THIS_MOD_NAME + "shipModes")
-        tagStorage = StorageBase.assembleStorageArray("$" + Values.THIS_MOD_NAME + "tags")
+        shipModeStorage = StorageBaseIntKey.assembleStorageArray("$" + Values.THIS_MOD_NAME + "shipModes")
+        tagStorage = StorageBaseIntKey.assembleStorageArray("$" + Values.THIS_MOD_NAME + "tags")
+        tagStorageByWeaponComposition = StorageBase.assembleStorageArray("$" + Values.THIS_MOD_NAME + "tagsAlt")
         originalClassicTagList = classicTagList().toMutableList()
         originalNoviceTagList = noviceTagList().toMutableList()
         originalCompleteTagList = completeTagList().toMutableList()

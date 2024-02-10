@@ -3,11 +3,12 @@ package com.dp.advancedgunnerycontrol.utils
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
 
-open class StorageBase<T>(val persistentDataKey: String) {
+typealias StorageBaseIntKey<ValueType> = StorageBase<Int, ValueType>
+open class StorageBase<KeyType, ValueType>(val persistentDataKey: String) {
 
     companion object {
-        fun <T> assembleStorageArray(baseKey: String, size: Int = Settings.maxLoadouts()): List<StorageBase<T>> {
-            val toReturn = mutableListOf(StorageBase<T>(baseKey))
+        fun <KeyType, ValueType> assembleStorageArray(baseKey: String, size: Int = Settings.maxLoadouts()): List<StorageBase<KeyType, ValueType>> {
+            val toReturn = mutableListOf(StorageBase<KeyType, ValueType>(baseKey))
             for (i in 1 until size) {
                 toReturn.add(StorageBase(baseKey + i.toString()))
             }
@@ -15,18 +16,18 @@ open class StorageBase<T>(val persistentDataKey: String) {
         }
     }
 
-    private fun getMap(wasFallback: Boolean = false): MutableMap<String, MutableMap<Int, T>> {
-        return (Global.getSector().persistentData[persistentDataKey] as? MutableMap<String, MutableMap<Int, T>>?)
+    private fun getMap(wasFallback: Boolean = false): MutableMap<String, MutableMap<KeyType, ValueType>> {
+        return (Global.getSector().persistentData[persistentDataKey] as? MutableMap<String, MutableMap<KeyType, ValueType>>?)
             ?: kotlin.run {
                 Global.getSector().persistentData.remove(persistentDataKey)
                 Global.getSector().persistentData[persistentDataKey] =
-                    mutableMapOf<String, MutableMap<Int, T>>()
+                    mutableMapOf<String, MutableMap<KeyType, ValueType>>()
                 if (wasFallback) return mutableMapOf()
                 return getMap(true)
             }
     }
 
-    var modesByShip: MutableMap<String, MutableMap<Int, T>>
+    var modesByShip: MutableMap<String, MutableMap<KeyType, ValueType>>
         get() {
             if (!Settings.enablePersistentModes()) {
                 return mutableMapOf()

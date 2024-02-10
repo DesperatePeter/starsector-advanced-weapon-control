@@ -12,6 +12,6 @@ class CampaignSettingDelegate<T>(private val key: String, private val defaultVal
     }
 
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T){
-        Global.getSector().persistentData[key] = value
+        Global.getSector().persistentData["$" + Values.THIS_MOD_NAME + key] = value
     }
 }
