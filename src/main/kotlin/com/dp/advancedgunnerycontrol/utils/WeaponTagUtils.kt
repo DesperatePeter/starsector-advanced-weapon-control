@@ -83,7 +83,7 @@ fun persistTemporaryShipData(storageIndex: Int, ships: List<ShipAPI?>?) {
         it?.forEach { ship ->
             for (i in 0 until ship.weaponGroupsCopy.size) {
                 val tags = loadTags(ship, i, storageIndex)
-                persistTags(ship.id, i, storageIndex, tags)
+                persistTags(ship.id, ship.fleetMember, i, storageIndex, tags)
             }
             val modes = loadShipModes(ship, storageIndex)
             persistShipModes(ship.id, storageIndex, modes)
@@ -93,8 +93,9 @@ fun persistTemporaryShipData(storageIndex: Int, ships: List<ShipAPI?>?) {
 
 fun loadTags(ship: ShipAPI, index: Int, storageIndex: Int): List<String> {
     if (Settings.enableCombatChangePersistence() || !doesShipHaveLocalTags(ship, storageIndex)) {
+        if(ship.fleetMember == null) return emptyList()
         val shipId = generateUniversalFleetMemberId(ship)
-        return loadPersistentTags(shipId, index, storageIndex)
+        return loadPersistentTags(shipId, ship.fleetMember, index, storageIndex)
     }
     return loadTagsFromShip(ship, index, storageIndex)
 }
@@ -109,7 +110,7 @@ fun loadAllTags(ship: FleetMemberAPI, universalId: String? = null): List<String>
     val shipId = universalId ?: ship.id ?: ""
     for (si in 0 until Settings.maxLoadouts()) {
         for (i in 0 until ship.variant.weaponGroups.size) {
-            tags.addAll(loadPersistentTags(shipId, i, si))
+            tags.addAll(loadPersistentTags(shipId, ship, i, si))
         }
     }
     return tags.toList()
@@ -118,7 +119,8 @@ fun loadAllTags(ship: FleetMemberAPI, universalId: String? = null): List<String>
 fun saveTags(ship: ShipAPI, groupIndex: Int, loadoutIndex: Int, tags: List<String>) {
     if (Settings.enableCombatChangePersistence()) {
         val shipId = generateUniversalFleetMemberId(ship)
-        persistTags(shipId, groupIndex, loadoutIndex, tags)
+        if(ship.fleetMember == null) return
+        persistTags(shipId, ship.fleetMember, groupIndex, loadoutIndex, tags)
     }
     saveTagsInShip(ship, groupIndex, tags, loadoutIndex)
 }
@@ -138,13 +140,12 @@ fun generateUniversalFleetMemberId(ship: ShipAPI): String {
     return parentId + index.toString()
 }
 
-
-fun persistTags(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<String>) {
+fun persistTags(shipId: String, member: FleetMemberAPI, groupIndex: Int, loadoutIndex: Int, tags: List<String>) {
     if (shipId == "") return
     when(Settings.tagStorageMode){
         TagStorageModes.INDEX -> persistTagsByIndex(shipId, groupIndex, loadoutIndex, tags)
-        TagStorageModes.WEAPON_COMPOSITION -> persistTagsByWeaponComposition(shipId, groupIndex, loadoutIndex, tags)
-        TagStorageModes.WEAPON_COMPOSITION_GLOBAL -> persistTagsByWeaponCompositionGlobal(shipId, groupIndex, loadoutIndex, tags)
+        TagStorageModes.WEAPON_COMPOSITION -> persistTagsByWeaponComposition(shipId, member, groupIndex, loadoutIndex, tags)
+        TagStorageModes.WEAPON_COMPOSITION_GLOBAL -> persistTagsByWeaponCompositionGlobal(shipId, member, groupIndex, loadoutIndex, tags)
     }
 }
 
@@ -155,32 +156,20 @@ fun persistTagsByIndex(shipId: String, groupIndex: Int, loadoutIndex: Int, tags:
     Settings.tagStorage[loadoutIndex].modesByShip[shipId]?.set(groupIndex, tags.toSet().toList())
 }
 
-fun persistTagsByWeaponComposition(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<String>, shipKey: String = shipId){
-    val key = getWeaponCompositionString(shipId, groupIndex)
+fun persistTagsByWeaponComposition(universalShipId: String, member: FleetMemberAPI, groupIndex: Int, loadoutIndex: Int, tags: List<String>, shipKey: String = universalShipId){
+    val key = getWeaponCompositionString(member, groupIndex)
+    if(key == "") return
     if(!Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip.containsKey(shipKey)){
         Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip[shipKey] = mutableMapOf()
     }
     Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip[shipKey]?.set(key, tags.toSet().toList())
 }
 
-fun persistTagsByWeaponCompositionGlobal(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<String>){
-    persistTagsByWeaponComposition(shipId, groupIndex, loadoutIndex, tags, "Global")
+fun persistTagsByWeaponCompositionGlobal(universalShipId: String, member: FleetMemberAPI, groupIndex: Int, loadoutIndex: Int, tags: List<String>){
+    persistTagsByWeaponComposition(universalShipId, member, groupIndex, loadoutIndex, tags, "Global")
 }
 
-fun getFleetMemberByUniversalShipId(universalShipId: String): FleetMemberAPI?{
-    // why do modules exist? -_-
-    return Global.getSector().playerFleet.membersWithFightersCopy?.firstOrNull { it.id == universalShipId } ?:
-        run { // if the ship doesn't exist, we assume it's a module and try to find its parent ship
-            // modules are only supported in combat, so we assume that we are in combat
-            val parentId = universalShipId.substring(0, universalShipId.length - 1) // let's assume ships with more than 10 modules don't exist
-            val moduleIndex = universalShipId.last().toString().toIntOrNull() ?: return null
-            val parentShip = Global.getCombatEngine()?.ships?.firstOrNull { it.fleetMemberId == parentId }
-            parentShip?.childModulesCopy?.getOrNull(moduleIndex)?.fleetMember
-        }
-}
-
-fun getWeaponCompositionString(shipId: String, groupIndex: Int): String{
-    val member = getFleetMemberByUniversalShipId(shipId) ?: return ""
+fun getWeaponCompositionString(member: FleetMemberAPI, groupIndex: Int): String{
     return member.variant?.weaponGroups?.getOrNull(groupIndex)?.let { group ->
          groupAsString(group, member, false)
     } ?: ""
@@ -194,26 +183,28 @@ fun saveTagsInShip(ship: ShipAPI, groupIndex: Int, tags: List<String>, storageIn
         ?.set(groupIndex, tags.toSet().toList())
 }
 
-fun loadPersistentTags(shipId: String, groupIndex: Int, loadoutIndex: Int): List<String> {
-    if(shipId == "") return emptyList()
+
+fun loadPersistentTags(universalShipId: String, ship: FleetMemberAPI, groupIndex: Int, loadoutIndex: Int): List<String> {
+    if(universalShipId == "") return emptyList()
     return when(Settings.tagStorageMode){
-        TagStorageModes.INDEX -> loadPersistentTagsByIndex(shipId, groupIndex, loadoutIndex)
-        TagStorageModes.WEAPON_COMPOSITION -> loadPersistentTagsByWeaponComposition(shipId, groupIndex, loadoutIndex)
-        TagStorageModes.WEAPON_COMPOSITION_GLOBAL -> loadPersistentTagsByWeaponCompositionGlobal(shipId, groupIndex, loadoutIndex)
+        TagStorageModes.INDEX -> loadPersistentTagsByIndex(ship.id, groupIndex, loadoutIndex)
+        TagStorageModes.WEAPON_COMPOSITION -> loadPersistentTagsByWeaponComposition(ship, universalShipId, groupIndex, loadoutIndex)
+        TagStorageModes.WEAPON_COMPOSITION_GLOBAL -> loadPersistentTagsByWeaponCompositionGlobal(ship, universalShipId, groupIndex, loadoutIndex)
     }
 }
 
-fun loadPersistentTagsByIndex(shipId: String, groupIndex: Int, loadoutIndex: Int): List<String> {
-    return Settings.tagStorage[loadoutIndex].modesByShip[shipId]?.get(groupIndex) ?: emptyList()
+fun loadPersistentTagsByIndex(universalShipId: String, groupIndex: Int, loadoutIndex: Int): List<String> {
+    return Settings.tagStorage[loadoutIndex].modesByShip[universalShipId]?.get(groupIndex) ?: emptyList()
 }
 
-fun loadPersistentTagsByWeaponComposition(shipId: String, groupIndex: Int, loadoutIndex: Int, shipKey: String = shipId): List<String>{
-    val key = getWeaponCompositionString(shipId, groupIndex)
+fun loadPersistentTagsByWeaponComposition(member: FleetMemberAPI, universalShipId: String, groupIndex: Int, loadoutIndex: Int, shipKey: String = universalShipId): List<String>{
+    val key = getWeaponCompositionString(member, groupIndex)
+    if(key == "") return emptyList()
     return Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip[shipKey]?.get(key) ?: emptyList()
 }
 
-fun loadPersistentTagsByWeaponCompositionGlobal(shipId: String, groupIndex: Int, loadoutIndex: Int): List<String>{
-    return loadPersistentTagsByWeaponComposition(shipId, groupIndex, loadoutIndex, "Global")
+fun loadPersistentTagsByWeaponCompositionGlobal(member: FleetMemberAPI, universalShipId: String, groupIndex: Int, loadoutIndex: Int): List<String>{
+    return loadPersistentTagsByWeaponComposition(member, universalShipId, groupIndex, loadoutIndex, "Global")
 }
 
 fun getWeaponGroupIndex(weapon: WeaponAPI): Int {

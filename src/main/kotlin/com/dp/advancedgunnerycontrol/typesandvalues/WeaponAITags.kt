@@ -5,7 +5,6 @@ import com.dp.advancedgunnerycontrol.gui.isElligibleForPD
 import com.dp.advancedgunnerycontrol.gui.isEverythingBlacklisted
 import com.dp.advancedgunnerycontrol.gui.usesAmmo
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.utils.generateUniversalFleetMemberId
 import com.dp.advancedgunnerycontrol.utils.loadPersistentTags
 import com.dp.advancedgunnerycontrol.utils.persistTags
 import com.dp.advancedgunnerycontrol.weaponais.mapBooleanToSpecificString
@@ -370,9 +369,9 @@ fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int, allowOverriding
     val groups = ship.variant.weaponGroups
 
     groups.forEachIndexed { index, group ->
-        if(allowOverriding || loadPersistentTags(id, index, storageIndex).isEmpty()){
+        if(allowOverriding || loadPersistentTags(id, ship, index, storageIndex).isEmpty()){
             val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
-            persistTags(id, index, storageIndex, getSuggestedModesForWeaponId(weaponID))
+            persistTags(id, ship, index, storageIndex, getSuggestedModesForWeaponId(weaponID))
         }
     }
 }

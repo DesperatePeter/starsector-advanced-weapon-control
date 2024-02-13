@@ -45,7 +45,7 @@ class TagButton(var ship: FleetMemberAPI, var group: Int, tag: String, button: B
                     AGCGUI.makeTooltip(getTagTooltip(it)),
                     TooltipMakerAPI.TooltipLocation.BELOW
                 )
-                if (loadPersistentTags(ship.id, group, AGCGUI.storageIndex).contains(it)) {
+                if (loadPersistentTags(ship.id, ship, group, AGCGUI.storageIndex).contains(it)) {
                     toReturn.last().check()
                 }
             }
@@ -60,7 +60,7 @@ class TagButton(var ship: FleetMemberAPI, var group: Int, tag: String, button: B
     }
 
     private fun updateDisabledButtons() {
-        val tags = loadPersistentTags(ship.id, group, AGCGUI.storageIndex).toMutableList()
+        val tags = loadPersistentTags(ship.id, ship, group, AGCGUI.storageIndex).toMutableList()
         sameGroupButtons.forEach {
             it.enable()
             if (isIncompatibleWithExistingTags(it.associatedValue, tags) || shouldTagBeDisabled(
@@ -74,7 +74,7 @@ class TagButton(var ship: FleetMemberAPI, var group: Int, tag: String, button: B
                 it.button.isChecked = false
             }
         }
-        persistTags(ship.id, group, AGCGUI.storageIndex, tags)
+        persistTags(ship.id, ship, group, AGCGUI.storageIndex, tags)
     }
 
     override fun executeCallbackIfChecked() {
@@ -82,9 +82,9 @@ class TagButton(var ship: FleetMemberAPI, var group: Int, tag: String, button: B
             check()
             updateDisabledButtons()
         } else if (active && !button.isChecked) {
-            val tags = loadPersistentTags(ship.id, group, AGCGUI.storageIndex).toMutableList()
+            val tags = loadPersistentTags(ship.id, ship, group, AGCGUI.storageIndex).toMutableList()
             tags.remove(associatedValue)
-            persistTags(ship.id, group, AGCGUI.storageIndex, tags)
+            persistTags(ship.id, ship, group, AGCGUI.storageIndex, tags)
             uncheck()
             updateDisabledButtons()
         }
@@ -92,8 +92,8 @@ class TagButton(var ship: FleetMemberAPI, var group: Int, tag: String, button: B
     }
 
     override fun onActivate() {
-        val tags = loadPersistentTags(ship.id, group, AGCGUI.storageIndex).toMutableList()
+        val tags = loadPersistentTags(ship.id, ship, group, AGCGUI.storageIndex).toMutableList()
         tags.add(associatedValue)
-        persistTags(ship.id, group, AGCGUI.storageIndex, tags)
+        persistTags(ship.id, ship, group, AGCGUI.storageIndex, tags)
     }
 }
