@@ -10,7 +10,7 @@ fun backupSuggestedTagsToJson(){
     clearSuggestedTagsToJson()
     val data = JSONUtils.loadCommonJSON(Values.CUSTOM_SUGGESTED_TAG_JSON_FILE_NAME)
     Settings.getCurrentSuggestedTags().forEach {
-        data.put(it.key, it.value)
+        data.put(it.key, it.value.toSet().toList())
     }
     data.save()
 }

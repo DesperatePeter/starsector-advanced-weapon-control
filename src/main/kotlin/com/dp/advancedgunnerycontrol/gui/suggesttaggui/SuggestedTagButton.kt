@@ -46,7 +46,7 @@ class SuggestedTagButton(private val weaponId: String, tag: String, button: Butt
     }
     override fun onActivate() {
         val st = Settings.getCurrentSuggestedTags().toMutableMap()
-        st[weaponId] = (st[weaponId] ?: listOf()) + listOf(associatedValue)
+        st[weaponId] = ((st[weaponId] ?: listOf()) + listOf(associatedValue)).toSet().toList()
         Settings.customSuggestedTags = st
     }
 
