@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.14.2"
+    val modVersion = "1.15.0"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -62,6 +62,7 @@ dependencies {
 
     implementation(fileTree("$starsectorModDirectory/LazyLib/jars") { include("*.jar") })
     implementation(fileTree("$starsectorModDirectory/MagicLib/jars") { include("*.jar") })
+    implementation(fileTree("$starsectorModDirectory/LunaLib/jars") { include("*.jar") })
     //compileOnly(fileTree("$starsectorModDirectory/Console Commands/jars") { include("*.jar") })
 
     // Starsector jars and dependencies
@@ -141,13 +142,11 @@ tasks {
                         "dependencies": [
                             {
                                 "id": "lw_lazylib",
-                                "name": "LazyLib",
-                                "version" : "2.8"
+                                "name": "LazyLib"
                             },
                             {
                                 "id" : "MagicLib",
-                                "name" : "MagicLib",
-                                "version" : "1.0.0-dev01"
+                                "name" : "MagicLib"
                             }
                         ]
                     }
@@ -211,9 +210,10 @@ tasks {
         File(projectDir, "Settings.editme")
             .writeText(
                 """
-                   | # By editing this file, you can modify the behaviour of this mod!
+                   | # NOTE: If LunaLib is enabled, LunaSettings override these settings! Use of LunaSettings is recommended.
+                   | # When using LunaSettings, the main area of interest in this file are the tag lists, as they cannot be set via LunaSettings
+                   | 
                    | # NOTE: If the mod fails to parse these settings, it will fall back to default settings
-                   | # NOTE: For bool values, everything but true will be interpreted as false
                    | #       Check starsector.log (in the Starsector folder) for details (ctrl+f for advancedgunnerycontrol)
                    | {
                    |   #                                 #### TAG LIST ####
@@ -227,7 +227,27 @@ tasks {
                    |   
                    |   # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
                    |   
-                   |   "tagList" : [
+                   |   # Choose which of the following lists will be used. Valid options are: "classic", "novice" and "complete"
+                   |   # If you are using LunaSettings, adjust the lists below
+                   |   "listVariant" : "classic"
+                   |   
+                   |   ,"completeTagList" : [
+                   |                "PD", "NoPD", "PD(Flx>50%)", "PD(Flx>10%)",
+                   |                "AvoidShields", "TargetShields", "AvdArmor(33%)", "AvdArmor(75%)",
+                   |                "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx<50%)", "Merge",
+                   |                "AvoidPhased", "TargetPhase", "ShipTarget", 
+                   |                "ForceAF", "ForceF(F<25%)", "ForceF(F<50%)", "ForceF(F<75%)",
+                   |                "PrioritisePD", "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded",
+                   |                "Fighter", "AvdShieldsFT", "TgtShieldsFT", "AvoidDebris",
+                   |                "NoMissiles", "NoFighters",
+                   |                "Opportunist", "Panic(H<25%)", "Range<60%",
+                   |                "ConserveAmmo", "CnsrvPDAmmo",
+                   |                "BigShips", "SmallShips",
+                   |                "AvdShields+", "TgtShields+",
+                   |                "Overloaded"
+                   |                ]  
+                   |   
+                   |   ,"classicTagList" : [
                    |                "PD", "PD(Flx>50%)",
                    |                "AvoidShields", "TargetShields", "AvdArmor(33%)", 
                    |                "Hold(Flx>90%)", "Hold(Flx>75%)", "Merge",
@@ -239,12 +259,22 @@ tasks {
                    |                "ConserveAmmo", "CnsrvPDAmmo",
                    |                "AvdShields+", "TgtShields+"
                    |                ]  
+                   |                
+                   |   ,"noviceTagList" : [
+                   |                "PD",
+                   |                "AvoidShields", "TargetShields", "AvdArmor(33%)", 
+                   |                "Hold(Flx>90%)",
+                   |                "AvoidPhased", "ShipTarget", 
+                   |                "ForceAF", "ForceF(F<50%)",
+                   |                "NoMissiles", "NoFighters",
+                   |                "Range<60%"
+                   |                ]   
                    |   
                    |   
                    |   # If set to true, any tags that are not in the tagList that are assigned to a weapon group will pop up as buttons in advanced mode
                    |   ,"allowHotLoadingTags" : true
                    |   
-                   |   # Tags to display in simple mode. Note that simple mode does not hot load tags
+                   |   # Tags to display in simple mode. 
                    |   , "simpleTagList" : [ "PD", "AvoidShields", "TargetShields", "AvdArmor(33%)", "Hold(Flx>90%)", "NoFighters" ]
                    |   
                    |   # Determines which ship modes will be shown in the GUIs. Modes that do not exist will be discarded
@@ -252,6 +282,14 @@ tasks {
                    |   # Note that "DEFAULT" is not a real mode but instead a shortcut to disable all other modes. It's kind of deprecated and only still exists for compatibility reasons.
                    |   
                    |   ,"shipModeList" : ["LowShields", "ShieldsUp", "Vent(Flx>75%)", "VntA(Flx>25%)", "Run(HP<50%)", "NoSystem", "SpamSystem", "Charge", "FarAway", "StayAway"]
+                   |   
+                   |   # How tags are stored. Valid values are: "Index", "WeaponComposition", "WeaponCompositionGlobal"
+                   |   # This affects how tags are persisted. When changing modes, you will have to redo all tags!
+                   |
+                   |   # [Index]: This is the default behavior. Tags are stored per ship and weapon group index. This is the most precise method, but if you refit a ship, you will need to redo tags lest you have nonsensical tags.
+                   |   # [WeaponComposition]: Tags are stored per ship by weapon composition. If you e.g. have a weapon group with railguns and light autocannons on a ship and refit it, such that the weapon group with those weapons gets a new index, you won't have to redo tags. On the other hand, if you e.g. remove the light autocannon, you will have to redo tags, since now the group will be composed of railguns rather than railguns and light autocannons.
+                   |   # [WeaponCompositionGlobal]: The same as WeaponComposition, but tags are NOT stored per ship. So if you e.g. set a weapon group containing only PD Lasers to PD, it will affect all your ships that have a weapon group containing only PD Lasers. This storage mode takes the least amount of effort, but also offers the least flexibility."
+                   |   ,"tagStorageMode" : "Index"
                    |  
                    |   #                                 #### CUSTOM AI ####
                    |   # If you set this to true, if the base AI would have weapons in weapon groups target something invalid for the selected tags,
@@ -301,6 +339,7 @@ tasks {
                    |   #                                  #### TROUBLESHOOTING ####
                    |   # These flags disable certain parts of the UI that might cause issues on specific systems
                    |   , "enableRefitScreenIntegration" : true # <---- EDIT HERE ----
+                   |   , "showRefitScreenButton" : true # <---- EDIT HERE ----
                    |   , "enableWeaponHighlighting" : true # <---- EDIT HERE ----
                    |   , "enableHoverTooltips" : true # <---- EDIT HERE ----
                    |   , "enableHoverTooltipBoxes" : true # <---- EDIT HERE ----

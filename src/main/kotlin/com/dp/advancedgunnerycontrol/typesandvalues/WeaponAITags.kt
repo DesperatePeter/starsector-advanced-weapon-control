@@ -5,7 +5,6 @@ import com.dp.advancedgunnerycontrol.gui.isElligibleForPD
 import com.dp.advancedgunnerycontrol.gui.isEverythingBlacklisted
 import com.dp.advancedgunnerycontrol.gui.usesAmmo
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.utils.generateUniversalFleetMemberId
 import com.dp.advancedgunnerycontrol.utils.loadPersistentTags
 import com.dp.advancedgunnerycontrol.utils.persistTags
 import com.dp.advancedgunnerycontrol.weaponais.mapBooleanToSpecificString
@@ -13,6 +12,7 @@ import com.dp.advancedgunnerycontrol.weaponais.tags.*
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.WeaponAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import org.lwjgl.input.Keyboard
 
 // NOTE: Tag names should NOT exceed 13 characters to be able to cleanly fit on buttons!
 
@@ -45,7 +45,7 @@ fun shouldTagBeDisabled(groupIndex: Int, sh: FleetMemberAPI, tag: String): Boole
     return isEverythingBlacklisted(groupIndex, sh)
 }
 
-val priorityBoilerplateText = "\nIncreases priority ba a factor of ${Settings.prioXModifier()} (adjustable in Settigs.editme)." +
+val priorityBoilerplateText = "\nIncreases priority by a factor of ${Settings.prioXModifier()} (adjustable in Settigs.editme)." +
         "\nCombine multiple Prio-tags to de-prioritize everything else."
 
 val tagTooltips = mapOf(
@@ -72,7 +72,7 @@ val tagTooltips = mapOf(
             "\nTip: Keep one kinetic weapon on default to keep up pressure." +
             "\nNo targeting restrictions.",
     "TgtShields+" to "As TargetShields, but more aggressive." +
-            "\nWill only stop shooting when flanking shields or shields are disabled (experimental)." +
+            "\nWill only stop shooting when flanking shields or shields are disabled." +
             "\nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
@@ -81,7 +81,7 @@ val tagTooltips = mapOf(
         )
     } be ignored (configurable in settings)",
     "AvdShields+" to "As AvoidShields, but less aggressive." +
-            "\nWill only shoot when flanking shields or shields are disabled (experimental)." +
+            "\nWill only shoot when flanking shields or shields are disabled." +
             "\nShields of fighters will ${
         mapBooleanToSpecificString(
             Settings.ignoreFighterShields(),
@@ -130,8 +130,8 @@ val tagTooltips = mapOf(
     "NoMissiles" to "Weapon won't target missiles.",
     "Overloaded" to "Weapon will only target and fire at overloaded ships.",
     "ShieldsOff" to "Simplified version of AvoidShields. Will only fire at targets that have no shields or have shields turned off.",
-    "Merge" to "Press [${Settings.mergeHotkey().uppercaseChar()}] to merge all weapons with this tag into current weapon group. " +
-            "\nFor player controlled ship only! Press [${Settings.mergeHotkey().uppercaseChar()}] again to undo." +
+    "Merge" to "Press [${Keyboard.getKeyName(Settings.mergeHotkey())}] to merge all weapons with this tag into current weapon group. " +
+            "\nFor player controlled ship only! Press [${Keyboard.getKeyName(Settings.mergeHotkey())}] again to undo." +
             "\nUse this tag to unleash big manually aimed barrages at your enemies!",
     "PrioFighter" to "Prioritize fighters over all other targets but target other things if no fighters present.$priorityBoilerplateText",
     "PrioMissile" to "Prioritize missiles over all other targets but target other things if no missiles present.$priorityBoilerplateText",
@@ -369,9 +369,9 @@ fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int, allowOverriding
     val groups = ship.variant.weaponGroups
 
     groups.forEachIndexed { index, group ->
-        if(allowOverriding || loadPersistentTags(id, index, storageIndex).isEmpty()){
+        if(allowOverriding || loadPersistentTags(id, ship, index, storageIndex).isEmpty()){
             val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
-            persistTags(id, index, storageIndex, getSuggestedModesForWeaponId(weaponID))
+            persistTags(id, ship, index, storageIndex, getSuggestedModesForWeaponId(weaponID))
         }
     }
 }

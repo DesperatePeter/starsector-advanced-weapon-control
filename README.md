@@ -18,7 +18,7 @@ Also visit the forums post: <https://fractalsoftworks.com/forum/index.php?topic=
 - Press the "J" key in combat to open up a GUI (select an ally via "R" key beforehand to modify their modes)
 - Press the "J" key in the campaign map to open a GUI
 - By default, firing modes are automatically saved/loaded between combats (per ship)
-- (optional) edit Starsector/mods/AdvancedGunneryControl/Settings.editme to customize the mod behavior.
+- (optional) edit Starsector/mods/AdvancedGunneryControl/Settings.editme or use LunaSettings to customize the mod behavior.
 
 ## Installation ##
 

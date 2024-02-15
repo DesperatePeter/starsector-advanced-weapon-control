@@ -12,8 +12,8 @@ class KeyStatusManager {
     private fun parseInputEvent(event: InputEventAPI): Boolean {
         if (event.isConsumed || !event.isKeyDownEvent) return false
 
-        when (event.eventChar.lowercaseChar()) {
-            Settings.infoHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.INFO
+        when (event.eventValue) {
+            Settings.combatGuiHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.INFO
             Settings.mergeHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.MERGE
             else -> return false
         }

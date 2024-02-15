@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui.suggesttaggui
 
 import com.dp.advancedgunnerycontrol.gui.GUIShower
+import com.dp.advancedgunnerycontrol.settings.LunaSettingHandler
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.TagListView
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
@@ -57,13 +58,15 @@ class SuggestedTagGui : InteractionDialogPlugin {
 
             it.addOption("Reset", "Reset", "Reset all suggested tags back to defaults.")
 
-            if(Settings.autoApplySuggestedTags){
-                it.addOption("Disable Auto-apply", "Disable Auto-apply",
-                    "Suggested tags will no longer be applied automatically.")
-            }else{
-                it.addOption("Enable Auto-apply", "Enable Auto-apply",
-                    "When activated, suggested tags will be applied automatically to any weapon group with no tags upon" +
-                            "entering combat.")
+            if(!LunaSettingHandler.isLunaLibPresent){
+                if(Settings.autoApplySuggestedTags){
+                    it.addOption("Disable Auto-apply", "Disable Auto-apply",
+                        "Suggested tags will no longer be applied automatically.")
+                }else{
+                    it.addOption("Enable Auto-apply", "Enable Auto-apply",
+                        "When activated, suggested tags will be applied automatically to any weapon group with no tags upon" +
+                                "entering combat.")
+                }
             }
 
             it.addOption("Backup", "Backup", "Save currently configured suggested tags to file (saves/common/${Values.CUSTOM_SUGGESTED_TAG_JSON_FILE_NAME})." +

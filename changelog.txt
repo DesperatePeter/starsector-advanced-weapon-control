@@ -1,5 +1,19 @@
 === For Starsector 0.97a ===
 
+- 1.15.1:
+fix: Issue with duplicate tags when customizing suggested tags, which would prevent removing tags once added
+fix: Issue where target/avoid phase tags would consider ships with right-click defense systems other than phase cloak as phase ships
+fix: issue where new tag storage modes didn't work during missions
+change: Charge mode now ignores PD weapons*, i.e. ships will charge until all non-PD weapons are in range
+*unless they have one of these tags: "NoPD", "NoMissiles", "PrioShips"
+
+- 1.15.0 (pre-release):
+feat: Add LunaLib integration for settings. Everything should still work without LunaLib
+feat: Add different tag storage modes, selectable via LunaSettings or settings.editme
+      Check out the Tab Tags in LunaSettings for more information!
+      WeaponComposition mode allows for storing tags based on weapons in groups rather than group index
+      WeaponCompositionGlobal allows to apply modes fleet-wide in an automated fashion
+
 - 1.14.2 (hotfix):
 fix: Issue that can cause a crash via stack overflow (log spammed with determineIfShotWillHit(AGCUtils.kt:379))
 

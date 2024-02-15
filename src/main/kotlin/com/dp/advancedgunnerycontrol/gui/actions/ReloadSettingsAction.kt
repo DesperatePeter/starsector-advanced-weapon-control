@@ -10,7 +10,7 @@ class ReloadSettingsAction(attributes: GUIAttributes) : GUIAction(attributes) {
         attributes.tagView = TagListView()
     }
 
-    override fun getTooltip(): String = "Reload settings from Settings.editme file without having to restart the game"
+    override fun getTooltip(): String = "Reload settings from Settings.editme file without having to restart the game. Note that LunaSettings are hotloaded automatically."
 
     override fun getName(): String = "Reload Settings"
 }

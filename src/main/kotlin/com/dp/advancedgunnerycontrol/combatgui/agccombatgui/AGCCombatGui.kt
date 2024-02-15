@@ -127,7 +127,7 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
             "Save",
             "Make all temporary changes to current loadout done in combat permanent." +
                     "\nOnly enabled if automatic in-combat persistence has been disabled in the settings.",
-            Settings.enableCombatChangePersistance()
+            Settings.enableCombatChangePersistence()
         )
         addButton(null, "Help", Values.HELP_TEXT, true)
 

@@ -8,17 +8,21 @@ import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.api.loading.WeaponGroupSpec
 import kotlin.math.roundToInt
 
-fun groupAsString(group: WeaponGroupSpec, sh: FleetMemberAPI): String {
+fun groupAsString(group: WeaponGroupSpec, sh: FleetMemberAPI, includeCount: Boolean = true): String {
     val strings = group.slots.mapNotNull { sh.variant.getWeaponId(it) }.map {
         Global.getSettings().getWeaponSpec(it).weaponName
     }
-    val set = strings.toSet()
+    val set = strings.toSet().sorted()
     val occ = mutableMapOf<String, Int>()
     strings.forEach { occ[it] = occ[it]?.plus(1) ?: 1 }
-    return set.map { ("${occ[it] ?: "0"} x $it") }.toString()
+    return if(includeCount){
+        set.map { ("${occ[it] ?: "0"} x $it") }.toString()
+    }else{
+        set.toString()
+    }
 }
 
-fun groupAsString(group: WeaponGroupAPI, sh: FleetMemberAPI): String {
+fun groupAsString(group: WeaponGroupAPI, sh: FleetMemberAPI, includeCount: Boolean = true): String {
     val weaponStrings = group.weaponsCopy.map {
         it.displayName
     }
@@ -26,8 +30,8 @@ fun groupAsString(group: WeaponGroupAPI, sh: FleetMemberAPI): String {
     weaponStrings.forEach {
         occ[it] = occ[it]?.plus(1) ?: 1
     }
-    return weaponStrings.toSet().map {
-        ("${occ[it] ?: "0"} x $it")
+    return weaponStrings.toSet().sorted().map {
+        if(includeCount) {("${occ[it] ?: "0"} x $it")} else {it}
     }.toString()
 }
 

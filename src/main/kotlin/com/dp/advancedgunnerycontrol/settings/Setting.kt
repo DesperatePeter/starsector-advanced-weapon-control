@@ -9,11 +9,18 @@ import org.lazywizard.lazylib.ext.json.getFloat
 // so instead I implemented a "when value is type XYZ" switch
 // This whole thing feels unsatisfying...
 // Note: Probably should have used delegate
-open class Setting<T>(private val key: String, defaultValue: T) {
+open class Setting<T>(private val key: String, private val defaultValue: T, private val getFromLunaSettingsIfPossible: Boolean = true) {
     var value: T = defaultValue
+    val lunaSettingHandler = LunaSettingHandler(key, defaultValue)
 
     fun load(json: JSONObject) {
         try {
+            if(getFromLunaSettingsIfPossible){
+                lunaSettingHandler()?.let {
+                    value = it
+                    return
+                }
+            }
             value = (loadImpl(json) ?: kotlin.run {
                 logError()
                 value
@@ -57,11 +64,15 @@ open class Setting<T>(private val key: String, defaultValue: T) {
         this.value = value
     }
 
-    private fun logError() {
+    fun logError() {
         Global.getLogger(this.javaClass).warn(
             """
                 Error when loading $key, using default default value $value instead.
             """.trimIndent()
         )
+    }
+
+    fun resetToDefault(){
+        value = defaultValue
     }
 }

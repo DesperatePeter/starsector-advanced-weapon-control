@@ -124,7 +124,7 @@ fun saveShipModesInShip(ship: ShipAPI, tags: List<String>, storageIndex: Int) {
 }
 
 fun saveShipModes(ship: ShipAPI, loadoutIndex: Int, tags: List<String>) {
-    if (Settings.enableCombatChangePersistance()) {
+    if (Settings.enableCombatChangePersistence()) {
         val shipId = generateUniversalFleetMemberId(ship)
         persistShipModes(shipId, loadoutIndex, tags)
     } else {
@@ -153,7 +153,7 @@ fun loadShipModesFromShip(ship: ShipAPI, storageIndex: Int): List<String> {
 }
 
 fun loadShipModes(ship: ShipAPI, loadoutIndex: Int): List<String> {
-    if (Settings.enableCombatChangePersistance() || !doesShipHaveLocalShipModes(ship, loadoutIndex)) {
+    if (Settings.enableCombatChangePersistence() || !doesShipHaveLocalShipModes(ship, loadoutIndex)) {
         val shipId = generateUniversalFleetMemberId(ship)
         return loadPersistedShipModes(shipId, loadoutIndex)
     }

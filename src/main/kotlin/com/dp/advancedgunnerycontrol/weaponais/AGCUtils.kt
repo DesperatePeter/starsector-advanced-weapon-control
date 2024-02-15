@@ -4,6 +4,7 @@ package com.dp.advancedgunnerycontrol.weaponais
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.combat.*
+import com.fs.starfarer.api.impl.campaign.ids.Tags
 import org.lazywizard.lazylib.CollisionUtils
 import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.ext.minus
@@ -23,6 +24,10 @@ data class FiringSolution(
     // that target velocity is constant.
     val aimPoint: Vector2f
 )
+
+fun ShipAPI.hasPhaseCloak(): Boolean{
+    return phaseCloak != null && hullSpec.hints.contains(ShipHullSpecAPI.ShipTypeHints.PHASE)
+}
 
 fun isPD(weapon: WeaponAPI): Boolean {
     if (weapon.hasAIHint(WeaponAPI.AIHints.PD) || weapon.hasAIHint(WeaponAPI.AIHints.PD_ONLY)

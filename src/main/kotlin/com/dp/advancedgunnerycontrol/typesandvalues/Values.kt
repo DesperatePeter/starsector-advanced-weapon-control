@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.typesandvalues
 
 object Values {
+    const val THIS_MOD_ID = "advanced_gunnery_control_dbeaa06e"
     const val SETTINGS_FILE_NAME = "Settings.editme"
     const val WEAPON_BLACKLIST_KEY = "weaponBlacklist"
     const val SUGGESTED_TAGS_KEY = "suggestedWeaponTags"
@@ -41,5 +42,5 @@ object Values {
                 " In my experience, no tags or just the Flx<90% tag is the right choice for many weapon groups" +
                 "\n - Consider leaving one loadout blank (all default) to give you a fallback option." +
                 "\n - Be very careful with ship modes! Force disabling shields might sound cool until you run into a HIL." +
-                "\n - Most values/thresholds can be adjusted in Settings.editme, if you don't like the default values."
+                "\n - Most values/thresholds can be adjusted in Settings.editme or via LunaSettings, if you don't like the default values."
 }
