@@ -8,7 +8,9 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
+import com.fs.starfarer.api.fleet.FleetAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
+import com.fs.starfarer.campaign.fleet.FleetMember
 
 enum class TagStorageModes{
     INDEX, WEAPON_COMPOSITION, WEAPON_COMPOSITION_GLOBAL
@@ -140,6 +142,12 @@ fun generateUniversalFleetMemberId(ship: ShipAPI): String {
     return parentId + index.toString()
 }
 
+fun generateUniversalFleetMemberId(ship: FleetMemberAPI): String{
+    return ((ship as? FleetMember)?.instantiateForCombat(null, 0, null) as? ShipAPI)?.let {
+        generateUniversalFleetMemberId(it)
+    } ?: ship.id
+}
+
 fun persistTags(shipId: String, member: FleetMemberAPI, groupIndex: Int, loadoutIndex: Int, tags: List<String>) {
     if (shipId == "") return
     when(Settings.tagStorageMode){
@@ -147,6 +155,15 @@ fun persistTags(shipId: String, member: FleetMemberAPI, groupIndex: Int, loadout
         TagStorageModes.WEAPON_COMPOSITION -> persistTagsByWeaponComposition(shipId, member, groupIndex, loadoutIndex, tags)
         TagStorageModes.WEAPON_COMPOSITION_GLOBAL -> persistTagsByWeaponCompositionGlobal(shipId, member, groupIndex, loadoutIndex, tags)
     }
+}
+
+fun WeaponAPI.hasAgcTag(tag: String): Boolean{
+    val dummyTag = createTag(tag, this) ?: return false
+    return (getAutofirePlugin() as? TagBasedAI)?.tags?.any { it::class == dummyTag::class } == true
+}
+
+fun WeaponAPI.hasAnyAgcTag(vararg tags: String): Boolean{
+    return tags.any { hasAgcTag(it) }
 }
 
 fun persistTagsByIndex(shipId: String, groupIndex: Int, loadoutIndex: Int, tags: List<String>){
