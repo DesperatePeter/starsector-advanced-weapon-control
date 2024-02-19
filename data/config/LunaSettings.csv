@@ -54,7 +54,7 @@ This setting is only relevant for advanced mode! Simple mode always uses the sim
 [Classic]: This is the default list from before LunaSettings integration. It contains many, but not all, tags.
 
 [Complete]: This includes all available tags, leading to a long list.",,"",,,Tags
-agc_listVariant,listVariant,Radio,"novice","novice,classic,complete","Choose which preset tag list to use.",,,Tags
+agc_listVariant,listVariant,Radio,"classic","novice,classic,complete","Choose which preset tag list to use.",,,Tags
 agc_TagStorageHeader,Tag Storage Header,Header,Choose tag storage mode,,,,,Tags
 agc_TagStorageText,Tag Storage Text,Text,"Choose a [Tag Storage Mode]. This affects how tags are persisted. When changing modes, you will have to redo all tags!
 

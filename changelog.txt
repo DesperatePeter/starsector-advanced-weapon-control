@@ -1,5 +1,12 @@
 === For Starsector 0.97a ===
 
+- 1.16.0:
+change: Changed default tag list to classic rather than novice in LunaSettings
+feat: Improve target prioritization for the custom AI against stations
+feat: add PrioHealthy tag (opposite of PrioWounded), available in tag list "complete" by default
+feat: add LowRoF tag, which reduces the rate of fire of a weapon, available in tag list "complete" by default
+fix: I heard you like fixes, so I fixed the fix that was supposed to fix phase ship recognition for phase tags
+
 - 1.15.1:
 fix: Issue with duplicate tags when customizing suggested tags, which would prevent removing tags once added
 fix: Issue where target/avoid phase tags would consider ships with right-click defense systems other than phase cloak as phase ships

@@ -6,7 +6,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.15.1"
+    val modVersion = "1.16.0"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -237,14 +237,14 @@ tasks {
                    |                "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx<50%)", "Merge",
                    |                "AvoidPhased", "TargetPhase", "ShipTarget", 
                    |                "ForceAF", "ForceF(F<25%)", "ForceF(F<50%)", "ForceF(F<75%)",
-                   |                "PrioritisePD", "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded",
+                   |                "PrioritisePD", "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded", "PrioHealthy",
                    |                "Fighter", "AvdShieldsFT", "TgtShieldsFT", "AvoidDebris",
                    |                "NoMissiles", "NoFighters",
                    |                "Opportunist", "Panic(H<25%)", "Range<60%",
                    |                "ConserveAmmo", "CnsrvPDAmmo",
                    |                "BigShips", "SmallShips",
                    |                "AvdShields+", "TgtShields+",
-                   |                "Overloaded"
+                   |                "Overloaded", "LowRoF(200%)"
                    |                ]  
                    |   
                    |   ,"classicTagList" : [
