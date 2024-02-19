@@ -25,6 +25,7 @@ val avoidArmorRegex = Regex("AvdArmor\\((\\d+)%\\)")
 val panicFireRegex = Regex("Panic\\(H<(\\d+)%\\)")
 val rangeRegex = Regex("Range<(\\d+)%")
 val forceFireRegex = Regex("ForceF\\(Fl?u?x?<(\\d+)%\\)")
+val rofRegex = Regex("LowRoF\\((\\d+)%\\)")
 
 //val prioPdRegex = Regex("PrioP[dD]\\((\\d+)\\)")
 //val prioFightersRegex = Regex("PrioFighter\\((\\d+)\\)")
@@ -137,6 +138,7 @@ val tagTooltips = mapOf(
     "PrioMissile" to "Prioritize missiles over all other targets but target other things if no missiles present.$priorityBoilerplateText",
     "PrioShips" to "Prioritize non-fighter ships over all other targets but target other things if no ships present.$priorityBoilerplateText",
     "PrioWounded" to "Prioritize targets that have already taken lots of hull damage.",
+    "PrioHealthy" to "Prioritize targets that have high hull level",
     "BlockBeams" to "Will shoot at enemies that are shooting this ship with beams, even when out of range. Intended mainly for the SVC Ink Spitter gun."
 )
 
@@ -189,6 +191,12 @@ fun getTagTooltip(tag: String): String {
         }." +
                 "\nNote: This will not circumvent targeting restrictions, only firing restrictions."
 
+        rofRegex.matches(tag) -> "Reduces the rate of fire of the weapon by a factor of ${
+            extractRegexThresholdAsPercentageString(
+                forceFireRegex, tag
+            )
+        }. E.g. LowRoF(200%) makes the weapon shot half as often."
+
         else -> "No description available."
     }
 }
@@ -202,6 +210,7 @@ fun createTag(name: String, weapon: WeaponAPI): WeaponAITagBase? {
         panicFireRegex.matches(name) -> return PanicFireTag(weapon, extractRegexThreshold(panicFireRegex, name))
         rangeRegex.matches(name) -> return RangeTag(weapon, extractRegexThreshold(rangeRegex, name))
         forceFireRegex.matches(name) -> return ForceFireTag(weapon, extractRegexThreshold(forceFireRegex, name))
+        rofRegex.matches(name) -> return ReduceRoFTag(weapon, extractRegexThreshold(rofRegex, name))
     }
     return when (name) {
         "PD" -> PDTag(weapon)
@@ -233,6 +242,7 @@ fun createTag(name: String, weapon: WeaponAPI): WeaponAITagBase? {
         "PrioMissile" -> PrioritizeMissilesTag(weapon, Settings.prioXModifier())
         "PrioShips" -> PrioritizeShipsTag(weapon, Settings.prioXModifier())
         "PrioWounded" -> PrioritizeWoundedTag(weapon)
+        "PrioHealthy" -> PrioritizeHealthyTag(weapon)
         "BlockBeams" -> InterdictBeamsTag(weapon)
         else -> {
             unknownTagWarnCounter++
@@ -349,7 +359,9 @@ val tagIncompatibility = mapOf(
     "BigShips" to listOf("SmallShips", "PD", "Fighter", "PD(Flx>N%)", "PrioritisePD"),
     "NoMissiles" to listOf("Opportunist"),
     "TargetPhase" to listOf("AvoidPhased"),
-    "AvoidPhased" to listOf("TargetPhase")
+    "AvoidPhased" to listOf("TargetPhase"),
+    "PrioHealthy" to listOf("PrioWounded"),
+    "PrioWounded" to listOf("PrioHealthy")
 )
 
 fun isIncompatibleWithExistingTags(tag: String, existingTags: List<String>): Boolean {
