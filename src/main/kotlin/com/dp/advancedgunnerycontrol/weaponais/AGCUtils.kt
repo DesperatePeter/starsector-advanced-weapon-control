@@ -4,6 +4,7 @@ package com.dp.advancedgunnerycontrol.weaponais
 
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.combat.*
+import com.fs.starfarer.api.impl.campaign.ids.HullMods
 import com.fs.starfarer.api.impl.campaign.ids.Tags
 import org.lazywizard.lazylib.CollisionUtils
 import org.lazywizard.lazylib.MathUtils
@@ -81,6 +82,7 @@ fun bigness(ship: ShipAPI): Float {
 }
 
 fun isHostile(entity: CombatEntityAPI): Boolean {
+    if((entity as? ShipAPI)?.variant?.hasHullMod(HullMods.VASTBULK) == true) return false
     return entity.owner == 1
 }
 

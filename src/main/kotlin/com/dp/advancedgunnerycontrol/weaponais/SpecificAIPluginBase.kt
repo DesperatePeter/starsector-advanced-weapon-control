@@ -7,6 +7,7 @@ package com.dp.advancedgunnerycontrol.weaponais
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.combat.*
+import com.fs.starfarer.api.impl.campaign.ids.HullMods
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
@@ -269,16 +270,22 @@ abstract class SpecificAIPluginBase(
      * @return low (>=0) number for high priority targets, high number for low priority targets
      */
     protected fun computeBasePriority(solution: FiringSolution): Float {
+
+        val shipModifier = (solution.target as? ShipAPI)?.let { ship ->
+            1.0f *
+                    (if(ship == weapon.ship.shipTarget) 0.05f else 1.0f) * // heavily incentivize targeting the ship target
+                    (if(ship.isFighter) 1f else 0.8f) * // prioritize regular ships over other stuff
+                    (if(ship.variant?.hasHullMod("do_not_fire_through") == true) 100f else 1f)
+        } ?: 1f
+
         return solution.aimPoint.let {
             angularDistanceFromWeapon(it, weapon) + Values.distToAngularDistEvaluationFactor * linearDistanceFromWeapon(
                 it,
                 weapon
             ) + 1.5f
-        }.let {
-            if (lastTargetEntity == solution.target) it * 0.5f else it // incentivize sticking to one target
-        } *
-                (if (solution.target as? ShipAPI == weapon.ship.shipTarget) 0.05f else 1.0f) * // heavily incentivize targeting the ship target
-                (if ((solution.target as? ShipAPI)?.isFighter == false) 1.0f else 1.2f) // prioritize regular ships over other stuff
+        } * (if (lastTargetEntity == solution.target) 0.5f else 1f) * // incentivize sticking to one target
+         shipModifier
+
     }
 
     override fun shouldFire(): Boolean {
