@@ -49,14 +49,16 @@ class StayFarAI(ship: ShipAPI) : ShipCommandGenerator(ship) {
 
     override fun generateCommands(): List<ShipCommandWrapper> {
         intervalTracker.advance(1f)
-        commandsToBlock = emptyList()
         if(intervalTracker.intervalElapsed() || point == null){
             point = findSafePoint(ship)
             val enemies = CombatUtils.getShipsWithinRange(ship.location, 3000f).filter { it.owner == 1 }
             currentDanger = evaluateDangerAtPoint(ship.location, enemies)
             shouldGoBackwards = (currentDanger > goBackwardsDanger) && isBackwardsSafer(enemies)
         }
-        if(isSafe) return emptyList()
+        if(isSafe){
+            commandsToBlock = emptyList()
+            return emptyList()
+        }
         val commands = point?.let { p ->
             if(shouldGoBackwards){
                 navigator.generateCommandsToMoveToPointBackwards(p)
