@@ -204,7 +204,7 @@ fun saveTagsInShip(ship: ShipAPI, groupIndex: Int, tags: List<String>, storageIn
 fun loadPersistentTags(universalShipId: String, ship: FleetMemberAPI, groupIndex: Int, loadoutIndex: Int): List<String> {
     if(universalShipId == "") return emptyList()
     return when(Settings.tagStorageMode){
-        TagStorageModes.INDEX -> loadPersistentTagsByIndex(ship.id, groupIndex, loadoutIndex)
+        TagStorageModes.INDEX -> loadPersistentTagsByIndex(universalShipId, groupIndex, loadoutIndex)
         TagStorageModes.WEAPON_COMPOSITION -> loadPersistentTagsByWeaponComposition(ship, universalShipId, groupIndex, loadoutIndex)
         TagStorageModes.WEAPON_COMPOSITION_GLOBAL -> loadPersistentTagsByWeaponCompositionGlobal(ship, universalShipId, groupIndex, loadoutIndex)
     }

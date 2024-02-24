@@ -27,7 +27,7 @@ data class FiringSolution(
 )
 
 fun ShipAPI.hasPhaseCloak(): Boolean{
-    return hullSpec.isPhase
+    return hullSpec.isPhase && phaseCloak != null
 }
 
 fun isPD(weapon: WeaponAPI): Boolean {

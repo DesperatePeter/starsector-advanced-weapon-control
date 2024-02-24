@@ -1,5 +1,9 @@
 === For Starsector 0.97a ===
 
+- 1.16.1:
+fix: Issue where index-based tag storage wasn't working for fighters anymore
+fix: Issue that caused a CTD when using avoid phase tag against MSV ships with non-right-click phase cloak
+
 - 1.16.0:
 change: Changed default tag list to classic rather than novice in LunaSettings
 feat: Improve target prioritization for the custom AI against stations

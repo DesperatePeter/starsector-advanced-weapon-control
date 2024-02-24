@@ -27,8 +27,8 @@ class AvoidPhaseTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
     private fun mayBePhasedWhenShotConnects(solution: FiringSolution): Boolean {
         if (solution.target !is ShipAPI) return false
         if (!solution.target.hasPhaseCloak()) return false
-        val phase = solution.target.phaseCloak
-        val flux = solution.target.fluxTracker
+        val phase = solution.target.phaseCloak ?: return false
+        val flux = solution.target.fluxTracker ?: return false
         val ttt = computeTimeToTravel(weapon, solution.aimPoint)
         return if (phase.isActive) {
             val canMaintainPhase = ((flux.currFlux + ttt * phase.fluxPerSecond) < flux.maxFlux)
