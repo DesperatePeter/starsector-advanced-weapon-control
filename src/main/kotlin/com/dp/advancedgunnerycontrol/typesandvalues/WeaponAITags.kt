@@ -139,7 +139,8 @@ val tagTooltips = mapOf(
     "PrioShips" to "Prioritize non-fighter ships over all other targets but target other things if no ships present.$priorityBoilerplateText",
     "PrioWounded" to "Prioritize targets that have already taken lots of hull damage.",
     "PrioHealthy" to "Prioritize targets that have high hull level",
-    "BlockBeams" to "Will shoot at enemies that are shooting this ship with beams, even when out of range. Intended mainly for the SVC Ink Spitter gun."
+    "BlockBeams" to "Will shoot at enemies that are shooting this ship with beams, even when out of range. Intended mainly for the SVC Ink Spitter gun.",
+    "CustomAI" to "This tag does nothing but prevent the vanilla AI from doing anything. I use this for devastators to prevent vanilla jank."
 )
 
 fun getTagTooltip(tag: String): String {
@@ -244,6 +245,7 @@ fun createTag(name: String, weapon: WeaponAPI): WeaponAITagBase? {
         "PrioWounded" -> PrioritizeWoundedTag(weapon)
         "PrioHealthy" -> PrioritizeHealthyTag(weapon)
         "BlockBeams" -> InterdictBeamsTag(weapon)
+        "CustomAI" -> CustomAITag(weapon)
         else -> {
             unknownTagWarnCounter++
             when {

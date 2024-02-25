@@ -22,9 +22,9 @@ agc_forceCustomAI,forceCustomAI,Boolean,false,,"Enabling this will always use th
 
 This improves performance and is very useful for testing, but might produce the occasional odd firing solution.",,,AI
 agc_customAIRecursionLevel,customAIRecursionLevel,Int,1,,"Higher values very slightly increase accuracy but make performance worse",1,3,AI
-agc_customAITriggerHappiness,customAITriggerHappiness,Double,1.2,,"Higher values will make the custom AI shoot more often, even when shots are likely to miss",0.1,3.0,AI
+agc_customAITriggerHappiness,customAITriggerHappiness,Double,1.1,,"Higher values will make the custom AI shoot more often, even when shots are likely to miss",0.1,3.0,AI
 agc_customAIAlwaysUsesBestTargetLeading,customAIAlwaysUsesBestTargetLeading,Boolean,false,,"custom AI will disregard the target leading mechanic. This is kind of cheating :P",,,AI
-agc_customAIFriendlyFireCaution,customAIFriendlyFireCaution,Double,1.0,,"Higher values make the custom AI more cautious of firing when shots might hit an ally",0.1,3.0,AI
+agc_customAIFriendlyFireCaution,customAIFriendlyFireCaution,Double,1.1,,"Higher values make the custom AI more cautious of firing when shots might hit an ally.",0.1,3.0,AI
 agc_useExactBoundsForFiringDecision,useExactBoundsForFiringDecision,Boolean,true,,"If set to false, ships will be approximated as circles. This might lead to questionable firing decisions with very precise weapons (e.g. beams) against decidedly non-circular ships.
 
 On the other hand, using exact bounds will use significantly more performance and is still experimental.",,,AI

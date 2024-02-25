@@ -240,11 +240,11 @@ tasks {
                    |                "PrioritisePD", "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded", "PrioHealthy",
                    |                "Fighter", "AvdShieldsFT", "TgtShieldsFT", "AvoidDebris",
                    |                "NoMissiles", "NoFighters",
-                   |                "Opportunist", "Panic(H<25%)", "Range<60%",
+                   |                "Opportunist", "Panic(H<25%)", "Range<60%", "Range<80%",
                    |                "ConserveAmmo", "CnsrvPDAmmo",
                    |                "BigShips", "SmallShips",
                    |                "AvdShields+", "TgtShields+",
-                   |                "Overloaded", "LowRoF(200%)"
+                   |                "Overloaded", "LowRoF(200%)", "CustomAI"
                    |                ]  
                    |   
                    |   ,"classicTagList" : [

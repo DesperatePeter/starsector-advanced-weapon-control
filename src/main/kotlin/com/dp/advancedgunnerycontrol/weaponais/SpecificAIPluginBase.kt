@@ -225,19 +225,44 @@ abstract class SpecificAIPluginBase(
     protected fun friendliesInDangerZone(friendlies: List<FiringSolution>, aimPoint: Vector2f? = null):
             List<FiringSolution> {
 
-        return friendlies.filter {
+        val ap = aimPoint ?: (vectorFromAngleDeg(weapon.currAngle) + weapon.location)
+
+        fun filterPred(firingSol: FiringSolution): Boolean{
+            val colRad = effectiveCollRadius(firingSol.target) * Settings.customAIFriendlyFireCaution()
             val isCloserThanTgt = solution?.aimPoint?.let { tp ->
                 linearDistanceFromWeapon(
-                    it.aimPoint,
+                    firingSol.aimPoint,
                     weapon
                 ) < linearDistanceFromWeapon(tp, weapon)
             } ?: true
-            determineIfShotWillHit(
-                it.aimPoint,
-                effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution(),
-                weapon,
-                aimPoint
-            ) && isCloserThanTgt
+
+            val spread = weapon.getMaxSpreadForNextBurst()
+
+            if(spread < 5f){
+                return determineIfShotWillHit(
+                    firingSol.aimPoint,
+                    colRad,
+                    weapon,
+                    aimPoint
+                ) && isCloserThanTgt
+            }else{
+                val enemyPos = solution?.aimPoint ?: return false
+                val enemyColRad = effectiveCollRadius(firingSol.target)
+                if(isCloserThanTgt){
+                    val friendlyExposure = computeWeaponConeExposureRad(weapon.location, ap, spread, firingSol.aimPoint, colRad + 100f)
+                    val enemyExposure = computeWeaponConeExposureRadWithEclipsingEntity(weapon.location, ap, spread, enemyPos, enemyColRad, firingSol.aimPoint, colRad)
+                    return enemyExposure * 0.05f < friendlyExposure * Settings.customAIFriendlyFireCaution()
+                }else{
+                    val friendlyExposure = computeWeaponConeExposureRadWithEclipsingEntity(weapon.location, ap, spread, firingSol.aimPoint, colRad + 30f, enemyPos, enemyColRad)
+                    val enemyExposure = computeWeaponConeExposureRad(weapon.location, ap, spread, enemyPos, enemyColRad)
+                    return enemyExposure * 0.1f < friendlyExposure * Settings.customAIFriendlyFireCaution()
+                }
+            }
+        }
+
+
+        return friendlies.filter { firingSol ->
+            filterPred(firingSol)
         }
     }
 

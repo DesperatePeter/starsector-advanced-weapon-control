@@ -5,12 +5,12 @@ package com.dp.advancedgunnerycontrol.weaponais
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.combat.*
 import com.fs.starfarer.api.impl.campaign.ids.HullMods
-import com.fs.starfarer.api.impl.campaign.ids.Tags
 import org.lazywizard.lazylib.CollisionUtils
 import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
+import org.magiclib.kotlin.getPerp
 import java.util.*
 import kotlin.math.*
 
@@ -28,6 +28,146 @@ data class FiringSolution(
 
 fun ShipAPI.hasPhaseCloak(): Boolean{
     return hullSpec.isPhase && phaseCloak != null
+}
+
+fun WeaponAPI.getMaxSpreadForNextBurst(): Float{
+    spec ?: return currSpread
+    if(spec.burstSize <= 1) return currSpread
+    val mrm = ship.mutableStats?.maxRecoilMult?.mult ?: 1f
+    val rbm = ship.mutableStats?.recoilPerShotMult?.mult ?: 1f
+    return min(spec.maxSpread * mrm, currSpread + (spec.burstSize - 1).toFloat() * spec.spreadBuildup * rbm)
+}
+
+fun Vector2f.normaliseNoThrow(): Vector2f{
+    try {
+        normalise()
+    }catch (e: IllegalStateException){
+        y = 1f
+        x = 1f
+    }
+    return this
+}
+
+/**
+ * compute angular width of given entity that lies within given cone
+ * @return an approximated angular width in rad
+ */
+fun computeWeaponConeExposureRad(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg: Float, targetLoc: Vector2f, collRadius: Float): Float{
+    // all values in this code are normalized (e.g. widths are divided by distance)
+//    val dist = (weaponLoc - targetLoc).length() + 0.1f
+//    val targetWidth = collRadius / dist
+//    val weaponFacing = aimPoint - weaponLoc
+//    weaponFacing.normaliseNoThrow()
+//    val halfSpread = spreadDeg * degToRad / 2f
+//    val lateralOffsetRad = abs(angularDistanceFromLine(targetLoc, weaponLoc, weaponFacing))
+//    val widthOutsideCone = (lateralOffsetRad + targetWidth / 2f - halfSpread).coerceIn(0f, targetWidth)
+//    return minOf(targetWidth, targetWidth - widthOutsideCone, halfSpread * 2f)
+    return PolarEntityInWeaponCone(weaponLoc, aimPoint, spreadDeg, targetLoc, collRadius).getUnobstructedLength()
+}
+
+fun computeWeaponConeExposureRadWithEclipsingEntity(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg: Float,
+                                                    entityLoc: Vector2f, collRadius: Float, eclipsingLoc: Vector2f, eclipsingRadius: Float): Float{
+    val entity = PolarEntityInWeaponCone(weaponLoc, aimPoint, spreadDeg, entityLoc, collRadius)
+    val eclipsingEntity  = PolarEntityInWeaponCone(weaponLoc, aimPoint, spreadDeg, eclipsingLoc, eclipsingRadius)
+    entity.obstructWith(eclipsingEntity)
+    return entity.getUnobstructedLength()
+}
+
+operator fun Vector2f.times(other: Vector2f): Float{
+    return x * other.x + y * other.y
+}
+
+typealias FPair = Pair<Float, Float>
+
+/**
+ * representation of an entity in polar coordinates, relative to given line
+ * this is used to represent entities in a weapon cone
+ * a coordinate of 0 means perfectly aligned with weapon facing
+ */
+class PolarEntityInWeaponCone(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg: Float, targetLoc: Vector2f, radius: Float){
+    companion object{
+
+        enum class OverlapType{COMPLETE_BLOCK, NO_OVERLAP, PARTIAL_LEFT, PARTIAL_RIGHT, CENTER, ERROR}
+
+        fun obstructionType(entity: FPair, obstruction: FPair): OverlapType{
+            return when{
+                obstruction.first > obstruction.second || entity.first > entity.second -> OverlapType.ERROR
+                // obstruction completely blocks
+                // e      |-------|
+                // o   |-------------|
+                obstruction.first <= entity.first && obstruction.second >= entity.second -> OverlapType.COMPLETE_BLOCK
+                // no overlap
+                // e |-------|
+                // o           |--------|
+                obstruction.first >= entity.second -> OverlapType.NO_OVERLAP
+                // no overlap
+                // e            |-------|
+                // o |--------|
+                obstruction.second <= entity.first -> OverlapType.NO_OVERLAP
+                // partial overlap
+                // e |-------|
+                // o      |--------|
+                entity.first <= obstruction.first && entity.second >= obstruction.first && obstruction.second >= entity.second -> OverlapType.PARTIAL_RIGHT
+                // partial overlap
+                // e     |-------|
+                // o |--------|
+                obstruction.first <= entity.first && obstruction.second >= entity.first && entity.second >= obstruction.second -> OverlapType.PARTIAL_LEFT
+                // obstruction in middle
+                // e |----------------|
+                // o    |--------|
+                else -> OverlapType.CENTER
+            }
+        }
+        fun computeExtendInCone(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg: Float, targetLoc: Vector2f, radius: Float): FPair{
+            val dist = (weaponLoc - targetLoc).length() + 0.01f
+            val targetFacing = (targetLoc - weaponLoc).times_(1f / dist)
+            val weaponFacing = (aimPoint - weaponLoc).normaliseNoThrow()
+            val width = radius / dist
+            val xDir = Vector2f(weaponFacing.y, -weaponFacing.x) // arbitrary direction orthogonal to weapon facing
+            val offset = targetFacing * xDir
+            val halfSpread = spreadDeg * degToRad / 2f
+            val left = (offset - width/2f).coerceIn(-halfSpread, halfSpread)
+            val right = (offset + width/2f).coerceIn(-halfSpread, halfSpread)
+            return Pair(left, right)
+        }
+
+        fun obstruct(entity: FPair, obstruction: FPair): List<FPair>{
+            return when(obstructionType(entity, obstruction)){
+                OverlapType.COMPLETE_BLOCK-> emptyList()
+                OverlapType.NO_OVERLAP -> listOf(entity)
+                OverlapType.PARTIAL_RIGHT -> listOf(FPair(entity.first, obstruction.first))
+                OverlapType.PARTIAL_LEFT -> listOf(FPair(obstruction.second, entity.second))
+                OverlapType.CENTER -> listOf(
+                    FPair(entity.first, obstruction.first),
+                    FPair(obstruction.second, entity.second)
+                )
+                OverlapType.ERROR -> {
+                    // Global.getLogger(this::class.java).error("Invalid Overlap type")
+                    // throw IllegalStateException("Polar Entity with invalid edges")
+                    emptyList()
+                }
+            }
+        }
+    }
+
+    // starting and ending point in polar coordinates that is within cone
+
+    private val fullExtent = computeExtendInCone(weaponLoc, aimPoint, spreadDeg, targetLoc, radius)
+    private var extent = listOf(fullExtent)
+
+    fun obstructWith(obstruction: PolarEntityInWeaponCone){
+        val newExtent = mutableListOf<FPair>()
+        extent.forEach {
+            newExtent.addAll(obstruct(it, obstruction.fullExtent))
+        }
+        extent = newExtent
+    }
+
+    fun getUnobstructedLength(): Float{
+        val toReturn = extent.map { it.second - it.first }.sum()
+        return toReturn
+    }
+
 }
 
 fun isPD(weapon: WeaponAPI): Boolean {
@@ -336,9 +476,17 @@ fun WeaponAPI.sizeAsFloat(): Float{
  */
 fun angularDistanceFromWeapon(entity: Vector2f, weapon: WeaponAPI): Float {
     val weaponDirection = vectorFromAngleDeg(weapon.currAngle)
-    val distance = entity - weapon.location
-    val entityDirection = distance times_ (1f / distance.length())
-    return (weaponDirection - entityDirection).length()
+    return angularDistanceFromLine(entity, weapon.location, weaponDirection)
+}
+
+/**
+ * @return approximate angular distance of target from given line in rad
+ * note: approximation works well for small values and is off by a factor of PI/2 for 180°
+ * @param lineDirection: normalized direction vector (use vectorFromAngleDeg)
+ */
+fun angularDistanceFromLine(entity: Vector2f, lineOrigin: Vector2f, lineDirection: Vector2f): Float{
+    val entityDirection = (entity - lineOrigin).normaliseNoThrow()
+    return (entityDirection - lineDirection).length()
 }
 
 fun linearDistanceFromWeapon(entity: Vector2f, weapon: WeaponAPI): Float {
