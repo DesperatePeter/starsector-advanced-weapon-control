@@ -6,12 +6,12 @@
  {
    #                                 #### TAG LIST ####
    # Determines which tags will be shown in the GUIs. Feel free to add/remove tags as you see fit.
-   # Allowed values are: (replace N with a number between 0 and 100)
+   # Allowed values are: (replace N with a number, usually between 0 and 100)
    # "PD", "NoPD", "NoMissiles", "PD(Flux>N%)", "PrioritisePD", "Fighter", "NoFighters", "AvoidShields", "TargetShields",
    # "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "AvdArmor(N%)", "AvoidDebris", "ShieldsOff",
    # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "CnsrvPDAmmo", "ShipTarget", "AvoidPhased", "TargetPhase",
    # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded", "Merge",
-   # "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded"
+   # "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded", "CustomAI", "LowRoF(N%)"
    
    # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
    
