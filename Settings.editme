@@ -173,7 +173,7 @@
    #     - 0 : No friendly fire computation, weapons won't care about hitting allies
    #     - 1 : Weapons won't consider friendly fire for target selection, only for deciding whether to fire or not
    #     - 2 : Weapon will only select targets that don't risk friendly fire (potentially high performance cost)
-   ,"customAIFriendlyFireAlgorithmComplexity" : 2 # <---- EDIT HERE (maybe) ----
+   ,"customAIFriendlyFireAlgorithmComplexity" : 1 # <---- EDIT HERE (maybe) ----
    
    # Essentially the same as triggerHappiness, but used to prevent firing if ally would be hit
    # 1.0 should be enough to not hit allies if they don't change their course, but it's nice to have a little buffer

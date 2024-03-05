@@ -2,6 +2,9 @@
 
 - 1.17.0:
 feat: improve friendly fire logic for burst weapons with recoil (such as e.g. the Devastator Cannon)
+note: this feature will likely need further refining in the future, but should be mostly functional
+fix: campaign GUI options reset/copyLoadout/copyVariant should now work for all tag storage mode
+fix: NPE when using automatic suggested tags on ship without weapons
 
 - 1.16.1:
 fix: Issue where index-based tag storage wasn't working for fighters anymore

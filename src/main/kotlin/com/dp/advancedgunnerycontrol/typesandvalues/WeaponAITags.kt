@@ -384,7 +384,7 @@ fun applySuggestedModes(ship: FleetMemberAPI, storageIndex: Int, allowOverriding
 
     groups.forEachIndexed { index, group ->
         if(allowOverriding || loadPersistentTags(id, ship, index, storageIndex).isEmpty()){
-            val weaponID = group.slots.first()?.let { ship.variant.getWeaponId(it) } ?: ""
+            val weaponID = group.slots?.firstOrNull()?.let { ship.variant.getWeaponId(it) } ?: ""
             persistTags(id, ship, index, storageIndex, getSuggestedModesForWeaponId(weaponID))
         }
     }

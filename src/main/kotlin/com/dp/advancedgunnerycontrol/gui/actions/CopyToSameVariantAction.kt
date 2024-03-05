@@ -3,6 +3,9 @@ package com.dp.advancedgunnerycontrol.gui.actions
 import com.dp.advancedgunnerycontrol.gui.GUIAttributes
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
+import com.dp.advancedgunnerycontrol.utils.loadPersistentTags
+import com.dp.advancedgunnerycontrol.utils.loadTags
+import com.dp.advancedgunnerycontrol.utils.persistTags
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 
@@ -20,7 +23,8 @@ class CopyToSameVariantAction(attributes: GUIAttributes) : GUIAction(attributes)
                 "hull and variant name with the modes set for the current ship.\n" +
                 "This is useful if you used auto-fit to set up multiple identical ships." +
                 "\n$loadoutBoilerplateText" +
-                "\nHold $wholeFleetKey to instead copy to all ships of the same hull type."
+                "\nHold $wholeFleetKey to instead copy to all ships of the same hull type." +
+                "\nOnly copies ship modes if tag storage mode is WeaponCompositionGlobal."
     }
 
     override fun getName(): String = "Copy to other ships of same variant" + nameSuffix(wholeFleet = false) + if(isWholeFleetKeyHeld()) " (same hull type)" else ""
@@ -41,8 +45,9 @@ class CopyToSameVariantAction(attributes: GUIAttributes) : GUIAction(attributes)
         ShipModeStorage[storageIndex].modesByShip[from.id]?.let { v ->
             ShipModeStorage[storageIndex].modesByShip[to.id] = v.toMutableMap()
         }
-        Settings.tagStorage[storageIndex].modesByShip[from.id]?.let { v ->
-            Settings.tagStorage[storageIndex].modesByShip[to.id] = v.toMutableMap()
+        for(i in 0 until (from.variant?.weaponGroups?.size ?: 0)){
+            val originalTags = loadPersistentTags(from.id, from, i, storageIndex).toMutableList().toList()
+            persistTags(to.id, to, i, storageIndex, originalTags)
         }
     }
 }
