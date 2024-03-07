@@ -11,7 +11,7 @@
    # "AvdShields+", "TgtShields+", "AvdShieldsFT", "TgtShieldsFT", "AvdArmor(N%)", "AvoidDebris", "ShieldsOff",
    # "Opportunist", "Hold(Flux>N%)", "ConserveAmmo", "CnsrvPDAmmo", "ShipTarget", "AvoidPhased", "TargetPhase",
    # "BigShips", "SmallShips", "Panic(H<N%)", "AvoidPhased", "Range<N%", "ForceF(Flux<N%)", "Overloaded", "Merge",
-   # "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded", "CustomAI", "LowRoF(N%)"
+   # "PrioFighter", "PrioMissile", "PrioShips", "PrioWounded", "PrioHealthy", "CustomAI", "LowRoF(N%)"
    
    # Note: The word Flux in parentheses may be abbreviated by skipping any of the non-capitalized letters, e.g.: F, Fx, Flx
    

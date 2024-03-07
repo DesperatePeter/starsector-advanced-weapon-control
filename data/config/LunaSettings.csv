@@ -70,3 +70,31 @@ agc_miscHeader,Misc Header,Header,Misc,,,,,Misc
 agc_allowHotLoadingTags,allowHotLoadingTags,Boolean,true,,"If set to true, if a weapon group has an active tag that is not part of the current tag list, it will be temporarily added.",,,Misc
 agc_automaticallyReapplyPlayerShipModes,automaticallyReapplyPlayerShipModes,Boolean,true,,"Will periodically reapply ship modes to the player ship to. If set to false, autopilot will ignore ship modes.",,,Misc
 agc_allowEnemyShipModeApplication,allowEnemyShipModeApplication,Boolean,true,,"Allow other mods to apply ship modes to enemy ships",,,Misc
+,,,,,,,,
+,,,,,,,,
+agc_valueCustomizationHeader,Value Customization Header,Header,Value Customization,,,,,Advanced
+agc_ventHeader,Vent Header,Header,Vent Ship Modes,,,,,Advanced
+agc_vent_flux,Vent Flux Threshold,Double,0.75,,"Flux level to vent at for ship mode Vent(Flux>75%)",0.0,1.0,Advanced
+agc_vent_safetyFactor,Vent Safety Factor,Double,2.0,,"vent only if ship thinks it will survive venting X times for Vent(Flux>75%)",0.0,10.0,Advanced
+agc_aggressiveVent_flux,Vent Aggressive Flux Threshold,Double,0.25,,"Flux level to vent at for ship mode VentA(Flux>25%)",0.0,1.0,Advanced
+agc_aggressiveVent_safetyFactor,Vent Aggressive Safety Factor,Double,0.25,,"vent only if ship thinks it will survive venting X times for VentA(Flux>25%)",0.0,10.0,Advanced
+agc_shieldHeader,Shield Header,Header,Shield Factor,,,,,Advanced
+agc_shieldText,ShieldText,Text,"Shield thresholds: When not flanking shields and shields are on, the shield factor is simply equal to (1 - fluxLevel) of the target. When flanking shields, shield factor == 0.
+
+When shields are off but the enemy ship could raise them in time, the shield factor is equal to (1 - fluxLevel)*0.75
+
+When omni-shields are off, it's considered as half-flanking (subject to change)
+
+For frontal shields, unfold time and projectile travel time are considered to determine flanking
+
+For modes that want to hit shields, reducing the threshold makes them more likely to fire. For modes that want to avoid shields, the opposite is true",,"",,,Advanced
+agc_targetShields_threshold,Target Shields Threshold,Double,0.1,,"Attack if target flux < 90% (simplified, see above)",0.0,1.0,Advanced
+agc_avoidShields_threshold,Target Shields Threshold,Double,0.2,,"Attack if target flux > 80% (simplified, see above)",0.0,1.0,Advanced
+agc_opportunist_kineticThreshold,Opportunist Kinetic threshold,Double,0.5,,"Attack if target flux < 50% for opportunist tag with kinetic weapons (simplified, see above)",0.0,1.0,Advanced
+agc_opportunist_HEThreshold,Opportunist HE threshold,Double,0.2,,"Attack if target flux > 50% for opportunist tag with HE weapons (simplified, see above)",0.0,1.0,Advanced
+agc_ignoreFighterShields,Ignore Fighter Shields,Boolean,true,,"Target/avoid shield tags allow targetting of fighters, regardless of their shield factor",,,Advanced
+agc_EtcHeader,Etc Header,Header,ETC,,,,,Advanced
+agc_strictBigSmallShipMode,Strict Big/Small Ship,Boolean,false,,"If true, the BigShips/SmallShips tags will exclusively target Destroyers and bigger/smaller",,,Advanced
+agc_settingsDisclaimer,settingsDisclaimer,Text,"There are more settings available in the Settings.editme file. However, porting all of them to LunaSettings would be fairly tedious.
+
+If there are settings in Settings.editme that you feel would be worth porting here, please let me know and I will add them here in the next update!",,"",,,Advanced
