@@ -7,7 +7,6 @@ package com.dp.advancedgunnerycontrol.weaponais
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.combat.*
-import com.fs.starfarer.api.impl.campaign.ids.HullMods
 import org.lazywizard.lazylib.combat.CombatUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
@@ -100,27 +99,37 @@ abstract class SpecificAIPluginBase(
         ).filter { isInRange(it.aimPoint, effectiveCollRadius(it.target)) } +
                 calculateFiringSolutions(getRelevenEntitiesOutOfRange().filter { isHostile(it) })
 
-        // TODO: It would be faster to get friendlies and foes in one go
+
+        val allies = getFriendlies()
+//        // TODO: It would be faster to get friendlies and foes in one go
         if (Settings.customAIFriendlyFireComplexity() >= 2) {
             // this is a deceptively expensive call (therefore locked behind opt-in setting)
-            potentialTargets = potentialTargets.filter { !isFriendlyFire(getFriendlies(), it.aimPoint) }
+            potentialTargets = potentialTargets.filter { !isFriendlyFire(potentialTargets, allies, it.aimPoint) }
         }
+
+
 
         solution = potentialTargets.minByOrNull { computeTargetPriority(it) }
 
-        computeIfShouldFire(potentialTargets).let {
+        computeIfShouldFire(potentialTargets, allies).let {
             weaponShouldFire = it
         }
     }
 
     protected open fun getFriendlies(): List<FiringSolution> {
-        return calculateFiringSolutions(
-            CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter { it != weapon.ship }.filter {
-                (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) && !it.isFighter
-            }).filter {
-            isInRange(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution())
-                    && isWithinArc(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution())
+//        return calculateFiringSolutions(
+//            CombatUtils.getShipsWithinRange(weapon.location, weapon.range).filter { it != weapon.ship }.filter {
+//                (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) && !it.isFighter
+//            }).filter {
+//            isInRange(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution())
+//                    && isWithinArc(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution())
+//        }
+
+        val allies = CombatUtils.getShipsWithinRange(weapon.location, weapon.range + 500f).filter { it != weapon.ship }.filter {
+            (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) && !it.isFighter
         }
+
+        return calculateFiringSolutions(allies).filter { isInRange(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution()) }
     }
 
     protected fun determineTargetLeadingAccuracy(currentTarget: CombatEntityAPI?, lastTarget: CombatEntityAPI?) {
@@ -215,11 +224,40 @@ abstract class SpecificAIPluginBase(
     protected open fun shouldConsiderNeutralsAsFriendlies(): Boolean = true
 
     // if aimPoint == null, the current weapon facing will be used
-    protected fun isFriendlyFire(friendlies: List<FiringSolution>, aimPoint: Vector2f? = null): Boolean = when {
+    protected fun isFriendlyFire(friendlies: List<FiringSolution>, targets: List<FiringSolution>, aimPoint: Vector2f? = null): Boolean = when {
         weapon.spec.weaponId == "guardian" -> false // Paladin PD can shoot over friendlies
         !isAimable(weapon) -> false                 // Guided missiles can shoot over friendlies
-        friendliesInDangerZone(friendlies, aimPoint).isEmpty() -> false
-        else -> true
+        else -> isFriendlyFireDetail(friendlies, targets, aimPoint)
+    }
+
+    protected fun isFriendlyFireDetail(friendlies: List<FiringSolution>, targets: List<FiringSolution>, aimPoint: Vector2f? = null): Boolean{
+        val ap = aimPoint ?: (vectorFromAngleDeg(weapon.currAngle) + weapon.location)
+        val spread = weapon.getMaxSpreadForNextBurst()
+        if(spread < Settings.useConeFFForSpreadOver()){
+            return friendlies.any {firingSol ->
+                val colRad = effectiveCollRadius(firingSol.target) * Settings.customAIFriendlyFireCaution()
+                val isCloserThanTgt = solution?.aimPoint?.let { tp ->
+                    linearDistanceFromWeapon(
+                        firingSol.aimPoint,
+                        weapon
+                    ) < linearDistanceFromWeapon(tp, weapon)
+                } ?: true
+                determineIfShotWillHit(
+                    firingSol.aimPoint,
+                    colRad,
+                    weapon,
+                    aimPoint
+                ) && isCloserThanTgt
+            }
+        } else {
+            val friendlyTargets = friendlies.map {
+                PositionWithRadius(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution() + 50f)
+            }
+            val enemyTargets = targets.map { PositionWithRadius(it.aimPoint, effectiveCollRadius(it.target) + 10f) }
+            val friendlyExposure = computeWeaponConeExposureForAllies(weapon.location, ap, spread, friendlyTargets, enemyTargets)
+            val enemyExposure = computeWeaponConeExposureForAllies(weapon.location, ap, spread, enemyTargets, friendlyTargets)
+            return friendlyExposure * Settings.customAIFriendlyFireCaution() > enemyExposure * 0.05f
+        }
     }
 
     protected fun friendliesInDangerZone(friendlies: List<FiringSolution>, aimPoint: Vector2f? = null):
@@ -238,26 +276,27 @@ abstract class SpecificAIPluginBase(
 
             val spread = weapon.getMaxSpreadForNextBurst()
 
-            if(spread < 5f){
+            //if(spread < 5f){
                 return determineIfShotWillHit(
                     firingSol.aimPoint,
                     colRad,
                     weapon,
                     aimPoint
                 ) && isCloserThanTgt
-            }else{
-                val enemyPos = solution?.aimPoint ?: return false
-                val enemyColRad = effectiveCollRadius(firingSol.target)
-                if(isCloserThanTgt){
-                    val friendlyExposure = computeWeaponConeExposureRad(weapon.location, ap, spread, firingSol.aimPoint, colRad + 100f)
-                    val enemyExposure = computeWeaponConeExposureRadWithEclipsingEntity(weapon.location, ap, spread, enemyPos, enemyColRad, firingSol.aimPoint, colRad)
-                    return enemyExposure * 0.05f < friendlyExposure * Settings.customAIFriendlyFireCaution()
-                }else{
-                    val friendlyExposure = computeWeaponConeExposureRadWithEclipsingEntity(weapon.location, ap, spread, firingSol.aimPoint, colRad + 30f, enemyPos, enemyColRad)
-                    val enemyExposure = computeWeaponConeExposureRad(weapon.location, ap, spread, enemyPos, enemyColRad)
-                    return enemyExposure * 0.1f < friendlyExposure * Settings.customAIFriendlyFireCaution()
-                }
-            }
+            //}
+//            else{
+//                val enemyPos = solution?.aimPoint ?: return false
+//                val enemyColRad = effectiveCollRadius(firingSol.target)
+//                if(isCloserThanTgt){
+//                    val friendlyExposure = computeWeaponConeExposureRad(weapon.location, ap, spread, firingSol.aimPoint, colRad + 100f)
+//                    val enemyExposure = computeWeaponConeExposureRadWithEclipsingEntity(weapon.location, ap, spread, enemyPos, enemyColRad, firingSol.aimPoint, colRad)
+//                    return enemyExposure * 0.05f < friendlyExposure * Settings.customAIFriendlyFireCaution()
+//                }else{
+//                    val friendlyExposure = computeWeaponConeExposureRadWithEclipsingEntity(weapon.location, ap, spread, firingSol.aimPoint, colRad + 30f, enemyPos, enemyColRad)
+//                    val enemyExposure = computeWeaponConeExposureRad(weapon.location, ap, spread, enemyPos, enemyColRad)
+//                    return enemyExposure * 0.1f < friendlyExposure * Settings.customAIFriendlyFireCaution()
+//                }
+//            }
         }
 
 
@@ -266,13 +305,13 @@ abstract class SpecificAIPluginBase(
         }
     }
 
-    protected open fun computeIfShouldFire(potentialTargets: List<FiringSolution>): Boolean {
+    protected open fun computeIfShouldFire(potentialTargets: List<FiringSolution>, friendlies: List<FiringSolution>): Boolean {
         if (!isAimable(weapon)) {
             return potentialTargets.isNotEmpty()
         }
 
         if (Settings.customAIFriendlyFireComplexity() >= 1) {
-            if (isFriendlyFire(getFriendlies())) return false
+            if (isFriendlyFire(friendlies, potentialTargets)) return false
         }
         // Note: In a sequence, all calculations are done on the first element before moving to the next
         potentialTargets.asSequence().filter { isInRange(it.aimPoint, effectiveCollRadius(it.target)) }.iterator()

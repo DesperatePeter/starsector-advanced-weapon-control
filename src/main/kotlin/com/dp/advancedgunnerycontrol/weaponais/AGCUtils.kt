@@ -10,7 +10,6 @@ import org.lazywizard.lazylib.MathUtils
 import org.lazywizard.lazylib.ext.minus
 import org.lazywizard.lazylib.ext.plus
 import org.lwjgl.util.vector.Vector2f
-import org.magiclib.kotlin.getPerp
 import java.util.*
 import kotlin.math.*
 
@@ -73,16 +72,33 @@ fun computeWeaponConeExposureRadWithEclipsingEntity(weaponLoc: Vector2f, aimPoin
     return entity.getUnobstructedLength()
 }
 
+data class PositionWithRadius(val location: Vector2f, val radius: Float)
+
+fun computeWeaponConeExposureForAllies(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg: Float,
+                                     alliedObjects: List<PositionWithRadius>, otherObjects: List<PositionWithRadius>) : Float{
+    val allies = alliedObjects.map { PolarEntityInWeaponCone(weaponLoc, aimPoint, spreadDeg, it.location, it.radius) }.filter { it.isValid() }
+    val others = otherObjects.map { PolarEntityInWeaponCone(weaponLoc, aimPoint, spreadDeg, it.location, it.radius)  }.filter { it.isValid() }
+    allies.forEach { ally ->
+        others.forEach{ other ->
+            ally.obstructWith(other)
+        }
+    }
+    return allies.map { it.getUnobstructedLength() }.sum()
+}
+
 operator fun Vector2f.times(other: Vector2f): Float{
     return x * other.x + y * other.y
 }
 
 typealias FPair = Pair<Float, Float>
 
+data class Segment(var distance: Float, var extent: FPair)
+
 /**
- * representation of an entity in polar coordinates, relative to given line
+ * representation of an entity (or entities) in polar coordinates, relative to given line
  * this is used to represent entities in a weapon cone
  * a coordinate of 0 means perfectly aligned with weapon facing
+ *
  */
 class PolarEntityInWeaponCone(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg: Float, targetLoc: Vector2f, radius: Float){
     companion object{
@@ -118,7 +134,7 @@ class PolarEntityInWeaponCone(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg
                 else -> OverlapType.CENTER
             }
         }
-        fun computeExtendInCone(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg: Float, targetLoc: Vector2f, radius: Float): FPair{
+        fun computeExtendInCone(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg: Float, targetLoc: Vector2f, radius: Float): Segment{
             val dist = (weaponLoc - targetLoc).length() + 0.01f
             val targetFacing = (targetLoc - weaponLoc).times_(1f / dist)
             val weaponFacing = (aimPoint - weaponLoc).normaliseNoThrow()
@@ -128,18 +144,19 @@ class PolarEntityInWeaponCone(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg
             val halfSpread = spreadDeg * degToRad / 2f
             val left = (offset - width/2f).coerceIn(-halfSpread, halfSpread)
             val right = (offset + width/2f).coerceIn(-halfSpread, halfSpread)
-            return Pair(left, right)
+            return Segment(dist, Pair(left, right))
         }
 
-        fun obstruct(entity: FPair, obstruction: FPair): List<FPair>{
-            return when(obstructionType(entity, obstruction)){
+        fun obstruct(entity: Segment, obstruction: Segment): List<Segment>{
+            if(obstruction.distance > entity.distance) return listOf(entity)
+            return when(obstructionType(entity.extent, obstruction.extent)){
                 OverlapType.COMPLETE_BLOCK-> emptyList()
                 OverlapType.NO_OVERLAP -> listOf(entity)
-                OverlapType.PARTIAL_RIGHT -> listOf(FPair(entity.first, obstruction.first))
-                OverlapType.PARTIAL_LEFT -> listOf(FPair(obstruction.second, entity.second))
+                OverlapType.PARTIAL_RIGHT -> listOf(Segment(entity.distance, FPair(entity.extent.first, obstruction.extent.first)))
+                OverlapType.PARTIAL_LEFT -> listOf(Segment(entity.distance, FPair(obstruction.extent.second, entity.extent.second))) // listOf(FPair(obstruction.second, entity.second))
                 OverlapType.CENTER -> listOf(
-                    FPair(entity.first, obstruction.first),
-                    FPair(obstruction.second, entity.second)
+                    Segment(entity.distance, FPair(entity.extent.first, obstruction.extent.first)),
+                    Segment(entity.distance, FPair(obstruction.extent.second, entity.extent.second))
                 )
                 OverlapType.ERROR -> {
                     // Global.getLogger(this::class.java).error("Invalid Overlap type")
@@ -150,21 +167,25 @@ class PolarEntityInWeaponCone(weaponLoc: Vector2f, aimPoint: Vector2f, spreadDeg
         }
     }
 
+    fun isValid(): Boolean{
+        return originalSegment.extent.second - originalSegment.extent.first > 0f
+    }
+
     // starting and ending point in polar coordinates that is within cone
 
-    private val fullExtent = computeExtendInCone(weaponLoc, aimPoint, spreadDeg, targetLoc, radius)
-    private var extent = listOf(fullExtent)
+    private val originalSegment = computeExtendInCone(weaponLoc, aimPoint, spreadDeg, targetLoc, radius)
+    private var segments = listOf(originalSegment)
 
     fun obstructWith(obstruction: PolarEntityInWeaponCone){
-        val newExtent = mutableListOf<FPair>()
-        extent.forEach {
-            newExtent.addAll(obstruct(it, obstruction.fullExtent))
+        val newExtent = mutableListOf<Segment>()
+        segments.forEach {
+            newExtent.addAll(obstruct(it, obstruction.originalSegment))
         }
-        extent = newExtent
+        segments = newExtent
     }
 
     fun getUnobstructedLength(): Float{
-        val toReturn = extent.map { it.second - it.first }.sum()
+        val toReturn = segments.map { it.extent.second - it.extent.first }.sum()
         return toReturn
     }
 

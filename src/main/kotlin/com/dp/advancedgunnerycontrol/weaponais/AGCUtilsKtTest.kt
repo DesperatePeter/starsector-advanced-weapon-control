@@ -28,11 +28,11 @@ class AGCUtilsKtTest {
             )),
         ).forEach{
             assertEquals(it.key, PolarEntityInWeaponCone.obstructionType(it.value.entity, it.value.obstruction))
-            val res = PolarEntityInWeaponCone.obstruct(it.value.entity, it.value.obstruction)
+            val res = PolarEntityInWeaponCone.obstruct(Segment(2f, it.value.entity), Segment(1f, it.value.obstruction))
             assertEquals(res.size, it.value.expectedList.size)
             res.forEachIndexed { index, pair ->
-                assertEquals(pair.first, it.value.expectedList[index].first)
-                assertEquals(pair.second, it.value.expectedList[index].second)
+                assertEquals(pair.extent.first, it.value.expectedList[index].first)
+                assertEquals(pair.extent.second, it.value.expectedList[index].second)
             }
         }
     }

@@ -1,10 +1,13 @@
 === For Starsector 0.97a ===
 
-- 1.17.0:
+- 1.17.0: Devastator Edition
 feat: improve friendly fire logic for burst weapons with recoil (such as e.g. the Devastator Cannon)
 note: this feature will likely need further refining in the future, but should be mostly functional
+feat: add PrioDense tag (by default only in complete tag list), which prioritizes target dense areas
 fix: campaign GUI options reset/copyLoadout/copyVariant should now work for all tag storage mode
-fix: NPE when using automatic suggested tags on ship without weapons
+fix: NPE when using automatic suggested tags on freshly acquired ship without weapons
+fix: setting tags/modes for ship modules in the refit screen should now work properly
+feat: ported additional settings to LunaSettings. If you want specific settings ported, please let me know!
 
 - 1.16.1:
 fix: Issue where index-based tag storage wasn't working for fighters anymore
@@ -24,7 +27,7 @@ fix: issue where new tag storage modes didn't work during missions
 change: Charge mode now ignores PD weapons*, i.e. ships will charge until all non-PD weapons are in range
 *unless they have one of these tags: "NoPD", "NoMissiles", "PrioShips"
 
-- 1.15.0 (pre-release):
+- 1.15.0: LunaSettings
 feat: Add LunaLib integration for settings. Everything should still work without LunaLib
 feat: Add different tag storage modes, selectable via LunaSettings or settings.editme
       Check out the Tab Tags in LunaSettings for more information!

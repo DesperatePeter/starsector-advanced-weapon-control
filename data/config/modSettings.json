@@ -41,7 +41,8 @@
       "heavyblaster" : "Hold(Flx>90%)",
       "miningblaster" : "Hold(Flx>90%)",
       "plasma" : "Hold(Flx>90%)",
-      "ionpulser" : "Hold(Flx>90%)"
+      "ionpulser" : "Hold(Flx>90%)",
+      "devastator" : "PrioDense,CustomAI,Range<80%"
     },
     "suggestedWeaponModes" : {},
     "suggestedWeaponSuffixes" : {}

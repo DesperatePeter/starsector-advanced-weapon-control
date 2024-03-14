@@ -29,6 +29,9 @@ agc_useExactBoundsForFiringDecision,useExactBoundsForFiringDecision,Boolean,true
 
 On the other hand, using exact bounds will use significantly more performance and is still experimental.",,,AI
 agc_ignoreFighterShields,ignoreFighterShields,Boolean,false,,"If true, target/avoid shield tags allow targeting of fighters, regardless of their shield factor",,,AI
+agc_useConeFFAboveSpread,useConeFFAboveSpread,Double,4.0,,"If a weapon's spread value would exceed this value when firing the next burst, friendly fire computations will use a cone and eclipsing logic instead of a line to determine if the shot is likely to cause friendly fire.
+
+For reference, a devastator cannon with no buffs has a spread of 30.0.",,,AI
 ,,,,,,,,
 ,,,,,,,,
 agc_UiHeader,UI Header,Header,UI,,,,,UI

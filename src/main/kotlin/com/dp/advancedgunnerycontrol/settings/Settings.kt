@@ -76,6 +76,7 @@ object Settings : SettingsDefinition() {
     val avoidShieldsAtFT = addSetting<Float>("avoidShieldsAtFT_flux", 0.2f, false)
     val prioXModifier = addSetting<Float>("prioXModifier", 10f, false)
     val useExactBoundsForFiringDecision = addSetting<Boolean>("useExactBoundsForFiringDecision", true)
+    val useConeFFForSpreadOver = addSetting("useConeFFAboveSpread", 4f, true)
 
     val enableWeaponHighlighting = addSetting<Boolean>("enableWeaponHighlighting", true, tryLunar = false)
     val enableTooltipsOnHover = addSetting<Boolean>("enableHoverTooltips", true, tryLunar = false)

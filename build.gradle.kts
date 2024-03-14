@@ -244,7 +244,7 @@ tasks {
                    |                "ConserveAmmo", "CnsrvPDAmmo",
                    |                "BigShips", "SmallShips",
                    |                "AvdShields+", "TgtShields+",
-                   |                "Overloaded", "LowRoF(200%)", "CustomAI"
+                   |                "Overloaded", "LowRoF(200%)", "CustomAI", "PrioDense"
                    |                ]  
                    |   
                    |   ,"classicTagList" : [
@@ -455,6 +455,10 @@ tasks {
                    |   # The PrioFighters/Missiles/Ships/PD tags will multiply the priority of the target type by this value.
                    |   # For reference: ShipTarget modifies priority by a factor of 1000, most other things by 2~1000
                    |   ,"prioXModifier" : 10000.0   
+                   |   
+                   |   # If a weapon's spread value would exceeds this value when firing the next burst, friendly fire computations will use a cone
+                   |   # and eclipsing logic instead of a line to determine if the shot is likely to cause friendly fire.
+                   |   ,"useConeFFAboveSpread" : 4.0
                    |   
                    | }
 
