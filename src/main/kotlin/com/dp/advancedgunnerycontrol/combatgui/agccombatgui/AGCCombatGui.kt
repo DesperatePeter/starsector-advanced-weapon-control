@@ -16,6 +16,7 @@ import kotlin.math.max
 import kotlin.reflect.KProperty
 
 class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean = false) : MagicCombatGuiBase(AGCGridLayout) {
+
     override fun getTitleString(): String {
         return "${ship.name}, ${ship.fleetMember?.variant?.fullDesignationWithHullNameForShip ?: "Unknown ship type"}" +
                 " | Tag Scrollbar: " + tagListView.asciiScrollBar()

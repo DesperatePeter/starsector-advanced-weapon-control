@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.utils
 
 import com.dp.advancedgunnerycontrol.gui.groupAsString
+import com.dp.advancedgunnerycontrol.gui.refitscreen.ModuleIdManager
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.typesandvalues.*
 import com.dp.advancedgunnerycontrol.weaponais.TagBasedAI
@@ -8,7 +9,6 @@ import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.AutofireAIPlugin
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
-import com.fs.starfarer.api.fleet.FleetAPI
 import com.fs.starfarer.api.fleet.FleetMemberAPI
 import com.fs.starfarer.campaign.fleet.FleetMember
 
@@ -127,6 +127,11 @@ fun saveTags(ship: ShipAPI, groupIndex: Int, loadoutIndex: Int, tags: List<Strin
     saveTagsInShip(ship, groupIndex, tags, loadoutIndex)
 }
 
+fun generateUniversalFleetMemberId(parentId: String, moduleIndex: Int): String{
+    if (moduleIndex < 0) return ""
+    return parentId + moduleIndex.toString()
+}
+
 /**
  * generate unique & persistent fleetMemberId
  * return fleetMemberId-equivalent for modules of big ships
@@ -134,12 +139,14 @@ fun saveTags(ship: ShipAPI, groupIndex: Int, loadoutIndex: Int, tags: List<Strin
  * return empty string if something goes wrong
  */
 fun generateUniversalFleetMemberId(ship: ShipAPI): String {
+    (ModuleIdManager.getUniversalIdIfApplicable(ship))?.let {
+        return it
+    }
     if (!ship.isStationModule) return ship.fleetMemberId ?: ""
     val parentShip = ship.parentStation ?: return ""
     val parentId = parentShip.fleetMemberId ?: return ""
     val index = parentShip.childModulesCopy?.indexOf(ship) ?: -1
-    if (index < 0) return ""
-    return parentId + index.toString()
+    return generateUniversalFleetMemberId(parentId, index)
 }
 
 fun generateUniversalFleetMemberId(ship: FleetMemberAPI): String{

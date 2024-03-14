@@ -11,7 +11,6 @@ import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.ui.UIPanelAPI
 import com.fs.starfarer.campaign.CampaignState
 import com.fs.state.AppDriver
-import org.lwjgl.input.Keyboard
 import org.magiclib.combatgui.buttons.MagicCombatButtonAction
 
 class RefitScreenHandler {
@@ -19,14 +18,16 @@ class RefitScreenHandler {
     companion object{
         var refitPanelAnchorX = 0f
         var refitPanelAnchorY = 0f
+        val isRefit
+            get() = Global.getSector().campaignUI.currentCoreTab == CoreUITabId.REFIT
     }
 
-    private val isRefit
-        get() = Global.getSector().campaignUI.currentCoreTab == CoreUITabId.REFIT
+
 
 
     private var gui: RefitScreenPanel? = null
     private var buttonHolder: ButtonHolderPanel? = null
+    private val moduleManager = ModuleIdManager()
     fun advance(amount: Float){
         if(!Settings.enableRefitScreenIntegration()) return
 
@@ -38,6 +39,10 @@ class RefitScreenHandler {
 
         if(buttonHolder == null){
             buttonHolder = createButtonHolder()
+        }
+
+        getShip()?.let {
+            moduleManager.update(it)
         }
 
         // the button holder takes care of opening/closing the GUI via button or hotkey
@@ -68,11 +73,17 @@ class RefitScreenHandler {
         return refitPanel
     }
 
-    private fun getShip(refitPanel: UIPanelAPI): ShipAPI?{
+    private fun getShip(refitPanel: UIPanelAPI, sync: Boolean = true): ShipAPI?{
         val shipDisplay = invokeMethodByName("getShipDisplay", refitPanel, narrativeContext = "GetShip, getting ship display") as? UIPanelAPI ?: return null
-        invokeMethodByName("syncWithCurrentVariant", refitPanel, narrativeContext = "GetShip, syncing, not so important.")
+        if(sync) invokeMethodByName("syncWithCurrentVariant", refitPanel, narrativeContext = "GetShip, syncing, not so important.")
         val ship =  invokeMethodByName("getShip", shipDisplay, narrativeContext = "GetShip, getting ship from ShipDisplay") as? ShipAPI
         return ship
+    }
+
+    private fun getShip(): ShipAPI?{
+        val core = getCore() ?: return null
+        val refitPanel = getRefitPanel(core) ?: return null
+        return getShip(refitPanel, false)
     }
 
     private fun createGUI(): RefitScreenPanel?{
