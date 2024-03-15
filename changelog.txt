@@ -1,5 +1,8 @@
 === For Starsector 0.97a ===
 
+- 1.17.1: hotfix
+fix: Crash when accessing advanced setting tab in LunaSettings
+
 - 1.17.0: Devastator Edition
 feat: improve friendly fire logic for burst weapons with recoil (such as e.g. the Devastator Cannon)
 note: this feature will likely need further refining in the future, but should be mostly functional
