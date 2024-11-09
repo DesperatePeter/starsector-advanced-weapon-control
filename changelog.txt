@@ -1,5 +1,10 @@
 === For Starsector 0.97a ===
 
+- 1.18.0: Share tags between campaigns
+fix: weapons will no longer be scared of hitting modules of the firing ship
+feat: add console commands to back up/restore global tags to/from file
+feat: add setting to share global tags between campaigns
+
 - 1.17.1: hotfix
 fix: Crash when accessing advanced setting tab in LunaSettings
 
