@@ -80,6 +80,7 @@ fun reloadShips(storageIndex: Int, ships: List<ShipAPI?>?) {
 
 }
 
+
 fun persistTemporaryShipData(storageIndex: Int, ships: List<ShipAPI?>?) {
     ships?.filter { it?.owner == 0 }?.filterNotNull().let {
         it?.forEach { ship ->

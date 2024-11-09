@@ -127,6 +127,8 @@ abstract class SpecificAIPluginBase(
 
         val allies = CombatUtils.getShipsWithinRange(weapon.location, weapon.range + 500f).filter { it != weapon.ship }.filter {
             (it.isAlly || (it.owner == 0) || (it.owner == 100 && shouldConsiderNeutralsAsFriendlies())) && !it.isFighter
+        }.filter { // prevent weapons from worrying about friendly fire against modules of the own ship
+            (it.parentStation != weapon.ship) && (it.childModulesCopy?.contains(weapon.ship) != true)
         }
 
         return calculateFiringSolutions(allies).filter { isInRange(it.aimPoint, effectiveCollRadius(it.target) * Settings.customAIFriendlyFireCaution()) }
