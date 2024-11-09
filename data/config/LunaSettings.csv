@@ -67,6 +67,12 @@ agc_TagStorageText,Tag Storage Text,Text,"Choose a [Tag Storage Mode]. This affe
 
 [WeaponCompositionGlobal]: The same as WeaponComposition, but tags are NOT stored per ship. So if you e.g. set a weapon group containing only PD Lasers to PD, it will affect all your ships that have a weapon group containing only PD Lasers. This storage mode takes the least amount of effort, but also offers the least flexibility.",,"",,,Tags
 agc_tagStorageMode,TagStorageMode,Radio,"Index","Index,WeaponComposition,WeaponCompositionGlobal","Choose tag storage mode.",,,Tags
+agc_shareGlobalTags,shareBetweenCampaigns,Boolean,false,,"When set to true with WeaponCompositionGlobal enabled, tags will be shared between campaigns.",,,Tags
+agc_shareGlobalTagsText,Share Text,Text,"When sharing tags between campaigns, your current configuration will be saved whenever you save the game and loaded when loading a campaign.
+
+If you have multiple active campaigns when enabling this option, AGC will try to combine tags with ones you had already set upon loading the game. This might result in overriding some of your previously set tags, though.
+
+As an alternative to using this setting, you can also use the console commands AGC_backupGlobalTags and AGC_restoreGlobalTags to manually copy tags between campaigns.",,"",,,Tags
 ,,,,,,,,
 ,,,,,,,,
 agc_miscHeader,Misc Header,Header,Misc,,,,,Misc

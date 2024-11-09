@@ -24,6 +24,7 @@ object Settings : SettingsDefinition() {
     private val tagStorageModeInternal = addSetting("tagStorageMode", "Index")
     val tagStorageMode: TagStorageModes
         get() = tagStorageModeFromStr[tagStorageModeInternal()] ?: TagStorageModes.INDEX
+    val shareTagsBetweenCampaigns = addSetting("shareGlobalTags", false)
     val enableCustomAI = addSetting<Boolean>("enableCustomAI", true)
     val customAIRecursionLevel = addSetting<Int>("customAIRecursionLevel", 1)
     val forceCustomAI = addSetting<Boolean>("forceCustomAI", false)

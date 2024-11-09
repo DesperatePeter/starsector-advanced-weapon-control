@@ -5,6 +5,8 @@ import com.dp.advancedgunnerycontrol.settings.LunaSettingHandler
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.dp.advancedgunnerycontrol.settings.addLunaSettingListener
 import com.dp.advancedgunnerycontrol.utils.ShipModeStorage
+import com.dp.advancedgunnerycontrol.utils.backupWeaponCompGlobalTagsToFile
+import com.dp.advancedgunnerycontrol.utils.restoreWeaponCompGlobalTagsFromFile
 import com.fs.starfarer.api.BaseModPlugin
 import com.fs.starfarer.api.Global
 
@@ -29,6 +31,16 @@ class WeaponControlBasePlugin : BaseModPlugin() {
         }
 
         Global.getSector().addTransientScript(GUIShower())
+        if(Settings.shareTagsBetweenCampaigns()){
+            restoreWeaponCompGlobalTagsFromFile()
+        }
+    }
+
+    override fun afterGameSave() {
+        super.afterGameSave()
+        if(Settings.shareTagsBetweenCampaigns()){
+            backupWeaponCompGlobalTagsToFile()
+        }
     }
 
     private fun logSettings() {
