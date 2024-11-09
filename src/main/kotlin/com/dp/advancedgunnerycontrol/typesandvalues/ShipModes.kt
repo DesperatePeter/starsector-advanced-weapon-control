@@ -13,7 +13,7 @@ import java.lang.ref.WeakReference
 enum class ShipModes {
     DEFAULT, FORCE_AUTOFIRE, SHIELDS_OFF, VENT, VENT_AGGRESSIVE,
     RETREAT, NO_SYSTEM, SHIELDS_UP, SPAM_SYSTEM, CHARGE, SHIELDS_UP_PLUS,
-    STAY_AWAY, FAR_AWAY
+    STAY_AWAY, FAR_AWAY, NEVER_VENT
 }
 
 const val defaultShipMode = "DEFAULT"
@@ -31,7 +31,8 @@ val shipModeFromString = mapOf(
     "Charge" to ShipModes.CHARGE,
     "ShieldsUp+" to ShipModes.SHIELDS_UP_PLUS,
     "StayAway" to ShipModes.STAY_AWAY,
-    "FarAway" to ShipModes.FAR_AWAY
+    "FarAway" to ShipModes.FAR_AWAY,
+    "NeverVent" to ShipModes.NEVER_VENT
 )
 
 val shipModeToString = shipModeFromString.map { it.value to it.key }.toMap()
@@ -59,7 +60,8 @@ val detailedShipModeDescriptions = mapOf(
             "where there are fewest enemies both at the point and on the route to the point and try to move there.",
     ShipModes.SPAM_SYSTEM to "Ship will always use the ship system when available.",
     ShipModes.CHARGE to "If the ship has a target it will accelerate towards it until all weapons are in range." +
-            "\nCaution! Might cause suicidal behavior!"
+            "\nCaution! Might cause suicidal behavior!",
+    ShipModes.NEVER_VENT to "Prevents the ship from actively venting flux"
 ).withDefault { it.toString() }
 
 private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenerator {
@@ -76,6 +78,7 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenera
         ShipModes.FAR_AWAY -> StayFarAI(ship)
         ShipModes.SPAM_SYSTEM -> SpamSystemAI(ship)
         ShipModes.CHARGE -> ChargeShipAI(ship)
+        ShipModes.NEVER_VENT -> NeverVentAI(ship)
         else -> ShipCommandGenerator(ship)
     }
 }
