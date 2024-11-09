@@ -190,8 +190,10 @@ fun persistTagsByWeaponComposition(universalShipId: String, member: FleetMemberA
     Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip[shipKey]?.set(key, tags.toSet().toList())
 }
 
+private const val WEAPON_COMP_GLOBAL_KEY = "Global"
+
 fun persistTagsByWeaponCompositionGlobal(universalShipId: String, member: FleetMemberAPI, groupIndex: Int, loadoutIndex: Int, tags: List<String>){
-    persistTagsByWeaponComposition(universalShipId, member, groupIndex, loadoutIndex, tags, "Global")
+    persistTagsByWeaponComposition(universalShipId, member, groupIndex, loadoutIndex, tags, WEAPON_COMP_GLOBAL_KEY)
 }
 
 fun getWeaponCompositionString(member: FleetMemberAPI, groupIndex: Int): String{
@@ -229,7 +231,26 @@ fun loadPersistentTagsByWeaponComposition(member: FleetMemberAPI, universalShipI
 }
 
 fun loadPersistentTagsByWeaponCompositionGlobal(member: FleetMemberAPI, universalShipId: String, groupIndex: Int, loadoutIndex: Int): List<String>{
-    return loadPersistentTagsByWeaponComposition(member, universalShipId, groupIndex, loadoutIndex, "Global")
+    return loadPersistentTagsByWeaponComposition(member, universalShipId, groupIndex, loadoutIndex,
+        WEAPON_COMP_GLOBAL_KEY
+    )
+}
+
+fun backupWeaponCompGlobalTagsToFile(file: String = Values.WEAPON_COMP_GLOBAL_TAGS_JSON_FILE_NAME, loadoutIndex: Int = Values.storageIndex){
+    saveJsonMapAsFile(file, Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip[WEAPON_COMP_GLOBAL_KEY] ?: emptyMap())
+}
+
+fun restoreWeaponCompGlobalTagsFromFile(file: String = Values.WEAPON_COMP_GLOBAL_TAGS_JSON_FILE_NAME, loadoutIndex: Int = Values.storageIndex, override: Boolean = false){
+    val data = readJsonMapFromFile(file)
+    if(override){
+        Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip[WEAPON_COMP_GLOBAL_KEY]?.clear()
+    }
+    if(!Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip.containsKey(WEAPON_COMP_GLOBAL_KEY)){
+        Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip[WEAPON_COMP_GLOBAL_KEY] = mutableMapOf()
+    }
+    data.forEach{ (k, v) ->
+        Settings.tagStorageByWeaponComposition[loadoutIndex].modesByShip[WEAPON_COMP_GLOBAL_KEY]?.set(k, v.toSet().toList())
+    }
 }
 
 fun getWeaponGroupIndex(weapon: WeaponAPI): Int {
