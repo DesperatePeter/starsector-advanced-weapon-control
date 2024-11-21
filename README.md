@@ -290,15 +290,24 @@ ship.setCustomData("AGC_ApplyCustomShipModes", Arrays.asList("SpamSystem");
 Same as before, after finishing the mode application, "AGC_CustomOptionsHaveBeenApplied" will be written to the ship's
 custom data and the original entry will be removed.
 
+#### Block AGC from assigning ship modes ####
+
+Ship modes (and the ForceAF tag) replace the default ship AI of ships. The replacement AI delegates most calls 
+to the original AI, so in most cases, this shouldn't pose a problem. If you, however, replace the ship AI with your 
+own custom AI and need to access that AI from another script, that will cause problems.
+You can circumvent that by simply storing a reference to your custom AI somewhere (e.g. in custom ship data).
+However, if whatever you are trying to do is truly incompatible with AGC tinkering with the ship AI, you can set the
+following key in the ships custom data: AGC_doNotReplaceShipAI
+If that key is set, AGC will not replace the ship AI, essentially disabling ship modes for that ship for as long as 
+that key is set.
+
+```kotlin
+ship.setCustomData("AGC_doNotReplaceShipAI", true)
+```
+
 #### Using the combat gui library ####
 
-I wrote a repo-internal library that's used to implement the AGC in-combat GUI. You can import the library
-from the package com.dp.advancedgunnerycontrol.combatgui. The AGC-implementation is in the subfolder agccombatgui.
-Everything else is part of the library.
-To use the library, add AGC as a dependency to your mod and load the AGC-jar.
-In the future I might move this to a library-mod. If any lib-collection maintainer would be interested in including this,
-please let me know!
-You can find a usage example of the library here: <https://github.com/DesperatePeter/test-combat-gui-lib>
+Has been migrated to [MagicLib](https://magiclibstarsector.github.io/MagicLib/root/org.magiclib.combatgui/index.html)
 
 ## Known Issues ##
 
