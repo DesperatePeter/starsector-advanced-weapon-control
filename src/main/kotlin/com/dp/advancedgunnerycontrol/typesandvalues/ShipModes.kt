@@ -85,6 +85,7 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenera
 
 fun assignShipModes(modes: List<String>, ship: ShipAPI, forceAssign: Boolean = false) {
     if (ship.shipAI == null) return
+    if(ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_DO_NOT_OVERWRITE_AI_KEY)) return
     ship.resetDefaultAI()
     if (ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)) {
         ship.customData.remove(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)

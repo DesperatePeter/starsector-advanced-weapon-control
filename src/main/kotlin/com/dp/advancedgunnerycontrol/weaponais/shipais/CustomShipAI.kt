@@ -1,5 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.shipais
 
+import com.dp.advancedgunnerycontrol.typesandvalues.Values
 import com.fs.starfarer.api.combat.*
 import org.lwjgl.util.vector.Vector2f
 
@@ -42,6 +43,10 @@ open class CustomShipAI(
     }
 
     override fun advance(p0: Float) {
+        if(ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_DO_NOT_OVERWRITE_AI_KEY)){
+            ship.shipAI = baseAI
+            return
+        }
         advanceImpl(p0)
         ship.shipAI = baseAI
         baseAI.advance(p0)
