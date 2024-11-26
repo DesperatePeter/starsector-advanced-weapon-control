@@ -233,7 +233,7 @@ tasks {
                    |   
                    |   ,"completeTagList" : [
                    |                "PD", "NoPD", "PD(Flx>50%)", "PD(Flx>10%)",
-                   |                "AvoidShields", "TargetShields", "AvdArmor(33%)", "AvdArmor(75%)",
+                   |                "AvoidShields", "TargetShields", "AvdShields+", "TgtShields+", "AvdArmor(33%)", "AvdArmor(75%)",
                    |                "Hold(Flx>90%)", "Hold(Flx>75%)", "Hold(Flx>50%)", "Merge",
                    |                "AvoidPhased", "TargetPhase", "ShipTarget", 
                    |                "ForceAF", "ForceF(F<25%)", "ForceF(F<50%)", "ForceF(F<75%)",
@@ -242,8 +242,7 @@ tasks {
                    |                "NoMissiles", "NoFighters",
                    |                "Opportunist", "Panic(H<25%)", "Range<60%", "Range<80%",
                    |                "ConserveAmmo", "CnsrvPDAmmo",
-                   |                "BigShips", "SmallShips",
-                   |                "AvdShields+", "TgtShields+",
+                   |                "BigShips", "SmallShips",                   |                
                    |                "Overloaded", "LowRoF(200%)", "CustomAI", "PrioDense"
                    |                ]  
                    |   

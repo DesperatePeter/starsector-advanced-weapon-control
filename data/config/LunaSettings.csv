@@ -15,7 +15,7 @@ agc_showRefitScreenButton,showRefitScreenButton,Boolean,true,,"If set to false, 
 ,,,,,,,,
 ,,,,,,,,
 agc_AiHeader,AI Header,Header,Custom AI Settings,,,,,AI
-agc_enableCustomAI,enableCustomAI,Boolean,true,,"If set to false, weapons will simply not fire if their default AI would target someting forbidden by tags.
+agc_enableCustomAI,enableCustomAI,Boolean,true,,"If set to false, weapons will simply not fire if their default AI would target something forbidden by tags.
 
 If true, they will use a custom AI to find a new firing solution. Many tags will not work well with this set to false.",,,AI
 agc_forceCustomAI,forceCustomAI,Boolean,false,,"Enabling this will always use the customAI, skipping the default AI (for applicable modes).
