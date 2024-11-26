@@ -83,9 +83,13 @@ private fun generateCommander(mode: ShipModes, ship: ShipAPI): ShipCommandGenera
     }
 }
 
+fun shouldNotOverrideShipAI(ship: ShipAPI): Boolean{
+    return ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_DO_NOT_OVERWRITE_AI_KEY) || ship.shipAI?.javaClass?.name == Values.COOP_MOD_SHIP_AI_NAME
+}
+
 fun assignShipModes(modes: List<String>, ship: ShipAPI, forceAssign: Boolean = false) {
     if (ship.shipAI == null) return
-    if(ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_DO_NOT_OVERWRITE_AI_KEY)) return
+    if(shouldNotOverrideShipAI(ship)) return
     ship.resetDefaultAI()
     if (ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)) {
         ship.customData.remove(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)

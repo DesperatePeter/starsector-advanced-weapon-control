@@ -10,6 +10,7 @@ object Values {
     const val CUSTOM_SHIP_DATA_SHIP_MODES_KEY = "AGC_ShipTags"
     const val CUSTOM_SHIP_DATA_SHIP_AI_KEY = "AGC_ShipAI"
     const val CUSTOM_SHIP_DATA_DO_NOT_OVERWRITE_AI_KEY = "AGC_doNotReplaceShipAI"
+    const val COOP_MOD_SHIP_AI_NAME = "data.scripts.coopcombat.CoOpShipAI"
     const val CUSTOM_ENGINE_TAGS_KEY = "AGC_AutoAdvanceTags"
     const val CUSTOM_SHIP_DATA_OPTIONS_TO_APPLY_KEY = "AGC_ApplyCustomOptions"
     const val CUSTOM_SHIP_DATA_SHIP_MODES_TO_APPLY_KEY = "AGC_ApplyCustomShipModes"
