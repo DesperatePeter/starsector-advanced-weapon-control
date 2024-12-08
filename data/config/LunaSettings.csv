@@ -98,7 +98,7 @@ For frontal shields, unfold time and projectile travel time are considered to de
 
 For modes that want to hit shields, reducing the threshold makes them more likely to fire. For modes that want to avoid shields, the opposite is true",,"",,,Advanced
 agc_targetShields_threshold,Target Shields Threshold,Double,0.1,,"Attack if target flux below 90 percent ",0.0,1.0,Advanced
-agc_avoidShields_threshold,Target Shields Threshold,Double,0.2,,"Attack if target flux above 80 percent ",0.0,1.0,Advanced
+agc_avoidShields_threshold,Avoid Shields Threshold,Double,0.2,,"Attack if target flux above 80 percent ",0.0,1.0,Advanced
 agc_opportunist_kineticThreshold,Opportunist Kinetic threshold,Double,0.5,,"Attack if target flux below 50 percent for opportunist tag with kinetic weapons ",0.0,1.0,Advanced
 agc_opportunist_HEThreshold,Opportunist HE threshold,Double,0.2,,"Attack if target flux above 50 percent for opportunist tag with HE weapons ",0.0,1.0,Advanced
 agc_ignoreFighterShields,Ignore Fighter Shields,Boolean,true,,"Target/avoid shield tags allow targetting of fighters, regardless of their shield factor",,,Advanced
