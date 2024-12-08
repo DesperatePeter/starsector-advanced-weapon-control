@@ -69,7 +69,7 @@ dependencies {
     implementation(fileTree(starsectorCoreDirectory) {
         include(
             "starfarer.api.jar",
-            "starfarer.api-sources.jar",
+            //"starfarer.api-sources.jar",
             "starfarer_obf.jar",
             "fs.common_obf.jar",
             "json.jar",
@@ -78,6 +78,9 @@ dependencies {
             "lwjgl.jar",
             "lwjgl_util.jar"
         )
+    })
+    compileOnly(fileTree("$projectDir/api/src/com/fs/starfarer/api"){
+        include("*.java")
     })
 }
 
