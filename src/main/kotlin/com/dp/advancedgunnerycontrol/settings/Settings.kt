@@ -87,6 +87,7 @@ object Settings : SettingsDefinition() {
     val enableButtonOutlines = addSetting<Boolean>("enableButtonOutlines", true, tryLunar = false)
     val enableRefitScreenIntegration = addSetting<Boolean>("enableRefitScreenIntegration", true)
     val showRefitScreenButton = addSetting<Boolean>("showRefitScreenButton", true)
+    val spamSystemPreventsDeactivation = addSetting<Boolean>("spamSystemPreventsDeactivation", false)
 
     var isAdvancedMode : Boolean by CampaignSettingDelegate("isAdvancedMode",
         defaultValue = false,

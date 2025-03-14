@@ -104,6 +104,7 @@ agc_opportunist_HEThreshold,Opportunist HE threshold,Double,0.2,,"Attack if targ
 agc_ignoreFighterShields,Ignore Fighter Shields,Boolean,true,,"Target/avoid shield tags allow targetting of fighters, regardless of their shield factor",,,Advanced
 agc_EtcHeader,Etc Header,Header,ETC,,,,,Advanced
 agc_strictBigSmallShipMode,Strict Big/Small Ship,Boolean,false,,"If true, the BigShips/SmallShips tags will exclusively target Destroyers and bigger/smaller",,,Advanced
+agc_spamSystemPreventsDeactivation,Spam System Prevents Deactivation,Boolean,false,,"If true, the Spam System mode will prevent using the system again while the system is active. This is mainly interesting for toggleable systems.",,,Advanced
 agc_settingsDisclaimer,settingsDisclaimer,Text,"There are more settings available in the Settings.editme file. However, porting all of them to LunaSettings would be fairly tedious.
 
 If there are settings in Settings.editme that you feel would be worth porting here, please let me know and I will add them here in the next update!",,"",,,Advanced
