@@ -1,12 +1,12 @@
 import org.apache.tools.ant.taskdefs.condition.Os
-import org.jetbrains.dokka.DokkaConfiguration
-import org.jetbrains.dokka.gradle.DokkaTask
+// import org.jetbrains.dokka.DokkaConfiguration
+// import org.jetbrains.dokka.gradle.DokkaTask
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 object Variables {
     // Note: On Linux, if you installed Starsector into ~/something, you have to write /home/<user>/ instead of ~/
     val starsectorDirectory = System.getenv("STARSECTOR_DIRECTORY") ?: "/home/jannes/games/starsector"
-    val modVersion = "1.18.0"
+    val modVersion = "1.19.0"
     val jarFileNameBase = "AdvancedGunneryControl-$modVersion"
     val jarFileName = "$jarFileNameBase.jar"
     val sourceJarFileName = "$jarFileNameBase-sources.jar"
@@ -16,7 +16,7 @@ object Variables {
     val modName = "AdvancedGunneryControl"
     val author = "DesperatePeter"
     const val description = "A mod that allows fine-tuning of autofire. Press J-key in combat or on the campaign map to access."
-    val gameVersion = "0.97a"
+    val gameVersion = "0.98a"
     val jarsDir = "jars/agc/AdvancedGunneryControl/$modVersion"
     val jars = arrayOf("$jarsDir/$jarFileName")
     val modPlugin = "com.dp.advancedgunnerycontrol.WeaponControlBasePlugin"
@@ -35,9 +35,9 @@ val starsectorModDirectory = "${Variables.starsectorDirectory}/mods"
 val modInModsFolder = File("$starsectorModDirectory/${Variables.modFolderName}")
 
 plugins {
-    kotlin("jvm") version "1.5.0"
+    kotlin("jvm") version "2.1.20"
     java
-    id("org.jetbrains.dokka") version "1.6.21"
+    // id("org.jetbrains.dokka") version "2.0.0"
 }
 
 version = Variables.modVersion
@@ -48,16 +48,16 @@ repositories {
 }
 
 dependencies {
-    implementation("org.junit.jupiter:junit-jupiter:5.7.0")
-    implementation("junit:junit:4.13.1")
-    val kotlinVersionInLazyLib = "1.6.21"
+    // implementation("org.junit.jupiter:junit-jupiter:5.7.0")
+    // implementation("junit:junit:4.13.1")
+    val kotlinVersionInLazyLib = "2.1.20"
 
     implementation(fileTree("libs") { include("*.jar") })
-    testImplementation(kotlin("test"))
+    // testImplementation(kotlin("test"))
 
     // Get kotlin sdk from LazyLib during runtime, only use it here during compile time
     compileOnly("org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersionInLazyLib")
-    compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersionInLazyLib")
+    // compileOnly("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlinVersionInLazyLib")
     compileOnly(fileTree("$starsectorModDirectory/Console Commands/jars"){include("*.jar")})
 
     implementation(fileTree("$starsectorModDirectory/LazyLib/jars") { include("*.jar") })
@@ -84,15 +84,15 @@ dependencies {
     })
 }
 
-java{
-    withSourcesJar()
-    withJavadocJar()
-}
+//java{
+//    withSourcesJar()
+//    withJavadocJar()
+//}
 
 tasks {
     named<Jar>("jar")
     {
-        dependsOn(dokkaJavadoc)
+        // dependsOn(dokkaJavadoc)
         from(sourceSets.main.get().output)
         destinationDirectory.set(file(Variables.jarsDir))
         archiveFileName.set(Variables.jarFileName)
@@ -103,29 +103,29 @@ tasks {
         archiveFileName.set(Variables.sourceJarFileName)
         archiveClassifier.set("sources")
     }
-    named<DokkaTask>("dokkaJavadoc"){
-        dokkaSourceSets{
-            named("main"){
-                documentedVisibilities.set(
-                    setOf(
-                        DokkaConfiguration.Visibility.PUBLIC,
-                        DokkaConfiguration.Visibility.PROTECTED
-                    )
-                )
-                sourceRoots.from(sourceSets.main.get().allSource)
-            }
-        }
-    }
-    named<Jar>("javadocJar"){
-        dependsOn(dokkaJavadoc)
-        from(dokkaJavadoc.get().outputs)
-        archiveClassifier.set("javadoc")
-        destinationDirectory.set(file(Variables.jarsDir))
-        archiveFileName.set(Variables.javadocJarFileName)
-    }
+//    named<DokkaTask>("dokkaJavadoc"){
+//        dokkaSourceSets{
+//            named("main"){
+//                documentedVisibilities.set(
+//                    setOf(
+//                        DokkaConfiguration.Visibility.PUBLIC,
+//                        DokkaConfiguration.Visibility.PROTECTED
+//                    )
+//                )
+//                sourceRoots.from(sourceSets.main.get().allSource)
+//            }
+//        }
+//    }
+//    named<Jar>("javadocJar"){
+//        dependsOn(dokkaJavadoc)
+//        from(dokkaJavadoc.get().outputs)
+//        archiveClassifier.set("javadoc")
+//        destinationDirectory.set(file(Variables.jarsDir))
+//        archiveFileName.set(Variables.javadocJarFileName)
+//    }
 
     register("create-metadata-files") {
-        val version = Variables.modVersion.split(".").let { javaslang.Tuple3(it[0], it[1], it[2]) }
+        val version = Variables.modVersion.split(".")
         System.setProperty("line.separator", "\n") // Use LF instead of CRLF like a normal person
 
         File(projectDir, "mod_info.json")
@@ -137,7 +137,7 @@ tasks {
                         "name": "${Variables.modName}",
                         "author": "${Variables.author}",
                         "utility": "${Variables.isUtilityMod}",
-                        "version": { "major":"${version._1}", "minor": "${version._2}", "patch": "${version._3}" },
+                        "version": { "major":"${version[0]}", "minor": "${version[1]}", "patch": "${version[2]}" },
                         "description": "${Variables.description}",
                         "gameVersion": "${Variables.gameVersion}",
                         "jars":[${Variables.jars.joinToString() { "\"$it\"" }}],
@@ -175,11 +175,11 @@ tasks {
                         "modThreadId":${Variables.modThreadId},
                         "modVersion":
                         {
-                            "major":${version._1},
-                            "minor":${version._2},
-                            "patch":${version._3}
+                            "major":${version[0]},
+                            "minor":${version[1]},
+                            "patch":${version[2]}
                         },
-                        "directDownloadURL": "https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases/download/${version._1}.${version._2}.${version._3}/AdvancedGunneryControl-${version._1}.${version._2}.${version._3}.zip",
+                        "directDownloadURL": "https://github.com/DesperatePeter/starsector-advanced-weapon-control/releases/download/${version[0]}.${version[1]}.${version[2]}/AdvancedGunneryControl-${version[0]}.${version[1]}.${version[2]}.zip",
                         "changelogURL": "https://raw.githubusercontent.com/DesperatePeter/starsector-advanced-weapon-control/master/changelog.txt"
                     }
                 """.trimIndent()
@@ -245,7 +245,7 @@ tasks {
                    |                "NoMissiles", "NoFighters",
                    |                "Opportunist", "Panic(H<25%)", "Range<60%", "Range<80%",
                    |                "ConserveAmmo", "CnsrvPDAmmo",
-                   |                "BigShips", "SmallShips",                   |                
+                   |                "BigShips", "SmallShips",
                    |                "Overloaded", "LowRoF(200%)", "CustomAI", "PrioDense"
                    |                ]  
                    |   
@@ -496,11 +496,13 @@ tasks {
     }
 }
 
-tasks.test {
-    useJUnitPlatform()
+//tasks.test {
+//    useJUnitPlatform()
+//}
+
+tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = "17"
 }
 
-// Compile to Java 6 bytecode so that Starsector can use it
-tasks.withType<KotlinCompile> {
-    kotlinOptions.jvmTarget = "1.6"
-}
+java.sourceCompatibility = JavaVersion.VERSION_17
+java.targetCompatibility = JavaVersion.VERSION_17

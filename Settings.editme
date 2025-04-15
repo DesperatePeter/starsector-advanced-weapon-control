@@ -30,7 +30,7 @@
                 "NoMissiles", "NoFighters",
                 "Opportunist", "Panic(H<25%)", "Range<60%", "Range<80%",
                 "ConserveAmmo", "CnsrvPDAmmo",
-                "BigShips", "SmallShips",                   |                
+                "BigShips", "SmallShips",
                 "Overloaded", "LowRoF(200%)", "CustomAI", "PrioDense"
                 ]  
    
