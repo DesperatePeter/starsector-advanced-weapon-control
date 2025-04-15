@@ -1,3 +1,7 @@
+=== For Starsector 0.98a ===
+
+- 0.19.0: 0.98a update
+
 === For Starsector 0.97a ===
 
 - 1.18.0: Share tags between campaigns
