@@ -90,7 +90,7 @@ fun shouldNotOverrideShipAI(ship: ShipAPI): Boolean{
 fun assignShipModes(modes: List<String>, ship: ShipAPI, forceAssign: Boolean = false) {
     if (ship.shipAI == null) return
     if(shouldNotOverrideShipAI(ship)) return
-    ship.resetDefaultAI()
+    // ship.resetDefaultAI()
     if (ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)) {
         ship.customData.remove(Values.CUSTOM_SHIP_DATA_SHIP_AI_KEY)
     }

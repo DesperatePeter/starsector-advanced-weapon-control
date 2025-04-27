@@ -1,6 +1,13 @@
 === For Starsector 0.98a ===
 
+- 0.19.1
+hotfix: fix issue where AGC would reset the AI of ships to default for essentially no reason
+
 - 0.19.0: 0.98a update
+feat: add option for spam system to prevent toggling off systems
+feat: add NeverVent ship mode
+feat: add custom ship data flag to allow other mods to block ship modes (for mod authors: add "AGC_doNotReplaceShipAI" as a key with any value to custom ship data)
+fix: incompatibility issue with coop-mod
 
 === For Starsector 0.97a ===
 
