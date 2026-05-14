@@ -1,14 +1,27 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
+import com.dp.advancedgunnerycontrol.combat.FluxCondition
+import com.dp.advancedgunnerycontrol.combat.meetsFluxCondition
 import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.dp.advancedgunnerycontrol.weaponais.isPD
 import com.dp.advancedgunnerycontrol.weaponais.isValidPDTargetForWeapon
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 
-class PDTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
+open class PDTag(
+    weapon: WeaponAPI,
+    private val pdOnlyCondition: FluxCondition? = null,
+) : WeaponAITagBase(weapon) {
+    private fun isPdOnlyMode(): Boolean {
+        return pdOnlyCondition?.let { condition -> weapon.ship?.meetsFluxCondition(condition) ?: false } ?: true
+    }
+
     override fun isValidTarget(entity: CombatEntityAPI): Boolean {
-        return isValidPDTargetForWeapon(entity, weapon)
+        return if (isPdOnlyMode()) {
+            isValidPDTargetForWeapon(entity, weapon)
+        } else {
+            super.isValidTarget(entity)
+        }
     }
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float = 1.0f

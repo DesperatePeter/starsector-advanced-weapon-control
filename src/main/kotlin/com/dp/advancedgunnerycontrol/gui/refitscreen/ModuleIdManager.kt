@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui.refitscreen
 
-import com.dp.advancedgunnerycontrol.utils.generateUniversalFleetMemberId
+
+import com.dp.advancedgunnerycontrol.shipdata.generateUniversalFleetMemberId
 import com.fs.starfarer.api.combat.ShipAPI
 
 class ModuleIdManager {

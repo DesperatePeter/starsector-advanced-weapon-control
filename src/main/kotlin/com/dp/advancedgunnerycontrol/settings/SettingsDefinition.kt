@@ -1,6 +1,11 @@
 package com.dp.advancedgunnerycontrol.settings
 
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
+import com.dp.advancedgunnerycontrol.config.*
+import com.dp.advancedgunnerycontrol.customlists.*
+import com.dp.advancedgunnerycontrol.gui.session.TagListView
+import com.dp.advancedgunnerycontrol.shipmodes.*
+import com.dp.advancedgunnerycontrol.weapontags.*
+
 import com.fs.starfarer.api.Global
 import org.json.JSONException
 import org.json.JSONObject

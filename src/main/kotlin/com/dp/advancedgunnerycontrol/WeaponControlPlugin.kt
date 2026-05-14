@@ -2,13 +2,30 @@
 
 package com.dp.advancedgunnerycontrol
 
-import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.AGCCombatGui
+import com.dp.advancedgunnerycontrol.config.*
+import com.dp.advancedgunnerycontrol.customlists.*
+import com.dp.advancedgunnerycontrol.gui.session.TagListView
+import com.dp.advancedgunnerycontrol.shipmodes.*
+import com.dp.advancedgunnerycontrol.weapontags.*
+
+import com.dp.advancedgunnerycontrol.gui.entrypoints.DirectShipEditorPanel
 import com.dp.advancedgunnerycontrol.keyboardinput.ControlEventType
 import com.dp.advancedgunnerycontrol.keyboardinput.KeyStatusManager
+import com.dp.advancedgunnerycontrol.reflection.getFieldsByName
+import com.dp.advancedgunnerycontrol.reflection.invokeMethodByName
+import com.dp.advancedgunnerycontrol.reflection.invokeMethodThatReturnsType
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.typesandvalues.*
-import com.dp.advancedgunnerycontrol.utils.*
+import com.dp.advancedgunnerycontrol.shipdata.DeploymentChecker
+import com.dp.advancedgunnerycontrol.shipdata.applyTagsToWeapon
+import com.dp.advancedgunnerycontrol.shipdata.determineShipModesFromCustomData
+import com.dp.advancedgunnerycontrol.shipdata.determineTagsByWeaponFromCustomData
+import com.dp.advancedgunnerycontrol.shipdata.getAutofirePlugin
+import com.dp.advancedgunnerycontrol.shipdata.reloadAllShips
+import com.dp.advancedgunnerycontrol.shipdata.reloadShips
+import com.dp.advancedgunnerycontrol.weaponais.RecentBeamPressureTracker
 import com.dp.advancedgunnerycontrol.weaponais.TagBasedAI
+import com.dp.advancedgunnerycontrol.weaponais.tags.DisableTagsToggleResult
+import com.dp.advancedgunnerycontrol.weaponais.tags.DisableTagsRuntime
 import com.dp.advancedgunnerycontrol.weaponais.tags.MergeTag
 import com.fs.starfarer.api.GameState
 import com.fs.starfarer.api.Global
@@ -18,7 +35,8 @@ import com.fs.starfarer.api.loading.WeaponGroupType
 import org.lazywizard.lazylib.ui.FontException
 import org.lazywizard.lazylib.ui.LazyFont
 import org.lwjgl.input.Keyboard
-import org.magiclib.combatgui.MagicCombatGuiBase
+import org.lwjgl.util.vector.Vector2f
+import com.fs.state.AppDriver
 import java.awt.Color
 
 
@@ -34,11 +52,15 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private var periodicActionsFrameTimer: Int = 1
     private val optionApplicationFrameInterval = 50
     private var isInitialized = false
-    private var initialShipInitRequired = Settings.enableAutoSaveLoad()
+    private var initialShipInitRequired = true
     private var mergeWeaponGroupsIndex: Int? = null
     private var mergedWeaponRestoration = mutableMapOf<WeaponAPI, Int>()
     private var restoreAlternatingGroups = mutableSetOf<WeaponGroupAPI>()
-    private var combatGui: MagicCombatGuiBase? = null
+    private var combatGui: DirectShipEditorPanel? = null
+    private var combatGuiWasPaused = false
+    private var combatGuiOpenedCommandUi = false
+    private var combatHudSuppressedForEditor = false
+    private val disableTagsStatusKey = Any()
 
     companion object {
         fun determineSelectedShip(engine: CombatEngineAPI, displayHudWarning: Boolean = true): ShipAPI? {
@@ -79,6 +101,7 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
         if (ship.weaponGroupsCopy?.getOrNull(index) == ship.selectedGroupAPI) {
             printMessage("Please don't select weapon groups immediately after merging. Aborting...")
+            return
         }
 
         if (ship.customData.containsKey(Values.CUSTOM_SHIP_DATA_ARE_WEAPONS_MERGED_KEY)) {
@@ -93,9 +116,14 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     override fun advance(amount: Float, events: MutableList<InputEventAPI>?) {
         super.advance(amount, events)
         if (!isInitialized) return
-        combatGui?.advance()
+        if (combatGui != null) {
+            suppressCombatHudWhileEditorOpen()
+        } else {
+            restoreDirectEditorStateIfStale()
+        }
+        RecentBeamPressureTracker.advance(engine)
 
-        if (initialShipInitRequired) {
+        if (initialShipInitRequired && Settings.autoApplySavedTagsInCombat()) {
             initialShipInitRequired = !initAllShips()
         }
 
@@ -112,9 +140,11 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
         undoMergeIfTransferring()
 
-        if (Settings.enableAutoSaveLoad()) initNewlyDeployedShips(deployChecker.checkDeployment())
+        if (Settings.autoApplySavedTagsInCombat()) initNewlyDeployedShips(deployChecker.checkDeployment())
 
-        TagBasedAI.getTagsRegisteredForEveryFrameAdvancement().forEach { it.advance() }
+        maintainDisableTagsStatus()
+
+        TagBasedAI.getTagsRegisteredForEveryFrameAdvancement().forEach { it.advanceIfTagsEnabled() }
 
         if (keyManager.parseInputEvents(events)) {
             processControlEvents()
@@ -122,7 +152,8 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     }
 
     private fun initAllShips(): Boolean {
-        if (engine.ships.none { it.owner == 0 }) {
+        val ships = engine.ships.filterNotNull()
+        if (ships.none { it.owner == 0 }) {
             return false
         }
         reloadAllShips(Values.storageIndex)
@@ -131,9 +162,11 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     private fun reapplyShipModesAsNecessary() {
         engine.ships.filterNotNull().filter { it.owner == 0 }.forEach { ship ->
-            if (loadShipModes(ship, Values.storageIndex).let { it.isNotEmpty() && !it.contains(defaultShipMode) }
-                && ship.shipAI != null && !hasCustomAI(ship)) {
-                assignShipModes(loadShipModes(ship, Values.storageIndex), ship)
+            val modes = loadShipModes(ship, Values.storageIndex)
+            if (modes.isNotEmpty() && !modes.contains(defaultShipMode)
+                && ship.shipAI != null && !hasCustomAI(ship)
+            ) {
+                assignShipModes(modes, ship)
             }
         }
     }
@@ -173,8 +206,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         deployedShips?.let { fleetShips ->
             if (fleetShips.isEmpty()) return
             // at least when deploying multiple ships, this should be faster than searching each time
-            val ships = engine.ships.associateBy { it.fleetMemberId }
-                .filter { it.value?.owner == 0 }.filter { fleetShips.contains(it.key) }
+            val ships = engine.ships.filterNotNull()
+                .associateBy { it.fleetMemberId }
+                .filter { it.value.owner == 0 }.filter { fleetShips.contains(it.key) }
             if (ships.isEmpty()) return
             reloadShips(Values.storageIndex, ships.values.toList())
         }
@@ -184,21 +218,36 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
         when (keyManager.mkeyStatus.mcontrolEvent) {
             ControlEventType.INFO -> {
                 if (combatGui == null) {
-                    combatGui = determineSelectedShip(engine)?.let { AGCCombatGui(it) } ?: kotlin.run {
+                    val selectedShip = determineSelectedShip(engine) ?: kotlin.run {
                         printMessage("No valid ship selected/deployed. Cannot open Gunnery GUI." +
                                 "\nThis usually happens when you don't have a flagship deployed or ally selected." +
                                 "\nDeploy a flagship and/or target an ally with the R-Key " +
                                 "or open the command HUD (TAB) and select an ally (experimental).",
                             Settings.uiDisplayFrames() * 2) //
-                        null
+                        return
                     }
-                    if(combatGui != null){
-                        engine.isPaused = true
-                        engine.viewport?.isExternalControl = true
+                    combatGuiWasPaused = engine.isPaused
+                    combatGuiOpenedCommandUi = openCombatCommandUiIfNeeded()
+                    val panel = DirectShipEditorPanel.openOnCurrentScreen(
+                        selectedShip,
+                        Settings.combatGuiHotkey()
+                    ) {
+                        combatGui = null
+                        closeCombatCommandUiIfOpened()
+                        restoreCombatHudIfSuppressed()
+                        engine.isPaused = combatGuiWasPaused
+                        engine.viewport?.isExternalControl = false
                     }
+                    if (panel == null) {
+                        closeCombatCommandUiIfOpened()
+                        printMessage("Failed to open AGC direct ship editor.", Settings.uiDisplayFrames() * 2)
+                        return
+                    }
+                    combatGui = panel
+                    engine.isPaused = true
+                    engine.viewport?.isExternalControl = true
                 } else {
-                    combatGui = null
-                    engine.viewport?.isExternalControl = false
+                    combatGui?.close()
                 }
             }
 
@@ -217,8 +266,97 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 }
             }
 
+            ControlEventType.DISABLE_TAGS -> {
+                val ship = engine.playerShip ?: return
+                val result = DisableTagsRuntime.toggleSelectedGroup(ship)
+                if (!result.toggled) {
+                    printMessage(
+                        "${result.reason}\nAssign DisableTags to the selected group and press [${Keyboard.getKeyName(Settings.disableTagsHotkey())}] again.",
+                        Settings.uiDisplayFrames() * 2
+                    )
+                    return
+                }
+                val stateText = if (result.enabled) "disabled" else "restored"
+                showDisableTagsFloatingText(ship, result)
+                printMessage(
+                    "AGC tags $stateText for weapon group ${result.groupIndex + 1}." +
+                        "\nPress [${Keyboard.getKeyName(Settings.disableTagsHotkey())}] to toggle again."
+                )
+            }
+
             else -> printMessage("Unrecognized Command")
         }
+    }
+
+    private fun maintainDisableTagsStatus() {
+        val ship = engine.playerShip ?: return
+        val disabledGroups = DisableTagsRuntime.disabledGroupIndices(ship)
+        if (disabledGroups.isEmpty()) return
+        val groupText = disabledGroups
+            .sorted()
+            .joinToString(", ") { (it + 1).toString() }
+        engine.maintainStatusForPlayerShip(
+            disableTagsStatusKey,
+            "graphics/icons/hullsys/fortress_shield.png",
+            "AGC tags disabled",
+            "Weapon group${if (disabledGroups.size == 1) "" else "s"} $groupText using base AI",
+            true
+        )
+    }
+
+    private fun showDisableTagsFloatingText(ship: ShipAPI, result: DisableTagsToggleResult) {
+        val text = if (result.enabled) {
+            "AGC tags disabled: group ${result.groupIndex + 1}"
+        } else {
+            "AGC tags restored: group ${result.groupIndex + 1}"
+        }
+        val color = if (result.enabled) Color(255, 210, 80) else Color(120, 255, 150)
+        val location = Vector2f(ship.location)
+        location.y += ship.collisionRadius.coerceAtLeast(40f) * 0.35f
+        engine.addFloatingText(location, text, 18f, color, ship, 0.25f, 1.25f)
+    }
+
+    private fun currentCombatState(): Any? = AppDriver.getInstance()?.currentState
+
+    private fun openCombatCommandUiIfNeeded(): Boolean {
+        if (engine.combatUI.isShowingCommandUI) return false
+        invokeMethodByName(
+            "showWarroom",
+            currentCombatState() ?: return false,
+            narrativeContext = "AGC direct combat editor, show command UI"
+        )
+        return true
+    }
+
+    private fun closeCombatCommandUiIfOpened() {
+        if (!combatGuiOpenedCommandUi) return
+        combatGuiOpenedCommandUi = false
+        invokeMethodByName(
+            "hideWarroom",
+            currentCombatState() ?: return,
+            narrativeContext = "AGC direct combat editor, restore command UI"
+        )
+    }
+
+    private fun suppressCombatHudWhileEditorOpen() {
+        combatHudSuppressedForEditor = true
+        engine.combatUI.setDisablePlayerShipControlOneFrame(true)
+        engine.combatUI.setShipInfoFanOutBrightness(0f)
+        engine.combatUI.hideShipInfo()
+    }
+
+    private fun restoreCombatHudIfSuppressed() {
+        if (!combatHudSuppressedForEditor) return
+        combatHudSuppressedForEditor = false
+        engine.combatUI.setShipInfoFanOutBrightness(1f)
+        engine.combatUI.reFanOutShipInfo()
+    }
+
+    private fun restoreDirectEditorStateIfStale() {
+        if (!combatHudSuppressedForEditor) return
+        closeCombatCommandUiIfOpened()
+        restoreCombatHudIfSuppressed()
+        engine.viewport?.isExternalControl = false
     }
 
     private fun mergeWeapons(ship: ShipAPI, index: Int) {
@@ -234,7 +372,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
                 for (weapon in group.weaponsCopy.toList()) {
                     if ((weapon.getAutofirePlugin() as? TagBasedAI)?.tags?.any { it is MergeTag } == true) {
                         wasSuccessful = true
-                        val removedWeapon = group.removeWeapon(group.weaponsCopy.indexOf(weapon))
+                        val weaponIndex = group.weaponsCopy.indexOf(weapon)
+                        if (weaponIndex < 0) continue
+                        val removedWeapon = group.removeWeapon(weaponIndex)
                         // Note: For some reason, switching to an empty alternating weapon group crashes the game...
                         if(group.type == WeaponGroupType.ALTERNATING){
                             restoreAlternatingGroups.add(group)
@@ -262,10 +402,12 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
     private fun unmergeWeapons(ship: ShipAPI, displayMessage: Boolean = true) {
         if(displayMessage) printMessage("Restoring weapon groups")
         val groups = ship.weaponGroupsCopy ?: return
-        mergedWeaponRestoration.forEach { m ->
-            ship.getWeaponGroupFor(m.key)?.let { wg ->
-                val i = wg.weaponsCopy.indexOf(m.key)
-                groups.getOrNull(m.value)?.addWeaponAPI(wg.removeWeapon(i))
+        mergedWeaponRestoration.forEach { (weapon, originalGroupIndex) ->
+            ship.getWeaponGroupFor(weapon)?.let { currentGroup ->
+                val weaponIndex = currentGroup.weaponsCopy.indexOf(weapon)
+                if (weaponIndex < 0) return@let
+                val removedWeapon = currentGroup.removeWeapon(weaponIndex) ?: return@let
+                groups.getOrNull(originalGroupIndex)?.addWeaponAPI(removedWeapon)
             }
 
         }
@@ -306,10 +448,9 @@ class WeaponControlPlugin : BaseEveryFrameCombatPlugin() {
 
     override fun renderInUICoords(viewport: ViewportAPI?) {
         super.renderInUICoords(viewport)
-        combatGui?.render()
         drawable?.apply {
             draw(
-                Settings.uiMessagePositionX() * Global.getSettings().screenHeightPixels,
+                Settings.uiMessagePositionX() * Global.getSettings().screenWidthPixels,
                 Settings.uiMessagePositionY() * Global.getSettings().screenHeightPixels
             )
             textFrameTimer--

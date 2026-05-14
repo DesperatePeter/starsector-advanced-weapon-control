@@ -1,7 +1,11 @@
 package com.dp.advancedgunnerycontrol.weaponais.shipais
 
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.typesandvalues.shouldNotOverrideShipAI
+import com.dp.advancedgunnerycontrol.config.*
+import com.dp.advancedgunnerycontrol.customlists.*
+import com.dp.advancedgunnerycontrol.gui.session.TagListView
+import com.dp.advancedgunnerycontrol.shipmodes.*
+import com.dp.advancedgunnerycontrol.weapontags.*
+
 import com.fs.starfarer.api.combat.*
 import org.lwjgl.util.vector.Vector2f
 
@@ -31,9 +35,9 @@ open class CustomShipAI(
         }
     }
 
-    override fun setDoNotFireDelay(p0: Float) {
+    override fun setDoNotFireDelay(amount: Float) {
         ship.shipAI = baseAI
-        baseAI.setDoNotFireDelay(p0)
+        baseAI.setDoNotFireDelay(amount)
         ship.shipAI = this
     }
 
@@ -43,34 +47,34 @@ open class CustomShipAI(
         ship.shipAI = this
     }
 
-    override fun advance(p0: Float) {
+    override fun advance(amount: Float) {
         if(shouldNotOverrideShipAI(ship)){
             ship.shipAI = baseAI
             return
         }
-        advanceImpl(p0)
+        advanceImpl(amount)
         ship.shipAI = baseAI
-        baseAI.advance(p0)
+        baseAI.advance(amount)
         ship.shipAI = this
     }
 
-    protected fun advanceImpl(p0: Float) {
-        commanders.forEach { cmdr ->
-            cmdr.generateCommands().forEach {
-                ship.giveCommand(it.command, it.position, it.index)
+    protected fun advanceImpl(amount: Float) {
+        commanders.forEach { commander ->
+            commander.generateCommands().forEach { command ->
+                ship.giveCommand(command.command, command.position, command.index)
             }
         }
-        commanders.forEach { cmdr ->
-            cmdr.blockCommands().forEach {
-                ship.blockCommandForOneFrame(it)
+        commanders.forEach { commander ->
+            commander.blockCommands().forEach { command ->
+                ship.blockCommandForOneFrame(command)
             }
         }
-        fleetingCommands.forEach {
-            ship.giveCommand(it.command, it.position, it.index)
+        fleetingCommands.forEach { command ->
+            ship.giveCommand(command.command, command.position, command.index)
         }
         fleetingCommands.clear()
-        fleetingBlockCommands.forEach {
-            ship.blockCommandForOneFrame(it)
+        fleetingBlockCommands.forEach { command ->
+            ship.blockCommandForOneFrame(command)
         }
         fleetingBlockCommands.clear()
         if (commanders.any { it.shouldReevaluate() }) forceCircumstanceEvaluation()

@@ -1,17 +1,25 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
-
+import com.dp.advancedgunnerycontrol.config.Values
+import com.dp.advancedgunnerycontrol.gui.session.TagListView
+import com.dp.advancedgunnerycontrol.settings.Settings
+import com.dp.advancedgunnerycontrol.shipdata.agcStableShipId
+import com.dp.advancedgunnerycontrol.shipdata.applyTagsToWeaponGroup
+import com.dp.advancedgunnerycontrol.shipdata.groupAsString
+import com.dp.advancedgunnerycontrol.shipdata.loadAllTags
+import com.dp.advancedgunnerycontrol.shipdata.persistTemporaryShipData
+import com.dp.advancedgunnerycontrol.shipdata.reloadAllShips
+import com.dp.advancedgunnerycontrol.shipdata.saveTags
+import com.dp.advancedgunnerycontrol.shipmodes.assignShipModes
+import com.dp.advancedgunnerycontrol.shipmodes.saveShipModes
+import com.dp.advancedgunnerycontrol.weapontags.applySuggestedWeaponTags
+import com.fs.starfarer.api.Global
+import com.fs.starfarer.api.combat.ShipAPI
 import org.magiclib.combatgui.MagicCombatGuiBase
 import org.magiclib.combatgui.MagicCombatRenderShapes.Highlight
 import org.magiclib.combatgui.MagicCombatRenderShapes.renderHighlights
-import org.magiclib.combatgui.buttons.MagicCombatButtonAction
 import org.magiclib.combatgui.buttons.MagicCombatActionButton
-import com.dp.advancedgunnerycontrol.gui.groupAsString
-import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.typesandvalues.*
-import com.dp.advancedgunnerycontrol.utils.*
-import com.fs.starfarer.api.Global
-import com.fs.starfarer.api.combat.ShipAPI
+import org.magiclib.combatgui.buttons.MagicCombatButtonAction
 import kotlin.math.max
 import kotlin.reflect.KProperty
 
@@ -46,7 +54,7 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
     private val tagListView = TagListView()
     private val shipAiModesText : String by object {
         operator fun getValue(thisRef: Any?, property: KProperty<*>) : String{
-            return if(Settings.isAdvancedMode) "Ship AI Modes" else ""
+            return "Ship AI Modes"
         }
         operator fun setValue(thisRef: Any?, property: KProperty<*>, value: String){
         }
@@ -137,9 +145,9 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
         fun updateSimpleAdvancedTexts() {
             simpleAdvancedButtonInfo.txt = if (Settings.isAdvancedMode) "To Simple" else "To Advanced"
             simpleAdvancedButtonInfo.tooltip.txt = if (Settings.isAdvancedMode) {
-                "Switch to simple mode, displaying less tags"
+                "Switch to simple mode, displaying fewer tags and ship modes"
             } else {
-                "Switch to advanced mode, showing more tags"
+                "Switch to advanced mode, showing more tags and ship modes"
             }
         }
         updateSimpleAdvancedTexts()
@@ -152,29 +160,29 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
                 // this isn't pretty and will break if I ever add another button group...
                 // TODO: Maybe add IDs to button groups?
                 buttonGroups.last().descriptionText = shipAiModesText
-                ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
+                ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, agcStableShipId(ship))) }
                 reRenderButtonGroups()
             }
         }
         addCustomButton(MagicCombatActionButton(simpleAdvancedAction, simpleAdvancedButtonInfo))
 
-        // Suggested modes Button
-        val suggestedModeAction = object : MagicCombatButtonAction{
+        // Suggested tags Button
+        val suggestedTagsAction = object : MagicCombatButtonAction{
             override fun execute() {
                 if(ship.fleetMember == null) return
-                applySuggestedModes(ship.fleetMember, Values.storageIndex, true, generateUniversalFleetMemberId(ship))
+                applySuggestedWeaponTags(ship.fleetMember, Values.storageIndex, true, agcStableShipId(ship))
                 reloadAllShips(Values.storageIndex)
-                ship.fleetMember.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
+                ship.fleetMember.let { Settings.hotAddTags(loadAllTags(it, agcStableShipId(ship))) }
                 refreshButtons()
                 reRenderButtonGroups()
             }
 
         }
-        addButton(suggestedModeAction, "Suggested",
-            "Apply suggested modes to all weapon groups." +
-                    "\nOnly works for vanilla weapons and mods that provide suggested modes." +
-                    "\nNote: In simple mode, some added tags might be invisible. " +
-                    "Switch to advanced mode to see all tags")
+        addButton(suggestedTagsAction, "Suggested",
+            "Apply suggested tags to all weapon groups." +
+                    "\nOnly works for vanilla weapons and mods that provide suggested tags." +
+                    "\nNote: In simple mode, some added tags or ship modes might be invisible. " +
+                    "Switch to advanced mode to see all tags and ship modes.")
     }
 
     override fun advance() {
@@ -191,7 +199,7 @@ class AGCCombatGui(private val ship: ShipAPI, private val campaignMode: Boolean 
     }
 
     private fun initializeUi() {
-        ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, generateUniversalFleetMemberId(ship))) }
+        ship.fleetMember?.let { Settings.hotAddTags(loadAllTags(it, agcStableShipId(ship))) }
 
         for (i in 0 until (ship.variant.weaponGroups?.filter { it.slots?.size != 0 }?.size ?: 0)) {
             addButtonGroup(

@@ -128,6 +128,8 @@ hs_err_pid*
 
 ### Gradle ###
 .gradle
+.gradle-home/
+.gradle-run-home/
 /build/
 
 # Ignore Gradle GUI config
@@ -150,3 +152,4 @@ gradle-app.setting
 .idea
 .run
 Settings.editme.backup
+local.properties

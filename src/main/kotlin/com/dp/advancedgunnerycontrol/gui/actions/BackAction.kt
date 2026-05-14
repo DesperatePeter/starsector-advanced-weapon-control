@@ -1,7 +1,8 @@
 package com.dp.advancedgunnerycontrol.gui.actions
 
-import com.dp.advancedgunnerycontrol.gui.GUIAttributes
-import com.dp.advancedgunnerycontrol.gui.Level
+
+import com.dp.advancedgunnerycontrol.gui.session.GUIAttributes
+import com.dp.advancedgunnerycontrol.gui.session.Level
 import org.lwjgl.input.Keyboard
 
 class BackAction(attributes: GUIAttributes) : GUIAction(attributes) {

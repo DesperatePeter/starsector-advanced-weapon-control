@@ -21,15 +21,15 @@ const val POINT_SAFETY_EVAL_RANGE_MARGIN = 1000f
 fun findSafePoint(ship: ShipAPI): Vector2f?{
     val enemies = CombatUtils.getShipsWithinRange(ship.location, SP_SCAN_RANGE).filter { it.owner == 1 }
     // create a list with star pattern of trajectories (lists of points) around current location
-    val possibleTrajectories = (0..NUMBER_OF_EXPLORATION_RAYS).map { i ->
-        val direction = Misc.getUnitVectorAtDegreeAngle(i.toFloat() / NUMBER_OF_EXPLORATION_RAYS.toFloat() * 360f)
-        (0..NUMBER_OF_EXPLORATION_POINTS_PER_RAY).map { n ->
-            val l = n.toFloat() * EXPLORATION_RAY_SEGMENT_LENGTH
-            ship.location + Vector2f(l * direction.x, l * direction.y)
+    val possibleTrajectories = (0..NUMBER_OF_EXPLORATION_RAYS).map { rayIndex ->
+        val direction = Misc.getUnitVectorAtDegreeAngle(rayIndex.toFloat() / NUMBER_OF_EXPLORATION_RAYS.toFloat() * 360f)
+        (0..NUMBER_OF_EXPLORATION_POINTS_PER_RAY).map { pointIndex ->
+            val distanceAlongRay = pointIndex.toFloat() * EXPLORATION_RAY_SEGMENT_LENGTH
+            ship.location + Vector2f(distanceAlongRay * direction.x, distanceAlongRay * direction.y)
         }
     }
-    return possibleTrajectories.minByOrNull { t ->
-        t.map { evaluateDangerAtPoint(it, enemies) }.sum()
+    return possibleTrajectories.minByOrNull { trajectory ->
+        trajectory.map { evaluateDangerAtPoint(it, enemies) }.sum()
     }?.last()
 }
 
@@ -89,7 +89,7 @@ class PointNavigator(private val ship: ShipAPI){
 
     private fun generateCommandsImpl(point: Vector2f, accelCommand: ShipCommand, angleOffset: Float): List<ShipCommandWrapper>{
         val distance = (ship.location - point).length()
-        val toReturn = mutableListOf<ShipCommandWrapper>()
+        val movementCommands = mutableListOf<ShipCommandWrapper>()
         if(distance < DEFAULT_APPROACH_DISTANCE) return emptyList()
         val facingToTarget = Misc.normalizeAngle(Misc.getAngleInDegrees(ship.location, point) + angleOffset)
         val facing = ship.facing
@@ -100,19 +100,19 @@ class PointNavigator(private val ship: ShipAPI){
 
         if(Misc.normalizeAngle(deltaFacingAbs) > FACING_TOLERANCE){
             val command = if(shouldTurnInPositiveDirection) ShipCommand.TURN_LEFT else ShipCommand.TURN_RIGHT
-            toReturn.add(ShipCommandWrapper(command))
+            movementCommands.add(ShipCommandWrapper(command))
         }
 
         determineTurningCommand(deltaFacingAbs, shouldTurnInPositiveDirection)?.let {
-            toReturn.add(ShipCommandWrapper(it))
+            movementCommands.add(ShipCommandWrapper(it))
         }
 
         if(Misc.normalizeAngle(deltaFacingAbs) < DELTA_FACING_THRESHOLD){
             val command = if(distance < distToComeToStop) ShipCommand.DECELERATE else accelCommand
-            toReturn.add(ShipCommandWrapper(command))
+            movementCommands.add(ShipCommandWrapper(command))
         }
 
-        return toReturn
+        return movementCommands
     }
 
     private fun determineTurningCommand(deltaFacingAbs: Float, isPositiveDirection: Boolean): ShipCommand?{

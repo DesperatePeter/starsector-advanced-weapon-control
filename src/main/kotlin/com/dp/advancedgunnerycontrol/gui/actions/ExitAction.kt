@@ -1,6 +1,7 @@
 package com.dp.advancedgunnerycontrol.gui.actions
 
-import com.dp.advancedgunnerycontrol.gui.GUIAttributes
+
+import com.dp.advancedgunnerycontrol.gui.session.GUIAttributes
 import org.lwjgl.input.Keyboard
 
 class ExitAction(attributes: GUIAttributes) : GUIAction(attributes) {

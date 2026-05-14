@@ -1,14 +1,14 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
+import com.dp.advancedgunnerycontrol.config.Values
 import com.dp.advancedgunnerycontrol.gui.refitscreen.RefitScreenHandler
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.utils.applyTagsToWeaponGroup
-import com.dp.advancedgunnerycontrol.utils.loadTags
-import com.dp.advancedgunnerycontrol.utils.saveTags
+import com.dp.advancedgunnerycontrol.shipdata.applyTagsToWeaponGroup
+import com.dp.advancedgunnerycontrol.shipdata.loadTags
+import com.dp.advancedgunnerycontrol.shipdata.saveTags
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.combat.ShipAPI
-import org.magiclib.combatgui.buttongroups.MagicCombatButtonGroupAction
 import org.magiclib.combatgui.MagicCombatRenderShapes.Highlight
+import org.magiclib.combatgui.buttongroups.MagicCombatButtonGroupAction
 
 class WeaponGroupAction(
     private val ship: ShipAPI,

@@ -5,10 +5,10 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.lazywizard.lazylib.ext.json.getFloat
 
-// Note: I can't seem to find any info on template/generics-specialization or SFINAE in Kotlin,
-// so instead I implemented a "when value is type XYZ" switch
-// This whole thing feels unsatisfying...
-// Note: Probably should have used delegate
+// Settings are loaded through the runtime default value's type because the JSON
+// config is intentionally simple and only supports AGC's primitive/list setting
+// shapes. Unknown types fall back to their existing value instead of crashing
+// during settings reload.
 open class Setting<T>(private val key: String, private val defaultValue: T, private val getFromLunaSettingsIfPossible: Boolean = true) {
     var value: T = defaultValue
     val lunaSettingHandler = LunaSettingHandler(key, defaultValue)
@@ -48,7 +48,7 @@ open class Setting<T>(private val key: String, private val defaultValue: T, priv
                 list as? T
             }
 
-            else -> TODO()
+            else -> null
         }
     }
 

@@ -1,7 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
 import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
-import com.dp.advancedgunnerycontrol.weaponais.bigness
 import com.dp.advancedgunnerycontrol.weaponais.isSmall
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
@@ -14,13 +13,11 @@ class SmallShipTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
 
     override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
         if (entity !is ShipAPI) return false
-        return entity.isFrigate || entity.isFighter
+        return isSmall(entity)
     }
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float {
-        val tgtShip = (solution.target as? ShipAPI) ?: return 10000f
-        if (!isSmall(tgtShip)) return 10000f
-        return bigness(tgtShip)
+        return 1f
     }
 
     override fun shouldFire(solution: FiringSolution): Boolean {

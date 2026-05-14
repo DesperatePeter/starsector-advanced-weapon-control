@@ -1,6 +1,6 @@
 package com.dp.advancedgunnerycontrol.weaponais.tags
 
-import com.dp.advancedgunnerycontrol.utils.getWeaponGroupIndex
+import com.dp.advancedgunnerycontrol.shipdata.getWeaponGroupIndex
 import com.dp.advancedgunnerycontrol.weaponais.FiringSolution
 import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.WeaponAPI

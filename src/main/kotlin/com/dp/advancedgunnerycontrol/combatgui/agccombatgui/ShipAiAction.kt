@@ -1,9 +1,9 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.typesandvalues.assignShipModes
-import com.dp.advancedgunnerycontrol.typesandvalues.defaultShipMode
-import com.dp.advancedgunnerycontrol.typesandvalues.saveShipModes
+import com.dp.advancedgunnerycontrol.config.Values
+import com.dp.advancedgunnerycontrol.shipmodes.assignShipModes
+import com.dp.advancedgunnerycontrol.shipmodes.defaultShipMode
+import com.dp.advancedgunnerycontrol.shipmodes.saveShipModes
 import com.fs.starfarer.api.combat.ShipAPI
 import org.magiclib.combatgui.buttongroups.MagicCombatButtonGroupAction
 

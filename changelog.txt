@@ -1,17 +1,17 @@
 === For Starsector 0.98a ===
 
-- 1.20.0
-feat: overloaded tag now also considers venting targets as valid
-fix: clarify what TgtShields tag means
-feat: add DoNotShoot tag (complete tag list)
-feat: unavailable tags now say in the tooltip why they are unavailable (combat gui)
-fluff: changed default value of Spam System Prevents Deactivation to true, as that is probably the expected behavior for most people
-feat: Change StayAway ship mode, such that it tries to keep the longest range weapon/fighter in range
+- 2.0.0
+feat: update Advanced Gunnery Control for Starsector 0.98a
+feat: add campaign/refit/combat direct editing improvements, custom tag and ship mode management, preset save/load improvements, suggested-tag customization, and expanded editable tag options
+feat: add curated novice/classic/complete tag lists and novice/complete ship mode lists
+feat: add optional damage-type ignore parameters for shield, armor, phase, and selected priority tags
+feat: add hidden recent-beam exception support for soft-flux HoldFire tags
+fix: improve modal tooltip behavior, modal input shielding, layout sizing, no-sector safety, direct editor lifecycle handling, and legacy DesperatePeter backup/import compatibility
 
-- 1.19.1
+- 0.19.1
 hotfix: fix issue where AGC would reset the AI of ships to default for essentially no reason
 
-- 1.19.0: 0.98a update
+- 0.19.0: 0.98a update
 feat: add option for spam system to prevent toggling off systems
 feat: add NeverVent ship mode
 feat: add custom ship data flag to allow other mods to block ship modes (for mod authors: add "AGC_doNotReplaceShipAI" as a key with any value to custom ship data)
@@ -204,7 +204,7 @@ changelog archive:
 - 1.6.1: Fix TargetShields+, turn jar into a pom-style library to allow for displaying javadoc in IDE
 - 1.7.0: Tag scrollbar, add new tags, add option to ignore fighter shields (special thanks to Seanra for contributing most of the new stuff!)
 - 1.7.1: Fix an issue with weapons that need to be aimed firing without aiming (special thanks to Genir!).
-         Fix an issue with PrioritizePD not ignoring flares with IPDAI.
+         Fix an issue with PrioPD not ignoring flares with IPDAI.
          (Hopefully) fix potential memory leak caused by in-combat-GUI.
 - 1.8.0: Add two new tags; ship module modes now persist; fix range tag for non-aimable weapons;
          UI improvements (advanced/simple mode, weapon highlighting, dynamic option names);

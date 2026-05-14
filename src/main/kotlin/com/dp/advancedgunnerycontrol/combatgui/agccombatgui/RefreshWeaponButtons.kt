@@ -1,10 +1,9 @@
 package com.dp.advancedgunnerycontrol.combatgui.agccombatgui
 
-import com.dp.advancedgunnerycontrol.typesandvalues.Values
-import com.dp.advancedgunnerycontrol.typesandvalues.createTag
-import com.dp.advancedgunnerycontrol.typesandvalues.getTagTooltip
-import com.dp.advancedgunnerycontrol.typesandvalues.isIncompatibleWithExistingTags
-import com.dp.advancedgunnerycontrol.utils.loadTags
+import com.dp.advancedgunnerycontrol.config.Values
+import com.dp.advancedgunnerycontrol.shipdata.loadTags
+import com.dp.advancedgunnerycontrol.weapontags.createWeaponAiTag
+import com.dp.advancedgunnerycontrol.weapontags.isIncompatibleWithExistingTags
 import com.fs.starfarer.api.combat.ShipAPI
 import org.magiclib.combatgui.buttongroups.MagicCombatDataButtonGroup
 import org.magiclib.combatgui.buttongroups.MagicCombatRefreshButtonsAction
@@ -14,23 +13,18 @@ class RefreshWeaponButtons(private val ship: ShipAPI, private val index: Int) : 
         val currentTags = loadTags(ship, index, Values.storageIndex)
         group.refreshAllButtons(currentTags)
         group.enableAllButtons()
-        group.buttons.forEach {
-            it.info.tooltip.txt = getTagTooltip(it.info.txt)
-            val str = it.data as? String ?: ""
-            var (isInvalid, invalidityReason) = isIncompatibleWithExistingTags(str, currentTags)
-            if(!isInvalid) {
-                isInvalid = false == ship.weaponGroupsCopy.getOrNull(index)?.weaponsCopy?.any { w ->
-                    createTag(str, w)?.isValid() == true
-                }
-                invalidityReason = "$str is invalid (for these weapons)"
-            }
-            if(it.isActive && isInvalid){
-                it.isActive = false
-                group.executeAction(listOf(), null, it.data)
+        group.buttons.forEach { button ->
+            val tagName = button.data as? String ?: ""
+            val isInvalid = isIncompatibleWithExistingTags(tagName, currentTags) ||
+                    (false == ship.weaponGroupsCopy.getOrNull(index)?.weaponsCopy?.any { weapon ->
+                    createWeaponAiTag(tagName, weapon)?.isValid() == true
+                })
+            if(button.isActive && isInvalid){
+                button.isActive = false
+                group.executeAction(listOf(), null, button.data)
             }
             if(isInvalid){
-                it.isDisabled = true
-                it.info.tooltip.txt += "\n>>$invalidityReason<<"
+                button.isDisabled = true
             }
         }
     }

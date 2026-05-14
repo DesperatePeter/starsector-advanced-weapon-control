@@ -15,6 +15,7 @@ class KeyStatusManager {
         when (event.eventValue) {
             Settings.combatGuiHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.INFO
             Settings.mergeHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.MERGE
+            Settings.disableTagsHotkey() -> mkeyStatus.mcontrolEvent = ControlEventType.DISABLE_TAGS
             else -> return false
         }
         event.consume()

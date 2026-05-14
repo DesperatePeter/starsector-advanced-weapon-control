@@ -7,20 +7,22 @@ import com.fs.starfarer.api.combat.CombatEntityAPI
 import com.fs.starfarer.api.combat.ShipAPI
 import com.fs.starfarer.api.combat.WeaponAPI
 
-class AvoidPhaseTag(weapon: WeaponAPI) : WeaponAITagBase(weapon) {
+class AvoidPhaseTag(
+    weapon: WeaponAPI,
+    private val damageTypeExclusions: DamageTypeExclusions = DamageTypeExclusions.NONE,
+) : WeaponAITagBase(weapon) {
+    private fun ignoredForWeapon(): Boolean = tagIgnoresThisWeapon(damageTypeExclusions)
 
-    override fun isBaseAiValid(entity: CombatEntityAPI): Boolean {
-        if (entity !is ShipAPI) return true
-        return entity.hasPhaseCloak()
-    }
+    override fun isBaseAiValid(entity: CombatEntityAPI): Boolean = true
 
     override fun computeTargetPriorityModifier(solution: FiringSolution): Float =
-        if (mayBePhasedWhenShotConnects(solution)) 1000f else 1f
+        if (!ignoredForWeapon() && mayBePhasedWhenShotConnects(solution)) 1000f else 1f
 
 
-    override fun shouldFire(solution: FiringSolution): Boolean = !mayBePhasedWhenShotConnects(solution)
+    override fun shouldFire(solution: FiringSolution): Boolean =
+        ignoredForWeapon() || !mayBePhasedWhenShotConnects(solution)
 
-    override fun isBaseAiOverridable(): Boolean = true
+    override fun isBaseAiOverridable(): Boolean = !ignoredForWeapon()
 
     override fun avoidDebris(): Boolean = false
 

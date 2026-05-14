@@ -1,7 +1,9 @@
 package com.dp.advancedgunnerycontrol.gui.actions
 
-import com.dp.advancedgunnerycontrol.gui.AGCGUI
-import com.dp.advancedgunnerycontrol.gui.GUIAttributes
+
+import com.dp.advancedgunnerycontrol.gui.entrypoints.AGCGUI
+import com.dp.advancedgunnerycontrol.gui.modals.CampaignConfirmationTone
+import com.dp.advancedgunnerycontrol.gui.session.GUIAttributes
 import com.dp.advancedgunnerycontrol.settings.Settings
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.fleet.FleetMemberAPI
@@ -15,7 +17,23 @@ abstract class GUIAction(protected var attributes: GUIAttributes) {
 
     abstract fun getName(): String
 
+    open fun getStableLayoutName(): String = getName()
+
+    open fun supportsRightClick(): Boolean = false
+
+    open fun executeRightClick(): Boolean = false
+
+    open fun getConfirmationDescription(): String = "Confirming will execute ${getName()}."
+
+    open fun getConfirmationTitle(): String = "Confirm ${getName()}"
+
+    open fun getConfirmationTone(): CampaignConfirmationTone = CampaignConfirmationTone.CAUTION
+
+    open fun requiresConfirmation(): Boolean = false
+
     open fun getShortcut(): Int? = null
+
+    open fun getDisplayShortcut(): Int? = getShortcut()
 
     protected val wholeFleetKey = "[Shift]"
     protected val allLoadoutsKey = "[Ctrl]"
@@ -39,8 +57,14 @@ abstract class GUIAction(protected var attributes: GUIAttributes) {
     }
 
     protected fun affectedShips(): List<FleetMemberAPI> {
-        return if (isWholeFleetKeyHeld()) {
-            Global.getSector().playerFleet.membersWithFightersCopy.filterNot { m -> m.isFighterWing }.filterNotNull()
+        return affectedShips(isWholeFleetKeyHeld())
+    }
+
+    protected fun affectedShips(wholeFleet: Boolean): List<FleetMemberAPI> {
+        return if (wholeFleet) {
+            Global.getSector()?.playerFleet?.membersWithFightersCopy
+                ?.filterNot { m -> m.isFighterWing }
+                .orEmpty()
         } else {
             attributes.ship?.let { listOf(it) } ?: emptyList()
         }
@@ -60,9 +84,9 @@ abstract class GUIAction(protected var attributes: GUIAttributes) {
     }
 
     protected fun nameSuffix(allLoadouts: Boolean = true, wholeFleet: Boolean = true) : String {
-        var toReturn = ""
-        if(isAllLoadoutsKeyHeld() && allLoadouts) toReturn += " for all loadouts"
-        if(isWholeFleetKeyHeld() && wholeFleet) toReturn += " for entire fleet"
-        return toReturn
+        var suffix = ""
+        if(isAllLoadoutsKeyHeld() && allLoadouts) suffix += " for all loadouts"
+        if(isWholeFleetKeyHeld() && wholeFleet) suffix += " for entire fleet"
+        return suffix
     }
 }

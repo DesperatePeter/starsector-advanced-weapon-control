@@ -1,10 +1,11 @@
 package com.dp.advancedgunnerycontrol.gui.refitscreen
 
-import com.dp.advancedgunnerycontrol.combatgui.agccombatgui.AGCCombatGui
+
+import com.dp.advancedgunnerycontrol.gui.entrypoints.DirectShipEditorPanel
 import com.dp.advancedgunnerycontrol.settings.Settings
-import com.dp.advancedgunnerycontrol.utils.getChildren
-import com.dp.advancedgunnerycontrol.utils.hasMethodNamed
-import com.dp.advancedgunnerycontrol.utils.invokeMethodByName
+import com.dp.advancedgunnerycontrol.reflection.getChildren
+import com.dp.advancedgunnerycontrol.reflection.hasMethodNamed
+import com.dp.advancedgunnerycontrol.reflection.invokeMethodByName
 import com.fs.starfarer.api.Global
 import com.fs.starfarer.api.campaign.CoreUITabId
 import com.fs.starfarer.api.combat.ShipAPI
@@ -19,14 +20,15 @@ class RefitScreenHandler {
         var refitPanelAnchorX = 0f
         var refitPanelAnchorY = 0f
         val isRefit
-            get() = Global.getSector().campaignUI.currentCoreTab == CoreUITabId.REFIT
+            get() = Global.getSector()?.campaignUI?.currentCoreTab == CoreUITabId.REFIT
     }
 
 
 
 
-    private var gui: RefitScreenPanel? = null
+    private var gui: DirectShipEditorPanel? = null
     private var buttonHolder: ButtonHolderPanel? = null
+    private var pendingOpenAttempts = 0
     private val moduleManager = ModuleIdManager()
     fun advance(amount: Float){
         if(!Settings.enableRefitScreenIntegration()) return
@@ -34,6 +36,7 @@ class RefitScreenHandler {
         if(!isRefit){
             buttonHolder?.close()
             buttonHolder = null
+            pendingOpenAttempts = 0
             return
         }
 
@@ -45,16 +48,25 @@ class RefitScreenHandler {
             moduleManager.update(it)
         }
 
+        if (pendingOpenAttempts > 0 && gui == null) {
+            pendingOpenAttempts--
+            openGUI(scheduleRetry = false)
+        }
+
         // the button holder takes care of opening/closing the GUI via button or hotkey
         buttonHolder?.advance(amount)
     }
 
-    private fun openGUI(){
+    private fun openGUI(scheduleRetry: Boolean = true){
         gui = createGUI()
+        if (scheduleRetry && gui == null && pendingOpenAttempts == 0) {
+            pendingOpenAttempts = 5
+        }
     }
     private fun closeGUI(){
         gui?.close()
         gui = null
+        pendingOpenAttempts = 0
     }
     private fun toggleOpenGUI(){
         if(gui == null){
@@ -74,8 +86,13 @@ class RefitScreenHandler {
     }
 
     private fun getShip(refitPanel: UIPanelAPI, sync: Boolean = true): ShipAPI?{
+        if(sync) {
+            // syncWithCurrentVariant can rebuild the refit ship display. Fetch
+            // the display after syncing or AGC may keep editing a stale ShipAPI
+            // with pre-refit weapon groups.
+            invokeMethodByName("syncWithCurrentVariant", refitPanel, narrativeContext = "GetShip, syncing current refit variant.")
+        }
         val shipDisplay = invokeMethodByName("getShipDisplay", refitPanel, narrativeContext = "GetShip, getting ship display") as? UIPanelAPI ?: return null
-        if(sync) invokeMethodByName("syncWithCurrentVariant", refitPanel, narrativeContext = "GetShip, syncing, not so important.")
         val ship =  invokeMethodByName("getShip", shipDisplay, narrativeContext = "GetShip, getting ship from ShipDisplay") as? ShipAPI
         return ship
     }
@@ -86,17 +103,13 @@ class RefitScreenHandler {
         return getShip(refitPanel, false)
     }
 
-    private fun createGUI(): RefitScreenPanel?{
+    private fun createGUI(): DirectShipEditorPanel?{
         getCore()?.let { core ->
             val refitPanel = getRefitPanel(core) ?: return null
-            val combatGui = getShip(refitPanel)?.let { ship ->
-                AGCCombatGui(ship, true)
-            } ?: return null
-            val refitScreenPanel = RefitScreenPanel(combatGui, core)
-            val panel = Global.getSettings().createCustom(1f, 1f, refitScreenPanel) ?: return null
-            refitScreenPanel.panel = panel
-            core.addComponent(panel)?.inTL(10f, 10f)
-            return refitScreenPanel
+            val ship = getShip(refitPanel) ?: return null
+            return DirectShipEditorPanel.open(core, ship, Settings.guiHotkey()) {
+                gui = null
+            }
         }
         return null
     }
@@ -112,8 +125,9 @@ class RefitScreenHandler {
                 refitPanel
             ) { gui != null }
             val panel = Global.getSettings().createCustom(1f, 1f, buttonHolderPanel) ?: return null
+            val panelPosition = refitPanel.addComponent(panel) ?: return null
+            panelPosition.inBR(110f, 120f)
             buttonHolderPanel.panel = panel
-            refitPanel.addComponent(panel)?.inBR(110f, 120f)
             return  buttonHolderPanel
 
         }

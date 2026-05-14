@@ -1,0 +1,3 @@
+# Optional private override for your machine.
+# Shared defaults and build metadata live in development.properties.
+starsector.dir=C:/Games/Starsector
